@@ -34,9 +34,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Assemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Assemblies\ColossalManaged.dll</HintPath>
+    </Reference>
     <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Assemblies\ICities.dll</HintPath>
+    </Reference>
+    <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,14 +63,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="LoadingExtension.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Networking\Server.cs" />
+    <Compile Include="Panels\ConnectionPanel.cs" />
+    <Compile Include="TangoMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assemblies\Assembly-CSharp.dll" />
+    <Content Include="Assemblies\ColossalManaged.dll" />
     <Content Include="Assemblies\ICities.dll" />
     <Content Include="Assemblies\UnityEngine.dll" />
     <Content Include="Assemblies\UnityEngine.UI.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
+del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\$(TargetFileName)"
+xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
+
+"G:\Steam\Steam.exe" -applaunch 255710</PostBuildEvent>
+  </PropertyGroup>
 </Project>
