@@ -43,7 +43,8 @@
       <HintPath>Assemblies\ICities.dll</HintPath>
     </Reference>
     <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Assemblies\Lidgren.Network.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -64,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="Networking\Server.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="TangoMod.cs" />
@@ -74,11 +74,9 @@
     <Content Include="Assemblies\Assembly-CSharp.dll" />
     <Content Include="Assemblies\ColossalManaged.dll" />
     <Content Include="Assemblies\ICities.dll" />
+    <Content Include="Assemblies\Lidgren.Network.dll" />
     <Content Include="Assemblies\UnityEngine.dll" />
     <Content Include="Assemblies\UnityEngine.UI.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

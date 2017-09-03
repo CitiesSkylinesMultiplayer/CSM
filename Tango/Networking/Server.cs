@@ -6,10 +6,8 @@ namespace Tango.Networking
     public class Server : IDisposable
     {
         #region Setup
-        private static readonly Lazy<Server> InstanceHolder =
-            new Lazy<Server>(() => new Server());
-
-        public static Server Instance => InstanceHolder.Value;
+        private static Server _serverInstance;
+        public static Server Instance => _serverInstance ?? (_serverInstance = new Server());
         #endregion
 
         private NetServer _netServer;
@@ -32,8 +30,6 @@ namespace Tango.Networking
             // Server already started
             if (IsServerStarted)
                 return;
-
-            Logger.Info($"Starting server on port: {port}...");
 
             _natPeerConfiguration = new NetPeerConfiguration("Tango")
             {
@@ -58,17 +54,9 @@ namespace Tango.Networking
             if (!IsServerStarted)
                 return;
 
-            Logger.Info("Stopping Server...");
-
             try
             {
                 _netServer.Shutdown("disconnect.all");
-            }
-            catch (Exception ex)
-            {
-                Logger.Fatal("Error stopping server", ex);
-
-                throw;
             }
             finally
             {
