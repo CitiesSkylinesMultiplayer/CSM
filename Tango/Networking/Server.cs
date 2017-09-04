@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using ColossalFramework.Plugins;
 using Lidgren.Network;
 
 namespace Tango.Networking
@@ -12,7 +14,8 @@ namespace Tango.Networking
 
         private NetServer _netServer;
         private NetPeerConfiguration _natPeerConfiguration;
-
+        private ParameterizedThreadStart _pts;
+        private Thread _messageProcessingThread;
         private bool _isDisposed;
 
         /// <summary>
@@ -20,16 +23,25 @@ namespace Tango.Networking
         /// </summary>
         public bool IsServerStarted { get; private set; }
 
+        // ReSharper disable once MemberCanBePrivate.Global
+        public Server()
+        {
+            _pts = ProcessMessage;
+            _messageProcessingThread = new Thread(_pts);
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="port"></param>
         /// <param name="password"></param>
-        public void StartServer(int port = 2592, string password = "")
+        public void StartServer(int port = 4230, string password = "")
         {
             // Server already started
             if (IsServerStarted)
                 return;
+
+            TangoMod.Log(PluginManager.MessageType.Message, $"Starting server on port {port}...");
 
             _natPeerConfiguration = new NetPeerConfiguration("Tango")
             {
@@ -41,7 +53,20 @@ namespace Tango.Networking
 
             _netServer = new NetServer(_natPeerConfiguration);
             _netServer.Start();
-            IsServerStarted = true;
+
+            if (_netServer.Status == NetPeerStatus.Running)
+            {
+                IsServerStarted = true;
+
+                _messageProcessingThread = new Thread(_pts);
+                _messageProcessingThread.Start(_netServer);
+
+                TangoMod.Log(PluginManager.MessageType.Message, "Server started.");
+            }
+            else
+            {
+                TangoMod.Log(PluginManager.MessageType.Message, "Server not started...");
+            }
         }
 
         /// <summary>
@@ -54,13 +79,48 @@ namespace Tango.Networking
             if (!IsServerStarted)
                 return;
 
+            TangoMod.Log(PluginManager.MessageType.Message, "Stopping server...");
+
             try
             {
-                _netServer.Shutdown("disconnect.all");
+                _netServer.Shutdown("Server Shutting Down...");
             }
             finally
             {
                 IsServerStarted = false;
+                _serverInstance = null;
+            }
+        }
+
+        private void ProcessMessage(object obj)
+        {
+            try
+            {
+                _netServer = (NetServer)obj;
+
+                TangoMod.Log(PluginManager.MessageType.Message, "Started server processing thread.");
+
+                while (IsServerStarted)
+                {
+                    NetIncomingMessage msg;
+                    while ((msg = _netServer.ReadMessage()) != null)
+                    {
+                        switch (msg.MessageType)
+                        {
+                            case NetIncomingMessageType.ConnectionApproval:
+                                msg.SenderConnection.Approve();
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                TangoMod.Log(PluginManager.MessageType.Error, "Server thread crashes: " + e.Message);
+            }
+            finally
+            {
+                TangoMod.Log(PluginManager.MessageType.Message, "Server thread stopped.");
             }
         }
 
