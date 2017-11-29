@@ -13,7 +13,7 @@ namespace Tango
         public override void OnLevelUnloading()
         {
             // Stop server (only if running, checks done in method)
-            Server.Instance.StopServer();
+            MultiplayerManager.Instance.StopGameServer();
         }
 
         public override void OnLevelLoaded(LoadMode mode)

@@ -35,19 +35,50 @@ namespace Tango.Panels
             // Handle visible change events
             eventVisibilityChanged += (component, value) =>
             {
-                if (Server.Instance.IsServerStarted)
+                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
-                    _clientConnectButton.isEnabled = false;
-                    _clientConnectButton.isVisible = false;
+                    if (MultiplayerManager.Instance.CurrentServer.IsServerStarted)
+                    {
+                        _clientConnectButton.isEnabled = false;
+                        _clientConnectButton.isVisible = false;
 
-                    _serverConnectButton.isEnabled = false;
-                    _serverConnectButton.isVisible = false;
+                        _serverConnectButton.isEnabled = false;
+                        _serverConnectButton.isVisible = false;
 
-                    _serverDisconnectButton.isEnabled = true;
-                    _serverDisconnectButton.isVisible = true;
+                        _serverDisconnectButton.isEnabled = true;
+                        _serverDisconnectButton.isVisible = true;
 
-                    _serverManageButton.isEnabled = true;
-                    _serverManageButton.isVisible = true;
+                        _serverManageButton.isEnabled = true;
+                        _serverManageButton.isVisible = true;
+                    }
+                    else
+                    {
+                        _clientConnectButton.isEnabled = true;
+                        _clientConnectButton.isVisible = true;
+
+                        _serverConnectButton.isEnabled = true;
+                        _serverConnectButton.isVisible = true;
+
+                        _serverDisconnectButton.isEnabled = false;
+                        _serverDisconnectButton.isVisible = false;
+
+                        _serverManageButton.isEnabled = false;
+                        _serverManageButton.isVisible = false;
+                    }
+                }
+                else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+                {
+                    _clientConnectButton.isEnabled = true;
+                    _clientConnectButton.isVisible = true;
+
+                    _serverConnectButton.isEnabled = true;
+                    _serverConnectButton.isVisible = true;
+
+                    _serverDisconnectButton.isEnabled = false;
+                    _serverDisconnectButton.isVisible = false;
+
+                    _serverManageButton.isEnabled = false;
+                    _serverManageButton.isVisible = false;
                 }
                 else
                 {
@@ -62,7 +93,7 @@ namespace Tango.Panels
 
                     _serverManageButton.isEnabled = false;
                     _serverManageButton.isVisible = false;
-                }
+                }                 
             };
 
             _title = (UILabel)AddUIComponent(typeof(UILabel));
@@ -145,12 +176,25 @@ namespace Tango.Panels
 
             _clientConnectButton.eventClick += (component, param) =>
             {
+                var panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
+
+                if (panel != null)
+                {
+                    panel.isVisible = true;
+                    panel.Focus();
+                }
+                else
+                {
+                    var joinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
+                    joinGamePanel.Focus();
+                }
+
                 isVisible = false;
             };
 
             _serverConnectButton.eventClick += (component, param) =>
             {
-                Server.Instance.StartServer();
+                MultiplayerManager.Instance.StartGameServer();
 
                 isVisible = false;
             };
@@ -159,7 +203,7 @@ namespace Tango.Panels
             {
                 isVisible = false;
 
-                Server.Instance.StopServer();
+                MultiplayerManager.Instance.StopGameServer();
             };
 
             _serverManageButton.eventClick += (component, param) =>
