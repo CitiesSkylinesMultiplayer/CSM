@@ -9,7 +9,6 @@ namespace Tango.Panels
     {
         private UIButton _clientConnectButton;
         private UIButton _serverConnectButton;
-        private UILabel _title;
 
         // These buttons are displayed when the server is running
         private UIButton _serverDisconnectButton;
@@ -97,15 +96,7 @@ namespace Tango.Panels
                 }                 
             };
 
-            _title = (UILabel)AddUIComponent(typeof(UILabel));
-            _title.position = new Vector3(0,0,0);
-            _title.text = "Multiplayer Menu";
-            _title.textAlignment = UIHorizontalAlignment.Center;
-            _title.width = 340;
-            _title.textScale = 1.2f;
-            _title.opacity = 0.8f;
-            _title.height = 60;
-            _title.position = new Vector3(80, -20, 0);
+            this.CreateTitleLabel("Multiplayer Menu", new Vector3(80, -20, 0));
 
             // Join game button
             _clientConnectButton = this.CreateButton("Join Game", new Vector2(10, -60));

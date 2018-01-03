@@ -1,18 +1,17 @@
 ﻿using ColossalFramework.UI;
 using Tango.Helpers;
+using Tango.Networking;
 using UnityEngine;
 
 namespace Tango.Panels
 {
     public class JoinGamePanel : UIPanel
     {
-        private UILabel _title;
 
-        private UILabel _ipAddressLabel;
         private UITextField _ipAddressField;
-
-        private UILabel _portLabel;
         private UITextField _portField;
+
+        private UILabel _connectionStatus;
 
         private UIButton _connectButton;
         private UIButton _closeButton;
@@ -36,66 +35,68 @@ namespace Tango.Panels
             height = 400;
 
             // Title Label
-            _title = (UILabel)AddUIComponent(typeof(UILabel));
-            _title.position = new Vector3(0, 0, 0);
-            _title.text = "Connect to Server";
-            _title.textAlignment = UIHorizontalAlignment.Center;
-            _title.width = 340;
-            _title.textScale = 1.2f;
-            _title.opacity = 0.8f;
-            _title.height = 60;
-            _title.position = new Vector3(80, -20, 0);
+            this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
 
             // IP Address Label
-            _ipAddressLabel = (UILabel) AddUIComponent(typeof(UILabel));
-            _ipAddressLabel.text = "IP Address:";
-            _ipAddressLabel.textScale = 1.1f;
-            _ipAddressLabel.position = new Vector3(20, -80, 0);
-     
+            this.CreateLabel("IP Address:", new Vector3(10, -70, 0));
+
             // IP Address field
-            _ipAddressField = (UITextField) AddUIComponent(typeof(UITextField));
-            _ipAddressField.position = new Vector3(20, -100, 0);
-            _ipAddressField.width = 330;
-            _ipAddressField.height = 40;
-            _ipAddressField.text = "localhost";
-            _ipAddressField.isEnabled = true;
-            _ipAddressField.normalBgSprite = "TextFieldPanel";
-            _ipAddressField.selectionSprite = "EmptySprite";
-            _ipAddressField.builtinKeyNavigation = true;
-            _ipAddressField.isInteractive = true;
-            _ipAddressField.readOnly = false;
-            _ipAddressField.maxLength = 48;
-        
+            _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
+
             // Port Label
-            _portLabel = (UILabel)AddUIComponent(typeof(UILabel));
-            _portLabel.text = "Port";
-            _portLabel.textScale = 1.1f;
-            _portLabel.position = new Vector3(20, -160, 0);
+            this.CreateLabel("Port:", new Vector2(10, -140));
 
             // Port field
-            _portField = (UITextField)AddUIComponent(typeof(UITextField));
-            _portField.position = new Vector3(20, -200, 0);
-            _portField.width = 330;
-            _portField.height = 40;
-            _portField.text = "4230";
-            _portField.isEnabled = true;
-            _portField.normalBgSprite = "TextFieldPanel";
-            _portField.selectionSprite = "EmptySprite";
-            _portField.builtinKeyNavigation = true;
-            _portField.isInteractive = true;
-            _portField.readOnly = false;
-            _portField.maxLength = 10;
+            _portField = this.CreateTextField("4230", new Vector2(10, -170));
 
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect", new Vector3(20, -250, 0), 330);
+            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -270));
+            _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Close", new Vector3(20, -250, 0), 330);
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -340));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
-                Hide();
             };
+
+            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -190));
+            _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
+            _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+        }
+
+        private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
+        {
+            _connectionStatus.textColor = new Color32(255, 255, 0, 255);
+            _connectionStatus.text = "Connecting...";
+
+            if (string.IsNullOrEmpty(_portField.text) || string.IsNullOrEmpty(_ipAddressField.text))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Port or IP";
+                return;
+            }
+
+            int port;
+            if (!int.TryParse(_portField.text, out port))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Port";
+                return;
+            }
+
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Already Running Server";
+                return;
+            }
+
+            // Do the connect!
+            _connectionStatus.textColor = new Color32(0, 255, 0, 255);
+            _connectionStatus.text = "Connected. Now Loading...";
+
+
         }
     }
 }
