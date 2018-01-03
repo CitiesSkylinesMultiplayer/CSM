@@ -44,23 +44,23 @@ namespace Tango.Panels
             _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
 
             // Port Label
-            this.CreateLabel("Port:", new Vector2(10, -140));
+            this.CreateLabel("Port:", new Vector2(10, -150));
 
             // Port field
-            _portField = this.CreateTextField("4230", new Vector2(10, -170));
+            _portField = this.CreateTextField("4230", new Vector2(10, -180));
 
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -270));
+            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -260));
             _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -340));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -330));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -190));
+            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -235));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
         }
@@ -77,8 +77,7 @@ namespace Tango.Panels
                 return;
             }
 
-            int port;
-            if (!int.TryParse(_portField.text, out port))
+            if (!int.TryParse(_portField.text, out var port))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Port";
@@ -92,11 +91,21 @@ namespace Tango.Panels
                 return;
             }
 
-            // Do the connect!
+            // Todo: pass user in and password
+            // Try connect and get the result
+            var result = MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, "TEST_USER");
+
+            if (!result.IsConnected)
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = result.ErrorMessage;
+                return;
+            }
+
             _connectionStatus.textColor = new Color32(0, 255, 0, 255);
             _connectionStatus.text = "Connected. Now Loading...";
 
-
+            // TODO: Magic!
         }
     }
 }

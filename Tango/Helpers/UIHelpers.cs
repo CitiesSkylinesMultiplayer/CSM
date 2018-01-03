@@ -58,11 +58,12 @@ namespace Tango.Helpers
 
         public static UITextField CreateTextField(this UIComponent uiComponent, string placeholderText,
             Vector2 position, int width = 340,
-            int height = 30)
+            int height = 40)
         {
             var textField = (UITextField)uiComponent.AddUIComponent(typeof(UITextField));
             textField.atlas = GetAtlas("Ingame");
             textField.position = position;
+            textField.textScale = 1.5f;
             textField.width = width;
             textField.height = height;
             textField.padding = new RectOffset(6, 6, 2, 2);

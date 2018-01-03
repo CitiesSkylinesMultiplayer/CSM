@@ -85,7 +85,7 @@ namespace Tango.Networking
 
             try
             {
-                _netServer.Shutdown("Server Shutting Down...");
+                _netServer.Shutdown("TANGO_DISCONNECT");
             }
             finally
             {
@@ -97,23 +97,29 @@ namespace Tango.Networking
         {
             try
             {
-                _netServer = (NetServer)obj;
+                var netServer = (NetServer)obj;
+                NetIncomingMessage message;
 
                 TangoMod.Log(PluginManager.MessageType.Message, "Started server processing thread.");
 
                 while (IsServerStarted)
                 {
-                    NetIncomingMessage msg;
-                    while ((msg = _netServer.ReadMessage()) != null)
+                    while ((message = netServer.ReadMessage()) != null)
                     {
-                        switch (msg.MessageType)
+                        switch (message.MessageType)
                         {
+                            // Debug
+                            case NetIncomingMessageType.VerboseDebugMessage: 
+                            case NetIncomingMessageType.DebugMessage: 
+                            case NetIncomingMessageType.WarningMessage: 
+                            case NetIncomingMessageType.ErrorMessage: 
+                                TangoMod.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
+                                break;
+
                             case NetIncomingMessageType.ConnectionApproval:
-                                msg.SenderConnection.Approve();
+                                message.SenderConnection.Approve();
                                 break;
                         }
-
-                        TangoMod.Log(PluginManager.MessageType.Message, "WE HAVE MESSAGE!");
                     }
                 }
             }
