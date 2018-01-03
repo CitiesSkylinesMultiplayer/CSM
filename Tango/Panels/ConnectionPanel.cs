@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using Tango.Helpers;
 using Tango.Networking;
 using UnityEngine;
 
@@ -106,73 +107,22 @@ namespace Tango.Panels
             _title.height = 60;
             _title.position = new Vector3(80, -20, 0);
 
-            _clientConnectButton = (UIButton) AddUIComponent(typeof(UIButton));
-            _clientConnectButton.position = new Vector3(10, -60, 0);
-            _clientConnectButton.width = 340;
-            _clientConnectButton.height = 60;
-            _clientConnectButton.text = "Join Game";
-            _clientConnectButton.normalBgSprite = "ButtonMenu";
-            _clientConnectButton.disabledBgSprite = "ButtonMenuDisabled";
-            _clientConnectButton.hoveredBgSprite = "ButtonMenuHovered";
-            _clientConnectButton.focusedBgSprite = "ButtonMenu";
-            _clientConnectButton.pressedBgSprite = "ButtonMenuPressed";
-            _clientConnectButton.textColor = new Color32(255, 51, 153, 150);
-            _clientConnectButton.disabledTextColor = new Color32(7, 7, 7, 200);
-            _clientConnectButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            _clientConnectButton.pressedTextColor = new Color32(204, 0, 0, 255);
-            _clientConnectButton.playAudioEvents = true;
+            // Join game button
+            _clientConnectButton = this.CreateButton("Join Game", new Vector2(10, -60));
 
-            _serverManageButton = (UIButton)AddUIComponent(typeof(UIButton));
-            _serverManageButton.position = new Vector3(10, -60, 0);
-            _serverManageButton.width = 340;
-            _serverManageButton.height = 60;
-            _serverManageButton.text = "Manage Server";
-            _serverManageButton.normalBgSprite = "ButtonMenu";
-            _serverManageButton.disabledBgSprite = "ButtonMenuDisabled";
-            _serverManageButton.hoveredBgSprite = "ButtonMenuHovered";
-            _serverManageButton.focusedBgSprite = "ButtonMenu";
-            _serverManageButton.pressedBgSprite = "ButtonMenuPressed";
-            _serverManageButton.textColor = new Color32(255, 51, 153, 150);
-            _serverManageButton.disabledTextColor = new Color32(7, 7, 7, 200);
-            _serverManageButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            _serverManageButton.pressedTextColor = new Color32(204, 0, 0, 255);
-            _serverManageButton.playAudioEvents = true;
+            // Manage server button
+            _serverManageButton = this.CreateButton("Manage Server", new Vector2(10, -60));
             _serverManageButton.isEnabled = false;
             _serverManageButton.isVisible = false;
 
-            _serverConnectButton = (UIButton)AddUIComponent(typeof(UIButton));
-            _serverConnectButton.width = 340;
-            _serverConnectButton.height = 60;
-            _serverConnectButton.position = new Vector3(10, -130, 0);
-            _serverConnectButton.text = "Host Game";
-            _serverConnectButton.normalBgSprite = "ButtonMenu";
-            _serverConnectButton.disabledBgSprite = "ButtonMenuDisabled";
-            _serverConnectButton.hoveredBgSprite = "ButtonMenuHovered";
-            _serverConnectButton.focusedBgSprite = "ButtonMenu";
-            _serverConnectButton.pressedBgSprite = "ButtonMenuPressed";
-            _serverConnectButton.textColor = new Color32(255, 51, 153, 150);
-            _serverConnectButton.disabledTextColor = new Color32(7, 7, 7, 200);
-            _serverConnectButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            _serverConnectButton.pressedTextColor = new Color32(204, 0, 0, 255);
-            _serverConnectButton.playAudioEvents = true;
+            // Host game button
+            _serverConnectButton = this.CreateButton("Host Game", new Vector2(10, -130));
 
-            _serverDisconnectButton = (UIButton)AddUIComponent(typeof(UIButton));
-            _serverDisconnectButton.width = 340;
-            _serverDisconnectButton.height = 60;
-            _serverDisconnectButton.position = new Vector3(10, -130, 0);
-            _serverDisconnectButton.text = "Close Server";
-            _serverDisconnectButton.normalBgSprite = "ButtonMenu";
-            _serverDisconnectButton.disabledBgSprite = "ButtonMenuDisabled";
-            _serverDisconnectButton.hoveredBgSprite = "ButtonMenuHovered";
-            _serverDisconnectButton.focusedBgSprite = "ButtonMenu";
-            _serverDisconnectButton.pressedBgSprite = "ButtonMenuPressed";
-            _serverDisconnectButton.textColor = new Color32(255, 51, 153, 150);
-            _serverDisconnectButton.disabledTextColor = new Color32(7, 7, 7, 200);
-            _serverDisconnectButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            _serverDisconnectButton.pressedTextColor = new Color32(204, 0, 0, 255);
-            _serverDisconnectButton.playAudioEvents = true;
+            // Close server button
+            _serverDisconnectButton = this.CreateButton("Close Server", new Vector2(10, -130));
             _serverDisconnectButton.isEnabled = false;
             _serverDisconnectButton.isVisible = false;
+
 
             _clientConnectButton.eventClick += (component, param) =>
             {

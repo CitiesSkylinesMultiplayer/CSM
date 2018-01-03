@@ -45,7 +45,9 @@ namespace Tango.Networking
             _natPeerConfiguration = new NetPeerConfiguration("Tango")
             {
                 Port = _port,
-                AutoFlushSendQueue = false
+                AutoFlushSendQueue = false,
+                ConnectionTimeout = 5,
+                AcceptIncomingConnections = true
             };
 
             _natPeerConfiguration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
@@ -67,6 +69,7 @@ namespace Tango.Networking
             TangoMod.Log(PluginManager.MessageType.Message, "Server not started...");
             return false;
         }
+
 
         /// <summary>
         /// Stop the server
@@ -109,6 +112,8 @@ namespace Tango.Networking
                                 msg.SenderConnection.Approve();
                                 break;
                         }
+
+                        TangoMod.Log(PluginManager.MessageType.Message, "WE HAVE MESSAGE!");
                     }
                 }
             }
