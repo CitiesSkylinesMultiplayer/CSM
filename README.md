@@ -6,9 +6,12 @@ In the future I would like the ability to have seperate cities / income and make
 
 This respository is split into two projects. `Tango` and `Tango.GUITester`. `Tango` is the base project and contains all logic for the mod. `Tango.GUITester` on the other hand helps simplify testing of muiltiplayer elements.
 
+Please read the wiki for more information.
+
 ## Current Features
 * Pretty slick looking muiltiplayer GUI.
 * Ability to host server (no logic or connection, but the server is active). Can be closed and re-opened more than once in game.
+* Implemented connect to server logic and GUI.
 
 ## Logic Flow
 Below is information that I have jotted down about the flow of this mod.
@@ -34,7 +37,7 @@ Message Queue:
   * On incoming message, update client UI.
 
 ## Development Notes
-Make sure the Lidgren.Network.dll is in the same location as your mod DLL when testing.
+See the wiki.
 
 ## License
 This project is licensed under MIT.
