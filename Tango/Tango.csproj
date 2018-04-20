@@ -43,11 +43,17 @@
       <HintPath>Assemblies\ICities.dll</HintPath>
     </Reference>
     <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Assemblies\Lidgren.Network.dll</HintPath>
+      <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.3.7.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.3.7\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -84,10 +90,14 @@
     <Content Include="Assemblies\UnityEngine.dll" />
     <Content Include="Assemblies\UnityEngine.UI.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
-
-xcopy /y "$(ProjectDir)Assemblies\Lidgren.Network.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -file "$(SolutionDir)OnBuild.ps1"</PostBuildEvent>
   </PropertyGroup>
 </Project>
