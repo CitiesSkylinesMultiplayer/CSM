@@ -4,14 +4,19 @@ Project Tango (known as CitiesSkylinesMultiplayer in code) is a Multiplayer mod 
 
 It should be noted that I'm currently developing this mod in my free-free time. Once the mod is more mature, contributions would be much appreciated. In the mean time, I'll try add as many notes as possible below to help any development efforts.
 
-This page will be split into four main sections, `Current Status`, `Progress`, `Installation` and `Developer Resources`. `Current Status` displays what features are currently implemented, `Progress` will show the monthly road map, `Installation` tells you how to install and setup the mod and finally, `Developer Resources` contains all resources related to developing this mod.
+This page will be split into four main sections, `Current Status`, `Progress`, `Installation` and `Developer Resources`. `Current Status` displays build/CI information, `Progress` will show the monthly road map, `Installation` tells you how to install and setup the mod and finally, `Developer Resources` contains all resources related to developing this mod.
 
 ## Current Status
-* Pretty slick looking muiltiplayer GUI.
-* Ability to host server (no logic or connection, but the server is active). Can be closed and re-opened more than once in game.
-* Implemented connect to server logic and GUI.
 
 ## Progress
+
+### Phase 1
+- [ ] Functional Build Script.
+
+### Phase 2
+
+
+### Phase 3
 
 ## Installation
 
