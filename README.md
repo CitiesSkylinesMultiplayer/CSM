@@ -4,21 +4,44 @@ Project Tango (known as CitiesSkylinesMultiplayer in code) is a Multiplayer mod 
 
 It should be noted that I'm currently developing this mod in my free-free time. Once the mod is more mature, contributions would be much appreciated. In the mean time, I'll try add as many notes as possible below to help any development efforts.
 
-This page will be split into four main sections, `Current Status`, `Progress`, `Installation` and `Developer Resources`. `Current Status` displays build/CI information, `Progress` will show the monthly road map, `Installation` tells you how to install and setup the mod and finally, `Developer Resources` contains all resources related to developing this mod.
+This project is licensed under MIT.
 
 ## Current Status
 
 ## Progress
 
 ### Phase 1
-- [ ] Functional Build Script.
+*Inital phase for setting up the mod.*
+
+- [x] Build Basic UI
+- [x] Allow basic connect, disconnect and host.
 
 ### Phase 2
+*Make the mod easier to develop for/run. Build server management (kick users, view users). Allow sending messages through chat (works both in game and for debugging.*
 
+- [ ] Automatic Build Script.
+- [ ] Keep track of and view clients connected to a server.
+- [ ] Client can request a list of other clients conencted to the server.
+- [ ] Build event system around client join, leave etc.
 
 ### Phase 3
+*TBD*
 
 ## Installation
+Setting up the mod is very easy. You will need to have Visual Studio 2017 installed (free version works), have not tested on older versions. 
+
+1. Create a new folder in your cities skylines mod directory (`%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods`) called `Tango`.
+2. Change your project config to Release and Any CPU.
+3. Right-click the `Tango` Project and select build. Building the project should automatically copy the required files to the newly created `Tango` folder in AppData.
+4. If the build did not automatically copy the required files, copy `Tango.dll` from `bin\Release` into this new folder.
+5. Copy `Lidgren.Network.dll` from the `Assemblies` folder into the `Tango` folder.
+6. Run cities skylines and enable the mod.
+
+## Usage
+1. Create a new game / open an existing game.
+2. Click the `Show Multiplayer Menu` button in the top-left of your screen.
+3. To host a game click on `Host Game`.
+4. To join a game click on `Join Game` and enter the required information.
 
 ## Developer Resources
 ### Introduction
@@ -55,6 +78,89 @@ Message Queue:
   * Update the client to mirror the server
   * On all events, update the server.
   * On incoming message, update client UI.
+  
+### `ICities.dll` Extensions
+Here is a list of extensions that can be used in the ICities.dll (not much documentation elsewhere).
 
-## License
-This project is licensed under MIT.
+#### AreasExtensionBase
+We can use these extension methods to sync which areas have been bought.
+
+|Method|Return|
+|--|--|
+|`OnCanUnlockArea(int x, int z, bool originalResult)`|`originalResult`|
+|`OnGetAreaPrice(uint ore, uint oil, uint forest, uint fertility, uint water, bool road, bool train, bool ship, bool plane, float landFlatness, int originalPrice)`|`originalPrice`|
+|`OnUnlockArea(int x, int z)`|**VOID**|
+
+#### BuildingExtensionBase
+We can use this to find out where builds are. Looks like it may be quite complicated. Guess we will see.
+
+|Method|Return|
+|--|--|
+|`SpawnData OnCalculateSpawn(Vector3 location, SpawnData spawn)`|`spawn`|
+|`OnBuildingCreated(ushort id)`|**VOID**|
+|`OnBuildingRelocated(ushort id)`|**VOID**|
+|`OnBuildingReleased(ushort id)`|**VOID**|
+
+#### ChirperExtensionBase
+This really is not that important, (I personally don't really like the "Twitter" like feature), but it can still be implemented. On Server we send the new chirper message to the clients on `OnNewMessage` event. Client side we ignore these chirpers.
+
+|Method|Return|
+|--|--|
+|`OnNewMessage(IChirperMessage message)`|**VOID**|
+
+#### DemandExtensionBase
+This extension will allow us to synchronize demand across all connected clients. More research is required, but from what I understand, we need to override the `OnCalculate*Demmand` methods to grab the calculated demand from the server. On the server we will access the demand manager to get the current demand. The `OnUpdateDemand` method will also be used for server-client syncing.
+
+|Method|Return|
+|--|--|
+|`OnCalculateResidentialDemand(int originalDemand)`|`originalDemand`|
+|`OnCalculateCommercialDemand(int originalDemand)`|`originalDemand`|
+|`OnCalculateWorkplaceDemand(int originalDemand)`|`originalDemand`|
+|`OnUpdateDemand(int lastDemand, int nextDemand, int targetDemand)`|`nextDemand`|
+
+#### EconomyExtensionBase
+Currently looking at implementing `OnUpdateMoneyAmount` to sync money between clients. Some basic testing showed that this was only updating the UI? Need to look further into it.
+
+|Method|Return|
+|--|--|
+|`OnAddResource(EconomyResource resource, int amount, Service service, SubService subService, Level level)`|`amount`|
+|`OnFetchResource(EconomyResource resource, int amount, Service service, SubService subService, Level level)`|`amount`|
+|`OnPeekResource(EconomyResource resource, int amount)`|`amount`|
+|`OnGetConstructionCost(int originalConstructionCost, Service service, SubService subService, Level level)`|`amount`|
+|`OnGetMaintenanceCost(int originalMaintenanceCost, Service service, SubService subService, Level level)`|`amount`|
+|`OnGetRelocationCost(int constructionCost, int relocationCost, Service service, SubService subService, Level level)`|`amount`|
+|`OnGetRefundAmount(int constructionCost, int refundAmount, Service service, SubService subService, Level level)`|`amount`|
+|`OnUpdateMoneyAmount(long internalMoneyAmount)`|`internalMoneyAmount`|
+
+#### IDisasterBase
+This has a different naming scheme for some reason? This would be used for syncing disasters (going to be interesting to setup)
+
+|Method|Return|
+|--|--|
+|`OnDisasterCreated(ushort disasterID)`|**VOID**|
+|`OnDisasterStarted(ushort disasterID)`|**VOID**|
+|`OnDisasterDetected(ushort disasterID)`|**VOID**|
+|`OnDisasterActivated(ushort disasterID)`|**VOID**|
+|`OnDisasterDeactivated(ushort disasterID)`|**VOID**|
+|`OnDisasterFinished(ushort disasterID)`|**VOID**|
+
+#### LevelUpExtensionBase
+todo
+
+#### LoadingExtensionBase
+todo
+
+#### MilestonesExtensionBase
+todo
+
+#### ResourceExtensionBase
+todo
+
+#### SerializableDataExtensionBase
+todo
+
+#### TerrainExtensionBase
+todo
+
+#### ThreadingExtensionBase
+todo
