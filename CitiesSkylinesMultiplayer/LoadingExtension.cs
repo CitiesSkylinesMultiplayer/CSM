@@ -1,10 +1,10 @@
-﻿using ColossalFramework.UI;
+﻿using CitiesSkylinesMultiplayer.Networking;
+using CitiesSkylinesMultiplayer.Panels;
+using ColossalFramework.UI;
 using ICities;
-using Tango.Networking;
-using Tango.Panels;
 using UnityEngine;
 
-namespace Tango
+namespace CitiesSkylinesMultiplayer
 {
     public class LoadingExtension : LoadingExtensionBase
     {

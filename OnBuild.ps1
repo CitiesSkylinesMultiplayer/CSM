@@ -1,5 +1,5 @@
 # Variables
-$ModFolder = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\Tango"
+$ModFolder = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CitiesSkylinesMultiplayer"
 $BuildFolder = "$env:TargetDir"
 
 Write-Host "Clearing and creating mod folder"

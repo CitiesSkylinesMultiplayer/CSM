@@ -2,7 +2,7 @@
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace Tango.Helpers
+namespace CitiesSkylinesMultiplayer.Helpers
 {
     /// <summary>
     /// Working with UI is a pain. This class aims to make life easy!

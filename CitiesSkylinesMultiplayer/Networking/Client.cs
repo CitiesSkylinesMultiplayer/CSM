@@ -3,7 +3,7 @@ using System.Threading;
 using ColossalFramework.Plugins;
 using Lidgren.Network;
 
-namespace Tango.Networking
+namespace CitiesSkylinesMultiplayer.Networking
 {
     /// <summary>
     ///     Client
@@ -93,7 +93,7 @@ namespace Tango.Networking
                 // Could not disconnect, so we do not connect
                 if (!disconnectResult)
                 {
-                    TangoMod.Log(PluginManager.MessageType.Warning, "Could not disconnect old game.");
+                    CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not disconnect old game.");
                     return new ConnectionResult(false, "Could not disconnect old game.");
 
                 }
@@ -113,7 +113,7 @@ namespace Tango.Networking
             approvalMessage.Write(_userName);
             approvalMessage.Write(PluginManager.instance.enabledModCount);
 
-            TangoMod.Log(PluginManager.MessageType.Message, "Client Connecting...");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client Connecting...");
 
             try
             {
@@ -125,14 +125,14 @@ namespace Tango.Networking
             }
             catch (Exception e)
             {
-                TangoMod.Log(PluginManager.MessageType.Warning, e.Message);
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, e.Message);
                 return new ConnectionResult(false, e.Message);
             }
 
             // Is the client connected?
             if (_netClient.ConnectionStatus == NetConnectionStatus.Connected)
             {
-                TangoMod.Log(PluginManager.MessageType.Message, "Client Connected");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client Connected");
 
                 _isConnected = true;
 
@@ -142,7 +142,7 @@ namespace Tango.Networking
                 return new ConnectionResult(true);
             }
 
-            TangoMod.Log(PluginManager.MessageType.Warning, "Could not connect to server.");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not connect to server.");
             return new ConnectionResult(false, "Could not connect to server.");
         }
         #endregion
@@ -158,7 +158,7 @@ namespace Tango.Networking
             if (!IsConnected)
                 return true;
 
-            TangoMod.Log(PluginManager.MessageType.Message, "Disconnecting...");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Disconnecting...");
 
             try
             {
@@ -207,7 +207,7 @@ namespace Tango.Networking
                 var netClient = (NetClient)obj;
                 NetIncomingMessage message;
 
-                TangoMod.Log(PluginManager.MessageType.Message, "Started client processing thread.");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Started client processing thread.");
 
                 while (_isConnected)
                 {
@@ -220,7 +220,7 @@ namespace Tango.Networking
                             case NetIncomingMessageType.DebugMessage: 
                             case NetIncomingMessageType.WarningMessage: 
                             case NetIncomingMessageType.ErrorMessage: 
-                                TangoMod.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
+                                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
                                 break;
 
                             // Client disconnected or connected
@@ -239,7 +239,7 @@ namespace Tango.Networking
                             case NetIncomingMessageType.Data:
                                 var type = message.ReadInt32();
 
-                                TangoMod.Log(PluginManager.MessageType.Message, "Type: " + type);
+                                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Type: " + type);
                                 break;
 
                         }
@@ -248,11 +248,11 @@ namespace Tango.Networking
             }
             catch (Exception e)
             {
-                TangoMod.Log(PluginManager.MessageType.Error, "Client thread crashes: " + e.Message);
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, "Client thread crashes: " + e.Message);
             }
             finally
             {
-                TangoMod.Log(PluginManager.MessageType.Message, "Client thread stopped.");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client thread stopped.");
             }
         }
 

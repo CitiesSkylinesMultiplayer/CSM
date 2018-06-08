@@ -1,4 +1,4 @@
-﻿namespace Tango.Networking
+﻿namespace CitiesSkylinesMultiplayer.Networking
 {
     public class ConnectionResult
     {

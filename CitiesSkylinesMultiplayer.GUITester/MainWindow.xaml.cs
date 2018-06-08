@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Lidgren.Network;
 
-namespace Tango.GUITester
+namespace CitiesSkylinesMultiplayer.GUITester
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

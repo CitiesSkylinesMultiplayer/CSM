@@ -7,8 +7,8 @@
     <ProjectGuid>{63933537-DA87-4026-A44C-382298FBB399}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tango</RootNamespace>
-    <AssemblyName>Tango</AssemblyName>
+    <RootNamespace>CitiesSkylinesMultiplayer</RootNamespace>
+    <AssemblyName>CitiesSkylinesMultiplayer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -79,7 +79,7 @@
     <Compile Include="Networking\Server.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\JoinGamePanel.cs" />
-    <Compile Include="TangoMod.cs" />
+    <Compile Include="CitiesSkylinesMultiplayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

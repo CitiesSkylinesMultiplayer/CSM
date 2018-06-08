@@ -1,5 +1,5 @@
 ﻿
-namespace Tango.GUITester
+namespace CitiesSkylinesMultiplayer.GUITester
 {
     /// <summary>
     /// Interaction logic for App.xaml

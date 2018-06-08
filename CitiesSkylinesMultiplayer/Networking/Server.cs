@@ -3,7 +3,7 @@ using System.Threading;
 using ColossalFramework.Plugins;
 using Lidgren.Network;
 
-namespace Tango.Networking
+namespace CitiesSkylinesMultiplayer.Networking
 {
     public class Server : IDisposable
     {
@@ -40,7 +40,7 @@ namespace Tango.Networking
 
             _port = port;
 
-            TangoMod.Log(PluginManager.MessageType.Message, $"Starting server on port {_port}...");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Starting server on port {_port}...");
 
             _natPeerConfiguration = new NetPeerConfiguration("Tango")
             {
@@ -62,11 +62,11 @@ namespace Tango.Networking
                 _messageProcessingThread = new Thread(_pts);
                 _messageProcessingThread.Start(_netServer);
 
-                TangoMod.Log(PluginManager.MessageType.Message, "Server started.");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Server started.");
                 return true;
             }
 
-            TangoMod.Log(PluginManager.MessageType.Message, "Server not started...");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Server not started...");
             return false;
         }
 
@@ -81,7 +81,7 @@ namespace Tango.Networking
             if (!IsServerStarted)
                 return;
 
-            TangoMod.Log(PluginManager.MessageType.Message, "Stopping server...");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Stopping server...");
 
             try
             {
@@ -100,7 +100,7 @@ namespace Tango.Networking
                 var netServer = (NetServer)obj;
                 NetIncomingMessage message;
 
-                TangoMod.Log(PluginManager.MessageType.Message, "Started server processing thread.");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Started server processing thread.");
 
                 while (IsServerStarted)
                 {
@@ -113,7 +113,7 @@ namespace Tango.Networking
                             case NetIncomingMessageType.DebugMessage: 
                             case NetIncomingMessageType.WarningMessage: 
                             case NetIncomingMessageType.ErrorMessage: 
-                                TangoMod.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
+                                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
                                 break;
 
                             case NetIncomingMessageType.ConnectionApproval:
@@ -125,11 +125,11 @@ namespace Tango.Networking
             }
             catch (Exception e)
             {
-                TangoMod.Log(PluginManager.MessageType.Error, "Server thread crashes: " + e.Message);
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, "Server thread crashes: " + e.Message);
             }
             finally
             {
-                TangoMod.Log(PluginManager.MessageType.Message, "Server thread stopped.");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Server thread stopped.");
             }
         }
 

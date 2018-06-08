@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CitiesSkylinesMultiplayer.Networking;
 using ICities;
-using Tango.Networking;
 
-namespace Tango.Extensions
+namespace CitiesSkylinesMultiplayer.Extensions
 {
     /// <summary>
     /// Handles game economy. If client, this class will get updated 

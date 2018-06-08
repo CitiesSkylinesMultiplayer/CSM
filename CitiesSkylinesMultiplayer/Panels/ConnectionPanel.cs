@@ -1,9 +1,9 @@
-﻿using ColossalFramework.UI;
-using Tango.Helpers;
-using Tango.Networking;
+﻿using CitiesSkylinesMultiplayer.Helpers;
+using CitiesSkylinesMultiplayer.Networking;
+using ColossalFramework.UI;
 using UnityEngine;
 
-namespace Tango.Panels
+namespace CitiesSkylinesMultiplayer.Panels
 {
     public class ConnectionPanel : UIPanel
     {
