@@ -1,19 +1,34 @@
 # Project Tango
 ## Introduction
-Project Tango is a Multiplayer mod for Cities: Skylines losely based off of Gurkenplayer. 
-This mod aims to primarly focus on a client-server expirence where everyone shares the same resources / buildings etc. 
-In the future I would like the ability to have seperate cities / income and make use of steams lobby / muiltiplayer system.
+Project Tango (known as CitiesSkylinesMultiplayer in code) is a Multiplayer mod for Cities: Skylines loosely based off of GurkenPlayer. The mod aims to provide a simple client-server experience. All players will share and sync the same resources such as money, costs, demand etc. Hopefully in the future roads and terrain will also be synced. Further in the future, I would like to implement the ability to have separate cities / income and make use of steams lobby / multiplayer system. Buy as this is only proof of concept for now, nothing can be guaranteed.
 
-This respository is split into two projects. `Tango` and `Tango.GUITester`. `Tango` is the base project and contains all logic for the mod. `Tango.GUITester` on the other hand helps simplify testing of muiltiplayer elements.
+It should be noted that I'm currently developing this mod in my free-free time. Once the mod is more mature, contributions would be much appreciated. In the mean time, I'll try add as many notes as possible below to help any development efforts.
 
-Please read the wiki for more information.
+This page will be split into four main sections, `Current Status`, `Progress`, `Installation` and `Developer Resources`. `Current Status` displays what features are currently implemented, `Progress` will show the monthly road map, `Installation` tells you how to install and setup the mod and finally, `Developer Resources` contains all resources related to developing this mod.
 
-## Current Features
+## Current Status
 * Pretty slick looking muiltiplayer GUI.
 * Ability to host server (no logic or connection, but the server is active). Can be closed and re-opened more than once in game.
 * Implemented connect to server logic and GUI.
 
-## Logic Flow
+## Progress
+
+## Installation
+
+## Developer Resources
+### Introduction
+This repository is split into two projects. `CitiesSkylinesMultiplayer` and `CitiesSkylinesMultiplayer.GUITester`. `CitiesSkylinesMultiplayer` is the base project and contains all logic for the mod. `CitiesSkylinesMultiplayer.GUITester` on the other hand helps simplify testing of multiplayer elements without having two games open.
+
+The wiki contains more information, but I'm aiming to transfer that information to this file.
+
+Ideally you should be running the latest version of Visual Studio 2017 on Windows 10.
+
+### Client-Server Model
+This mod uses the client-server model. A user will setup their game as a server and transmit information like currency, roads, needs etc. to all connected clients. Clients will connect to the server and retrieve currency, roads, needs etc. from the server, updating the client UI.
+
+This is all done by running a UDP server alongside Cities Skylines. This UDP server will interact with the extension methods in the ICities DLL. It is important that we extend and override the base methods for these extensions (as we override some values).
+
+### Logic Flow
 Below is information that I have jotted down about the flow of this mod.
 
 **Server:**
@@ -35,9 +50,6 @@ Message Queue:
   * Update the client to mirror the server
   * On all events, update the server.
   * On incoming message, update client UI.
-
-## Development Notes
-See the wiki.
 
 ## License
 This project is licensed under MIT.
