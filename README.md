@@ -11,7 +11,7 @@ This project is licensed under MIT.
 ## Progress
 
 ### Phase 1
-*Inital phase for setting up the mod.*
+*Initial phase for setting up the mod.*
 
 - [x] Build Basic UI
 - [x] Allow basic connect, disconnect and host.
@@ -21,7 +21,7 @@ This project is licensed under MIT.
 
 - [ ] Automatic Build Script.
 - [ ] Keep track of and view clients connected to a server.
-- [ ] Client can request a list of other clients conencted to the server.
+- [ ] Client can request a list of other clients connected to the server.
 - [ ] Build event system around client join, leave etc.
 
 ### Phase 3
@@ -65,12 +65,12 @@ Below is information that I have jotted down about the flow of this mod.
 3. Server is setup and message process queue is started. (`Networking/Server.cs`)
 
 Message Queue:
-* Parse incoming messages and call appropiate event handlers (UpdateEconomy etc.)
+* Parse incoming messages and call appropriate event handlers (UpdateEconomy etc.)
 * On extension changes, send a packet to all clients.
 
 **Client:**
 * User launches game, enabled mod, loads a level.
-* Click "Show Muiltiplayer Menu" --> "Join Game".
+* Click "Show Multiplayer Menu" --> "Join Game".
 * Enter game IP address / port.
   * Unload the level
   * Connect the client using `Networking/Client.cs`.
