@@ -6,6 +6,9 @@ namespace CitiesSkylinesMultiplayer.Commands
     [ProtoContract]
     public abstract class CommandBase
     {
+        public const byte ConnectionRequestCommand = 0;
+        public const byte ConnectionResultCommand = 0;
+
         public byte[] Serialize()
         {
             byte[] result;

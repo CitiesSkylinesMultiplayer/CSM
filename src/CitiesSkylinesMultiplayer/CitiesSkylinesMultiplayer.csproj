@@ -69,6 +69,7 @@
     <Compile Include="Commands\ConnectionRequest.cs" />
     <Compile Include="Commands\ConnectionResult.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
+    <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Networking\Client.cs" />

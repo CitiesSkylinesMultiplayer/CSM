@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using CitiesSkylinesMultiplayer.Commands;
+using CitiesSkylinesMultiplayer.Helpers;
 using CitiesSkylinesMultiplayer.Networking.Config;
 using ColossalFramework.Plugins;
 using LiteNetLib;
@@ -150,15 +151,11 @@ namespace CitiesSkylinesMultiplayer.Networking
                 // Switch between all the messages
                 switch (messageType)
                 {
-                    // Case 0 is a connection accept
-                    case 0:
+                    // Case 0 is a connection result
+                    case CommandBase.ConnectionResultCommand:
                         var connectionResult = Commands.ConnectionResult.Deserialize(message);
                         break;
                 }
-
-                // TODO Handle the protobug messages, for now just print to console
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, reader.GetString());
-
             }
             catch (Exception ex)
             {
@@ -184,7 +181,7 @@ namespace CitiesSkylinesMultiplayer.Networking
             };
 
             // Send the message
-            peer.Send(connectionRequest.Serialize(), SendOptions.ReliableOrdered);
+            peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionRequestCommand, connectionRequest.Serialize()), SendOptions.ReliableOrdered);
         }
 
         /// <summary>

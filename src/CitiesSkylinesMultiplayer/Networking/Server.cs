@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using CitiesSkylinesMultiplayer.Networking.Config;
 using ColossalFramework.Plugins;
 using LiteNetLib;
@@ -115,8 +117,27 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary>
         private void ListenerOnNetworkReceiveEvent(NetPeer peer, NetDataReader reader)
         {
-            // TODO Handle the protobug messages, for now just print to console
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, reader.GetString());
+            try
+            {
+                // The message type is the first byte, (255 message types)
+                var messageType = reader.Data[0];
+
+                // Skip the first byte
+                var message = reader.Data.Skip(1).ToArray();
+
+                // Switch between all the messages
+                switch (messageType)
+                {
+                    // Case 0 is a connection request
+                    case 0:
+                        var connectionResult = Commands.ConnectionRequest.Deserialize(message);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+            }
         }
 
         /// <summary>
