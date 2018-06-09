@@ -7,6 +7,7 @@ It should be noted that I'm currently developing this mod in my free-free time. 
 This project is licensed under MIT.
 
 ## Current Status
+![Build Status](https://gridentertainment.visualstudio.com/_apis/public/build/definitions/14652d60-fd3c-45d2-95ac-ef7691601444/11/badge)
 
 ## Progress
 
