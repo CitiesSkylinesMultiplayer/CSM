@@ -17,16 +17,16 @@ namespace CitiesSkylinesMultiplayer.Networking
         public Client CurrentClient { get;  } = new Client();
 
 
-        public ConnectionResult ConnectToServer(string ipAddress, int port, string username, string password = "")
+        public bool ConnectToServer(string ipAddress, int port, string username, string password = "")
         {
             if (CurrentRole == MultiplayerRole.Server)
-                return new ConnectionResult(false, "Stop the server before connecting to client");
+                return false;
 
             // Try connect
             var connectionStatus = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password));
 
             // Set the current role
-            CurrentRole = connectionStatus.IsConnected ? MultiplayerRole.Client : MultiplayerRole.None;
+            CurrentRole = connectionStatus ? MultiplayerRole.Client : MultiplayerRole.None;
 
             // Return the status
             return connectionStatus;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using CitiesSkylinesMultiplayer.Commands;
+using CitiesSkylinesMultiplayer.Helpers;
 using CitiesSkylinesMultiplayer.Networking.Config;
 using ColossalFramework.Plugins;
 using LiteNetLib;
@@ -130,7 +132,11 @@ namespace CitiesSkylinesMultiplayer.Networking
                 {
                     // Case 0 is a connection request
                     case 0:
+                        CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
                         var connectionResult = Commands.ConnectionRequest.Deserialize(message);
+
+                        // TODO, check these values, but for now, just accept the request.
+                        peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionResultCommand, new ConnectionResult { Success = true}.Serialize()), SendOptions.ReliableOrdered);
                         break;
                 }
             }

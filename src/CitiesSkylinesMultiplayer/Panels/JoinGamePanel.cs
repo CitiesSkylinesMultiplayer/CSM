@@ -95,10 +95,10 @@ namespace CitiesSkylinesMultiplayer.Panels
             // Try connect and get the result
             var result = MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, "TEST_USER");
 
-            if (!result.IsConnected)
+            if (!result)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = result.ErrorMessage;
+                _connectionStatus.text = "Could not connect (or could be connecting in the background, no way to tell at this point";
                 return;
             }
 

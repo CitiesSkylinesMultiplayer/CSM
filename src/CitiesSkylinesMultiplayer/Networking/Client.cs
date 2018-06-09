@@ -16,7 +16,7 @@ namespace CitiesSkylinesMultiplayer.Networking
     public class Client
     {
         // The client
-        private LiteNetLib.NetManager _netClient;
+        private readonly LiteNetLib.NetManager _netClient;
         private NetPeer _netPeer;
 
         // Run a background processing thread
@@ -50,7 +50,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary>
         /// <param name="clientConfig">Client config params</param>
         /// <returns>True is connected (may need to change, as that's hard to tell</returns>
-        public ConnectionResult Connect(ClientConfig clientConfig)
+        public bool Connect(ClientConfig clientConfig)
         {
             if (IsClientConnected)
             {
@@ -61,7 +61,7 @@ namespace CitiesSkylinesMultiplayer.Networking
                 if (!disconnectResult)
                 {
                     CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not disconnect old game.");
-                    return new ConnectionResult(false, "Could not disconnect old game.");
+                    return false;
                 }
             }
 
@@ -77,18 +77,11 @@ namespace CitiesSkylinesMultiplayer.Networking
             if (!result)
             {
                 CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "The client failed to start.");
-                return new ConnectionResult(false, "Client failed to start.");
+                return false;
             }
 
             // Try connect to server
             _netPeer = _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
-
-            // If the client is disconnected, something went wrong
-            if (_netPeer.ConnectionState == ConnectionState.Disconnected)
-            {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "The client failed to connect.");
-                return new ConnectionResult(false, "Client failed to connect.");
-            }
 
             // Start the processing thread
             IsClientConnected = true;
@@ -96,7 +89,7 @@ namespace CitiesSkylinesMultiplayer.Networking
        
             // Let the user know we connected?
             CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not connect to server.");
-            return new ConnectionResult(false, "Could not connect to server.");
+            return true;
         }
 
         /// <summary>
@@ -113,7 +106,6 @@ namespace CitiesSkylinesMultiplayer.Networking
 
             _netClient.Stop();
             IsClientConnected = false;
-
 
             return true;
         }

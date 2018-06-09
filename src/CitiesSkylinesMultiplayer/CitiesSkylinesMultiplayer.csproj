@@ -75,7 +75,6 @@
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
-    <Compile Include="Networking\ConnectionResult.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
     <Compile Include="Networking\Server.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
