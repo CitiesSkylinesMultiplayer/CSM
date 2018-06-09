@@ -1,19 +1,28 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
+using CitiesSkylinesMultiplayer.Commands;
 using ColossalFramework.Plugins;
-using Lidgren.Network;
+using LiteNetLib;
+using LiteNetLib.Utils;
+using ProtoBuf;
 
 namespace CitiesSkylinesMultiplayer.Networking
 {
     /// <summary>
     ///     Client
     /// </summary>
-    public class Client : IDisposable
+    public class Client
     {
-        #region Private Variables
+        #region Variables
+        private static Client _serverInstance;
+        public static Client Instance => _serverInstance ?? (_serverInstance = new Client());
+
         // Network
-        private NetPeerConfiguration _netPeerConfiguration;
-        private NetClient _netClient;
+        private NetManager _netClient;
+        private NetPeer _netConnection;
+        private EventBasedNetListener _listener;
 
         // Connection
         private string _serverIp;
@@ -25,14 +34,7 @@ namespace CitiesSkylinesMultiplayer.Networking
 
         // Internal
         private bool _isConnected;
-        private bool _isDisposed;
 
-        // Processing
-        private ParameterizedThreadStart _pts;
-        private Thread _messageProcessingThread;
-        #endregion
-
-        #region Getters
         /// <summary>
         ///     Is the client currently connected to the server.
         /// </summary>
@@ -61,18 +63,17 @@ namespace CitiesSkylinesMultiplayer.Networking
 
         #endregion
 
-        #region Constructor
         public Client()
         {
-            ResetConfig();
+            // Set up network items
+            _listener = new EventBasedNetListener();
+            _netClient = new NetManager(_listener, "Tango");
 
-            _netClient = new NetClient(_netPeerConfiguration);
-
-            _pts = ProcessMessage;
-            _messageProcessingThread = new Thread(_pts);
-
+            // Listen to events
+            _listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
+            _listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
+            _listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
         }
-        #endregion
 
         #region Connect
         /// <summary>
@@ -102,16 +103,7 @@ namespace CitiesSkylinesMultiplayer.Networking
             _serverIp = ipAddress;
             _serverPort = port;
             _serverPassword = password;
-
             _userName = username;
-
-            // First message to send to server. The server will read this info and 
-            // decide to let us connect or not.
-            var approvalMessage = _netClient.CreateMessage();
-            approvalMessage.Write("TANGO_CONNECT_REQUEST");
-            approvalMessage.Write(_serverPassword);
-            approvalMessage.Write(_userName);
-            approvalMessage.Write(PluginManager.instance.enabledModCount);
 
             CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client Connecting...");
 
@@ -121,7 +113,7 @@ namespace CitiesSkylinesMultiplayer.Networking
                 _netClient.Start();
 
                 // Connect to the requested server
-                _netClient.Connect(_serverIp, _serverPort, approvalMessage);
+                _netConnection = _netClient.Connect(_serverIp, _serverPort);
             }
             catch (Exception e)
             {
@@ -130,14 +122,11 @@ namespace CitiesSkylinesMultiplayer.Networking
             }
 
             // Is the client connected?
-            if (_netClient.ConnectionStatus == NetConnectionStatus.Connected)
+            if (_netConnection.ConnectionState == ConnectionState.Connected)
             {
                 CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client Connected");
 
                 _isConnected = true;
-
-                _messageProcessingThread = new Thread(_pts);
-                _messageProcessingThread.Start(_netClient);
 
                 return new ConnectionResult(true);
             }
@@ -162,6 +151,10 @@ namespace CitiesSkylinesMultiplayer.Networking
 
             try
             {
+                _netClient.d
+
+
+
                 _netClient.Disconnect("TANGO_DISCONNECT");
             }
             catch
@@ -181,104 +174,71 @@ namespace CitiesSkylinesMultiplayer.Networking
         }
         #endregion
 
-
-
-
-
-
-        // ----------------------- TO SORT -----------------------
-
-        private void ResetConfig()
-        {
-            _netPeerConfiguration = new NetPeerConfiguration("Tango")
-            {
-                MaximumHandshakeAttempts = 1,
-                ResendHandshakeInterval = 1,
-                AutoFlushSendQueue = false,
-                ConnectionTimeout = 30.0f
-            };
-        }
-
-
-        private void ProcessMessage(object obj)
+        /// <summary>
+        ///     When we get a message from the server, we handle the message here
+        ///     and perform any necessary tasks.
+        /// </summary>
+        private void ListenerOnNetworkReceiveEvent(NetPeer peer, NetDataReader reader)
         {
             try
             {
-                var netClient = (NetClient)obj;
-                NetIncomingMessage message;
+                // The message type is the first byte, (255 message types)
+                var messageType = reader.Data[0];
 
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Started client processing thread.");
+                // Skip the first byte
+                var message = reader.Data.Skip(1).ToArray();
 
-                while (_isConnected)
+                // Switch between all the messages
+                switch (messageType)
                 {
-                    while ((message = netClient.ReadMessage()) != null)
-                    {
-                        switch (message.MessageType)
-                        {
-                            // Debug
-                            case NetIncomingMessageType.VerboseDebugMessage: 
-                            case NetIncomingMessageType.DebugMessage: 
-                            case NetIncomingMessageType.WarningMessage: 
-                            case NetIncomingMessageType.ErrorMessage: 
-                                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
-                                break;
+                    // Case 0 is a connection accept
+                    case 0:
+                        var connectionResult = Commands.ConnectionResult.Deserialize(message);
 
-                            // Client disconnected or connected
-                            case NetIncomingMessageType.StatusChanged:
-                                var state = (NetConnectionStatus)message.ReadByte();
-                                if (state == NetConnectionStatus.Connected)
-                                {
-                                    _isConnected = true;
-                                }
-                                else
-                                {
-                                    _isConnected = false;
-                                }
-                                break;
 
-                            case NetIncomingMessageType.Data:
-                                var type = message.ReadInt32();
 
-                                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Type: " + type);
-                                break;
-
-                        }
-                    }
+                        break;
                 }
+
+
+                // TODO Handle the protobug messages, for now just print to console
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, reader.GetString());
+
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, "Client thread crashes: " + e.Message);
-            }
-            finally
-            {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client thread stopped.");
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
 
-      
-
-
-        #region Setup
-        private static Client _serverInstance;
-        public static Client Instance => _serverInstance ?? (_serverInstance = new Client());
-        #endregion
-
-
-        public void Dispose()
+        /// <summary>
+        ///     Called once we have connected to the server,
+        ///     at this point we want to send a connect request packet
+        ///     to the server
+        /// </summary>
+        private void ListenerOnPeerConnectedEvent(NetPeer peer)
         {
-            Disconnect();
-
-            if (!_isDisposed)
+            // Build the connection request
+            var connectionRequest = new ConnectionRequest
             {
-                GC.SuppressFinalize(this);
-                _isDisposed = true;
-            }
+                GameVersion = "1.0.0",
+                ModCount = 1,
+                ModVersion = "1.0.0",
+                Password = _serverPassword,
+                Username = _userName
+            };
+
+            // Send the message
+            peer.Send(connectionRequest.Serialize(), SendOptions.ReliableOrdered);
         }
 
-        ~Client()
+        /// <summary>
+        ///     Called whenever an error happens, we
+        ///     log this to the console for now.
+        /// </summary>
+        private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
         {
-            Dispose();
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }

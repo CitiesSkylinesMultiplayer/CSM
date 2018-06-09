@@ -32,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiteNetLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteNetLib.0.7.7.1\lib\net35\LiteNetLib.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.3.9.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.3.9\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -50,20 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CitiesSkylinesMultiplayer\CitiesSkylinesMultiplayer.csproj">
       <Project>{63933537-da87-4026-a44c-382298fbb399}</Project>
       <Name>CitiesSkylinesMultiplayer</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="LiteNetLib">
-      <Version>0.7.7.1</Version>
-    </PackageReference>
-    <PackageReference Include="protobuf-net">
-      <Version>2.3.9</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

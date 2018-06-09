@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using System.IO;
+using ProtoBuf;
 
 namespace CitiesSkylinesMultiplayer.Commands
 {
@@ -8,7 +9,7 @@ namespace CitiesSkylinesMultiplayer.Commands
     ///     information, store it, and then send back a connection result  
     /// </summary>
     [ProtoContract]
-    public class ConnectionRequest
+    public class ConnectionRequest : CommandBase
     {
         /// <summary>
         ///     The username this user will be playing as, important
@@ -44,5 +45,20 @@ namespace CitiesSkylinesMultiplayer.Commands
         /// </summary>
         [ProtoMember(5)]
         public string GameVersion { get; set; }
+
+        /// <summary>
+        ///     Deserialize a message into this type.
+        /// </summary>
+        public static ConnectionResult Deserialize(byte[] message)
+        {
+            ConnectionResult result;
+
+            using (var stream = new MemoryStream(message))
+            {
+                result = Serializer.Deserialize<ConnectionResult>(stream);
+            }
+
+            return result;
+        }
     }
 }

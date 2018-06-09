@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using ColossalFramework.Plugins;
-using Lidgren.Network;
 
 namespace CitiesSkylinesMultiplayer.Networking
 {
