@@ -32,19 +32,15 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Assemblies\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\assemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Assemblies\ColossalManaged.dll</HintPath>
+      <HintPath>..\..\assemblies\ColossalManaged.dll</HintPath>
     </Reference>
     <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Assemblies\ICities.dll</HintPath>
-    </Reference>
-    <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\assemblies\ICities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -59,11 +55,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Assemblies\UnityEngine.dll</HintPath>
+      <HintPath>..\..\assemblies\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Assemblies\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\assemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -84,14 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assemblies\Assembly-CSharp.dll" />
-    <Content Include="Assemblies\ColossalManaged.dll" />
-    <Content Include="Assemblies\ICities.dll" />
-    <Content Include="Assemblies\UnityEngine.dll" />
-    <Content Include="Assemblies\UnityEngine.UI.dll" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
     <PackageReference Include="LiteNetLib">
       <Version>0.7.7.1</Version>
     </PackageReference>
@@ -100,7 +88,4 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -file "$(SolutionDir)OnBuild.ps1"</PostBuildEvent>
-  </PropertyGroup>
 </Project>
