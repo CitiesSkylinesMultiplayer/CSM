@@ -19,13 +19,13 @@ namespace CitiesSkylinesMultiplayer.Commands
         /// <summary>
         ///     Deserialize a message into this type.
         /// </summary>
-        public static ConnectionResult Deserialize(byte[] message)
+        public static ClientDisconnect Deserialize(byte[] message)
         {
-            ConnectionResult result;
+            ClientDisconnect result;
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<ConnectionResult>(stream);
+                result = Serializer.Deserialize<ClientDisconnect>(stream);
             }
 
             return result;
