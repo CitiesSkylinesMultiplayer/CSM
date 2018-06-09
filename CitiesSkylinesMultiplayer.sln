@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitiesSkylinesMultiplayer", "CitiesSkylinesMultiplayer\CitiesSkylinesMultiplayer.csproj", "{63933537-DA87-4026-A44C-382298FBB399}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitiesSkylinesMultiplayer.GUITester", "CitiesSkylinesMultiplayer.GUITester\CitiesSkylinesMultiplayer.GUITester.csproj", "{6C6E7B15-3E2D-425D-98F6-CF8E54F2574F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitiesSkylinesMultiplayer.ClientTest", "CitiesSkylinesMultiplayer.ClientTest\CitiesSkylinesMultiplayer.ClientTest.csproj", "{DB4D40A5-EE15-453C-96EB-BBF614E9FF59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{63933537-DA87-4026-A44C-382298FBB399}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63933537-DA87-4026-A44C-382298FBB399}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63933537-DA87-4026-A44C-382298FBB399}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C6E7B15-3E2D-425D-98F6-CF8E54F2574F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C6E7B15-3E2D-425D-98F6-CF8E54F2574F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C6E7B15-3E2D-425D-98F6-CF8E54F2574F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C6E7B15-3E2D-425D-98F6-CF8E54F2574F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB4D40A5-EE15-453C-96EB-BBF614E9FF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB4D40A5-EE15-453C-96EB-BBF614E9FF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB4D40A5-EE15-453C-96EB-BBF614E9FF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB4D40A5-EE15-453C-96EB-BBF614E9FF59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

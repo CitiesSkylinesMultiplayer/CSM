@@ -83,7 +83,6 @@
     <Content Include="Assemblies\Assembly-CSharp.dll" />
     <Content Include="Assemblies\ColossalManaged.dll" />
     <Content Include="Assemblies\ICities.dll" />
-    <Content Include="Assemblies\Lidgren.Network.dll" />
     <Content Include="Assemblies\UnityEngine.dll" />
     <Content Include="Assemblies\UnityEngine.UI.dll" />
   </ItemGroup>
@@ -91,8 +90,11 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="LiteNetLib">
+      <Version>0.7.7.1</Version>
+    </PackageReference>
     <PackageReference Include="protobuf-net">
-      <Version>2.3.7</Version>
+      <Version>2.3.9</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
