@@ -15,7 +15,7 @@ This project is licensed under MIT.
 *Initial phase for setting up the mod.*
 
 - [x] Build Basic UI
-- [x] Allow basic connect, disconnect and host.
+- [ ] Allow basic connect, disconnect and host. *Currently broken in game*
 
 ### Phase 2
 *Make the mod easier to develop for/run. Build server management (kick users, view users). Allow sending messages through chat (works both in game and for debugging.*
@@ -34,7 +34,8 @@ This script will automatically pull in the required files (after specifying a fo
 
 1. Open the `scripts` folder.
 2. Run the `copy_mod.ps1` powershell script with both `-update` and `-build` flags enabled. 
-3. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
+4. When you run this script, it will ask you for your steam folder. This is just the root folder of steam, e.g 'C:\Program Files\Steam\' 
+5. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
 
 ## Usage
 1. Create a new game / open an existing game.

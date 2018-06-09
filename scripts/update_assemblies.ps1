@@ -5,7 +5,7 @@ Write-Host "Make sure Cities: Skylines is fully updated."
 Write-Host "------------------------------------"
 
 # Get the steam directory
-$SteamDirectory = Read-Host "Please enter your steam folder directory" 
+$SteamDirectory = Read-Host "Please enter your steam folder directory (not steamapps). For example, 'C:\Program Files\Steam\'" 
 
 # Full folder path
 $AssemblyDirectory = $SteamDirectory.TrimEnd("\") + "\steamapps\common\Cities_Skylines\Cities_Data\Managed\"
