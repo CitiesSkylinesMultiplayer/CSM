@@ -1,4 +1,6 @@
-﻿namespace CitiesSkylinesMultiplayer.Networking
+﻿using CitiesSkylinesMultiplayer.Networking.Config;
+
+namespace CitiesSkylinesMultiplayer.Networking
 {
     public class MultiplayerManager
     {
@@ -21,7 +23,7 @@
                 return new ConnectionResult(false, "Stop the server before connecting to client");
 
             // Try connect
-            var connectionStatus = CurrentClient.Connect(ipAddress, port, username, password);
+            var connectionStatus = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password));
 
             // Set the current role
             CurrentRole = connectionStatus.IsConnected ? MultiplayerRole.Client : MultiplayerRole.None;
@@ -38,11 +40,11 @@
         /// <returns></returns>
         public bool StartGameServer(int port = 4230, string password = "")
         {
-            if (CurrentServer.IsServerStarted)
+            if (CurrentServer.IsServerRunning)
                 return true;
 
             // Create the server and start it
-            var isConnected = CurrentServer.StartServer(port, password);
+            var isConnected = CurrentServer.StartServer(new ServerConfig(port));
 
             // Set the current role
             CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
@@ -58,9 +60,9 @@
         {
            CurrentServer.StopServer();
 
-           CurrentRole = CurrentServer.IsServerStarted ? MultiplayerRole.Server : MultiplayerRole.None;
+           CurrentRole = CurrentServer.IsServerRunning ? MultiplayerRole.Server : MultiplayerRole.None;
 
-           return !CurrentServer.IsServerStarted;
+           return !CurrentServer.IsServerRunning;
         }
 
         private static MultiplayerManager _multiplayerInstance;

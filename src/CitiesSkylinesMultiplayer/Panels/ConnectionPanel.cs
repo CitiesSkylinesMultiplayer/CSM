@@ -37,7 +37,7 @@ namespace CitiesSkylinesMultiplayer.Panels
             {
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
-                    if (MultiplayerManager.Instance.CurrentServer.IsServerStarted)
+                    if (MultiplayerManager.Instance.CurrentServer.IsServerRunning)
                     {
                         _clientConnectButton.isEnabled = false;
                         _clientConnectButton.isVisible = false;

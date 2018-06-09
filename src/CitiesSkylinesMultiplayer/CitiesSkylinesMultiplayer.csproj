@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\Assembly-CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\assemblies\ColossalManaged.dll</HintPath>
@@ -68,6 +72,8 @@
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Networking\Client.cs" />
+    <Compile Include="Networking\Config\ClientConfig.cs" />
+    <Compile Include="Networking\Config\ServerConfig.cs" />
     <Compile Include="Networking\ConnectionResult.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
     <Compile Include="Networking\Server.cs" />
@@ -84,5 +90,6 @@
       <Version>2.3.9</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

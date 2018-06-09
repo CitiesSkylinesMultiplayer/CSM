@@ -1,4 +1,5 @@
-﻿using ColossalFramework.Plugins;
+﻿using System;
+using ColossalFramework.Plugins;
 
 namespace CitiesSkylinesMultiplayer
 {
@@ -10,7 +11,11 @@ namespace CitiesSkylinesMultiplayer
 
         public static void Log(PluginManager.MessageType type, string message)
         {
+            // Run in game console
             DebugOutputPanel.AddMessage(type, $"[CSM] {message}");
+
+            // Run in cmd console
+            Console.WriteLine($"[CSM] {message}");
         }
     }
 }

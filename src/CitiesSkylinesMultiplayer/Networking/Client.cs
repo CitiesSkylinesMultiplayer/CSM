@@ -1,12 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using CitiesSkylinesMultiplayer.Commands;
+using CitiesSkylinesMultiplayer.Networking.Config;
 using ColossalFramework.Plugins;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using ProtoBuf;
 
 namespace CitiesSkylinesMultiplayer.Networking
 {
@@ -15,78 +14,44 @@ namespace CitiesSkylinesMultiplayer.Networking
     /// </summary>
     public class Client
     {
-        #region Variables
-        private static Client _serverInstance;
-        public static Client Instance => _serverInstance ?? (_serverInstance = new Client());
+        // The client
+        private LiteNetLib.NetManager _netClient;
+        private NetPeer _netPeer;
 
-        // Network
-        private NetManager _netClient;
-        private NetPeer _netConnection;
-        private EventBasedNetListener _listener;
+        // Run a background processing thread
+        private readonly Thread _clientProcessingThread;
 
-        // Connection
-        private string _serverIp;
-        private int _serverPort;
-        private string _serverPassword;
-
-        // User
-        private string _userName;
-
-        // Internal
-        private bool _isConnected;
+        // Config options for server
+        private ClientConfig _clientConfig;
 
         /// <summary>
-        ///     Is the client currently connected to the server.
+        ///     Are we connected to a server
         /// </summary>
-        public bool IsConnected
-        {
-            get
-            {
-                // First we check to see if the actual connection is live
-                if (_netClient.ConnectionStatus == NetConnectionStatus.Connected)
-                    return true;
-
-                // The connection should be live (could be reconnecting?)
-                if (_isConnected)
-                    return true;
-
-                // We are not connected
-                return false;
-            }
-        }
-
-        /// <summary>
-        ///     Can this client send messages to the server. In this case it can
-        ///     only if the client is connected to a server.
-        /// </summary>
-        public bool CanSendMessage => IsConnected;
-
-        #endregion
+        public bool IsClientConnected { get; private set; }
 
         public Client()
         {
             // Set up network items
-            _listener = new EventBasedNetListener();
-            _netClient = new NetManager(_listener, "Tango");
+            var listener = new EventBasedNetListener();
+            _netClient = new LiteNetLib.NetManager(listener, "Tango");
 
             // Listen to events
-            _listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
-            _listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
-            _listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
+            listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
+            listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
+            listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
+
+            // Set up processing thread
+            _clientProcessingThread = new Thread(ProcessEvents);
         }
 
-        #region Connect
         /// <summary>
-        /// Attempt to connect to a server,
+        ///     Attempt to connect to a server
         /// </summary>
-        /// <param name="ipAddress">Server IP address</param>
-        /// <param name="port">Port that the server is running on</param>
-        /// <param name="username">Username to use on the server</param>
-        /// <param name="password">The server password (if required)</param>
-        /// <returns></returns>
-        public ConnectionResult Connect(string ipAddress, int port, string username, string password = "")
+        /// <param name="clientConfig">Client config params</param>
+        /// <returns>True is connected (may need to change, as that's hard to tell</returns>
+        public ConnectionResult Connect(ClientConfig clientConfig)
         {
-            if (IsConnected)
+            if (IsClientConnected)
             {
                 // Disconnect first.
                 var disconnectResult = Disconnect();
@@ -96,47 +61,43 @@ namespace CitiesSkylinesMultiplayer.Networking
                 {
                     CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not disconnect old game.");
                     return new ConnectionResult(false, "Could not disconnect old game.");
-
                 }
             }
 
-            _serverIp = ipAddress;
-            _serverPort = port;
-            _serverPassword = password;
-            _userName = username;
+            // Set the config
+            _clientConfig = clientConfig;
 
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client Connecting...");
+            // Let the user know that we are trying to connect to a server
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
 
-            try
+            // Start the client, if client setup fails, return out and 
+            // tell the user
+            var result = _netClient.Start();
+            if (!result)
             {
-                // Start the client
-                _netClient.Start();
-
-                // Connect to the requested server
-                _netConnection = _netClient.Connect(_serverIp, _serverPort);
-            }
-            catch (Exception e)
-            {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, e.Message);
-                return new ConnectionResult(false, e.Message);
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "The client failed to start.");
+                return new ConnectionResult(false, "Client failed to start.");
             }
 
-            // Is the client connected?
-            if (_netConnection.ConnectionState == ConnectionState.Connected)
+            // Try connect to server
+            _netPeer = _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
+
+            // If the client is disconnected, something went wrong
+            if (_netPeer.ConnectionState == ConnectionState.Disconnected)
             {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Client Connected");
-
-                _isConnected = true;
-
-                return new ConnectionResult(true);
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "The client failed to connect.");
+                return new ConnectionResult(false, "Client failed to connect.");
             }
 
+            // Start the processing thread
+            IsClientConnected = true;
+            _clientProcessingThread.Start();
+       
+            // Let the user know we connected?
             CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not connect to server.");
             return new ConnectionResult(false, "Could not connect to server.");
         }
-        #endregion
 
-        #region Disconnect
         /// <summary>
         /// Attempt to disconnect from the server
         /// </summary>
@@ -144,35 +105,33 @@ namespace CitiesSkylinesMultiplayer.Networking
         public bool Disconnect()
         {
             // We are not connected, so we are already disconnect :D
-            if (!IsConnected)
+            if (!IsClientConnected)
                 return true;
 
             CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Disconnecting...");
 
-            try
-            {
-                _netClient.d
+            _netClient.Stop();
+            IsClientConnected = false;
 
-
-
-                _netClient.Disconnect("TANGO_DISCONNECT");
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                // Reconfiguration
-                ResetConfig();
-                _netClient = new NetClient(_netPeerConfiguration);
-
-                _isConnected = false;
-            }
 
             return true;
         }
-        #endregion
+
+        /// <summary>
+        ///     Runs in the background of the game (another thread), polls for new updates
+        ///     from the server.
+        /// </summary>
+        private void ProcessEvents()
+        {
+            while (IsClientConnected)
+            {
+                // Poll for new events
+                _netClient.PollEvents();
+
+                // Wait
+                Thread.Sleep(15);
+            }
+        }
 
         /// <summary>
         ///     When we get a message from the server, we handle the message here
@@ -194,12 +153,8 @@ namespace CitiesSkylinesMultiplayer.Networking
                     // Case 0 is a connection accept
                     case 0:
                         var connectionResult = Commands.ConnectionResult.Deserialize(message);
-
-
-
                         break;
                 }
-
 
                 // TODO Handle the protobug messages, for now just print to console
                 CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, reader.GetString());
@@ -224,8 +179,8 @@ namespace CitiesSkylinesMultiplayer.Networking
                 GameVersion = "1.0.0",
                 ModCount = 1,
                 ModVersion = "1.0.0",
-                Password = _serverPassword,
-                Username = _userName
+                Password = _clientConfig.Password,
+                Username = _clientConfig.Username
             };
 
             // Send the message

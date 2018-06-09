@@ -1,14 +1,13 @@
 ﻿using System;
-using LiteNetLib;
+using CitiesSkylinesMultiplayer.Networking;
+using CitiesSkylinesMultiplayer.Networking.Config;
 
 namespace CitiesSkylinesMultiplayer.Testing
 {
     class Program
     {
-        #region Private Variables
-        private EventBasedNetListener _listener;
-        private NetManager _netClient;
-        #endregion
+        private Client _client;
+        private Server _server;
 
         static void Main(string[] args)
         {
@@ -17,29 +16,28 @@ namespace CitiesSkylinesMultiplayer.Testing
 
         private void Start(string[] args)
         {
-            // Setup the listener and bind events
-            _listener = new EventBasedNetListener();
-            _listener.NetworkReceiveEvent += _listener_NetworkReceiveEvent;
-            _listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
+            // Intro
+            Console.WriteLine("Welcome to the Tango testing application.");
+            Console.WriteLine("Start server or client (with default settings)? S/C");
 
-            // Create the client
-            _netClient = new NetManager(_listener, "TangoAlpha");
-            var result = _netClient.Start();
+            // Get option
+            var option = Console.ReadKey().Key;
 
-            // Connect the client
-            var connection = _netClient.Connect(IpBox.Text, int.Parse(PortBox.Text));
+            if (option == ConsoleKey.S)
+            {
+                _server = new Server();
+                _server.StartServer(new ServerConfig());
 
-        }
-
-        private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
-        {
-            // On Error, show a message box
-            Console.WriteLine($"[{endpoint.Host}:{endpoint.Port}] Socket Error Code: {socketerrorcode}");
-        }
-
-        private void _listener_NetworkReceiveEvent(NetPeer peer, LiteNetLib.Utils.NetDataReader reader)
-        {
-            Console.WriteLine($"[{peer.EndPoint.Host}:{peer.EndPoint.Port}] {reader.GetString()}");
+            }
+            else if (option == ConsoleKey.C)
+            {
+                _client = new Client();
+                _client.Connect(new ClientConfig("localhost", 4230, "Tango Client"));
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice, closing application.");
+            }
         }
     }
 }

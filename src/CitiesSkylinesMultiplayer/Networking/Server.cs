@@ -1,151 +1,131 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
+using CitiesSkylinesMultiplayer.Networking.Config;
 using ColossalFramework.Plugins;
+using LiteNetLib;
+using LiteNetLib.Utils;
 
 namespace CitiesSkylinesMultiplayer.Networking
 {
-    public class Server : IDisposable
+    /// <summary>
+    ///     Server
+    /// </summary>
+    public class Server
     {
-        private NetServer _netServer;
-        private NetPeerConfiguration _natPeerConfiguration;
-        private ParameterizedThreadStart _pts;
-        private Thread _messageProcessingThread;
-        private bool _isDisposed;
+        // The server
+        private readonly LiteNetLib.NetManager _netServer;
 
-        private int _port;
+        // Run a background processing thread
+        private readonly Thread _serverProcessingThread;
+
+        // Config options for server
+        private ServerConfig _serverConfig;
 
         /// <summary>
-        /// Is the server currently running
+        ///     Is the server currently running
         /// </summary>
-        public bool IsServerStarted { get; private set; }
+        public bool IsServerRunning { get; private set; }
 
-        // ReSharper disable once MemberCanBePrivate.Global
         public Server()
         {
-            _pts = ProcessMessage;
-            _messageProcessingThread = new Thread(_pts); 
+            // Set up network items
+            var listener = new EventBasedNetListener();
+            _netServer = new LiteNetLib.NetManager(listener, "Tango");
+
+            // Listen to events
+            listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
+            listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
+
+            // Set up processing thread
+            _serverProcessingThread = new Thread(ProcessEvents);
         }
 
         /// <summary>
-        /// 
+        ///     Starts the server with the specified config options
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="password"></param>
-        public bool StartServer(int port = 4230, string password = "")
+        /// <param name="serverConfig">Server config information</param>
+        /// <returns>If the server has started.</returns>
+        public bool StartServer(ServerConfig serverConfig)
         {
             // Server already started
-            if (IsServerStarted)
+            if (IsServerRunning)
                 return true;
 
-            _port = port;
+            // Set the config
+            _serverConfig = serverConfig;
 
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Starting server on port {_port}...");
+            // Let the user know that we are trying to start the server
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Attempting to start server on port {_serverConfig.Port}...");
 
-            _natPeerConfiguration = new NetPeerConfiguration("Tango")
+            // Attempt to start the server
+            var result = _netServer.Start(_serverConfig.Port);
+
+            // If the server has not started, tell the user and return false.
+            if (!result)
             {
-                Port = _port,
-                AutoFlushSendQueue = false,
-                ConnectionTimeout = 5,
-                AcceptIncomingConnections = true
-            };
-
-            _natPeerConfiguration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-
-            _netServer = new NetServer(_natPeerConfiguration);
-            _netServer.Start();
-
-            if (_netServer.Status == NetPeerStatus.Running)
-            {
-                IsServerStarted = true;
-
-                _messageProcessingThread = new Thread(_pts);
-                _messageProcessingThread.Start(_netServer);
-
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Server started.");
-                return true;
+                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "The server failed to start.");
+                return false;
             }
 
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Server not started...");
-            return false;
+            // Start the processing thread
+            IsServerRunning = true;
+            _serverProcessingThread.Start();
+
+            // Update the console to let the user know the server is running
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "The server has started.");
+            return true;
         }
 
-
         /// <summary>
-        /// Stop the server
+        ///     Stops the server
         /// </summary>
         public void StopServer()
         {
             // Only shutdown server if it is
             // all ready running.
-            if (!IsServerStarted)
+            if (!IsServerRunning)
                 return;
 
+            // Log that the server is stopping
             CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Stopping server...");
 
-            try
+            // Quit out the loop and stop the server
+            IsServerRunning = false;
+            _netServer.Stop();
+        }
+
+        /// <summary>
+        ///     Runs in the background of the game (another thread), polls for new updates
+        ///     from the clients.
+        /// </summary>
+        private void ProcessEvents()
+        {
+            while (IsServerRunning)
             {
-                _netServer.Shutdown("TANGO_DISCONNECT");
-            }
-            finally
-            {
-                IsServerStarted = false;
+                // Poll for new events
+                _netServer.PollEvents();
+
+                // Wait
+                Thread.Sleep(15);
             }
         }
 
-        private void ProcessMessage(object obj)
+        /// <summary>
+        ///     When we get a message from a client, we handle the message here
+        ///     and perform any necessary tasks.
+        /// </summary>
+        private void ListenerOnNetworkReceiveEvent(NetPeer peer, NetDataReader reader)
         {
-            try
-            {
-                var netServer = (NetServer)obj;
-                NetIncomingMessage message;
-
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Started server processing thread.");
-
-                while (IsServerStarted)
-                {
-                    while ((message = netServer.ReadMessage()) != null)
-                    {
-                        switch (message.MessageType)
-                        {
-                            // Debug
-                            case NetIncomingMessageType.VerboseDebugMessage: 
-                            case NetIncomingMessageType.DebugMessage: 
-                            case NetIncomingMessageType.WarningMessage: 
-                            case NetIncomingMessageType.ErrorMessage: 
-                                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Debug Message: " + message.ReadString());
-                                break;
-
-                            case NetIncomingMessageType.ConnectionApproval:
-                                message.SenderConnection.Approve();
-                                break;
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, "Server thread crashes: " + e.Message);
-            }
-            finally
-            {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Server thread stopped.");
-            }
+            // TODO Handle the protobug messages, for now just print to console
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, reader.GetString());
         }
 
-        public void Dispose()
+        /// <summary>
+        ///     Called whenever an error happens, we
+        ///     log this to the console for now.
+        /// </summary>
+        private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
         {
-            StopServer();
-
-            if (!_isDisposed)
-            {
-                GC.SuppressFinalize(this);
-                _isDisposed = true;
-            }
-        }
-
-        ~Server()
-        {
-            Dispose();
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }
