@@ -4,7 +4,7 @@ using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
-namespace CitiesSkylinesMultiplayer
+namespace CitiesSkylinesMultiplayer.Extensions
 {
     public class LoadingExtension : LoadingExtensionBase
     {

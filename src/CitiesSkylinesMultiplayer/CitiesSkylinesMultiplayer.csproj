@@ -69,7 +69,7 @@
     <Compile Include="Commands\ConnectionResult.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
-    <Compile Include="LoadingExtension.cs" />
+    <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\ConnectionResult.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
