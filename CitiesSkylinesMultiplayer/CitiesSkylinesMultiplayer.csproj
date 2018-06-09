@@ -67,6 +67,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ClientConnect.cs" />
+    <Compile Include="Commands\ClientDisconnect.cs" />
+    <Compile Include="Commands\ConnectionRequest.cs" />
+    <Compile Include="Commands\ConnectionResult.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="LoadingExtension.cs" />
@@ -86,9 +90,7 @@
     <Content Include="Assemblies\UnityEngine.dll" />
     <Content Include="Assemblies\UnityEngine.UI.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="LiteNetLib">
       <Version>0.7.7.1</Version>
