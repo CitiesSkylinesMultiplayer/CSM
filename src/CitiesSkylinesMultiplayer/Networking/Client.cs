@@ -88,7 +88,7 @@ namespace CitiesSkylinesMultiplayer.Networking
             _clientProcessingThread.Start();
        
             // Let the user know we connected?
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not connect to server.");
+            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Client is running, not sure if connected yet.");
             return true;
         }
 
@@ -146,6 +146,16 @@ namespace CitiesSkylinesMultiplayer.Networking
                     // Case 0 is a connection result
                     case CommandBase.ConnectionResultCommand:
                         var connectionResult = Commands.ConnectionResult.Deserialize(message);
+
+                        if (connectionResult.Success)
+                        {
+                            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                        }
+                        else
+                        {
+                            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
+                            Disconnect();
+                        }
                         break;
                 }
             }

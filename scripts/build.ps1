@@ -22,6 +22,6 @@ Function Find-MsBuild([int] $MaxVersion = 2017)
 Write-Host "Building..."
 
 $msbuild = Find-MsBuild
-& $msbuild "..\CitiesSkylinesMultiplayer.sln" /t:CitiesSkylinesMultiplayer /p:Configuration=Release /p:Platform="Any CPU" 
+& $msbuild "..\CitiesSkylinesMultiplayer.sln" /restore /t:CitiesSkylinesMultiplayer /p:Configuration=Release /p:Platform="Any CPU" 
 
 Write-Host "Build Complete!"
