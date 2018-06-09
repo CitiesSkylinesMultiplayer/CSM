@@ -92,4 +92,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\copy_mod.ps1" -OutputDirectory $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

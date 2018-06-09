@@ -1,6 +1,8 @@
 param (
-    [switch]$update = $false,
-    [switch]$build = $false
+    [switch]$Update = $false,
+    [switch]$Build = $false,
+    [string]$OutputDirectory = "..\src\CitiesSkylinesMultiplayer\bin\Release",
+    [string]$ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CitiesSkylinesMultiplayer"
  )
 
 # Introduction
@@ -8,13 +10,12 @@ Write-Host "This script will copy the required assemblies, build the mode and co
 Write-Host "You will need Cities: Skylines installed and Visual Studio (2017). Windows 10 is also recomended (other operating systems not supported/tested)."
 Write-Host "------------------------------------"
 
-# Variables
-$ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CitiesSkylinesMultiplayer"
-$OutputDirectory = "..\src\CitiesSkylinesMultiplayer\bin\Release"
+Write-Host "Output Directory: $($OutputDirectory)"
+Write-Host "Mod Directory: $($ModDirectory)"
 
 # Make sure we have the latest assemblies
 # only if the update flag is set
-If ($update)
+If ($Update)
 {
     Write-Host "Updaing Assemblies to current installed Cities: Skylines version. Please enter follow the next steps..."
     Invoke-Expression ".\update_assemblies.ps1"
@@ -22,7 +23,7 @@ If ($update)
 
 # Build the project if the build
 # flag is specified.
-If ($build)
+If ($Build)
 {
     Write-Host "Building mod. Please wait..."
     Invoke-Expression ".\build.ps1"
