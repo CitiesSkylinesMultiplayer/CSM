@@ -1,7 +1,7 @@
 ﻿using System;
 using LiteNetLib;
 
-namespace CitiesSkylinesMultiplayer.ClientTest
+namespace CitiesSkylinesMultiplayer.Testing
 {
     class Program
     {
