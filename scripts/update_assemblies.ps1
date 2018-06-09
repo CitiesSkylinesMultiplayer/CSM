@@ -1,8 +1,5 @@
-# Clear host
-Clear-Host
-
 # Introduction
-Write-Host "This script will update the internal mod assemblies to the latest assemblies."
+Write-Host "This script will update the internal mod assemblies to the latest version."
 Write-Host "Sometimes updating these assemblies will break the mod."
 Write-Host "Make sure Cities: Skylines is fully updated."
 Write-Host "------------------------------------"

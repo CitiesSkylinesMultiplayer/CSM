@@ -19,7 +19,7 @@ This project is licensed under MIT.
 ### Phase 2
 *Make the mod easier to develop for/run. Build server management (kick users, view users). Allow sending messages through chat (works both in game and for debugging.*
 
-- [ ] Automatic Build Script.
+- [x] Automatic Build Script.
 - [ ] Keep track of and view clients connected to a server.
 - [ ] Client can request a list of other clients connected to the server.
 - [ ] Build event system around client join, leave etc.
@@ -28,14 +28,12 @@ This project is licensed under MIT.
 *TBD*
 
 ## Installation
-Setting up the mod is very easy. You will need to have Visual Studio 2017 installed (free version works), have not tested on older versions. 
+The mod can manually installed using the built in scripts. The following steps will guide you though this. Please note: You will need to have Visual Studio 2017 & Cities: Skylines installed, be running Windows 10 and have developer mode enabled.
+This script will automatically pull in the required files (after specifying a folder), build the mod and then install it.
 
-1. Create a new folder in your cities skylines mod directory (`%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods`) called `Tango`.
-2. Change your project config to Release and Any CPU.
-3. Right-click the `Tango` Project and select build. Building the project should automatically copy the required files to the newly created `Tango` folder in AppData.
-4. If the build did not automatically copy the required files, copy `Tango.dll` from `bin\Release` into this new folder.
-5. Copy `Lidgren.Network.dll` from the `Assemblies` folder into the `Tango` folder.
-6. Run cities skylines and enable the mod.
+1. Open the `scripts` folder.
+2. Run the `copy_mod.ps1` powershell script with both `-update` and `-build` flags enabled. 
+3. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
 
 ## Usage
 1. Create a new game / open an existing game.
