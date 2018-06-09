@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Build Mod",
+            "script": "${workspaceRoot}/scripts/copy_mod.ps1",
+            "args": ["-Build"],
+            "cwd": "${workspaceRoot}/scripts"
+        },
+        {
+            "name": "Attach to Mono",
+            "request": "attach",
+            "type": "mono",
+            "address": "localhost",
+            "port": 56000
+        }
+    ]
+}
