@@ -12,8 +12,8 @@ namespace CitiesSkylinesMultiplayer.Extensions
 
         public override void OnLevelUnloading()
         {
-            // Stop server (only if running, checks done in method)
-            MultiplayerManager.Instance.StopGameServer();
+            // Stop everything
+            MultiplayerManager.Instance.StopEverything();
         }
 
         public override void OnLevelLoaded(LoadMode mode)

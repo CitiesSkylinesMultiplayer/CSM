@@ -130,7 +130,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         ///     Attempt to disconnect from the server
         /// </summary>
         /// <returns></returns>
-        public void Disconnect()
+        public void Disconnect() 
         {
             // Update status and stop client
             Status = ClientStatus.Disconnected;

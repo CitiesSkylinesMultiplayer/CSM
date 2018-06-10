@@ -1,4 +1,5 @@
-﻿using CitiesSkylinesMultiplayer.Networking.Config;
+﻿using System;
+using CitiesSkylinesMultiplayer.Networking.Config;
 using CitiesSkylinesMultiplayer.Networking.Status;
 
 namespace CitiesSkylinesMultiplayer.Networking
@@ -65,6 +66,20 @@ namespace CitiesSkylinesMultiplayer.Networking
 
            return CurrentServer.Status != ServerStatus.Running;
         }
+
+        public void StopEverything()
+        {
+            switch (CurrentRole)
+            {
+                case MultiplayerRole.Client:
+                    CurrentClient.Disconnect();
+                    break;
+                case MultiplayerRole.Server:
+                    CurrentServer.StopServer();
+                    break;
+            }
+        }
+
 
         private static MultiplayerManager _multiplayerInstance;
         public static MultiplayerManager Instance => _multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());
