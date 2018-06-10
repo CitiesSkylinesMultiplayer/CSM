@@ -9,7 +9,7 @@ namespace CitiesSkylinesMultiplayer.Commands
     [ProtoContract]
     public class Ping : CommandBase
     {
-        /// <summary>
+        /// <summary> 
         ///     Deserialize a message into this type.
         /// </summary>
         public static Ping Deserialize(byte[] message)

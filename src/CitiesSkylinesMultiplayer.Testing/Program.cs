@@ -11,6 +11,10 @@ namespace CitiesSkylinesMultiplayer.Testing
 
         static void Main(string[] args)
         {
+            // We are not running in unity
+            CitiesSkylinesMultiplayer.IsUnity = false;
+
+            // Start program
             new Program().Start(args);
         }
 

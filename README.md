@@ -15,7 +15,7 @@ This project is licensed under MIT.
 *Initial phase for setting up the mod.*
 
 - [x] Build Basic UI
-- [ ] Allow basic connect, disconnect and host. *Currently broken in game*
+- [x] Allow basic connect, disconnect and host. *Currently broken in game*
 
 ### Phase 2
 *Make the mod easier to develop for/run. Build server management (kick users, view users). Allow sending messages through chat (works both in game and for debugging.*
