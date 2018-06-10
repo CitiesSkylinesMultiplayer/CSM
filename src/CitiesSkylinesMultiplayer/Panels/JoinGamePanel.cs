@@ -98,14 +98,12 @@ namespace CitiesSkylinesMultiplayer.Panels
             if (!result)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Could not connect (or could be connecting in the background, no way to tell at this point";
+                _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
                 return;
             }
 
             _connectionStatus.textColor = new Color32(0, 255, 0, 255);
-            _connectionStatus.text = "Connected. Now Loading...";
-
-            // TODO: Magic!
+            _connectionStatus.text = "Connected!";
         }
     }
 }

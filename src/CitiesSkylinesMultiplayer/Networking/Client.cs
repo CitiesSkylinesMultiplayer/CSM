@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using CitiesSkylinesMultiplayer.Commands;
 using CitiesSkylinesMultiplayer.Helpers;
 using CitiesSkylinesMultiplayer.Networking.Config;
-using ColossalFramework.Plugins;
+using CitiesSkylinesMultiplayer.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
@@ -17,7 +18,6 @@ namespace CitiesSkylinesMultiplayer.Networking
     {
         // The client
         private readonly LiteNetLib.NetManager _netClient;
-        private NetPeer _netPeer;
 
         // Run a background processing thread
         private readonly Thread _clientProcessingThread;
@@ -26,9 +26,15 @@ namespace CitiesSkylinesMultiplayer.Networking
         private ClientConfig _clientConfig;
 
         /// <summary>
-        ///     Are we connected to a server
+        ///     The current status of the client
         /// </summary>
-        public bool IsClientConnected { get; private set; }
+        public ClientStatus Status { get; private set; }
+
+        /// <summary>
+        ///     If the status is disconnected, this will contain
+        ///     the reason why.
+        /// </summary>
+        public string ConnectionMessage { get; private set; }
 
         public Client()
         {
@@ -49,21 +55,18 @@ namespace CitiesSkylinesMultiplayer.Networking
         ///     Attempt to connect to a server
         /// </summary>
         /// <param name="clientConfig">Client config params</param>
-        /// <returns>True is connected (may need to change, as that's hard to tell</returns>
+        /// <returns>True if the client is connected to the server, false if not</returns>
         public bool Connect(ClientConfig clientConfig)
         {
-            if (IsClientConnected)
-            {
-                // Disconnect first.
-                var disconnectResult = Disconnect();
+            // if we are currently trying to connect, cancel
+            // and try again.
+            if (Status == ClientStatus.Connecting)
+                Disconnect();
 
-                // Could not disconnect, so we do not connect
-                if (!disconnectResult)
-                {
-                    CitiesSkylinesMultiplayer.Log("Could not disconnect old game.");
-                    return false;
-                }
-            }
+            // The client is already connected so we need to 
+            // disconnect.
+            if (Status == ClientStatus.Connected)
+                Disconnect();
 
             // Set the config
             _clientConfig = clientConfig;
@@ -77,37 +80,63 @@ namespace CitiesSkylinesMultiplayer.Networking
             if (!result)
             {
                 CitiesSkylinesMultiplayer.Log("The client failed to start.");
+                ConnectionMessage = "The client failed to start.";
+                Disconnect(); // make sure we are fully disconnected
                 return false;
             }
 
-            // Try connect to server
-            _netPeer = _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
+            // Try connect to server, update the status to say that
+            // we are trying to connect.
+            _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
 
-            // Start the processing thread
-            IsClientConnected = true;
+            // Start processing networking
+            Status = ClientStatus.Connecting;
             _clientProcessingThread.Start();
-       
-            // Let the user know we connected?
-            CitiesSkylinesMultiplayer.Log("Client is running, not sure if connected yet.");
-            return true;
+            
+            // We need to wait in a loop for 30 seconds (waiting 500ms each time)
+            // while we wait for a successful connection (Status = Connected) or a 
+            // failed connection (Status = Disconnected).
+            var waitWatch = new Stopwatch();
+            waitWatch.Start();
+
+            while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
+            {
+                // If we connect, exit the loop and return true
+                if (Status == ClientStatus.Connected)
+                    return true;
+
+                // The client cannot connect for some reason, the ConnectionMessage
+                // variable will contain why.
+                if (Status == ClientStatus.Disconnected)
+                {
+                    Disconnect(); // make sure we are fully disconnected
+                    return false;
+                }
+
+                // Wait 500ms
+                Thread.Sleep(500);
+            }
+
+            // We have timed out
+            ConnectionMessage = "Could not connect to server, timed out.";
+            CitiesSkylinesMultiplayer.Log("Could not connect to server, timed out.");
+
+            // Did not connect
+            Disconnect(); // make sure we are fully disconnected
+            return false;
         }
 
         /// <summary>
-        /// Attempt to disconnect from the server
+        ///     Attempt to disconnect from the server
         /// </summary>
         /// <returns></returns>
-        public bool Disconnect()
+        public void Disconnect()
         {
-            // We are not connected, so we are already disconnect :D
-            if (!IsClientConnected)
-                return true;
-
-            CitiesSkylinesMultiplayer.Log("Disconnecting...");
-
+            // Update status and stop client
+            Status = ClientStatus.Disconnected;
             _netClient.Stop();
-            IsClientConnected = false;
 
-            return true;
+            CitiesSkylinesMultiplayer.Log("Disconnected from server.");
         }
 
         /// <summary>
@@ -116,7 +145,8 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary>
         private void ProcessEvents()
         {
-            while (IsClientConnected)
+            // Run this loop while we are connected or if we are still trying to connect.
+            while (Status == ClientStatus.Connected || Status == ClientStatus.Connecting)
             {
                 // Poll for new events
                 _netClient.PollEvents();
@@ -144,15 +174,23 @@ namespace CitiesSkylinesMultiplayer.Networking
                 switch (messageType)
                 {
                     case CommandBase.ConnectionResultCommand:
+                        // We only want this message while connecting
+                        if (Status != ClientStatus.Connecting)
+                            break;
+
+                        // Get the result
                         var connectionResult = ConnectionResult.Deserialize(message);
 
                         if (connectionResult.Success)
                         {
+                            // Log and set that we are connected.
                             CitiesSkylinesMultiplayer.Log($"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                            Status = ClientStatus.Connected;
                         }
                         else
                         {
                             CitiesSkylinesMultiplayer.Log($"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
+                            ConnectionMessage = $"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}";
                             Disconnect();
                         }
                         break;
