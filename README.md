@@ -1,6 +1,6 @@
-# Project Tango
+# CSM - Cities: Skylines Multiplayer
 ## Introduction
-Project Tango (known as CitiesSkylinesMultiplayer in code) is a Multiplayer mod for Cities: Skylines loosely based off of GurkenPlayer. The mod aims to provide a simple client-server experience. All players will share and sync the same resources such as money, costs, demand etc. Hopefully in the future roads and terrain will also be synced. Further in the future, I would like to implement the ability to have separate cities / income and make use of steams lobby / multiplayer system. Buy as this is only proof of concept for now, nothing can be guaranteed.
+CSM is an in-development multiplayer mod for Cities: Skylines. The mod aims to provide a simple client-server experience. All players will share and sync the same resources such as money, costs, demand etc. Hopefully in the future roads and terrain will also be synced. Further in the future, I would like to implement the ability to have separate cities / income and make use of steams lobby / multiplayer system. Buy as this is only proof of concept for now, nothing can be guaranteed.
 
 It should be noted that I'm currently developing this mod in my free-free time. Once the mod is more mature, contributions would be much appreciated. In the mean time, I'll try add as many notes as possible below to help any development efforts.
 
@@ -45,7 +45,7 @@ This script will automatically pull in the required files (after specifying a fo
 
 ## Developer Resources
 ### Introduction
-This repository is split into two projects. `CitiesSkylinesMultiplayer` and `CitiesSkylinesMultiplayer.GUITester`. `CitiesSkylinesMultiplayer` is the base project and contains all logic for the mod. `CitiesSkylinesMultiplayer.GUITester` on the other hand helps simplify testing of multiplayer elements without having two games open.
+This repository is split into two projects. `CSM` and `CSM.Testing`. `CSM` is the base project and contains all logic for the mod. `CSM.Testing` on the other hand helps simplify testing of multiplayer elements without having two games open.
 
 The wiki contains more information, but I'm aiming to transfer that information to this file.
 
