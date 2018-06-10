@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using ColossalFramework.Threading;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Open.Nat;
 
 namespace CSM.Networking
 {
@@ -72,10 +75,26 @@ namespace CSM.Networking
 
             // If the server has not started, tell the user and return false.
             if (!result)
-            {
+            { 
                 CSM.Log("The server failed to start.");
                 StopServer(); // Make sure the server is fully stopped
                 return false;
+            }
+             
+            try
+            {
+                // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
+                var nat = new NatDiscoverer();
+                var cts = new CancellationTokenSource();
+                cts.CancelAfter(5000);
+
+                // No idea if this even works
+                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, _serverConfig.Port,
+                    _serverConfig.Port, "Cities Skylines Multiplayer (UDP)"))).Unwrap().Wait();
+            }
+            catch (Exception e)
+            {
+                CSM.Log("Failed to automatically open port. Manual Port Forwarding is required. " + e.Message);
             }
 
             // Update the status
