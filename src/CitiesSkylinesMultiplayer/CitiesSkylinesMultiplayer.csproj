@@ -79,6 +79,7 @@
     <Compile Include="Networking\Config\ClientConfig.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
+    <Compile Include="Networking\Player.cs" />
     <Compile Include="Networking\Server.cs" />
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />
@@ -98,6 +99,6 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\copy_mod.ps1" -OutputDirectory $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
   </PropertyGroup>
 </Project>

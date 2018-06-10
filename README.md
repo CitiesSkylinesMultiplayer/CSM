@@ -33,7 +33,7 @@ The mod can manually installed using the built in scripts. The following steps w
 This script will automatically pull in the required files (after specifying a folder), build the mod and then install it.
 
 1. Open the `scripts` folder.
-2. Run the `copy_mod.ps1` powershell script with both `-update` and `-build` flags enabled. 
+2. Run the following command in powershell `.\build.ps1 -Update -Build -Install`. This will match the mod to your game, build it and then install it. 
 4. When you run this script, it will ask you for your steam folder. This is just the root folder of steam, e.g 'C:\Program Files\Steam\' 
 5. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
 

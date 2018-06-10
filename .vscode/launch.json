@@ -7,17 +7,18 @@
         {
             "type": "PowerShell",
             "request": "launch",
-            "name": "Build Mod",
-            "script": "${workspaceRoot}/scripts/copy_mod.ps1",
+            "name": "Build CSM",
+            "script": "${workspaceRoot}/scripts/build.ps1",
             "args": ["-Build"],
             "cwd": "${workspaceRoot}/scripts"
         },
         {
-            "name": "Attach to Mono",
-            "request": "attach",
-            "type": "mono",
-            "address": "localhost",
-            "port": 56000
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Build & Install CSM",
+            "script": "${workspaceRoot}/scripts/build.ps1",
+            "args": ["-Build -Install"],
+            "cwd": "${workspaceRoot}/scripts"
         }
     ]
 }

@@ -1,3 +1,21 @@
+#########################################################################
+# This script handles updating, building and installing the mod.        #
+# Version 2.0 - Created by Dominic Maas                                 #
+# Update: Copies the latest version of the assemblies.                  #
+# Build: Builds the project using provided assemblies.                  #
+# Install: Copies all files over to the cities skylines mod folder      #
+#########################################################################
+
+# Params that can be passed in
+param (
+    [switch]$Update = $false,
+    [switch]$Build = $false,
+    [switch]$Install = $false,
+    [string]$OutputDirectory = "..\src\CitiesSkylinesMultiplayer\bin\Release",
+    [string]$ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CitiesSkylinesMultiplayer"
+ )
+
+# Functions
 Function Find-MsBuild([int] $MaxVersion = 2017)
 {
     $agentPath = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
@@ -19,9 +37,80 @@ Function Find-MsBuild([int] $MaxVersion = 2017)
     throw "Yikes - Unable to find msbuild"
 }
 
-Write-Host "Building..."
+# Introduction
+Write-Host "[SCM Build Script] Welcome to the CSM build script. This script will now perform the specified actions.";
+Write-Host "[SCM Build Script] Depending on your choice of options, you will need Visual Studio 2017 (or the 'Build Tools for Visual Studio 2017'), and Cities: Skylines insalled."
 
-$msbuild = Find-MsBuild
-& $msbuild "..\CitiesSkylinesMultiplayer.sln" /restore /t:CitiesSkylinesMultiplayer /p:Configuration=Release /p:Platform="Any CPU" 
+# Chosen Directories
+Write-Host "[SCM Build Script] Output Directory: $($OutputDirectory)"
+Write-Host "[SCM Build Script] Mod Directory: $($ModDirectory)"
 
-Write-Host "Build Complete!"
+# Make sure we have the latest assemblies
+# only if the update flag is set
+If ($Update)
+{
+    # Tell the user what is happening
+    Write-Host "[SCM Update Script] You have specified the -Update flag. The script will now update the local assemblies to the installed version under Cities: Skylines."
+    Write-Host "[SCM Update Script] Please Note: This may break the mod if any major game changes have occured."
+
+    # Get the steam directory
+    $SteamDirectory = Read-Host "[SCM Update Script] Please enter your steam folder directory (not steamapps). For example, 'C:\Program Files\Steam\'" 
+
+    # Full folder path
+    $AssemblyDirectory = $SteamDirectory.TrimEnd("\") + "\steamapps\common\Cities_Skylines\Cities_Data\Managed\"
+
+    # Test to see if the path is valid
+    $PathValid = Test-Path -Path $AssemblyDirectory
+    If (!$PathValid)
+    {
+        Write-Host "[SCM Update Script] Path is invalid. Make sure Cities Skylines is installed and that the provided folder is correct"
+        Return;
+    }
+
+    # Start copying the items
+    Write-Host "[SCM Update Script] Copying assemblies..."
+
+    Copy-Item -Path "$($AssemblyDirectory)Assembly-CSharp.dll"  -Destination "..\assemblies\Assembly-CSharp.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)ColossalManaged.dll"  -Destination "..\assemblies\ColossalManaged.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)ICities.dll"          -Destination "..\assemblies\ICities.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)UnityEngine.dll"      -Destination "..\assemblies\UnityEngine.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)UnityEngine.UI.dll"   -Destination "..\assemblies\UnityEngine.UI.dll" -Force
+
+    Write-Host "[SCM Update Script] Done copying assemblies!"
+}
+
+# Build the project if the build
+# flag is specified.
+if ($Build)
+{
+    Write-Host "[SCM Build Script] You have specified the -Build flag. The script will auto detect MSBuild and build the mod."
+
+    # Run MSBuild
+    $msbuild = Find-MsBuild
+    & $msbuild "..\CitiesSkylinesMultiplayer.sln" /restore /t:CitiesSkylinesMultiplayer /p:Configuration=Release /p:Platform="Any CPU" 
+    Write-Host "[SCM Build Script] Build Complete!"
+}
+
+# Copy files if the install flag is specified
+if ($Install)
+{
+    # Clear the directory
+    Write-Host "[SCM Install Script] Clearing and creating mod directory."
+
+    # Delete directory and contents
+    Remove-Item $ModDirectory -Recurse -ErrorAction Ignore
+
+    # Make sure the game mod directory exists
+    New-Item -ItemType directory -Path $ModDirectory | Out-Null
+
+    # Copy the required files
+    Write-Host "[SCM Install Script] Copying required files..."
+    Copy-Item -Path "$($OutputDirectory)\LiteNetLib.dll"                 -Destination "$($ModDirectory)\LiteNetLib.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\protobuf-net.dll"               -Destination "$($ModDirectory)\protobuf-net.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\CitiesSkylinesMultiplayer.dll"  -Destination "$($ModDirectory)\CitiesSkylinesMultiplayer.dll" -Force
+
+    # Done
+    Write-Host "[SCM Install Script] Completed Copy"
+}
+
+Write-Host "[SCM Build Script] Done!"
