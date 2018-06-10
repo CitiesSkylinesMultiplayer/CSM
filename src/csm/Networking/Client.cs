@@ -25,6 +25,12 @@ namespace CSM.Networking
         // Config options for server
         private ClientConfig _clientConfig;
 
+        // The last time we recieved a message from the server
+        private DateTime _lastServerPing;
+
+        // Timer to make sure the client is already connected to the server
+        private System.Timers.Timer _pingTimer;
+
         /// <summary>
         ///     The current status of the client
         /// </summary>
@@ -46,6 +52,11 @@ namespace CSM.Networking
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
+
+            // Setup timer
+            _pingTimer = new System.Timers.Timer();
+            _pingTimer.Elapsed += OnPing;
+            _pingTimer.Interval = 1000;
         }
 
         /// <summary>
@@ -92,7 +103,8 @@ namespace CSM.Networking
             // Setup processing thread
             _clientProcessingThread = new Thread(ProcessEvents);
             _clientProcessingThread.Start();
-            
+            _pingTimer.Start();
+
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
             // while we wait for a successful connection (Status = Connected) or a 
             // failed connection (Status = Disconnected).
@@ -136,6 +148,8 @@ namespace CSM.Networking
             Status = ClientStatus.Disconnected;
             _netClient.Stop();
 
+            _pingTimer.Stop();
+
             CitiesSkylinesMultiplayer.Log("Disconnected from server.");
         }
 
@@ -152,7 +166,26 @@ namespace CSM.Networking
                 _netClient.PollEvents();
 
                 // Wait
-                Thread.Sleep(15);
+                Thread.Sleep(15);     
+            }
+        }
+
+        /// <summary>
+        ///     Check if we are still conencted to the server
+        /// </summary>
+        private void OnPing(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            // Client not connected, don't worry about this code
+            if (Status == ClientStatus.Disconnected)
+                return;
+
+            // If we have not heard from the server in 5 seconds, it's probably gone
+            // for now, we just disconnect. In the future we should try reconnecting and
+            // displaying a UI.
+            if (DateTime.UtcNow - _lastServerPing >= TimeSpan.FromSeconds(5))
+            {
+                CitiesSkylinesMultiplayer.Log("Client lost connection with the server (time out, last ping > 5 seconds). Disconnecting...");
+                Disconnect();
             }
         }
 
@@ -196,6 +229,9 @@ namespace CSM.Networking
                         break;
                     // Handle ping commands by returning the ping
                     case CommandBase.PingCommand:
+                        // Update the last server ping
+                        _lastServerPing = DateTime.UtcNow;
+                        // Send back a ping event
                         peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommand, new Ping().Serialize()), SendOptions.ReliableOrdered);
                         break;
                 }

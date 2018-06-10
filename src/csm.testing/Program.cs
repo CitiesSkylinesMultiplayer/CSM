@@ -21,11 +21,13 @@ namespace CSM.Testing
         private void Start(string[] args)
         {
             // Intro
-            Console.WriteLine("Welcome to the Tango testing application.");
+            Console.WriteLine("Welcome to the CSM testing application.");
             Console.WriteLine("Start server or client (with default settings)? S/C");
 
             // Get option
             var option = Console.ReadKey().Key;
+
+            Console.WriteLine("--");
 
             if (option == ConsoleKey.S)
             {
