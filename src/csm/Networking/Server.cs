@@ -90,7 +90,7 @@ namespace CSM.Networking
 
                 // No idea if this even works
                 nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, _serverConfig.Port,
-                    _serverConfig.Port, "Cities Skylines Multiplayer (UDP)"))).Unwrap().Wait();
+                    _serverConfig.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
             }
             catch (Exception e)
             {
