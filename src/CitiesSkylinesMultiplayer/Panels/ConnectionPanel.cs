@@ -1,5 +1,6 @@
 ﻿using CitiesSkylinesMultiplayer.Helpers;
 using CitiesSkylinesMultiplayer.Networking;
+using CitiesSkylinesMultiplayer.Networking.Status;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -37,7 +38,7 @@ namespace CitiesSkylinesMultiplayer.Panels
             {
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
-                    if (MultiplayerManager.Instance.CurrentServer.IsServerRunning)
+                    if (MultiplayerManager.Instance.CurrentServer.Status == ServerStatus.Running)
                     {
                         _clientConnectButton.isEnabled = false;
                         _clientConnectButton.isVisible = false;

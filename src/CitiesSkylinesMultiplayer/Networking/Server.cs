@@ -4,6 +4,7 @@ using System.Threading;
 using CitiesSkylinesMultiplayer.Commands;
 using CitiesSkylinesMultiplayer.Helpers;
 using CitiesSkylinesMultiplayer.Networking.Config;
+using CitiesSkylinesMultiplayer.Networking.Status;
 using ColossalFramework.Plugins;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -19,7 +20,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         private readonly LiteNetLib.NetManager _netServer;
 
         // Run a background processing thread
-        private readonly Thread _serverProcessingThread;
+        private Thread _serverProcessingThread;
 
         // Config options for server
         private ServerConfig _serverConfig;
@@ -28,9 +29,9 @@ namespace CitiesSkylinesMultiplayer.Networking
         private System.Timers.Timer _pingTimer;
 
         /// <summary>
-        ///     Is the server currently running
+        ///     The current status of the server
         /// </summary>
-        public bool IsServerRunning { get; private set; }
+        public ServerStatus Status { get; private set; }
 
         public Server()
         {
@@ -41,9 +42,6 @@ namespace CitiesSkylinesMultiplayer.Networking
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
-
-            // Set up processing thread
-            _serverProcessingThread = new Thread(ProcessEvents);
 
             // Setup timer
             _pingTimer = new System.Timers.Timer();
@@ -59,9 +57,9 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// <returns>If the server has started.</returns>
         public bool StartServer(ServerConfig serverConfig)
         {
-            // Server already started
-            if (IsServerRunning)
-                return true;
+            // If the server is already running, we will stop and start it again
+            if (Status == ServerStatus.Running)
+                StopServer();
 
             // Set the config
             _serverConfig = serverConfig;
@@ -77,11 +75,15 @@ namespace CitiesSkylinesMultiplayer.Networking
             if (!result)
             {
                 CitiesSkylinesMultiplayer.Log("The server failed to start.");
+                StopServer(); // Make sure the server is fully stopped
                 return false;
             }
 
-            // Start the processing thread
-            IsServerRunning = true;
+            // Update the status
+            Status = ServerStatus.Running;
+
+            // Set up processing thread
+            _serverProcessingThread = new Thread(ProcessEvents);
             _serverProcessingThread.Start();
 
             // Update the console to let the user know the server is running
@@ -94,17 +96,11 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary> 
         public void StopServer()
         {
-            // Only shutdown server if it is
-            // all ready running.
-            if (!IsServerRunning)
-                return;
-
-            // Log that the server is stopping
-            CitiesSkylinesMultiplayer.Log("Stopping server...");
-
-            // Quit out the loop and stop the server
-            IsServerRunning = false;
+            // Update status and stop the server
+            Status = ServerStatus.Stopped;
             _netServer.Stop();
+
+            CitiesSkylinesMultiplayer.Log("Stopped server");
         }
 
         /// <summary>
@@ -113,7 +109,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary>
         private void ProcessEvents()
         {
-            while (IsServerRunning)
+            while (Status == ServerStatus.Running)
             {
                 // Poll for new events
                 _netServer.PollEvents();
@@ -129,7 +125,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         private void OnPing(object sender, System.Timers.ElapsedEventArgs e)
         {
             // Server not running, don't send ping
-            if (!IsServerRunning)
+            if (Status == ServerStatus.Stopped)
                 return;
 
             // Loop though all connected peers

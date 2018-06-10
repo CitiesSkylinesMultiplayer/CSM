@@ -20,7 +20,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         private readonly LiteNetLib.NetManager _netClient;
 
         // Run a background processing thread
-        private readonly Thread _clientProcessingThread;
+        private Thread _clientProcessingThread;
 
         // Config options for server
         private ClientConfig _clientConfig;
@@ -46,9 +46,6 @@ namespace CitiesSkylinesMultiplayer.Networking
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
-
-            // Set up processing thread
-            _clientProcessingThread = new Thread(ProcessEvents);
         }
 
         /// <summary>
@@ -91,6 +88,9 @@ namespace CitiesSkylinesMultiplayer.Networking
 
             // Start processing networking
             Status = ClientStatus.Connecting;
+
+            // Setup processing thread
+            _clientProcessingThread = new Thread(ProcessEvents);
             _clientProcessingThread.Start();
             
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)

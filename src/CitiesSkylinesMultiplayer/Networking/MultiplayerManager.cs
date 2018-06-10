@@ -1,4 +1,5 @@
 ﻿using CitiesSkylinesMultiplayer.Networking.Config;
+using CitiesSkylinesMultiplayer.Networking.Status;
 
 namespace CitiesSkylinesMultiplayer.Networking
 {
@@ -40,7 +41,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// <returns></returns>
         public bool StartGameServer(int port = 4230, string password = "")
         {
-            if (CurrentServer.IsServerRunning)
+            if (CurrentServer.Status == ServerStatus.Running)
                 return true;
 
             // Create the server and start it
@@ -60,9 +61,9 @@ namespace CitiesSkylinesMultiplayer.Networking
         {
            CurrentServer.StopServer();
 
-           CurrentRole = CurrentServer.IsServerRunning ? MultiplayerRole.Server : MultiplayerRole.None;
+           CurrentRole = CurrentServer.Status == ServerStatus.Running ? MultiplayerRole.Server : MultiplayerRole.None;
 
-           return !CurrentServer.IsServerRunning;
+           return CurrentServer.Status != ServerStatus.Running;
         }
 
         private static MultiplayerManager _multiplayerInstance;
@@ -75,22 +76,22 @@ namespace CitiesSkylinesMultiplayer.Networking
     public enum MultiplayerRole
     {
         /// <summary>
-        /// The game is not connected to a server acting
-        /// as a server. In this state we leave all game mechanics
-        /// alone.
+        ///     The game is not connected to a server acting
+        ///     as a server. In this state we leave all game mechanics
+        ///     alone.
         /// </summary>
         None,
 
         /// <summary>
-        /// The game is connect to a server and must broadcast
-        /// it's update to the server and update internal values
-        /// from the server.
+        ///     The game is connect to a server and must broadcast
+        ///     it's update to the server and update internal values
+        ///     from the server.
         /// </summary>
         Client,
 
         /// <summary>
-        /// The game is acting as a server, it will send out updates to all connected
-        /// clients and recieve information about the game from the clients.
+        ///     The game is acting as a server, it will send out updates to all connected
+        ///     clients and recieve information about the game from the clients.
         /// </summary>
         Server
     }
