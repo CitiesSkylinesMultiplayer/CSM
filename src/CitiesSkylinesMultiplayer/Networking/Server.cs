@@ -24,6 +24,9 @@ namespace CitiesSkylinesMultiplayer.Networking
         // Config options for server
         private ServerConfig _serverConfig;
 
+        // Timer for handling ping
+        private System.Timers.Timer _pingTimer;
+
         /// <summary>
         ///     Is the server currently running
         /// </summary>
@@ -41,6 +44,12 @@ namespace CitiesSkylinesMultiplayer.Networking
 
             // Set up processing thread
             _serverProcessingThread = new Thread(ProcessEvents);
+
+            // Setup timer
+            _pingTimer = new System.Timers.Timer();
+            _pingTimer.Elapsed += OnPing;
+            _pingTimer.Interval = 100;
+            _pingTimer.Start();
         }
 
         /// <summary>
@@ -58,15 +67,16 @@ namespace CitiesSkylinesMultiplayer.Networking
             _serverConfig = serverConfig;
 
             // Let the user know that we are trying to start the server
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Attempting to start server on port {_serverConfig.Port}...");
+            CitiesSkylinesMultiplayer.Log($"Attempting to start server on port {_serverConfig.Port}...");
 
             // Attempt to start the server
+            _netServer.DiscoveryEnabled = true;
             var result = _netServer.Start(_serverConfig.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
             {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "The server failed to start.");
+                CitiesSkylinesMultiplayer.Log("The server failed to start.");
                 return false;
             }
 
@@ -75,13 +85,13 @@ namespace CitiesSkylinesMultiplayer.Networking
             _serverProcessingThread.Start();
 
             // Update the console to let the user know the server is running
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "The server has started.");
+            CitiesSkylinesMultiplayer.Log("The server has started.");
             return true;
         }
 
         /// <summary>
         ///     Stops the server
-        /// </summary>
+        /// </summary> 
         public void StopServer()
         {
             // Only shutdown server if it is
@@ -90,7 +100,7 @@ namespace CitiesSkylinesMultiplayer.Networking
                 return;
 
             // Log that the server is stopping
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Stopping server...");
+            CitiesSkylinesMultiplayer.Log("Stopping server...");
 
             // Quit out the loop and stop the server
             IsServerRunning = false;
@@ -114,6 +124,23 @@ namespace CitiesSkylinesMultiplayer.Networking
         }
 
         /// <summary>
+        ///     Ping all connected clients
+        /// </summary>
+        private void OnPing(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            // Server not running, don't send ping
+            if (!IsServerRunning)
+                return;
+
+            // Loop though all connected peers
+            foreach (var netPeer in _netServer.GetPeers())
+            {
+                // Send a ping
+                netPeer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommand, new Ping().Serialize()), SendOptions.ReliableOrdered);
+            }
+        }
+
+        /// <summary>
         ///     When we get a message from a client, we handle the message here
         ///     and perform any necessary tasks.
         /// </summary>
@@ -130,9 +157,8 @@ namespace CitiesSkylinesMultiplayer.Networking
                 // Switch between all the messages
                 switch (messageType)
                 {
-                    // Case 0 is a connection request
-                    case 0:
-                        CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                    case CommandBase.ConnectionRequestCommand:
+                        CitiesSkylinesMultiplayer.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
                         var connectionResult = Commands.ConnectionRequest.Deserialize(message);
 
                         // TODO, check these values, but for now, just accept the request.
@@ -142,7 +168,7 @@ namespace CitiesSkylinesMultiplayer.Networking
             }
             catch (Exception ex)
             {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+                CitiesSkylinesMultiplayer.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
 
@@ -152,7 +178,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
         {
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
+            CitiesSkylinesMultiplayer.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }

@@ -1,20 +1,18 @@
 ﻿using System;
 using ColossalFramework.Plugins;
+using UnityEngine;
 
 namespace CitiesSkylinesMultiplayer
 {
     public class CitiesSkylinesMultiplayer : ICities.IUserMod
     {
-        public string Name => "Cities: Skylines - Multiplayer Mod";
+        public string Name => "Multiplayer Mod";
 
         public string Description => "Muiltiplayer mod for Cities: Skylines.";
 
-        public static void Log(PluginManager.MessageType type, string message)
+        public static void Log(string message)
         {
-            // Run in game console
-            DebugOutputPanel.AddMessage(type, $"[CSM] {message}");
-
-            // Run in cmd console
+            Debug.Log($"[CSM] {message}");
             Console.WriteLine($"[CSM] {message}");
         }
     }

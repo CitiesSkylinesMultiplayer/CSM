@@ -9,8 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CitiesSkylinesMultiplayer</RootNamespace>
     <AssemblyName>CitiesSkylinesMultiplayer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +70,7 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\ConnectionRequest.cs" />
     <Compile Include="Commands\ConnectionResult.cs" />
+    <Compile Include="Commands\Ping.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />

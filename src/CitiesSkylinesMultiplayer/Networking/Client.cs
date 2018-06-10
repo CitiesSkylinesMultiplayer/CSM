@@ -60,7 +60,7 @@ namespace CitiesSkylinesMultiplayer.Networking
                 // Could not disconnect, so we do not connect
                 if (!disconnectResult)
                 {
-                    CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Could not disconnect old game.");
+                    CitiesSkylinesMultiplayer.Log("Could not disconnect old game.");
                     return false;
                 }
             }
@@ -69,14 +69,14 @@ namespace CitiesSkylinesMultiplayer.Networking
             _clientConfig = clientConfig;
 
             // Let the user know that we are trying to connect to a server
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
+            CitiesSkylinesMultiplayer.Log($"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
 
             // Start the client, if client setup fails, return out and 
             // tell the user
             var result = _netClient.Start();
             if (!result)
             {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "The client failed to start.");
+                CitiesSkylinesMultiplayer.Log("The client failed to start.");
                 return false;
             }
 
@@ -88,7 +88,7 @@ namespace CitiesSkylinesMultiplayer.Networking
             _clientProcessingThread.Start();
        
             // Let the user know we connected?
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Warning, "Client is running, not sure if connected yet.");
+            CitiesSkylinesMultiplayer.Log("Client is running, not sure if connected yet.");
             return true;
         }
 
@@ -102,7 +102,7 @@ namespace CitiesSkylinesMultiplayer.Networking
             if (!IsClientConnected)
                 return true;
 
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, "Disconnecting...");
+            CitiesSkylinesMultiplayer.Log("Disconnecting...");
 
             _netClient.Stop();
             IsClientConnected = false;
@@ -143,25 +143,28 @@ namespace CitiesSkylinesMultiplayer.Networking
                 // Switch between all the messages
                 switch (messageType)
                 {
-                    // Case 0 is a connection result
                     case CommandBase.ConnectionResultCommand:
-                        var connectionResult = Commands.ConnectionResult.Deserialize(message);
+                        var connectionResult = ConnectionResult.Deserialize(message);
 
                         if (connectionResult.Success)
                         {
-                            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                            CitiesSkylinesMultiplayer.Log($"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
                         }
                         else
                         {
-                            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Message, $"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
+                            CitiesSkylinesMultiplayer.Log($"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
                             Disconnect();
                         }
+                        break;
+                    // Handle ping commands by returning the ping
+                    case CommandBase.PingCommand:
+                        peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommand, new Ping().Serialize()), SendOptions.ReliableOrdered);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+                CitiesSkylinesMultiplayer.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
 
@@ -192,7 +195,7 @@ namespace CitiesSkylinesMultiplayer.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
         {
-            CitiesSkylinesMultiplayer.Log(PluginManager.MessageType.Error, $"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
+            CitiesSkylinesMultiplayer.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }
