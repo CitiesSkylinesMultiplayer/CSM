@@ -64,7 +64,7 @@ namespace CSM.Networking
             _serverConfig = serverConfig;
 
             // Let the user know that we are trying to start the server
-            CitiesSkylinesMultiplayer.Log($"Attempting to start server on port {_serverConfig.Port}...");
+            CSM.Log($"Attempting to start server on port {_serverConfig.Port}...");
 
             // Attempt to start the server
             _netServer.DiscoveryEnabled = true;
@@ -73,7 +73,7 @@ namespace CSM.Networking
             // If the server has not started, tell the user and return false.
             if (!result)
             {
-                CitiesSkylinesMultiplayer.Log("The server failed to start.");
+                CSM.Log("The server failed to start.");
                 StopServer(); // Make sure the server is fully stopped
                 return false;
             }
@@ -86,7 +86,7 @@ namespace CSM.Networking
             _serverProcessingThread.Start();
 
             // Update the console to let the user know the server is running
-            CitiesSkylinesMultiplayer.Log("The server has started.");
+            CSM.Log("The server has started.");
             return true;
         }
 
@@ -99,7 +99,7 @@ namespace CSM.Networking
             Status = ServerStatus.Stopped;
             _netServer.Stop();
 
-            CitiesSkylinesMultiplayer.Log("Stopped server");
+            CSM.Log("Stopped server");
         }
 
         /// <summary>
@@ -153,8 +153,10 @@ namespace CSM.Networking
                 switch (messageType)
                 {
                     case CommandBase.ConnectionRequestCommand:
-                        CitiesSkylinesMultiplayer.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                        
                         var connectionResult = Commands.ConnectionRequest.Deserialize(message);
+
+                        CSM.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Version: {connectionResult.GameVersion}, ModCount: {connectionResult.ModCount}, ModVersion: {connectionResult.ModVersion}");
 
                         // TODO, check these values, but for now, just accept the request.
                         peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionResultCommand, new ConnectionResult { Success = true}.Serialize()), SendOptions.ReliableOrdered);
@@ -163,7 +165,7 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                CitiesSkylinesMultiplayer.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+                CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
 
@@ -173,7 +175,7 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
         {
-            CitiesSkylinesMultiplayer.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
+            CSM.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }

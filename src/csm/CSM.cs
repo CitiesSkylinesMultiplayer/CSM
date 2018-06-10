@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CSM
 {
-    public class CitiesSkylinesMultiplayer : ICities.IUserMod
+    public class CSM : ICities.IUserMod
     {
         public static bool IsUnity = true;
 

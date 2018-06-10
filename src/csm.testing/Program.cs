@@ -12,7 +12,7 @@ namespace CSM.Testing
         static void Main(string[] args)
         {
             // We are not running in unity
-            CitiesSkylinesMultiplayer.IsUnity = false;
+            CSM.IsUnity = false;
 
             // Start program
             new Program().Start(args);

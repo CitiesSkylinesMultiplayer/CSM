@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
+using ColossalFramework.Plugins;
+using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using UnityEngine;
+using Ping = CSM.Commands.Ping;
 
 namespace CSM.Networking
 {
@@ -80,14 +85,14 @@ namespace CSM.Networking
             _clientConfig = clientConfig;
 
             // Let the user know that we are trying to connect to a server
-            CitiesSkylinesMultiplayer.Log($"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
+            CSM.Log($"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
 
             // Start the client, if client setup fails, return out and 
             // tell the user
             var result = _netClient.Start();
             if (!result)
             {
-                CitiesSkylinesMultiplayer.Log("The client failed to start.");
+                CSM.Log("The client failed to start.");
                 ConnectionMessage = "The client failed to start.";
                 Disconnect(); // make sure we are fully disconnected
                 return false;
@@ -131,7 +136,7 @@ namespace CSM.Networking
 
             // We have timed out
             ConnectionMessage = "Could not connect to server, timed out.";
-            CitiesSkylinesMultiplayer.Log("Could not connect to server, timed out.");
+            CSM.Log("Could not connect to server, timed out.");
 
             // Did not connect
             Disconnect(); // make sure we are fully disconnected
@@ -150,7 +155,7 @@ namespace CSM.Networking
 
             _pingTimer.Stop();
 
-            CitiesSkylinesMultiplayer.Log("Disconnected from server.");
+            CSM.Log("Disconnected from server.");
         }
 
         /// <summary>
@@ -184,7 +189,7 @@ namespace CSM.Networking
             // displaying a UI.
             if (DateTime.UtcNow - _lastServerPing >= TimeSpan.FromSeconds(5))
             {
-                CitiesSkylinesMultiplayer.Log("Client lost connection with the server (time out, last ping > 5 seconds). Disconnecting...");
+                CSM.Log("Client lost connection with the server (time out, last ping > 5 seconds). Disconnecting...");
                 Disconnect();
             }
         }
@@ -217,12 +222,12 @@ namespace CSM.Networking
                         if (connectionResult.Success)
                         {
                             // Log and set that we are connected.
-                            CitiesSkylinesMultiplayer.Log($"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                            CSM.Log($"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
                             Status = ClientStatus.Connected;
                         }
                         else
                         {
-                            CitiesSkylinesMultiplayer.Log($"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
+                            CSM.Log($"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
                             ConnectionMessage = $"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}";
                             Disconnect();
                         }
@@ -235,10 +240,10 @@ namespace CSM.Networking
                         peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommand, new Ping().Serialize()), SendOptions.ReliableOrdered);
                         break;
                 }
-            }
+            } 
             catch (Exception ex)
             {
-                CitiesSkylinesMultiplayer.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+                CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
 
@@ -252,9 +257,9 @@ namespace CSM.Networking
             // Build the connection request
             var connectionRequest = new ConnectionRequest
             {
-                GameVersion = "1.0.0",
-                ModCount = 1,
-                ModVersion = "1.0.0",
+                GameVersion = CSM.IsUnity ? BuildConfig.applicationVersion : "1.0.0",
+                ModCount = CSM.IsUnity ? PluginManager.instance.modCount : 0,
+                ModVersion = Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString(),
                 Password = _clientConfig.Password,
                 Username = _clientConfig.Username
             };
@@ -269,7 +274,7 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
         {
-            CitiesSkylinesMultiplayer.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
+            CSM.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }

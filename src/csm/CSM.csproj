@@ -83,7 +83,7 @@
     <Compile Include="Networking\Status\ServerStatus.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\JoinGamePanel.cs" />
-    <Compile Include="CitiesSkylinesMultiplayer.cs" />
+    <Compile Include="CSM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
