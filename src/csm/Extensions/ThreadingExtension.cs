@@ -1,6 +1,8 @@
-﻿using CSM.Commands;
+﻿using System.Runtime.Remoting.Messaging;
+using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking;
+using CSM.Networking.Status;
 using ICities;
 using LiteNetLib;
 
@@ -11,27 +13,32 @@ namespace CSM.Extensions
         private int _lastSelectedSimulationSpeed;
         private bool _lastSimulationPausedState;
 
-
         public override void OnAfterSimulationTick()
         {
-            if (_lastSimulationPausedState != SimulationManager.instance.ForcedSimulationPaused ||
+            if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused ||
                 _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
             {
+
+
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
                     case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.NetClient.GetFirstPeer().Send(ArrayHelpers.PrependByte(CommandBase.SimulationCommandID, new SimulationCommand
+                        if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Connected)
                         {
-                            SumulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                            SimulationPaused = SimulationManager.instance.SimulationPaused
-                        }.Serialize()), SendOptions.ReliableOrdered);
+                            MultiplayerManager.Instance.CurrentClient.NetClient.GetFirstPeer().Send(ArrayHelpers.PrependByte(CommandBase.SimulationCommandID, new SimulationCommand
+                            {
+                                SumulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
+                                SimulationPaused = SimulationManager.instance.SimulationPaused
+                            }.Serialize()), SendOptions.ReliableOrdered);
+                        }
+
                         break;
                     case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.NetServer.SendToAll(ArrayHelpers.PrependByte(CommandBase.SimulationCommandID, new SimulationCommand
-                        {
-                            SumulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                            SimulationPaused = SimulationManager.instance.SimulationPaused
-                        }.Serialize()), SendOptions.ReliableOrdered);
+                            MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SimulationCommandID, new SimulationCommand
+                            {
+                                SumulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
+                                SimulationPaused = SimulationManager.instance.SimulationPaused
+                            });
                         break;
                 }
             }

@@ -119,6 +119,14 @@ namespace CSM.Networking
             CSM.Log("Stopped server");
         }
 
+        public void SendToClients(byte messageId, CommandBase message)
+        {
+            if (Status != ServerStatus.Running)
+                return;
+
+            NetServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+        }
+
         /// <summary>
         ///     Runs in the background of the game (another thread), polls for new updates
         ///     from the clients.
