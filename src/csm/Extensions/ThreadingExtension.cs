@@ -1,50 +1,48 @@
-﻿using System.Runtime.Remoting.Messaging;
-using CSM.Commands;
-using CSM.Helpers;
+﻿using CSM.Commands;
 using CSM.Networking;
-using CSM.Networking.Status;
 using ICities;
-using LiteNetLib;
 
 namespace CSM.Extensions
 {
+    /// <summary>
+    ///     TODO: Pausing simulation does not work.
+    /// </summary>
     public class ThreadingExtension : ThreadingExtensionBase
     {
         private int _lastSelectedSimulationSpeed;
         private bool _lastSimulationPausedState;
+        private bool _lastForcedSimulationPaused;
 
         public override void OnAfterSimulationTick()
         {
             if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused ||
-                _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
+                _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed ||
+                _lastForcedSimulationPaused != SimulationManager.instance.ForcedSimulationPaused)
             {
-
-
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
                     case MultiplayerRole.Client:
-                        if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Connected)
+                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.SimulationCommandID, new SimulationCommand
                         {
-                            MultiplayerManager.Instance.CurrentClient.NetClient.GetFirstPeer().Send(ArrayHelpers.PrependByte(CommandBase.SimulationCommandID, new SimulationCommand
-                            {
-                                SumulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                                SimulationPaused = SimulationManager.instance.SimulationPaused
-                            }.Serialize()), SendOptions.ReliableOrdered);
-                        }
-
+                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
+                            SimulationPaused = SimulationManager.instance.SimulationPaused,
+                            ForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused,
+                        });
                         break;
                     case MultiplayerRole.Server:
-                            MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SimulationCommandID, new SimulationCommand
-                            {
-                                SumulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                                SimulationPaused = SimulationManager.instance.SimulationPaused
-                            });
+                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SimulationCommandID, new SimulationCommand
+                        {
+                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
+                            SimulationPaused = SimulationManager.instance.SimulationPaused,
+                            ForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused,
+                        });
                         break;
                 }
             }
 
             _lastSelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed;
             _lastSimulationPausedState = SimulationManager.instance.SimulationPaused;
+            _lastForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused;
 
             base.OnAfterSimulationTick();
         }

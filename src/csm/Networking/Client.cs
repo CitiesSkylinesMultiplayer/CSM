@@ -158,6 +158,14 @@ namespace CSM.Networking
             CSM.Log("Disconnected from server.");
         }
 
+        public void SendToServer(byte messageId, CommandBase message)
+        {
+            if (Status == ClientStatus.Disconnected)
+                return;
+
+            NetClient.GetFirstPeer().Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+        }
+
         /// <summary>
         ///     Runs in the background of the game (another thread), polls for new updates
         ///     from the server.
@@ -243,7 +251,8 @@ namespace CSM.Networking
                         var simulation = SimulationCommand.Deserialize(message);
 
                         SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
-                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SumulationSpeed;
+                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SelectedSimulationSpeed;
+                        SimulationManager.instance.ForcedSimulationPaused = simulation.ForcedSimulationPaused;
                         break;
                 }
             } 

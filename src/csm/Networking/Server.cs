@@ -119,12 +119,28 @@ namespace CSM.Networking
             CSM.Log("Stopped server");
         }
 
+        /// <summary>
+        ///     Send a message to all connected clients.
+        /// </summary>
+        /// <param name="messageId">Message type/id</param>
+        /// <param name="message">The actual message</param>
         public void SendToClients(byte messageId, CommandBase message)
         {
             if (Status != ServerStatus.Running)
                 return;
 
             NetServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+        }
+
+        /// <summary>
+        ///     Send a message to a specific client
+        /// </summary>
+        public void SendToClient(NetPeer peer, byte messageId, CommandBase message)
+        {
+            if (Status != ServerStatus.Running)
+                return;
+
+            peer.Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
         }
 
         /// <summary>
@@ -184,13 +200,14 @@ namespace CSM.Networking
                         CSM.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Version: {connectionResult.GameVersion}, ModCount: {connectionResult.ModCount}, ModVersion: {connectionResult.ModVersion}");
 
                         // TODO, check these values, but for now, just accept the request.
-                        peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true}.Serialize()), SendOptions.ReliableOrdered);
+                        SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true});
                         break;
                     case CommandBase.SimulationCommandID:
                         var simulation = SimulationCommand.Deserialize(message);
 
                         SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
-                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SumulationSpeed;
+                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SelectedSimulationSpeed;
+                        SimulationManager.instance.ForcedSimulationPaused = simulation.ForcedSimulationPaused;
                         break;
                 }
             }

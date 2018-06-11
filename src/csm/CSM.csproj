@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BuildingCreatedCommand.cs" />
     <Compile Include="Commands\ClientConnectCommand.cs" />
     <Compile Include="Commands\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Commands\ConnectionResultCommand.cs" />
     <Compile Include="Commands\PingCommand.cs" />
     <Compile Include="Commands\SimulationCommand.cs" />
+    <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />

@@ -10,10 +10,13 @@ namespace CSM.Commands
     public class SimulationCommand : CommandBase
     {
         [ProtoMember(1)]
-        public int SumulationSpeed { get; set; }
+        public int SelectedSimulationSpeed { get; set; }
 
         [ProtoMember(2)]
         public bool SimulationPaused { get; set; }
+
+        [ProtoMember(3)]
+        public bool ForcedSimulationPaused { get; set; }
 
         /// <summary> 
         ///     Deserialize a message into this type.
