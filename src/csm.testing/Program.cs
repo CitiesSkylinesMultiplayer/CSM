@@ -24,7 +24,7 @@ namespace CSM.Testing
             Console.WriteLine("Welcome to the CSM testing application.");
             Console.WriteLine("Start server or client (with default settings)? S/C");
 
-            // Get option
+            // Get option 
             var option = Console.ReadKey().Key;
 
             Console.WriteLine("--");

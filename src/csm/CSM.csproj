@@ -63,13 +63,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ClientConnect.cs" />
-    <Compile Include="Commands\ClientDisconnect.cs" />
+    <Compile Include="Commands\ClientConnectCommand.cs" />
+    <Compile Include="Commands\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
-    <Compile Include="Commands\ConnectionRequest.cs" />
-    <Compile Include="Commands\ConnectionResult.cs" />
-    <Compile Include="Commands\Ping.cs" />
+    <Compile Include="Commands\ConnectionRequestCommand.cs" />
+    <Compile Include="Commands\ConnectionResultCommand.cs" />
+    <Compile Include="Commands\PingCommand.cs" />
+    <Compile Include="Commands\SimulationCommand.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
+    <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />

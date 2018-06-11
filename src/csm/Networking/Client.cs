@@ -12,7 +12,7 @@ using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using UnityEngine;
-using Ping = CSM.Commands.Ping;
+using PingCommand = CSM.Commands.PingCommand;
 
 namespace CSM.Networking
 {
@@ -22,7 +22,7 @@ namespace CSM.Networking
     public class Client
     {
         // The client
-        private readonly LiteNetLib.NetManager _netClient;
+        public LiteNetLib.NetManager NetClient { get; }
 
         // Run a background processing thread
         private Thread _clientProcessingThread;
@@ -51,7 +51,7 @@ namespace CSM.Networking
         {
             // Set up network items
             var listener = new EventBasedNetListener();
-            _netClient = new LiteNetLib.NetManager(listener, "Tango");
+            NetClient = new LiteNetLib.NetManager(listener, "Tango");
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
@@ -89,7 +89,7 @@ namespace CSM.Networking
 
             // Start the client, if client setup fails, return out and 
             // tell the user
-            var result = _netClient.Start();
+            var result = NetClient.Start();
             if (!result)
             {
                 CSM.Log("The client failed to start.");
@@ -100,7 +100,7 @@ namespace CSM.Networking
 
             // Try connect to server, update the status to say that
             // we are trying to connect.
-            _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
+            NetClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
 
             // Start processing networking
             Status = ClientStatus.Connecting;
@@ -151,7 +151,7 @@ namespace CSM.Networking
         {
             // Update status and stop client
             Status = ClientStatus.Disconnected;
-            _netClient.Stop();
+            NetClient.Stop();
 
             _pingTimer.Stop();
 
@@ -168,7 +168,7 @@ namespace CSM.Networking
             while (Status == ClientStatus.Connected || Status == ClientStatus.Connecting)
             {
                 // Poll for new events
-                _netClient.PollEvents();
+                NetClient.PollEvents();
 
                 // Wait
                 Thread.Sleep(15);     
@@ -211,13 +211,13 @@ namespace CSM.Networking
                 // Switch between all the messages
                 switch (messageType)
                 {
-                    case CommandBase.ConnectionResultCommand:
+                    case CommandBase.ConnectionResultCommandId:
                         // We only want this message while connecting
                         if (Status != ClientStatus.Connecting)
                             break;
 
                         // Get the result
-                        var connectionResult = ConnectionResult.Deserialize(message);
+                        var connectionResult = ConnectionResultCommand.Deserialize(message);
 
                         if (connectionResult.Success)
                         {
@@ -233,11 +233,17 @@ namespace CSM.Networking
                         }
                         break;
                     // Handle ping commands by returning the ping
-                    case CommandBase.PingCommand:
+                    case CommandBase.PingCommandId:
                         // Update the last server ping
                         _lastServerPing = DateTime.UtcNow;
                         // Send back a ping event
-                        peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommand, new Ping().Serialize()), SendOptions.ReliableOrdered);
+                        peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
+                        break;
+                    case CommandBase.SimulationCommandID:
+                        var simulation = SimulationCommand.Deserialize(message);
+
+                        SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
+                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SumulationSpeed;
                         break;
                 }
             } 
@@ -249,13 +255,13 @@ namespace CSM.Networking
 
         /// <summary>
         ///     Called once we have connected to the server,
-        ///     at this point we want to send a connect request packet
+        ///     at this point we want to send a connect request packet 
         ///     to the server
         /// </summary>
         private void ListenerOnPeerConnectedEvent(NetPeer peer)
         {
             // Build the connection request
-            var connectionRequest = new ConnectionRequest
+            var connectionRequest = new ConnectionRequestCommand
             {
                 GameVersion = CSM.IsUnity ? BuildConfig.applicationVersion : "1.0.0",
                 ModCount = CSM.IsUnity ? PluginManager.instance.modCount : 0,
@@ -265,7 +271,7 @@ namespace CSM.Networking
             };
 
             // Send the message
-            peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionRequestCommand, connectionRequest.Serialize()), SendOptions.ReliableOrdered);
+            peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionRequestCommandId, connectionRequest.Serialize()), SendOptions.ReliableOrdered);
         }
 
         /// <summary>

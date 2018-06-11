@@ -8,7 +8,7 @@ namespace CSM.Commands
     ///     another client disconnects. 
     /// </summary>
     [ProtoContract]
-    public class ClientDisconnect : CommandBase
+    public class ClientDisconnectCommand : CommandBase
     {
         /// <summary>
         ///     The username of the newly connected user
@@ -19,13 +19,13 @@ namespace CSM.Commands
         /// <summary>
         ///     Deserialize a message into this type.
         /// </summary>
-        public static ClientDisconnect Deserialize(byte[] message)
+        public static ClientDisconnectCommand Deserialize(byte[] message)
         {
-            ClientDisconnect result;
+            ClientDisconnectCommand result;
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<ClientDisconnect>(stream);
+                result = Serializer.Deserialize<ClientDisconnectCommand>(stream);
             }
 
             return result;

@@ -105,9 +105,11 @@ if ($Install)
 
     # Copy the required files
     Write-Host "[CSM Install Script] Copying required files..."
-    Copy-Item -Path "$($OutputDirectory)\LiteNetLib.dll"                 -Destination "$($ModDirectory)\LiteNetLib.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\protobuf-net.dll"               -Destination "$($ModDirectory)\protobuf-net.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\CSM.dll"  -Destination "$($ModDirectory)\CSM.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\LiteNetLib.dll"        -Destination "$($ModDirectory)\LiteNetLib.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\protobuf-net.dll"      -Destination "$($ModDirectory)\protobuf-net.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\CSM.dll"               -Destination "$($ModDirectory)\CSM.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\Open.Nat.dll"          -Destination "$($ModDirectory)\Open.Nat.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\System.Threading.dll"  -Destination "$($ModDirectory)\System.Threading.dll" -Force
 
     # Done
     Write-Host "[CSM Install Script] Completed Copy"

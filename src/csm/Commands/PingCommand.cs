@@ -7,18 +7,18 @@ namespace CSM.Commands
     ///     Ping command
     /// </summary>
     [ProtoContract]
-    public class Ping : CommandBase
+    public class PingCommand : CommandBase
     {
         /// <summary> 
         ///     Deserialize a message into this type.
         /// </summary>
-        public static Ping Deserialize(byte[] message)
+        public static PingCommand Deserialize(byte[] message)
         {
-            Ping result;
+            PingCommand result;
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<Ping>(stream);
+                result = Serializer.Deserialize<PingCommand>(stream);
             }
 
             return result;

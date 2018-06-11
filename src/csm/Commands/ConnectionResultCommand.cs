@@ -10,7 +10,7 @@ namespace CSM.Commands
     ///     different game version etc.)
     /// </summary>
     [ProtoContract]
-    public class ConnectionResult : CommandBase
+    public class ConnectionResultCommand : CommandBase
     {
         /// <summary>
         ///     If the server accepts the connection
@@ -28,13 +28,13 @@ namespace CSM.Commands
         /// <summary>
         ///     Deserialize a message into this type.
         /// </summary>
-        public static ConnectionResult Deserialize(byte[] message)
+        public static ConnectionResultCommand Deserialize(byte[] message)
         {
-            ConnectionResult result;
+            ConnectionResultCommand result;
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<ConnectionResult> (stream);
+                result = Serializer.Deserialize<ConnectionResultCommand> (stream);
             }
 
             return result;

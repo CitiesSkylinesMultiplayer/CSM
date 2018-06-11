@@ -8,7 +8,7 @@ namespace CSM.Commands
     ///     another client connects to the game.
     /// </summary>
     [ProtoContract]
-    public class ClientConnect : CommandBase
+    public class ClientConnectCommand : CommandBase
     {
         /// <summary>
         ///     The username of the disconnected user.
@@ -19,13 +19,13 @@ namespace CSM.Commands
         /// <summary>
         ///     Deserialize a message into this type.
         /// </summary>
-        public static ClientConnect Deserialize(byte[] message)
+        public static ClientConnectCommand Deserialize(byte[] message)
         {
-            ClientConnect result;
+            ClientConnectCommand result;
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<ClientConnect>(stream);
+                result = Serializer.Deserialize<ClientConnectCommand>(stream);
             }
 
             return result;

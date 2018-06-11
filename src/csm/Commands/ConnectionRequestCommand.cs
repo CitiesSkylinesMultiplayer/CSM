@@ -9,7 +9,7 @@ namespace CSM.Commands
     ///     information, store it, and then send back a connection result  
     /// </summary>
     [ProtoContract]
-    public class ConnectionRequest : CommandBase
+    public class ConnectionRequestCommand : CommandBase
     {
         /// <summary>
         ///     The username this user will be playing as, important
@@ -49,13 +49,13 @@ namespace CSM.Commands
         /// <summary>
         ///     Deserialize a message into this type.
         /// </summary>
-        public static ConnectionRequest Deserialize(byte[] message)
+        public static ConnectionRequestCommand Deserialize(byte[] message)
         {
-            ConnectionRequest result;
+            ConnectionRequestCommand result;
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<ConnectionRequest>(stream);
+                result = Serializer.Deserialize<ConnectionRequestCommand>(stream);
             }
 
             return result;

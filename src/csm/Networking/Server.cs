@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using ColossalFramework.Threading;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
@@ -19,10 +17,10 @@ namespace CSM.Networking
     public class Server
     {
         // The server
-        private readonly LiteNetLib.NetManager _netServer;
+        public LiteNetLib.NetManager NetServer { get; }
 
         // Run a background processing thread
-        private Thread _serverProcessingThread;
+        private Thread _serverProcessingThread; 
 
         // Config options for server
         private ServerConfig _serverConfig;
@@ -39,7 +37,7 @@ namespace CSM.Networking
         {
             // Set up network items
             var listener = new EventBasedNetListener();
-            _netServer = new LiteNetLib.NetManager(listener, "Tango");
+            NetServer = new LiteNetLib.NetManager(listener, "Tango");
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
@@ -70,8 +68,8 @@ namespace CSM.Networking
             CSM.Log($"Attempting to start server on port {_serverConfig.Port}...");
 
             // Attempt to start the server
-            _netServer.DiscoveryEnabled = true;
-            var result = _netServer.Start(_serverConfig.Port);
+            NetServer.DiscoveryEnabled = true;
+            var result = NetServer.Start(_serverConfig.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
@@ -116,7 +114,7 @@ namespace CSM.Networking
         {
             // Update status and stop the server
             Status = ServerStatus.Stopped;
-            _netServer.Stop();
+            NetServer.Stop();
 
             CSM.Log("Stopped server");
         }
@@ -130,7 +128,7 @@ namespace CSM.Networking
             while (Status == ServerStatus.Running)
             {
                 // Poll for new events
-                _netServer.PollEvents();
+                NetServer.PollEvents();
 
                 // Wait
                 Thread.Sleep(15);
@@ -147,10 +145,10 @@ namespace CSM.Networking
                 return;
 
             // Loop though all connected peers
-            foreach (var netPeer in _netServer.GetPeers())
+            foreach (var netPeer in NetServer.GetPeers())
             {
                 // Send a ping
-                netPeer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommand, new Ping().Serialize()), SendOptions.ReliableOrdered);
+                netPeer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
             }
         }
 
@@ -171,14 +169,20 @@ namespace CSM.Networking
                 // Switch between all the messages
                 switch (messageType)
                 {
-                    case CommandBase.ConnectionRequestCommand:
+                    case CommandBase.ConnectionRequestCommandId:
                         
-                        var connectionResult = Commands.ConnectionRequest.Deserialize(message);
+                        var connectionResult = Commands.ConnectionRequestCommand.Deserialize(message);
 
                         CSM.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Version: {connectionResult.GameVersion}, ModCount: {connectionResult.ModCount}, ModVersion: {connectionResult.ModVersion}");
 
                         // TODO, check these values, but for now, just accept the request.
-                        peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionResultCommand, new ConnectionResult { Success = true}.Serialize()), SendOptions.ReliableOrdered);
+                        peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true}.Serialize()), SendOptions.ReliableOrdered);
+                        break;
+                    case CommandBase.SimulationCommandID:
+                        var simulation = SimulationCommand.Deserialize(message);
+
+                        SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
+                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SumulationSpeed;
                         break;
                 }
             }

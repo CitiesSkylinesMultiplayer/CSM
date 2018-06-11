@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.CodeDom;
+using System.IO;
 using ProtoBuf;
 
 namespace CSM.Commands
@@ -6,9 +7,13 @@ namespace CSM.Commands
     [ProtoContract]
     public abstract class CommandBase
     {
-        public const byte ConnectionRequestCommand = 0;
-        public const byte ConnectionResultCommand = 1;
-        public const byte PingCommand = 3;
+        public const byte ConnectionRequestCommandId = 0;
+        public const byte ConnectionResultCommandId = 1;
+        public const byte PingCommandId = 3;
+
+        public const byte SimulationCommandID = 100;
+
+
 
         public byte[] Serialize()
         {
