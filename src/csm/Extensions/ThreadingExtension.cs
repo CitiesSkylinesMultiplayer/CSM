@@ -13,11 +13,11 @@ namespace CSM.Extensions
         private bool _lastSimulationPausedState;
         private bool _lastForcedSimulationPaused;
 
-        public override void OnAfterSimulationTick()
+        public override void OnBeforeSimulationTick()
         {
             if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused ||
-                _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed ||
-                _lastForcedSimulationPaused != SimulationManager.instance.ForcedSimulationPaused)
+                    _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed ||
+                    _lastForcedSimulationPaused != SimulationManager.instance.ForcedSimulationPaused)
             {
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
@@ -44,7 +44,7 @@ namespace CSM.Extensions
             _lastSimulationPausedState = SimulationManager.instance.SimulationPaused;
             _lastForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused;
 
-            base.OnAfterSimulationTick();
+            base.OnBeforeSimulationTick();
         }
     }
 }
