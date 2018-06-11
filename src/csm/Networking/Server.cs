@@ -207,7 +207,6 @@ namespace CSM.Networking
 
                         SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
                         SimulationManager.instance.SelectedSimulationSpeed = simulation.SelectedSimulationSpeed;
-                        SimulationManager.instance.ForcedSimulationPaused = simulation.ForcedSimulationPaused;
                         break;
                 }
             }

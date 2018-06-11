@@ -15,9 +15,6 @@ namespace CSM.Commands
         [ProtoMember(2)]
         public bool SimulationPaused { get; set; }
 
-        [ProtoMember(3)]
-        public bool ForcedSimulationPaused { get; set; }
-
         /// <summary> 
         ///     Deserialize a message into this type.
         /// </summary>

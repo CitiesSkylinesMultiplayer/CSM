@@ -11,13 +11,11 @@ namespace CSM.Extensions
     {
         private int _lastSelectedSimulationSpeed;
         private bool _lastSimulationPausedState;
-        private bool _lastForcedSimulationPaused;
 
-        public override void OnBeforeSimulationTick()
+        public override void OnAfterSimulationTick()
         {
             if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused ||
-                    _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed ||
-                    _lastForcedSimulationPaused != SimulationManager.instance.ForcedSimulationPaused)
+                    _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
             {
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
@@ -25,26 +23,21 @@ namespace CSM.Extensions
                         MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.SimulationCommandID, new SimulationCommand
                         {
                             SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                            SimulationPaused = SimulationManager.instance.SimulationPaused,
-                            ForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused,
+                            SimulationPaused = SimulationManager.instance.SimulationPaused
                         });
                         break;
                     case MultiplayerRole.Server:
                         MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SimulationCommandID, new SimulationCommand
                         {
                             SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                            SimulationPaused = SimulationManager.instance.SimulationPaused,
-                            ForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused,
+                            SimulationPaused = SimulationManager.instance.SimulationPaused
                         });
                         break;
                 }
             }
 
-            _lastSelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed;
             _lastSimulationPausedState = SimulationManager.instance.SimulationPaused;
-            _lastForcedSimulationPaused = SimulationManager.instance.ForcedSimulationPaused;
-
-            base.OnBeforeSimulationTick();
+            _lastSelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed;
         }
     }
 }
