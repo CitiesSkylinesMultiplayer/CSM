@@ -202,13 +202,16 @@ namespace CSM.Networking
                         // TODO, check these values, but for now, just accept the request.
                         SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true});
                         break;
-                    case CommandBase.SimulationCommandID:
-                        var simulation = SimulationCommand.Deserialize(message);
+					case CommandBase.PauseCommandID:
+						var pause = PauseCommand.Deserialize(message);
+						SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
+						break;
 
-                        SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
-                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SelectedSimulationSpeed;
-                        break;
-                }
+					case CommandBase.SpeedCommandID:
+						var speed = SpeedCommand.Deserialize(message);
+						SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
+						break;
+				}
             }
             catch (Exception ex)
             {

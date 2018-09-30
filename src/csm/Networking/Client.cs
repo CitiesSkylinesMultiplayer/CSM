@@ -247,13 +247,16 @@ namespace CSM.Networking
                         // Send back a ping event
                         peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
                         break;
-                    case CommandBase.SimulationCommandID:
-                        var simulation = SimulationCommand.Deserialize(message);
-
-                        SimulationManager.instance.SimulationPaused = simulation.SimulationPaused;
-                        SimulationManager.instance.SelectedSimulationSpeed = simulation.SelectedSimulationSpeed;
+                    case CommandBase.PauseCommandID:
+                        var pause = PauseCommand.Deserialize(message);
+                        SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
                         break;
-                }
+
+					case CommandBase.SpeedCommandID:
+						var speed = SpeedCommand.Deserialize(message);
+						SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
+						break;
+				}
             } 
             catch (Exception ex)
             {

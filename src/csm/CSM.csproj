@@ -70,7 +70,8 @@
     <Compile Include="Commands\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\ConnectionResultCommand.cs" />
     <Compile Include="Commands\PingCommand.cs" />
-    <Compile Include="Commands\SimulationCommand.cs" />
+    <Compile Include="Commands\PauseCommand.cs" />
+    <Compile Include="Commands\SpeedCommand.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
@@ -92,13 +93,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteNetLib">
-      <Version>0.7.7.1</Version>
+      <Version>0.7.7.3</Version>
     </PackageReference>
     <PackageReference Include="Open.Nat">
       <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="protobuf-net">
-      <Version>2.3.9</Version>
+      <Version>2.4.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

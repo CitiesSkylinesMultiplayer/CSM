@@ -14,27 +14,43 @@ namespace CSM.Extensions
 
         public override void OnAfterSimulationTick()
         {
-            if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused ||
-                    _lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
+            if (_lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
             {
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
                     case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.SimulationCommandID, new SimulationCommand
+                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.SpeedCommandID, new SpeedCommand
                         {
-                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                            SimulationPaused = SimulationManager.instance.SimulationPaused
+                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed
                         });
                         break;
                     case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SimulationCommandID, new SimulationCommand
+                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SpeedCommandID, new SpeedCommand
                         {
-                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed,
-                            SimulationPaused = SimulationManager.instance.SimulationPaused
+                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed
                         });
                         break;
                 }
             }
+			if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused)
+			{
+				switch (MultiplayerManager.Instance.CurrentRole)
+				{
+					case MultiplayerRole.Client:
+						MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.PauseCommandID, new PauseCommand
+						{
+							SimulationPaused = SimulationManager.instance.SimulationPaused
+						});
+						break;
+					case MultiplayerRole.Server:
+						MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.PauseCommandID, new PauseCommand
+						{
+							SimulationPaused = SimulationManager.instance.SimulationPaused
+						});
+						break;
+				}
+
+			}
 
             _lastSimulationPausedState = SimulationManager.instance.SimulationPaused;
             _lastSelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed;

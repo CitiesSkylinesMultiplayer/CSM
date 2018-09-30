@@ -50,10 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteNetLib">
-      <Version>0.7.7.1</Version>
+      <Version>0.7.7.3</Version>
     </PackageReference>
     <PackageReference Include="protobuf-net">
-      <Version>2.3.9</Version>
+      <Version>2.4.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
