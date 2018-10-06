@@ -13,7 +13,7 @@ namespace CSM.Commands
 
         public const byte SpeedCommandID = 100;
 		public const byte PauseCommandID = 101;
-
+		public const byte MoneyCommandID = 102;
 
 
         public byte[] Serialize()

@@ -69,6 +69,7 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\ConnectionResultCommand.cs" />
+    <Compile Include="Commands\MoneyCommand.cs" />
     <Compile Include="Commands\PingCommand.cs" />
     <Compile Include="Commands\PauseCommand.cs" />
     <Compile Include="Commands\SpeedCommand.cs" />

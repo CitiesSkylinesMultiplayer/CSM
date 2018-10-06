@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using ColossalFramework;
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using CSM.Commands;
@@ -256,6 +257,12 @@ namespace CSM.Networking
 						var speed = SpeedCommand.Deserialize(message);
 						SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
 						break;
+
+					case CommandBase.MoneyCommandID:
+						var internalMoney = MoneyCommand.Deserialize(message);
+						typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+						typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+						break;
 				}
             } 
             catch (Exception ex)
@@ -263,7 +270,7 @@ namespace CSM.Networking
                 CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
-
+		
         /// <summary>
         ///     Called once we have connected to the server,
         ///     at this point we want to send a connect request packet 

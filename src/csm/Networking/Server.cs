@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using ColossalFramework;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
@@ -8,6 +9,7 @@ using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Open.Nat;
+using System.Reflection;
 
 namespace CSM.Networking
 {
@@ -211,14 +213,23 @@ namespace CSM.Networking
 						var speed = SpeedCommand.Deserialize(message);
 						SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
 						break;
+
+					case CommandBase.MoneyCommandID:
+						var internalMoney = MoneyCommand.Deserialize(message);
+						typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+						typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+						break;
+
+						
+
 				}
-            }
+			}
             catch (Exception ex)
             {
                 CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
-
+		
         /// <summary>
         ///     Called whenever an error happens, we
         ///     log this to the console for now.
