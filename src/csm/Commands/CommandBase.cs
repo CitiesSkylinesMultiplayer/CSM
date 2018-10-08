@@ -11,8 +11,9 @@ namespace CSM.Commands
         public const byte ConnectionResultCommandId = 1;
         public const byte PingCommandId = 3;
 
-        public const byte SimulationCommandID = 100;
-
+        public const byte SpeedCommandID = 100;
+		public const byte PauseCommandID = 101;
+		public const byte MoneyCommandID = 102;
 
 
         public byte[] Serialize()
