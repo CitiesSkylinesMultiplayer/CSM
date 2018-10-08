@@ -101,7 +101,7 @@ namespace CSM.Panels
 
             /// <summary>
             ///     TODO: Password validation
-            ///     Invalid password or password contains spaces and invalid
+            ///     Invalid password or password contains spaces
             /// </summary>
 
             //if (!string.IsNullOrEmpty(_passwordField.text) /*&& (!int.TryParse(_portField.text, out var ) || _passwordField.text == " ")*/)
@@ -111,7 +111,7 @@ namespace CSM.Panels
             //    return;
             //}
 
-
+            // Check already running server
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
@@ -119,7 +119,7 @@ namespace CSM.Panels
                 return;
             }
 
-            // Todo: pass user in and password
+            // Start server and check for errors
             if(MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text)) != true)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
@@ -127,8 +127,8 @@ namespace CSM.Panels
                 return;
             }
 
+            // Crear warnings/errors and hide panel
             _connectionStatus.text = "";
-
             isVisible = false;
         }
     }
