@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CSM.Helpers
@@ -9,7 +9,7 @@ namespace CSM.Helpers
     /// </summary>
     public static class UiHelpers
     {
-        public static UIButton CreateButton(this UIComponent uiComponent, string text, Vector2 position, int width = 340, 
+        public static UIButton CreateButton(this UIComponent uiComponent, string text, Vector2 position, int width = 340,
             int height = 60)
         {
             var button = (UIButton)uiComponent.AddUIComponent(typeof(UIButton));
@@ -87,6 +87,7 @@ namespace CSM.Helpers
         // I found his code after I started this class, the below atlas feature is quite neat!
 
         private static Dictionary<string, UITextureAtlas> _atlases;
+
         public static UITextureAtlas GetAtlas(string name)
         {
             if (_atlases == null)

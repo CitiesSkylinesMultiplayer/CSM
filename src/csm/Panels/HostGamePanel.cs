@@ -7,7 +7,6 @@ namespace CSM.Panels
 {
     public class HostGamePanel : UIPanel
     {
-
         private UITextField _ipAddressField;
         private UITextField _portField;
         private UITextField _passwordField;
@@ -26,7 +25,7 @@ namespace CSM.Panels
             name = "MPHostGamePanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Grab the view for caculating width and height of game
+            // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
 
             // Center this window in the game
@@ -74,7 +73,6 @@ namespace CSM.Panels
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
         }
 
-
         /// <summary>
         ///     Check inputs and create server
         /// </summary>
@@ -92,7 +90,7 @@ namespace CSM.Panels
             }
 
             // Check port is valid to use
-            if(int.Parse(_portField.text) < 1 || int.Parse(_portField.text) > 49151)
+            if (int.Parse(_portField.text) < 1 || int.Parse(_portField.text) > 49151)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid port. Choose from range 1 - 49151";
@@ -120,7 +118,7 @@ namespace CSM.Panels
             }
 
             // Start server and check for errors
-            if(MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text)) != true)
+            if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text)) != true)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Error: Could not start server";

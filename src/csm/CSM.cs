@@ -9,7 +9,7 @@ namespace CSM
 
         public string Name => "CSM";
 
-        public string Description => "Muiltiplayer mod for Cities: Skylines.";
+        public string Description => "Multiplayer mod for Cities: Skylines.";
 
         public static void Log(string message)
         {

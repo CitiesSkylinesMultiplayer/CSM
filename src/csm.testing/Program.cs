@@ -1,15 +1,15 @@
-﻿using System;
-using CSM.Networking;
+﻿using CSM.Networking;
 using CSM.Networking.Config;
+using System;
 
 namespace CSM.Testing
 {
-    class Program
+    internal class Program
     {
         private Client _client;
         private Server _server;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // We are not running in unity
             CSM.IsUnity = false;
@@ -24,7 +24,7 @@ namespace CSM.Testing
             Console.WriteLine("Welcome to the CSM testing application.");
             Console.WriteLine("Start server or client (with default settings)? S/C");
 
-            // Get option 
+            // Get option
             var option = Console.ReadKey().Key;
 
             Console.WriteLine("--");
@@ -33,7 +33,6 @@ namespace CSM.Testing
             {
                 _server = new Server();
                 _server.StartServer(new ServerConfig());
-
             }
             else if (option == ConsoleKey.C)
             {

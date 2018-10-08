@@ -1,10 +1,10 @@
-﻿using System.IO;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.IO;
 
 namespace CSM.Commands
 {
     /// <summary>
-    ///     Returned from the server after the server recieves
+    ///     Returned from the server after the server receives
     ///     as connection request command. Contains if the server
     ///     accepts the connection or not (wrong password, incorrect mods,
     ///     different game version etc.)
@@ -34,7 +34,7 @@ namespace CSM.Commands
 
             using (var stream = new MemoryStream(message))
             {
-                result = Serializer.Deserialize<ConnectionResultCommand> (stream);
+                result = Serializer.Deserialize<ConnectionResultCommand>(stream);
             }
 
             return result;

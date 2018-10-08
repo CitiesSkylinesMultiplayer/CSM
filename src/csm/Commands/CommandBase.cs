@@ -1,6 +1,5 @@
-﻿using System.CodeDom;
+﻿using ProtoBuf;
 using System.IO;
-using ProtoBuf;
 
 namespace CSM.Commands
 {
@@ -12,9 +11,8 @@ namespace CSM.Commands
         public const byte PingCommandId = 3;
 
         public const byte SpeedCommandID = 100;
-		public const byte PauseCommandID = 101;
-		public const byte MoneyCommandID = 102;
-
+        public const byte PauseCommandID = 101;
+        public const byte MoneyCommandID = 102;
 
         public byte[] Serialize()
         {
@@ -23,7 +21,7 @@ namespace CSM.Commands
             using (var stream = new MemoryStream())
             {
                 Serializer.Serialize(stream, this);
-                result = stream.ToArray(); 
+                result = stream.ToArray();
             }
 
             return result;

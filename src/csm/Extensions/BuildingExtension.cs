@@ -6,7 +6,6 @@ namespace CSM.Extensions
     {
         public override void OnCreated(IBuilding building)
         {
-         
         }
 
         public override void OnBuildingCreated(ushort id)

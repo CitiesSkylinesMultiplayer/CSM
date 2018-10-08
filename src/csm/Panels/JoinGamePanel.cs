@@ -7,7 +7,6 @@ namespace CSM.Panels
 {
     public class JoinGamePanel : UIPanel
     {
-
         private UITextField _ipAddressField;
         private UITextField _portField;
 
@@ -25,7 +24,7 @@ namespace CSM.Panels
             name = "MPJoinGamePanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Grab the view for caculating width and height of game
+            // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
 
             // Center this window in the game

@@ -1,19 +1,16 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ColossalFramework.Plugins;
-using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using UnityEngine;
-using PingCommand = CSM.Commands.PingCommand;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
 
 namespace CSM.Networking
 {
@@ -77,7 +74,7 @@ namespace CSM.Networking
             if (Status == ClientStatus.Connecting)
                 Disconnect();
 
-            // The client is already connected so we need to 
+            // The client is already connected so we need to
             // disconnect.
             if (Status == ClientStatus.Connected)
                 Disconnect();
@@ -88,7 +85,7 @@ namespace CSM.Networking
             // Let the user know that we are trying to connect to a server
             CSM.Log($"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
 
-            // Start the client, if client setup fails, return out and 
+            // Start the client, if client setup fails, return out and
             // tell the user
             var result = NetClient.Start();
             if (!result)
@@ -112,7 +109,7 @@ namespace CSM.Networking
             _pingTimer.Start();
 
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
-            // while we wait for a successful connection (Status = Connected) or a 
+            // while we wait for a successful connection (Status = Connected) or a
             // failed connection (Status = Disconnected).
             var waitWatch = new Stopwatch();
             waitWatch.Start();
@@ -148,7 +145,7 @@ namespace CSM.Networking
         ///     Attempt to disconnect from the server
         /// </summary>
         /// <returns></returns>
-        public void Disconnect() 
+        public void Disconnect()
         {
             // Update status and stop client
             Status = ClientStatus.Disconnected;
@@ -180,7 +177,7 @@ namespace CSM.Networking
                 NetClient.PollEvents();
 
                 // Wait
-                Thread.Sleep(15);     
+                Thread.Sleep(15);
             }
         }
 
@@ -248,32 +245,33 @@ namespace CSM.Networking
                         // Send back a ping event
                         peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
                         break;
+
                     case CommandBase.PauseCommandID:
                         var pause = PauseCommand.Deserialize(message);
                         SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
                         break;
 
-					case CommandBase.SpeedCommandID:
-						var speed = SpeedCommand.Deserialize(message);
-						SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
-						break;
+                    case CommandBase.SpeedCommandID:
+                        var speed = SpeedCommand.Deserialize(message);
+                        SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
+                        break;
 
-					case CommandBase.MoneyCommandID:
-						var internalMoney = MoneyCommand.Deserialize(message);
-						typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-						typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-						break;
-				}
-            } 
+                    case CommandBase.MoneyCommandID:
+                        var internalMoney = MoneyCommand.Deserialize(message);
+                        typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+                        typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+                        break;
+                }
+            }
             catch (Exception ex)
             {
                 CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
-		
+
         /// <summary>
         ///     Called once we have connected to the server,
-        ///     at this point we want to send a connect request packet 
+        ///     at this point we want to send a connect request packet
         ///     to the server
         /// </summary>
         private void ListenerOnPeerConnectedEvent(NetPeer peer)

@@ -1,10 +1,17 @@
 ﻿namespace CSM.Networking.Config
 {
     /// <summary>
-    ///     Config for game client
+    ///     This class contains configuration for the game client.
     /// </summary>
     public class ClientConfig
     {
+        /// <summary>
+        ///     Creates a new configuration for the game client.
+        /// </summary>
+        /// <param name="hostAddress">The server address to connect to.</param>
+        /// <param name="port">The server port to connect to (defaults to 4230).</param>
+        /// <param name="username">The user name to use on this server (defaults to "Tango Player").</param>
+        /// <param name="password">The password used to connect to the server (optional)</param>
         public ClientConfig(string hostAddress, int port = 4230, string username = "Tango Player", string password = "")
         {
             HostAddress = hostAddress;
@@ -14,23 +21,24 @@
         }
 
         /// <summary>
-        ///     Server address to connect to
+        ///     Gets the server that this client will connect to.
         /// </summary>
-        public string HostAddress { get; set; }
+        public string HostAddress { get; }
 
         /// <summary>
-        ///     Server port to conenct to
+        ///     Gets the server port that this client will connect to.
         /// </summary>
-        public int Port { get; set; }
+        public int Port { get; }
 
         /// <summary>
-        ///     Password for server (if required)
+        ///     Gets the players user name that they will use
+        ///     on the connected server.
         /// </summary>
-        public string Password { get; set; }
+        public string Username { get; }
 
         /// <summary>
-        ///     Players username
+        ///     Gets the password used to login to the server (if required).
         /// </summary>
-        public string Username { get; set; }
+        public string Password { get; }
     }
 }

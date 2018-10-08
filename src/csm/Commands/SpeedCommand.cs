@@ -1,5 +1,5 @@
-﻿using System.IO;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.IO;
 
 namespace CSM.Commands
 {
@@ -12,7 +12,7 @@ namespace CSM.Commands
         [ProtoMember(1)]
         public int SelectedSimulationSpeed { get; set; }
 
-        /// <summary> 
+        /// <summary>
         ///     Deserialize a message into this type.
         /// </summary>
         public static SpeedCommand Deserialize(byte[] message)

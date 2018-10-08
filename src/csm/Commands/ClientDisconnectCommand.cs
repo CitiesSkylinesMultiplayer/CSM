@@ -1,17 +1,17 @@
-﻿using System.IO;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.IO;
 
 namespace CSM.Commands
 {
     /// <summary>
     ///     The server sends this command to all connected clients when
-    ///     another client disconnects. 
+    ///     another client disconnects.
     /// </summary>
     [ProtoContract]
     public class ClientDisconnectCommand : CommandBase
     {
         /// <summary>
-        ///     The username of the newly connected user
+        ///     The user name of the newly connected user
         /// </summary>
         [ProtoMember(1)]
         public string Username { get; set; }

@@ -1,18 +1,18 @@
-﻿using System.IO;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.IO;
 
 namespace CSM.Commands
 {
     /// <summary>
     ///     The first message send to a server, asks the server if
     ///     the current client can connect. The server will then validate this
-    ///     information, store it, and then send back a connection result  
+    ///     information, store it, and then send back a connection result
     /// </summary>
     [ProtoContract]
     public class ConnectionRequestCommand : CommandBase
     {
         /// <summary>
-        ///     The username this user will be playing as, important
+        ///     The user name this user will be playing as, important
         ///     as the server will keep track of this user.
         /// </summary>
         [ProtoMember(1)]

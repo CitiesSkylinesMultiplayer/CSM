@@ -13,6 +13,7 @@ namespace CSM.Panels
 
         // These buttons are displayed when the server is running
         private UIButton _serverDisconnectButton;
+
         private UIButton _serverManageButton;
 
         public override void Start()
@@ -24,7 +25,7 @@ namespace CSM.Panels
             name = "MPConnectionPanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Grab the view for caculating width and height of game
+            // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
 
             // Center this window in the game
@@ -94,7 +95,7 @@ namespace CSM.Panels
 
                     _serverManageButton.isEnabled = false;
                     _serverManageButton.isVisible = false;
-                }                 
+                }
             };
 
             this.CreateTitleLabel("Multiplayer Menu", new Vector3(80, -20, 0));
@@ -115,7 +116,6 @@ namespace CSM.Panels
             _serverDisconnectButton.isEnabled = false;
             _serverDisconnectButton.isVisible = false;
 
-
             _clientConnectButton.eventClick += (component, param) =>
             {
                 var panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
@@ -133,7 +133,6 @@ namespace CSM.Panels
 
                 isVisible = false;
             };
-
 
             // Host a game panel
             _serverConnectButton.eventClick += (component, param) =>

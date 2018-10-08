@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using ColossalFramework;
+﻿using ColossalFramework;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
@@ -9,7 +6,10 @@ using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Open.Nat;
+using System;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace CSM.Networking
 {
@@ -22,7 +22,7 @@ namespace CSM.Networking
         public LiteNetLib.NetManager NetServer { get; }
 
         // Run a background processing thread
-        private Thread _serverProcessingThread; 
+        private Thread _serverProcessingThread;
 
         // Config options for server
         private ServerConfig _serverConfig;
@@ -75,12 +75,12 @@ namespace CSM.Networking
 
             // If the server has not started, tell the user and return false.
             if (!result)
-            { 
+            {
                 CSM.Log("The server failed to start.");
                 StopServer(); // Make sure the server is fully stopped
                 return false;
             }
-             
+
             try
             {
                 // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
@@ -111,7 +111,7 @@ namespace CSM.Networking
 
         /// <summary>
         ///     Stops the server
-        /// </summary> 
+        /// </summary>
         public void StopServer()
         {
             // Update status and stop the server
@@ -196,40 +196,38 @@ namespace CSM.Networking
                 switch (messageType)
                 {
                     case CommandBase.ConnectionRequestCommandId:
-                        
+
                         var connectionResult = Commands.ConnectionRequestCommand.Deserialize(message);
 
                         CSM.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Version: {connectionResult.GameVersion}, ModCount: {connectionResult.ModCount}, ModVersion: {connectionResult.ModVersion}");
 
                         // TODO, check these values, but for now, just accept the request.
-                        SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true});
+                        SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true });
                         break;
-					case CommandBase.PauseCommandID:
-						var pause = PauseCommand.Deserialize(message);
-						SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
-						break;
 
-					case CommandBase.SpeedCommandID:
-						var speed = SpeedCommand.Deserialize(message);
-						SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
-						break;
+                    case CommandBase.PauseCommandID:
+                        var pause = PauseCommand.Deserialize(message);
+                        SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
+                        break;
 
-					case CommandBase.MoneyCommandID:
-						var internalMoney = MoneyCommand.Deserialize(message);
-						typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-						typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-						break;
+                    case CommandBase.SpeedCommandID:
+                        var speed = SpeedCommand.Deserialize(message);
+                        SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
+                        break;
 
-						
-
-				}
-			}
+                    case CommandBase.MoneyCommandID:
+                        var internalMoney = MoneyCommand.Deserialize(message);
+                        typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+                        typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
+                        break;
+                }
+            }
             catch (Exception ex)
             {
                 CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
             }
         }
-		
+
         /// <summary>
         ///     Called whenever an error happens, we
         ///     log this to the console for now.

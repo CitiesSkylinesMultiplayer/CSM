@@ -6,7 +6,7 @@ namespace CSM.Networking
     public class MultiplayerManager
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public MultiplayerRole CurrentRole { get; private set; }
 
@@ -15,8 +15,7 @@ namespace CSM.Networking
         /// </summary>
         public Server CurrentServer { get; } = new Server();
 
-        public Client CurrentClient { get;  } = new Client();
-
+        public Client CurrentClient { get; } = new Client();
 
         public bool ConnectToServer(string ipAddress, int port, string username, string password = "")
         {
@@ -34,7 +33,7 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="port"></param>
         /// <param name="password"></param>
@@ -54,16 +53,16 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public bool StopGameServer()
         {
-           CurrentServer.StopServer();
+            CurrentServer.StopServer();
 
-           CurrentRole = CurrentServer.Status == ServerStatus.Running ? MultiplayerRole.Server : MultiplayerRole.None;
+            CurrentRole = CurrentServer.Status == ServerStatus.Running ? MultiplayerRole.Server : MultiplayerRole.None;
 
-           return CurrentServer.Status != ServerStatus.Running;
+            return CurrentServer.Status != ServerStatus.Running;
         }
 
         public void StopEverything()
@@ -73,12 +72,12 @@ namespace CSM.Networking
                 case MultiplayerRole.Client:
                     CurrentClient.Disconnect();
                     break;
+
                 case MultiplayerRole.Server:
                     CurrentServer.StopServer();
                     break;
             }
         }
-
 
         private static MultiplayerManager _multiplayerInstance;
         public static MultiplayerManager Instance => _multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());

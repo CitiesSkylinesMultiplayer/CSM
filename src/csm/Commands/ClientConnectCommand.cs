@@ -1,5 +1,5 @@
-﻿using System.IO;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.IO;
 
 namespace CSM.Commands
 {
@@ -11,7 +11,7 @@ namespace CSM.Commands
     public class ClientConnectCommand : CommandBase
     {
         /// <summary>
-        ///     The username of the disconnected user.
+        ///     The user name of the disconnected user.
         /// </summary>
         [ProtoMember(1)]
         public string Username { get; set; }

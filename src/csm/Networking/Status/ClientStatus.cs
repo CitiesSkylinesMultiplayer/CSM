@@ -13,7 +13,7 @@
 
         /// <summary>
         ///     The client is trying to connect to the server, this phase
-        ///     can take up to 30 seconds. 
+        ///     can take up to 30 seconds.
         /// </summary>
         Connecting,
 
