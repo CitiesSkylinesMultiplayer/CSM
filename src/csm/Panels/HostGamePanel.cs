@@ -127,7 +127,7 @@ namespace CSM.Panels
                 return;
             }
 
-            // Crear warnings/errors and hide panel
+            // Clear warnings/errors and hide panel
             _connectionStatus.text = "";
             isVisible = false;
         }
