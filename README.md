@@ -4,10 +4,12 @@ CSM is an in-development multiplayer mod for Cities: Skylines. The mod aims to p
 
 It should be noted that I'm currently developing this mod in my free-free time. Once the mod is more mature, contributions would be much appreciated. In the mean time, I'll try add as many notes as possible below to help any development efforts.
 
+You can download the lastet build from the Azure DevOps site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11).
+
 This project is licensed under MIT.
 
 ## Current Status
-![Build Status](https://gridentertainment.visualstudio.com/_apis/public/build/definitions/14652d60-fd3c-45d2-95ac-ef7691601444/11/badge)
+![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)
 
 ## Progress
 
