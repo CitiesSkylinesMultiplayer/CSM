@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using CSM.Extensions;
 
 namespace CSM.Networking
 {
@@ -220,7 +221,15 @@ namespace CSM.Networking
                         typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
                         typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
                         break;
-                }
+
+					case CommandBase.CreatedCommandID:
+						var Buildings = BuildingCreatedCommand.Deserialize(message);
+						BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
+						BuildingExtension.LastPosition = Buildings.Position;
+						Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angel, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
+						UnityEngine.Debug.Log("recieved command");
+						break;
+				}
             }
             catch (Exception ex)
             {
