@@ -15,10 +15,18 @@ This mod and its source code is licensed under the MIT license.
 If you want to build the mod yourself, follow the developer instructions below.
 
 ## Usage
+
 1. Create a new game / open an existing game.
 2. Click the `Show Multiplayer Menu` button in the top-left of your screen.
 3. To host a game click on `Host Game`.
 4. To join a game click on `Join Game` and enter the required information.
+
+## Server & Client Information
+
+* The default port used the the server and client is `4230`. You may need this to port forward your router.
+* You may have to allow Cities: Skylines under your local firewall.
+* If you're playing over LAN (in the same house for example), run `ipconfig` on the computer that will be hosting the server to find the local IP address. This is the address that you will want to use when connecting a client.
+* If you're playing over the Internet, you may need  to portforward your router to expose the server to the internet (this is usually port `4230`). Once port forwarded, Google "What's my IP" on the server computer to find the IP address for the client to connect to.
 
 ## Current Status
 On every commit and pull request, Azure Pipelines will build a new version. You can see the current build status below:
