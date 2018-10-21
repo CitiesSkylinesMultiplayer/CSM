@@ -9,6 +9,9 @@ namespace CSM.Extensions
     /// </summary>
     public class ThreadingExtension : ThreadingExtensionBase
     {
+
+
+
         private int _lastSelectedSimulationSpeed;
         private bool _lastSimulationPausedState;
 

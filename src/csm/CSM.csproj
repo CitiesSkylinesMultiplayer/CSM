@@ -79,6 +79,7 @@
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
+    <Compile Include="Helpers\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
