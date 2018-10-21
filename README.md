@@ -1,14 +1,28 @@
 # CSM - Cities: Skylines Multiplayer
 ## Introduction
-CSM is an in-development multiplayer mod for Cities: Skylines. The mod aims to provide a simple client-server experience. All players will share and sync the same resources such as money, costs, demand etc. Hopefully in the future roads and terrain will also be synced. Further in the future, I would like to implement the ability to have separate cities / income and make use of steams lobby / multiplayer system. Buy as this is only proof of concept for now, nothing can be guaranteed.
+CSM is an in-development multiplayer mod for Cities: Skylines. This mod aims to provide a simple client-server experience where users can play and build together in a single game. Initially, resources such as money, costs demand will be synced between clients alongside roads and buildings. Further along in development, terrain sculpting and more advanced features may become available.  
 
-It should be noted that I'm currently developing this mod in my free-free time. Once the mod is more mature, contributions would be much appreciated. In the mean time, I'll try add as many notes as possible below to help any development efforts.
+Instructions to download and install the latest build of the mod can be seen below, alongside developer information about extending the mod. Pull requests and contributions would be much appreciated as I'm only developing this mod in my free time (although I will have a lot more free time during November 2018 - February 2019).
 
-You can download the lastet build from the Azure DevOps site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11).
+This mod and its source code is licensed under the MIT license.
 
-This project is licensed under MIT.
+## Download & Install
+
+1. Download the latest build from the Azure DevOps site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11). Click on the latest successful build -> `Artifacts` -> `CitiesSkylinesMultiplayer` -> `CitiesSkylinesMultiplayer.{Version}.zip`.
+2. Either run the install script, or copy all the *.dll files to `%APPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
+3. Open Cities: Skylines and enable the mod.
+
+If you want to build the mod yourself, follow the developer instructions below.
+
+## Usage
+1. Create a new game / open an existing game.
+2. Click the `Show Multiplayer Menu` button in the top-left of your screen.
+3. To host a game click on `Host Game`.
+4. To join a game click on `Join Game` and enter the required information.
 
 ## Current Status
+On every commit and pull request, Azure Pipelines will build a new version. You can see the current build status below:
+
 ![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)
 
 ## Progress
@@ -30,21 +44,6 @@ This project is licensed under MIT.
 ### Phase 3
 *TBD*
 
-## Installation
-The mod can manually installed using the built in scripts. The following steps will guide you though this. Please note: You will need to have Visual Studio 2017 & Cities: Skylines installed, be running Windows 10 and have developer mode enabled.
-This script will automatically pull in the required files (after specifying a folder), build the mod and then install it.
-
-1. Open the `scripts` folder.
-2. Run the following command in powershell `.\build.ps1 -Update -Build -Install`. This will match the mod to your game, build it and then install it. 
-4. When you run this script, it will ask you for your steam folder. This is just the root folder of steam, e.g 'C:\Program Files\Steam\' 
-5. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
-
-## Usage
-1. Create a new game / open an existing game.
-2. Click the `Show Multiplayer Menu` button in the top-left of your screen.
-3. To host a game click on `Host Game`.
-4. To join a game click on `Join Game` and enter the required information.
-
 ## Developer Resources
 ### Introduction
 This repository is split into two projects. `CSM` and `CSM.Testing`. `CSM` is the base project and contains all logic for the mod. `CSM.Testing` on the other hand helps simplify testing of multiplayer elements without having two games open.
@@ -52,6 +51,15 @@ This repository is split into two projects. `CSM` and `CSM.Testing`. `CSM` is th
 The wiki contains more information, but I'm aiming to transfer that information to this file.
 
 Ideally you should be running the latest version of Visual Studio 2017 on Windows 10.
+
+### Installation
+The mod can manually installed using the built in scripts. The following steps will guide you though this. Please note: You will need to have Visual Studio 2017 & Cities: Skylines installed, be running Windows 10 and have developer mode enabled.
+This script will automatically pull in the required files (after specifying a folder), build the mod and then install it.
+
+1. Open the `scripts` folder.
+2. Run the following command in powershell `.\build.ps1 -Update -Build -Install`. This will match the mod to your game, build it and then install it. 
+4. When you run this script, it will ask you for your steam folder. This is just the root folder of steam, e.g 'C:\Program Files\Steam\' 
+5. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
 
 ### Client-Server Model
 This mod uses the client-server model. A user will setup their game as a server and transmit information like currency, roads, needs etc. to all connected clients. Clients will connect to the server and retrieve currency, roads, needs etc. from the server, updating the client UI.
