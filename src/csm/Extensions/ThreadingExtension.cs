@@ -1,15 +1,14 @@
 ﻿using CSM.Commands;
 using CSM.Networking;
 using ICities;
+using UnityEngine;
 
 namespace CSM.Extensions
 {
     /// <summary>
-    ///     TODO: Pausing simulation does not work.
     /// </summary>
     public class ThreadingExtension : ThreadingExtensionBase
     {
-
 
 
         private int _lastSelectedSimulationSpeed;

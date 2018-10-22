@@ -9,7 +9,7 @@ namespace CSM.Commands
 {
     [ProtoContract]
     public class BuildingCreatedCommand : CommandBase
-    {
+	{
 
 		[ProtoMember(1)]
 		public ushort BuildingID { get; set; }
