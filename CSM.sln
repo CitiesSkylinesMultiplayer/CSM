@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM", "src\csm\CSM.csproj", "{63933537-DA87-4026-A44C-382298FBB399}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM", "src\CSM.csproj", "{63933537-DA87-4026-A44C-382298FBB399}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
