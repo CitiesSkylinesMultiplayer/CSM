@@ -233,8 +233,8 @@ namespace CSM.Networking
 
 					case CommandBase.BuildingRemovedCommandID:
 						var BuildingRemovedPosition = BuildingRemovedCommand.Deserialize(message);
-						int num = Mathf.Clamp((int)((BuildingRemovedPosition.position.x / 64f) + 135f), 0, 0x10d);  //The buildingID is stored in the M_buildingGrid[] which is calculated by thís arbitrary calculation using the buildings position
-						int index = (Mathf.Clamp((int)((BuildingRemovedPosition.position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
+						int num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d);  //The buildingID is stored in the M_buildingGrid[] which is calculated by thís arbitrary calculation using the buildings position
+						int index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
 						var BuildingId = BuildingManager.instance.m_buildingGrid[index];
 						if (BuildingId != 0)
 						{

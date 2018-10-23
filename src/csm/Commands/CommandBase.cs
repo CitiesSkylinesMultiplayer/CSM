@@ -6,6 +6,8 @@ namespace CSM.Commands
     [ProtoContract]
     public abstract class CommandBase
     {
+        #region Commands
+
         public const byte ConnectionRequestCommandId = 0;
         public const byte ConnectionResultCommandId = 1;
         public const byte PingCommandId = 3;
@@ -13,11 +15,13 @@ namespace CSM.Commands
         public const byte SpeedCommandID = 100;
         public const byte PauseCommandID = 101;
         public const byte MoneyCommandID = 102;
-		public const byte CreatedCommandID = 103;
-		public const byte BuildingRemovedCommandID = 104;
-		public const byte RoadCommandID = 110;
+        public const byte CreatedCommandID = 103;
+        public const byte BuildingRemovedCommandID = 104;
+        public const byte RoadCommandID = 110;
 
-		public byte[] Serialize()
+        #endregion Commands
+
+        public byte[] Serialize()
         {
             byte[] result;
 

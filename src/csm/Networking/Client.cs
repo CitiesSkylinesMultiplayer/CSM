@@ -275,8 +275,8 @@ namespace CSM.Networking
 
 					case CommandBase.BuildingRemovedCommandID:
 						var BuildingRemovedPosition = BuildingRemovedCommand.Deserialize(message);
-						int num = Mathf.Clamp((int)((BuildingRemovedPosition.position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-						int index = (Mathf.Clamp((int)((BuildingRemovedPosition.position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
+						int num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+						int index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
 						var BuildingId = BuildingManager.instance.m_buildingGrid[index];
 						if (BuildingId != 0)
 						{
@@ -289,7 +289,7 @@ namespace CSM.Networking
 						UnityEngine.Debug.Log("Road Command Recived");
 						var Roads = RoadCommand.Deserialize(message);
 						NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);
-						Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.Startnode, Roads.Endnode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
+						Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.StartNode, Roads.EndNode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
 						break;
 
 				}
