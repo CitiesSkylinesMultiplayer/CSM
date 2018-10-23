@@ -31,7 +31,7 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 200.0f);
 
             width = 360;
-            height = 480;
+            height = 400;
 
             // Title Label
             this.CreateTitleLabel("Host Server", new Vector2(120, -20));
@@ -55,7 +55,7 @@ namespace CSM.Panels
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -300));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -330));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;

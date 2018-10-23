@@ -66,7 +66,7 @@ namespace CSM.Helpers
             textField.textScale = 1.5f;
             textField.width = width;
             textField.height = height;
-            textField.padding = new RectOffset(6, 6, 2, 2);
+            textField.padding = new RectOffset(6, 6, 6, 6);
             textField.builtinKeyNavigation = true;
             textField.isInteractive = true;
             textField.readOnly = false;

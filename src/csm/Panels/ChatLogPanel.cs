@@ -15,27 +15,24 @@ namespace CSM.Panels
 
         public override void Start()
         {
-            // Activates the dragging of the window
-            AddUIComponent(typeof(UIDragHandle));
-
             backgroundSprite = "GenericPanel";
             name = "MPChatLogPanel";
-            color = new Color32(110, 110, 110, 220);
+            color = new Color32(110, 110, 110, 200);
 
             // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
 
             // Center this window in the game
-            relativePosition = new Vector3(10.0f, view.fixedHeight - 440.0f);
+            relativePosition = new Vector3(10.0f, view.fixedHeight - 430.0f);
 
-            width = 470;
+            width = 500;
             height = 300;
 
             // Create the message box
             _messageBox = (UIListBox)AddUIComponent(typeof(UIListBox));
             _messageBox.isVisible = true;
             _messageBox.isEnabled = true;
-            _messageBox.width = 450;
+            _messageBox.width = 480;
             _messageBox.height = 280;
             _messageBox.position = new Vector2(10, -10);
 
