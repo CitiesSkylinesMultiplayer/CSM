@@ -11,7 +11,7 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
-    [string]$OutputDirectory = "..\src\csm\bin\Release",
+    [string]$OutputDirectory = "..\src\bin\Release",
     [string]$ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CSM"
  )
 
