@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.IO;
 
 namespace CSM.Commands
 {
@@ -8,20 +7,5 @@ namespace CSM.Commands
     /// </summary>
     [ProtoContract]
     public class PingCommand : CommandBase
-    {
-        /// <summary>
-        ///     Deserialize a message into this type.
-        /// </summary>
-        public static PingCommand Deserialize(byte[] message)
-        {
-            PingCommand result;
-
-            using (var stream = new MemoryStream(message))
-            {
-                result = Serializer.Deserialize<PingCommand>(stream);
-            }
-
-            return result;
-        }
-    }
+    { }
 }

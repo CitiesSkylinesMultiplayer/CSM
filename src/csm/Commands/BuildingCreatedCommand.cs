@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.IO;
 using UnityEngine;
 
 namespace CSM.Commands
@@ -21,17 +20,5 @@ namespace CSM.Commands
 
         [ProtoMember(5)]
         public int Length { get; set; }
-
-        public static BuildingCreatedCommand Deserialize(byte[] message)
-        {
-            BuildingCreatedCommand result;
-
-            using (var stream = new MemoryStream(message))
-            {
-                result = Serializer.Deserialize<BuildingCreatedCommand>(stream);
-            }
-
-            return result;
-        }
     }
 }

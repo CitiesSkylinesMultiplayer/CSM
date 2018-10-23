@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.IO;
 
 namespace CSM.Commands
 {
@@ -24,20 +23,5 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(2)]
         public string Reason { get; set; }
-
-        /// <summary>
-        ///     Deserialize a message into this type.
-        /// </summary>
-        public static ConnectionResultCommand Deserialize(byte[] message)
-        {
-            ConnectionResultCommand result;
-
-            using (var stream = new MemoryStream(message))
-            {
-                result = Serializer.Deserialize<ConnectionResultCommand>(stream);
-            }
-
-            return result;
-        }
     }
 }

@@ -27,10 +27,10 @@ namespace CSM.Networking
         // Run a background processing thread
         private Thread _clientProcessingThread;
 
-        // Config options for server
+        // Configuration options for server
         private ClientConfig _clientConfig;
 
-        // The last time we recieved a message from the server
+        // The last time we received a message from the server
         private DateTime _lastServerPing;
 
         // Timer to make sure the client is already connected to the server
@@ -225,7 +225,7 @@ namespace CSM.Networking
                             break;
 
                         // Get the result
-                        var connectionResult = ConnectionResultCommand.Deserialize(message);
+                        var connectionResult = CommandBase.Deserialize<ConnectionResultCommand>(message);
 
                         if (connectionResult.Success)
                         {
@@ -249,30 +249,30 @@ namespace CSM.Networking
                         break;
 
                     case CommandBase.PauseCommandID:
-                        var pause = PauseCommand.Deserialize(message);
+                        var pause = CommandBase.Deserialize<PauseCommand>(message);
                         SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
                         break;
 
                     case CommandBase.SpeedCommandID:
-                        var speed = SpeedCommand.Deserialize(message);
+                        var speed = CommandBase.Deserialize<SpeedCommand>(message);
                         SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
                         break;
 
                     case CommandBase.MoneyCommandID:
-                        var internalMoney = MoneyCommand.Deserialize(message);
+                        var internalMoney = CommandBase.Deserialize<MoneyCommand>(message);
                         typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
                         typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
                         break;
 
-                    case CommandBase.CreatedCommandID:
-                        var Buildings = BuildingCreatedCommand.Deserialize(message);
+                    case CommandBase.BuildingCreatedCommandID:
+                        var Buildings = CommandBase.Deserialize<BuildingCreatedCommand>(message);
                         BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
                         BuildingExtension.LastPosition = Buildings.Position;
                         Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angel, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
                         break;
 
                     case CommandBase.BuildingRemovedCommandID:
-                        var BuildingRemovedPosition = BuildingRemovedCommand.Deserialize(message);
+                        var BuildingRemovedPosition = CommandBase.Deserialize<BuildingRemovedCommand>(message);
                         int num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
                         int index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
                         var BuildingId = BuildingManager.instance.m_buildingGrid[index];
@@ -284,7 +284,7 @@ namespace CSM.Networking
 
                     case CommandBase.RoadCommandID:
                         UnityEngine.Debug.Log("Road Command Recived");
-                        var Roads = RoadCommand.Deserialize(message);
+                        var Roads = CommandBase.Deserialize<RoadCommand>(message);
                         NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);
                         Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.StartNode, Roads.EndNode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
                         break;

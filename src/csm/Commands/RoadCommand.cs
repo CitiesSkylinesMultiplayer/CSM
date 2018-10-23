@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.IO;
 using UnityEngine;
 
 namespace CSM.Commands
@@ -24,17 +23,5 @@ namespace CSM.Commands
 
         [ProtoMember(6)]
         public ushort InfoIndex { get; set; }
-
-        public static RoadCommand Deserialize(byte[] message)
-        {
-            RoadCommand result;
-
-            using (var stream = new MemoryStream(message))
-            {
-                result = Serializer.Deserialize<RoadCommand>(stream);
-            }
-
-            return result;
-        }
     }
 }

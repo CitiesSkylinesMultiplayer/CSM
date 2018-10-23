@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.IO;
 
 namespace CSM.Commands
 {
@@ -18,20 +17,5 @@ namespace CSM.Commands
 
         //[ProtoMember(3)]
         //public long[] TotalExpenses { get; set; }
-
-        /// <summary>
-        ///     Deserialize a message into this type.
-        /// </summary>
-        public static MoneyCommand Deserialize(byte[] message)
-        {
-            MoneyCommand result;
-
-            using (var stream = new MemoryStream(message))
-            {
-                result = Serializer.Deserialize<MoneyCommand>(stream);
-            }
-
-            return result;
-        }
     }
 }

@@ -32,7 +32,7 @@ namespace CSM.Extensions
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
                     case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.CreatedCommandID, new BuildingCreatedCommand
+                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.BuildingCreatedCommandID, new BuildingCreatedCommand
                         {
                             BuildingID = id,
                             Position = position,
@@ -43,7 +43,7 @@ namespace CSM.Extensions
                         break;
 
                     case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.CreatedCommandID, new BuildingCreatedCommand
+                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.BuildingCreatedCommandID, new BuildingCreatedCommand
                         {
                             BuildingID = id,
                             Position = position,
