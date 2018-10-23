@@ -1,7 +1,7 @@
 ﻿using ColossalFramework;
-using ColossalFramework.Math;
 using ColossalFramework.Plugins;
 using CSM.Commands;
+using CSM.Extensions;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
@@ -12,7 +12,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using CSM.Extensions;
 using UnityEngine;
 
 namespace CSM.Networking
@@ -265,34 +264,31 @@ namespace CSM.Networking
                         typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
                         break;
 
-					case CommandBase.CreatedCommandID:
-						var Buildings = BuildingCreatedCommand.Deserialize(message);
-						BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
-						BuildingExtension.LastPosition = Buildings.Position;
-						Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angel, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
-						break;
+                    case CommandBase.CreatedCommandID:
+                        var Buildings = BuildingCreatedCommand.Deserialize(message);
+                        BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
+                        BuildingExtension.LastPosition = Buildings.Position;
+                        Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angel, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
+                        break;
 
+                    case CommandBase.BuildingRemovedCommandID:
+                        var BuildingRemovedPosition = BuildingRemovedCommand.Deserialize(message);
+                        int num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+                        int index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
+                        var BuildingId = BuildingManager.instance.m_buildingGrid[index];
+                        if (BuildingId != 0)
+                        {
+                            BuildingManager.instance.ReleaseBuilding(BuildingId);
+                        }
+                        break;
 
-					case CommandBase.BuildingRemovedCommandID:
-						var BuildingRemovedPosition = BuildingRemovedCommand.Deserialize(message);
-						int num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-						int index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
-						var BuildingId = BuildingManager.instance.m_buildingGrid[index];
-						if (BuildingId != 0)
-						{
-							BuildingManager.instance.ReleaseBuilding(BuildingId);
-						}
-						break;
-
-
-					case CommandBase.RoadCommandID:
-						UnityEngine.Debug.Log("Road Command Recived");
-						var Roads = RoadCommand.Deserialize(message);
-						NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);
-						Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.StartNode, Roads.EndNode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
-						break;
-
-				}
+                    case CommandBase.RoadCommandID:
+                        UnityEngine.Debug.Log("Road Command Recived");
+                        var Roads = RoadCommand.Deserialize(message);
+                        NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);
+                        Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.StartNode, Roads.EndNode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
+                        break;
+                }
             }
             catch (Exception ex)
             {

@@ -1,28 +1,13 @@
-﻿
-using ColossalFramework;
-using CSM.Commands;
-using CSM.Networking;
-using ICities;
-using UnityEngine;
-using System;
-using System.Linq;
-
-namespace CSM.Extensions
+﻿namespace CSM.Extensions
 {
-	/*
+    /*
 	public class RoadExtension: ThreadingExtensionBase
 	{
 		NetSegment[] _lastSegment = Singleton<NetManager>.instance.m_segments.m_buffer;
 
-
-
 		public override void OnBeforeSimulationTick()
 		{
 			base.OnBeforeSimulationTick();
-
-
-
-
 		}
 		public override void OnAfterSimulationTick()
 		{
@@ -55,22 +40,12 @@ namespace CSM.Extensions
 								InfoIndex = infoIndex
 							});
 							break;
-
-
 					}
 				}
 
 				_lastSegment = Singleton<NetManager>.instance.m_segments.m_buffer;
-
 			}
-
-
-
-
 		}
-
-
-
 	}
 		*/
 }

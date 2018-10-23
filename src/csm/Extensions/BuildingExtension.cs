@@ -1,8 +1,8 @@
-﻿using ICities;
-using CSM.Networking;
-using CSM.Commands;
-using UnityEngine;
+﻿using CSM.Commands;
 using CSM.Helpers;
+using CSM.Networking;
+using ICities;
+using UnityEngine;
 
 namespace CSM.Extensions
 {
