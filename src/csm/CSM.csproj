@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BuildingCreatedCommand.cs" />
+    <Compile Include="Commands\BuildingRemovedCommand.cs" />
     <Compile Include="Commands\ClientConnectCommand.cs" />
     <Compile Include="Commands\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
@@ -72,10 +73,12 @@
     <Compile Include="Commands\MoneyCommand.cs" />
     <Compile Include="Commands\PingCommand.cs" />
     <Compile Include="Commands\PauseCommand.cs" />
+    <Compile Include="Commands\RoadCommand.cs" />
     <Compile Include="Commands\SpeedCommand.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
+    <Compile Include="Extensions\RoadExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
