@@ -51,7 +51,7 @@ namespace CSM.Commands
         }
 
         /// <summary>
-        ///     Deserializes a commmand from a byte array.
+        ///     Deserialize the command from a byte array.
         /// </summary>
         /// <typeparam name="T">The type of message to deserialize to.</typeparam>
         /// <param name="message">A byte array of the message</param>
