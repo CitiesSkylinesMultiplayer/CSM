@@ -1,10 +1,17 @@
 ﻿using CSM.Networking.Config;
 using CSM.Networking.Status;
+using System.Collections.Generic;
 
 namespace CSM.Networking
 {
     public class MultiplayerManager
     {
+
+        /// <summary>
+        /// The current player list as server or client.
+        /// </summary>
+        public HashSet<string> PlayerList { get; } = new HashSet<string>();
+
         /// <summary>
         ///
         /// </summary>
@@ -65,18 +72,22 @@ namespace CSM.Networking
             return CurrentServer.Status != ServerStatus.Running;
         }
 
-        public void StopEverything()
+        public void StopEverything(bool instant)
         {
             switch (CurrentRole)
             {
                 case MultiplayerRole.Client:
-                    CurrentClient.Disconnect();
+                    if (instant)
+                        CurrentClient.Disconnect();
+                    else
+                        CurrentClient.RequestDisconnect();
                     break;
 
                 case MultiplayerRole.Server:
                     CurrentServer.StopServer();
                     break;
             }
+            CurrentRole = MultiplayerRole.None;
         }
 
         private static MultiplayerManager _multiplayerInstance;

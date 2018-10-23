@@ -8,12 +8,12 @@ namespace CSM.Extensions
 {
     public class LoadingExtension : LoadingExtensionBase
     {
-        private UIButton _muiltiplayerButton;
+        private UIButton _multiplayerButton;
 
         public override void OnLevelUnloading()
         {
             // Stop everything
-            MultiplayerManager.Instance.StopEverything();
+            MultiplayerManager.Instance.StopEverything(true);
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -25,31 +25,31 @@ namespace CSM.Extensions
             // Add the chat log
             uiView.AddUIComponent(typeof(ChatLogPanel));
 
-            _muiltiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
+            _multiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
 
-            _muiltiplayerButton.text = "Show Multiplayer Menu";
-            _muiltiplayerButton.width = 240;
-            _muiltiplayerButton.height = 40;
+            _multiplayerButton.text = "Show Multiplayer Menu";
+            _multiplayerButton.width = 240;
+            _multiplayerButton.height = 40;
 
-            _muiltiplayerButton.normalBgSprite = "ButtonMenu";
-            _muiltiplayerButton.disabledBgSprite = "ButtonMenuDisabled";
-            _muiltiplayerButton.hoveredBgSprite = "ButtonMenuHovered";
-            _muiltiplayerButton.focusedBgSprite = "ButtonMenuFocused";
-            _muiltiplayerButton.pressedBgSprite = "ButtonMenuPressed";
-            _muiltiplayerButton.textColor = new Color32(255, 255, 255, 255);
-            _muiltiplayerButton.disabledTextColor = new Color32(7, 7, 7, 255);
-            _muiltiplayerButton.hoveredTextColor = new Color32(7, 132, 255, 255);
-            _muiltiplayerButton.focusedTextColor = new Color32(255, 255, 255, 255);
-            _muiltiplayerButton.pressedTextColor = new Color32(30, 30, 44, 255);
+            _multiplayerButton.normalBgSprite = "ButtonMenu";
+            _multiplayerButton.disabledBgSprite = "ButtonMenuDisabled";
+            _multiplayerButton.hoveredBgSprite = "ButtonMenuHovered";
+            _multiplayerButton.focusedBgSprite = "ButtonMenuFocused";
+            _multiplayerButton.pressedBgSprite = "ButtonMenuPressed";
+            _multiplayerButton.textColor = new Color32(255, 255, 255, 255);
+            _multiplayerButton.disabledTextColor = new Color32(7, 7, 7, 255);
+            _multiplayerButton.hoveredTextColor = new Color32(7, 132, 255, 255);
+            _multiplayerButton.focusedTextColor = new Color32(255, 255, 255, 255);
+            _multiplayerButton.pressedTextColor = new Color32(30, 30, 44, 255);
 
             // Enable button sounds.
-            _muiltiplayerButton.playAudioEvents = true;
+            _multiplayerButton.playAudioEvents = true;
 
             // Place the button.
-            _muiltiplayerButton.transformPosition = new Vector3(-1.65f, 0.97f);
+            _multiplayerButton.transformPosition = new Vector3(-1.45f, 0.97f);
 
             // Respond to button click.
-            _muiltiplayerButton.eventClick += (component, param) =>
+            _multiplayerButton.eventClick += (component, param) =>
             {
                 var panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
 
@@ -58,24 +58,24 @@ namespace CSM.Extensions
                     if (panel.isVisible)
                     {
                         panel.isVisible = false;
-                        _muiltiplayerButton.text = "Show Multiplayer Menu";
+                        _multiplayerButton.text = "Show Multiplayer Menu";
                     }
                     else
                     {
                         panel.isVisible = true;
-                        _muiltiplayerButton.text = "Hide Multiplayer Menu";
+                        _multiplayerButton.text = "Hide Multiplayer Menu";
                     }
                 }
                 else
                 {
                     var newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
-                    _muiltiplayerButton.text = "Hide Multiplayer Menu";
+                    _multiplayerButton.text = "Hide Multiplayer Menu";
 
                     // Bind visibility changed event to update button text
                     newConnectionPanel.eventVisibilityChanged +=
                         (uiComponent, value) =>
                         {
-                            _muiltiplayerButton.text = uiComponent.isVisible ? "Hide Multiplayer Menu" : "Show Multiplayer Menu";
+                            _multiplayerButton.text = uiComponent.isVisible ? "Hide Multiplayer Menu" : "Show Multiplayer Menu";
                         };
                 }
             };
