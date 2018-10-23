@@ -12,9 +12,10 @@ namespace CSM.Panels
         private UIButton _serverConnectButton;
 
         // These buttons are displayed when the server is running
-        private UIButton _serverDisconnectButton;
+        private UIButton _disconnectButton;
 
         private UIButton _serverManageButton;
+        private UIButton _playerListButton;
 
         public override void Start()
         {
@@ -35,66 +36,49 @@ namespace CSM.Panels
             height = 200;
 
             // Handle visible change events
-            eventVisibilityChanged += (component, value) =>
+            eventVisibilityChanged += (component, visible) =>
             {
+                if (!visible)
+                    return;
+
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
                     if (MultiplayerManager.Instance.CurrentServer.Status == ServerStatus.Running)
                     {
-                        _clientConnectButton.isEnabled = false;
-                        _clientConnectButton.isVisible = false;
+                        Hide(_clientConnectButton);
+                        Hide(_serverConnectButton);
+                        Show(_disconnectButton);
+                        Show(_serverManageButton);
+                        Hide(_playerListButton);
 
-                        _serverConnectButton.isEnabled = false;
-                        _serverConnectButton.isVisible = false;
-
-                        _serverDisconnectButton.isEnabled = true;
-                        _serverDisconnectButton.isVisible = true;
-
-                        _serverManageButton.isEnabled = true;
-                        _serverManageButton.isVisible = true;
+                        _disconnectButton.text = "Stop server";
                     }
                     else
                     {
-                        _clientConnectButton.isEnabled = true;
-                        _clientConnectButton.isVisible = true;
-
-                        _serverConnectButton.isEnabled = true;
-                        _serverConnectButton.isVisible = true;
-
-                        _serverDisconnectButton.isEnabled = false;
-                        _serverDisconnectButton.isVisible = false;
-
-                        _serverManageButton.isEnabled = false;
-                        _serverManageButton.isVisible = false;
+                        Show(_clientConnectButton);
+                        Show(_serverConnectButton);
+                        Hide(_disconnectButton);
+                        Hide(_serverManageButton);
+                        Hide(_playerListButton);
                     }
                 }
                 else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 {
-                    _clientConnectButton.isEnabled = true;
-                    _clientConnectButton.isVisible = true;
+                    Hide(_clientConnectButton);
+                    Hide(_serverConnectButton);
+                    Show(_disconnectButton);
+                    Hide(_serverManageButton);
+                    Show(_playerListButton);
 
-                    _serverConnectButton.isEnabled = true;
-                    _serverConnectButton.isVisible = true;
-
-                    _serverDisconnectButton.isEnabled = false;
-                    _serverDisconnectButton.isVisible = false;
-
-                    _serverManageButton.isEnabled = false;
-                    _serverManageButton.isVisible = false;
+                    _disconnectButton.text = "Disconnect";
                 }
                 else
                 {
-                    _clientConnectButton.isEnabled = true;
-                    _clientConnectButton.isVisible = true;
-
-                    _serverConnectButton.isEnabled = true;
-                    _serverConnectButton.isVisible = true;
-
-                    _serverDisconnectButton.isEnabled = false;
-                    _serverDisconnectButton.isVisible = false;
-
-                    _serverManageButton.isEnabled = false;
-                    _serverManageButton.isVisible = false;
+                    Show(_clientConnectButton);
+                    Show(_serverConnectButton);
+                    Hide(_disconnectButton);
+                    Hide(_serverManageButton);
+                    Hide(_playerListButton);
                 }
             };
 
@@ -112,9 +96,13 @@ namespace CSM.Panels
             _serverConnectButton = this.CreateButton("Host Game", new Vector2(10, -130));
 
             // Close server button
-            _serverDisconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
-            _serverDisconnectButton.isEnabled = false;
-            _serverDisconnectButton.isVisible = false;
+            _disconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
+            _disconnectButton.isEnabled = false;
+            _disconnectButton.isVisible = false;
+
+            _playerListButton = this.CreateButton("Player list", new Vector2(10, -60));
+            _playerListButton.isEnabled = false;
+            _playerListButton.isVisible = false;
 
             _clientConnectButton.eventClick += (component, param) =>
             {
@@ -153,19 +141,64 @@ namespace CSM.Panels
                 isVisible = false;
             };
 
-            _serverDisconnectButton.eventClick += (component, param) =>
+            _disconnectButton.eventClick += (component, param) =>
             {
                 isVisible = false;
 
-                MultiplayerManager.Instance.StopGameServer();
+                MultiplayerManager.Instance.StopEverything(false);
             };
 
             _serverManageButton.eventClick += (component, param) =>
             {
+                var panel = view.FindUIComponent<ManageGamePanel>("MPManageGamePanel");
+
+                if (panel != null)
+                {
+                    panel.isVisible = true;
+                }
+                else
+                {
+                    panel = (ManageGamePanel)view.AddUIComponent(typeof(ManageGamePanel));
+                }
+
+                panel.Focus();
+
+                if (MultiplayerManager.Instance.CurrentServer.Config != null)
+                {
+                    panel.SetPort(MultiplayerManager.Instance.CurrentServer.Config.Port);
+                }
+
+                isVisible = false;
+            };
+
+            _playerListButton.eventClick += (component, param) =>
+            {
+                var panel = view.FindUIComponent<PlayerListPanel>("MPPlayerListPanel");
+
+                if (panel != null) {
+                    panel.isVisible = true;
+                } else {
+                    panel = (PlayerListPanel)view.AddUIComponent(typeof(PlayerListPanel));
+                }
+
+                panel.Focus();
+
                 isVisible = false;
             };
 
             base.Start();
+        }
+
+        private void Show(UIButton button)
+        {
+            button.isVisible = true;
+            button.isEnabled = true;
+        }
+
+        private void Hide(UIButton button)
+        {
+            button.isVisible = false;
+            button.isEnabled = false;
         }
     }
 }

@@ -17,7 +17,12 @@ namespace CSM.Commands
 
         public const byte ConnectionRequestCommandId = 0;
         public const byte ConnectionResultCommandId = 1;
+        public const byte ConnectionCloseCommandId = 2;
         public const byte PingCommandId = 3;
+
+        public const byte ClientConnectCommandId = 50;
+        public const byte ClientDisconnectCommandId = 51;
+        public const byte PlayerListCommand = 52;
 
         public const byte SpeedCommandID = 100;
         public const byte PauseCommandID = 101;

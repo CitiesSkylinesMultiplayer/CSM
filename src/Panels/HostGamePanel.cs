@@ -87,7 +87,7 @@ namespace CSM.Panels
             }
 
             // Password validation
-            if (!string.IsNullOrEmpty(_passwordField.text) /*&& (!int.TryParse(_portField.text, out var ) || _passwordField.text == " ")*/)
+            if (string.IsNullOrEmpty(_passwordField.text) /*&& (!int.TryParse(_portField.text, out var ) || _passwordField.text == " ")*/)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Password. Must be text or numeric.";
@@ -109,6 +109,8 @@ namespace CSM.Panels
                 _connectionStatus.text = "Error: Could not start server";
                 return;
             }
+
+            CSM.Log("Server started");
 
             // Clear warnings/errors and hide panel
             _connectionStatus.text = "";

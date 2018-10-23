@@ -4,10 +4,12 @@ using CSM.Extensions;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
+using CSM.Events;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Open.Nat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -20,22 +22,34 @@ namespace CSM.Networking
     /// </summary>
     public class Server
     {
+        // The client timeout in seconds
+        private const int TIMEOUT = 15;
+
         // The server
         public LiteNetLib.NetManager NetServer { get; }
 
         // Run a background processing thread
         private Thread _serverProcessingThread;
 
-        // Config options for server
-        private ServerConfig _serverConfig;
-
         // Timer for handling ping
         private System.Timers.Timer _pingTimer;
+
+        // Connected clients
+        private readonly Dictionary<long, Player> _connectedClients = new Dictionary<long, Player>();
+
+        // The player instance for the host player (TODO: Make name configurable)
+        private Player _hostPlayer = new Player("Host player");
+
+        // Config options for server
+        public ServerConfig Config { get; private set; }
 
         /// <summary>
         ///     The current status of the server
         /// </summary>
         public ServerStatus Status { get; private set; }
+
+        public event PlayerConnectEventHandler ClientConnect;
+        public event PlayerDisconnectEventHandler ClientDisconnect;
 
         public Server()
         {
@@ -52,6 +66,18 @@ namespace CSM.Networking
             _pingTimer.Elapsed += OnPing;
             _pingTimer.Interval = 100;
             _pingTimer.Start();
+
+            ClientConnect += (Server server, PlayerEventArgs args) => {
+                CSM.Log($"Player {args.Player.Username} has connected!");
+                SendToClients(CommandBase.ClientConnectCommandId, new ClientConnectCommand { Username = args.Player.Username });
+                MultiplayerManager.Instance.PlayerList.Add(args.Player.Username);
+            };
+
+            ClientDisconnect += (Server server, PlayerEventArgs args) => {
+                CSM.Log($"Player {args.Player.Username} has disconnected!");
+                SendToClients(CommandBase.ClientDisconnectCommandId, new ClientDisconnectCommand { Username = args.Player.Username });
+                MultiplayerManager.Instance.PlayerList.Remove(args.Player.Username);
+            };
         }
 
         /// <summary>
@@ -66,14 +92,14 @@ namespace CSM.Networking
                 StopServer();
 
             // Set the config
-            _serverConfig = serverConfig;
+            Config = serverConfig;
 
             // Let the user know that we are trying to start the server
-            CSM.Log($"Attempting to start server on port {_serverConfig.Port}...");
+            CSM.Log($"Attempting to start server on port {Config.Port}...");
 
             // Attempt to start the server
             NetServer.DiscoveryEnabled = true;
-            var result = NetServer.Start(_serverConfig.Port);
+            var result = NetServer.Start(Config.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
@@ -90,9 +116,8 @@ namespace CSM.Networking
                 var cts = new CancellationTokenSource();
                 cts.CancelAfter(5000);
 
-                // No idea if this even works
-                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, _serverConfig.Port,
-                    _serverConfig.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
+                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+                    Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
             }
             catch (Exception e)
             {
@@ -105,6 +130,8 @@ namespace CSM.Networking
             // Set up processing thread
             _serverProcessingThread = new Thread(ProcessEvents);
             _serverProcessingThread.Start();
+
+            MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
             // Update the console to let the user know the server is running
             CSM.Log("The server has started.");
@@ -119,6 +146,8 @@ namespace CSM.Networking
             // Update status and stop the server
             Status = ServerStatus.Stopped;
             NetServer.Stop();
+
+            MultiplayerManager.Instance.PlayerList.Clear();
 
             CSM.Log("Stopped server");
         }
@@ -172,11 +201,23 @@ namespace CSM.Networking
             if (Status == ServerStatus.Stopped)
                 return;
 
+            // Timeout clients if they are not responding
+            DateTime now = DateTime.UtcNow;
+            foreach (KeyValuePair<long, Player> player in _connectedClients) {
+                if (player.Value.LastPing.AddSeconds(TIMEOUT) < now) {
+                    CSM.Log($"Player {player.Value.Username} has timed out!");
+
+                    this._connectedClients.Remove(player.Key);
+                    NetServer.DisconnectPeer(player.Value.NetPeer);
+                    this.OnClientDisconnected(player.Value);
+                }
+            }
+
             // Loop though all connected peers
-            foreach (var netPeer in NetServer.GetPeers())
+            foreach (var player in _connectedClients.Values)
             {
                 // Send a ping
-                netPeer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
+                player.NetPeer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
             }
         }
 
@@ -194,6 +235,17 @@ namespace CSM.Networking
                 // Skip the first byte
                 var message = reader.Data.Skip(1).ToArray();
 
+                // Make sure we know about the connected client
+                if (messageType != CommandBase.ConnectionRequestCommandId && !this._connectedClients.ContainsKey(peer.ConnectId)) {
+                    CSM.Log($"Client from {peer.EndPoint.Host}:{peer.EndPoint.Port} tried to send packet but never joined with a ConnectionRequestCommand packet. Ignoring...");
+                    return;
+                }
+
+                Player player = null;
+                if (messageType != CommandBase.ConnectionRequestCommandId) {
+                    player = this._connectedClients[peer.ConnectId];
+                }
+
                 // Switch between all the messages
                 switch (messageType)
                 {
@@ -203,10 +255,33 @@ namespace CSM.Networking
 
                         CSM.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Version: {connectionResult.GameVersion}, ModCount: {connectionResult.ModCount}, ModVersion: {connectionResult.ModVersion}");
 
-                        // TODO, check these values, but for now, just accept the request.
+                        // TODO check these values, but for now, just accept the request.
+                        // TODO check if the username already exists
+
+                        var newPlayer = new Player(peer, connectionResult.Username);
+                        this._connectedClients[peer.ConnectId] = newPlayer;
+
                         SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true });
+
+                        // Send current player list (without the newly joined player)
+                        SendToClient(peer, CommandBase.PlayerListCommand, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
+
+                        this.OnClientConnected(newPlayer);
                         break;
 
+                    case CommandBase.ConnectionCloseCommandId:
+
+                        this._connectedClients.Remove(peer.ConnectId);
+
+                        this.OnClientDisconnected(player);
+
+                        // Send quit confirmation
+                        SendToClient(peer, CommandBase.ConnectionCloseCommandId, new ConnectionCloseCommand());
+
+                        break;
+                    case CommandBase.PingCommandId:
+                        player.LastPing = DateTime.UtcNow;
+                        break;
                     case CommandBase.PauseCommandID:
                         var pause = CommandBase.Deserialize<PauseCommand>(message);
                         SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
@@ -245,6 +320,20 @@ namespace CSM.Networking
             catch (Exception ex)
             {
                 CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+            }
+        }
+
+        private void OnClientConnected(Player player)
+        {
+            if (ClientConnect != null) {
+                ClientConnect(this, new PlayerEventArgs(player));
+            }
+        }
+
+        private void OnClientDisconnected(Player player)
+        {
+            if (ClientDisconnect != null) {
+                ClientDisconnect(this, new PlayerEventArgs(player));
             }
         }
 

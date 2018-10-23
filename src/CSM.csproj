@@ -68,13 +68,17 @@
     <Compile Include="Commands\ClientConnectCommand.cs" />
     <Compile Include="Commands\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\ConnectionCloseCommand.cs" />
     <Compile Include="Commands\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\ConnectionResultCommand.cs" />
+    <Compile Include="Commands\PlayerListCommand.cs" />
     <Compile Include="Commands\MoneyCommand.cs" />
     <Compile Include="Commands\PingCommand.cs" />
     <Compile Include="Commands\PauseCommand.cs" />
     <Compile Include="Commands\RoadCommand.cs" />
     <Compile Include="Commands\SpeedCommand.cs" />
+    <Compile Include="Events\PlayerEvents.cs" />
+    <Compile Include="Events\PlayerEventArgs.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
@@ -93,6 +97,8 @@
     <Compile Include="Networking\Status\ServerStatus.cs" />
     <Compile Include="Panels\ChatLogPanel.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
+    <Compile Include="Panels\PlayerListPanel.cs" />
+    <Compile Include="Panels\ManageGamePanel.cs" />
     <Compile Include="Panels\HostGamePanel.cs" />
     <Compile Include="Panels\JoinGamePanel.cs" />
     <Compile Include="CSM.cs" />

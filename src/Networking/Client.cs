@@ -8,6 +8,7 @@ using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,9 @@ namespace CSM.Networking
     /// </summary>
     public class Client
     {
+        // The timeout in seconds
+        private const int TIMEOUT = 15;
+
         // The client
         public LiteNetLib.NetManager NetClient { get; }
 
@@ -143,6 +147,15 @@ namespace CSM.Networking
             return false;
         }
 
+        public void RequestDisconnect()
+        {
+            // Send quit packet if we had a connection
+            if (Status == ClientStatus.Connected)
+            {
+                SendToServer(CommandBase.ConnectionCloseCommandId, new ConnectionCloseCommand());
+            }
+        }
+
         /// <summary>
         ///     Attempt to disconnect from the server
         /// </summary>
@@ -192,12 +205,12 @@ namespace CSM.Networking
             if (Status == ClientStatus.Disconnected)
                 return;
 
-            // If we have not heard from the server in 5 seconds, it's probably gone
+            // If we have not heard from the server in TIMEOUT seconds, it's probably gone
             // for now, we just disconnect. In the future we should try reconnecting and
             // displaying a UI.
-            if (DateTime.UtcNow - _lastServerPing >= TimeSpan.FromSeconds(5))
+            if (DateTime.UtcNow - _lastServerPing >= TimeSpan.FromSeconds(TIMEOUT))
             {
-                CSM.Log("Client lost connection with the server (time out, last ping > 5 seconds). Disconnecting...");
+                CSM.Log($"Client lost connection with the server (time out, last ping > {TIMEOUT} seconds). Disconnecting...");
                 Disconnect();
             }
         }
@@ -240,6 +253,28 @@ namespace CSM.Networking
                             Disconnect();
                         }
                         break;
+
+                    // Connection close confirmation
+                    case CommandBase.ConnectionCloseCommandId:
+                        Disconnect();
+                        break;
+
+                    case CommandBase.ClientConnectCommandId:
+                        var connect = CommandBase.Deserialize<ClientConnectCommand>(message);
+                        CSM.Log($"Player {connect.Username} has connected!");
+                        MultiplayerManager.Instance.PlayerList.Add(connect.Username);
+                        break;
+                    case CommandBase.ClientDisconnectCommandId:
+                        var disconnect = CommandBase.Deserialize<ClientDisconnectCommand>(message);
+                        CSM.Log($"Player {disconnect.Username} has disconnected!");
+                        MultiplayerManager.Instance.PlayerList.Remove(disconnect.Username);
+                        break;
+                    case CommandBase.PlayerListCommand:
+                        var list = CommandBase.Deserialize<PlayerListCommand>(message);
+                        MultiplayerManager.Instance.PlayerList.Clear();
+                        MultiplayerManager.Instance.PlayerList.UnionWith(list.PlayerList);
+                        break;
+
                     // Handle ping commands by returning the ping
                     case CommandBase.PingCommandId:
                         // Update the last server ping

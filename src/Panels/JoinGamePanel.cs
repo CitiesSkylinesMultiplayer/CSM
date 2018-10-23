@@ -9,6 +9,7 @@ namespace CSM.Panels
     {
         private UITextField _ipAddressField;
         private UITextField _portField;
+        private UITextField _nameField;
 
         private UILabel _connectionStatus;
 
@@ -31,13 +32,13 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 200.0f);
 
             width = 360;
-            height = 400;
+            height = 480;
 
             // Title Label
             this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
 
             // IP Address Label
-            this.CreateLabel("IP Address:", new Vector3(10, -70, 0));
+            this.CreateLabel("IP Address:", new Vector2(10, -70));
 
             // IP Address field
             _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
@@ -48,18 +49,24 @@ namespace CSM.Panels
             // Port field
             _portField = this.CreateTextField("4230", new Vector2(10, -180));
 
+            // Username label
+            this.CreateLabel("Username:", new Vector2(10, -230));
+
+            // Username field
+            _nameField = this.CreateTextField("", new Vector2(10, -260));
+
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -260));
+            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -340));
             _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -330));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -410));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -235));
+            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -315));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
         }
@@ -73,6 +80,13 @@ namespace CSM.Panels
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Port or IP";
+                return;
+            }
+
+            if (string.IsNullOrEmpty(_nameField.text))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Username";
                 return;
             }
 
@@ -92,7 +106,7 @@ namespace CSM.Panels
 
             // Todo: pass user in and password
             // Try connect and get the result
-            var result = MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, "TEST_USER");
+            var result = MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text);
 
             if (!result)
             {
@@ -103,6 +117,8 @@ namespace CSM.Panels
 
             _connectionStatus.textColor = new Color32(0, 255, 0, 255);
             _connectionStatus.text = "Connected!";
+
+            isVisible = false;
         }
     }
 }
