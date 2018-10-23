@@ -112,7 +112,7 @@ namespace CSM.Panels
             _serverConnectButton = this.CreateButton("Host Game", new Vector2(10, -130));
 
             // Close server button
-            _serverDisconnectButton = this.CreateButton("Close Server (disconnect)", new Vector2(10, -130));
+            _serverDisconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
             _serverDisconnectButton.isEnabled = false;
             _serverDisconnectButton.isVisible = false;
 

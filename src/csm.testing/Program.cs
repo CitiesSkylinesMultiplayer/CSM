@@ -11,9 +11,6 @@ namespace CSM.Testing
 
         private static void Main(string[] args)
         {
-            // We are not running in unity
-            CSM.IsUnity = false;
-
             // Start program
             new Program().Start(args);
         }

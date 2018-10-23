@@ -7,7 +7,6 @@ namespace CSM.Panels
 {
     public class HostGamePanel : UIPanel
     {
-        private UITextField _ipAddressField;
         private UITextField _portField;
         private UITextField _passwordField;
 
@@ -35,42 +34,32 @@ namespace CSM.Panels
             height = 480;
 
             // Title Label
-            this.CreateTitleLabel("Host custom server", new Vector2(80, -20));
-
-            // IP Address Label
-            this.CreateLabel("IP Address:", new Vector3(10, -75, 0));
-
-            // IP Address field (disabled)
-            _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
-            _ipAddressField.readOnly = true;
+            this.CreateTitleLabel("Host Server", new Vector2(120, -20));
 
             // Port Label
-            this.CreateLabel("Port:", new Vector2(10, -150));
-
+            this.CreateLabel("Port:", new Vector2(10, -65));
             // Port field
-            _portField = this.CreateTextField("4230", new Vector2(10, -180));
+            _portField = this.CreateTextField("4230", new Vector2(10, -90));
 
             // Password label
-            this.CreateLabel("Password:", new Vector2(10, -230));
-
+            this.CreateLabel("Password:", new Vector2(10, -145));
             // Password field
-            _passwordField = this.CreateTextField("not available yet", new Vector2(10, -260));
-            _passwordField.readOnly = true; // Todo: Allow password
+            _passwordField = this.CreateTextField("", new Vector2(10, -170));
+
+            _connectionStatus = this.CreateLabel("", new Vector2(10, -230));
+            _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
+            _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
             // Create Server Button
-            _createButton = this.CreateButton("Create server", new Vector2(10, -340));
+            _createButton = this.CreateButton("Create Server", new Vector2(10, -260));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -410));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -300));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
             };
-
-            _connectionStatus = this.CreateLabel("", new Vector2(10, -310));
-            _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
-            _connectionStatus.textColor = new Color32(255, 0, 0, 255);
         }
 
         /// <summary>
@@ -93,21 +82,17 @@ namespace CSM.Panels
             if (int.Parse(_portField.text) < 1 || int.Parse(_portField.text) > 49151)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid port. Choose from range 1 - 49151";
+                _connectionStatus.text = "Invalid port. Choose from a range of 1 - 49151";
                 return;
             }
 
-            /// <summary>
-            ///     TODO: Password validation
-            ///     Invalid password or password contains spaces
-            /// </summary>
-
-            //if (!string.IsNullOrEmpty(_passwordField.text) /*&& (!int.TryParse(_portField.text, out var ) || _passwordField.text == " ")*/)
-            //{
-            //    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            //    _connectionStatus.text = "Invalid Password. Must be text or numeric.";
-            //    return;
-            //}
+            // Password validation
+            if (!string.IsNullOrEmpty(_passwordField.text) /*&& (!int.TryParse(_portField.text, out var ) || _passwordField.text == " ")*/)
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Password. Must be text or numeric.";
+                return;
+            }
 
             // Check already running server
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)

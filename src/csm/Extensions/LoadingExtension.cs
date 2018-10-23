@@ -22,6 +22,9 @@ namespace CSM.Extensions
 
             var uiView = UIView.GetAView();
 
+            // Add the chat log
+            uiView.AddUIComponent(typeof(ChatLogPanel));
+
             _muiltiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
 
             _muiltiplayerButton.text = "Show Multiplayer Menu";

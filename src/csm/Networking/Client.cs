@@ -306,8 +306,8 @@ namespace CSM.Networking
             // Build the connection request
             var connectionRequest = new ConnectionRequestCommand
             {
-                GameVersion = CSM.IsUnity ? BuildConfig.applicationVersion : "1.0.0",
-                ModCount = CSM.IsUnity ? PluginManager.instance.modCount : 0,
+                GameVersion = BuildConfig.applicationVersion,
+                ModCount = PluginManager.instance.modCount,
                 ModVersion = Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString(),
                 Password = _clientConfig.Password,
                 Username = _clientConfig.Username
