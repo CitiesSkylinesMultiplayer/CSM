@@ -3,7 +3,7 @@
 namespace CSM.Commands
 {
     /// <summary>
-    ///     Game simulation info
+    ///     The current game speed.
     /// </summary>
     [ProtoContract]
     public class SpeedCommand : CommandBase

@@ -37,7 +37,7 @@ namespace CSM.Extensions
                             BuildingID = id,
                             Position = position,
                             Infoindex = infoindex,
-                            Angel = angle,
+                            Angle = angle,
                             Length = length,
                         });
                         break;
@@ -48,7 +48,7 @@ namespace CSM.Extensions
                             BuildingID = id,
                             Position = position,
                             Infoindex = infoindex,
-                            Angel = angle,
+                            Angle = angle,
                             Length = length,
                         });
                         break;

@@ -3,7 +3,8 @@
 namespace CSM.Commands
 {
     /// <summary>
-    ///     Game simulation info
+    ///     Sent when the user toggles between a paused simulation and
+    ///     playing simulation.
     /// </summary>
     [ProtoContract]
     public class PauseCommand : CommandBase

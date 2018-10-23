@@ -268,7 +268,7 @@ namespace CSM.Networking
                         var Buildings = CommandBase.Deserialize<BuildingCreatedCommand>(message);
                         BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
                         BuildingExtension.LastPosition = Buildings.Position;
-                        Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angel, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
+                        Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angle, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
                         break;
 
                     case CommandBase.BuildingRemovedCommandID:
