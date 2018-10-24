@@ -100,7 +100,7 @@ namespace CSM.Panels
             _disconnectButton.isEnabled = false;
             _disconnectButton.isVisible = false;
 
-            _playerListButton = this.CreateButton("Player list", new Vector2(10, -60));
+            _playerListButton = this.CreateButton("View Players", new Vector2(10, -60));
             _playerListButton.isEnabled = false;
             _playerListButton.isVisible = false;
 
