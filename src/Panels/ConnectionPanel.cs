@@ -163,11 +163,6 @@ namespace CSM.Panels
 
                 panel.Focus();
 
-                if (MultiplayerManager.Instance.CurrentServer.Config != null)
-                {
-                    panel.SetPort(MultiplayerManager.Instance.CurrentServer.Config.Port);
-                }
-
                 isVisible = false;
             };
 
@@ -175,9 +170,12 @@ namespace CSM.Panels
             {
                 var panel = view.FindUIComponent<PlayerListPanel>("MPPlayerListPanel");
 
-                if (panel != null) {
+                if (panel != null)
+                {
                     panel.isVisible = true;
-                } else {
+                }
+                else
+                {
                     panel = (PlayerListPanel)view.AddUIComponent(typeof(PlayerListPanel));
                 }
 

@@ -25,23 +25,25 @@ namespace CSM.Panels
             var view = UIView.GetAView();
 
             // Center this window in the game
-            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 200.0f);
+            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 240.0f);
 
             width = 360;
             height = 480;
 
             // Title Label
-            this.CreateTitleLabel("Player list", new Vector2(90, -20));
+            this.CreateTitleLabel("Connected Players", new Vector2(100, -20));
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -410));
-            _closeButton.eventClick += (component, param) => {
+            _closeButton = this.CreateButton("Close", new Vector2(10, -410));
+            _closeButton.eventClick += (component, param) =>
+            {
                 isVisible = false;
             };
 
             GenerateList();
 
-            this.eventVisibilityChanged += (component, visible) => {
+            this.eventVisibilityChanged += (component, visible) =>
+            {
                 if (!visible)
                     return;
 

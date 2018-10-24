@@ -42,7 +42,7 @@ namespace CSM.Panels
             _portField = this.CreateTextField("4230", new Vector2(10, -90));
 
             // Password label
-            this.CreateLabel("Password:", new Vector2(10, -145));
+            this.CreateLabel("Password (Optional):", new Vector2(10, -145));
             // Password field
             _passwordField = this.CreateTextField("", new Vector2(10, -170));
 
@@ -86,14 +86,6 @@ namespace CSM.Panels
                 return;
             }
 
-            // Password validation
-            if (string.IsNullOrEmpty(_passwordField.text) /*&& (!int.TryParse(_portField.text, out var ) || _passwordField.text == " ")*/)
-            {
-                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid Password. Must be text or numeric.";
-                return;
-            }
-
             // Check already running server
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
             {
@@ -103,14 +95,12 @@ namespace CSM.Panels
             }
 
             // Start server and check for errors
-            if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text)) != true)
+            if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text) != true)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Error: Could not start server";
                 return;
             }
-
-            CSM.Log("Server started");
 
             // Clear warnings/errors and hide panel
             _connectionStatus.text = "";
