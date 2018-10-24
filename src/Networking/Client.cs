@@ -308,8 +308,8 @@ namespace CSM.Networking
 
                     case CommandBase.BuildingRemovedCommandID:
                         var BuildingRemovedPosition = CommandBase.Deserialize<BuildingRemovedCommand>(message);
-                        int num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-                        int index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
+                        long num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+                        long index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
                         var BuildingId = BuildingManager.instance.m_buildingGrid[index];
                         if (BuildingId != 0)
                         {
@@ -317,7 +317,16 @@ namespace CSM.Networking
                         }
                         break;
 
-                    case CommandBase.RoadCommandID:
+					case CommandBase.BuildingRelocatedCommandID:
+						var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
+						long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+						long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
+						ushort BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
+						Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
+						break;
+
+
+					case CommandBase.RoadCommandID:
                         UnityEngine.Debug.Log("Road Command Recived");
                         var Roads = CommandBase.Deserialize<RoadCommand>(message);
                         NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);

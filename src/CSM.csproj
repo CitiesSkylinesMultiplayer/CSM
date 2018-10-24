@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BuildingCreatedCommand.cs" />
+    <Compile Include="Commands\BuildingRelocationCommand.cs" />
     <Compile Include="Commands\BuildingRemovedCommand.cs" />
     <Compile Include="Commands\ClientConnectCommand.cs" />
     <Compile Include="Commands\ClientDisconnectCommand.cs" />
