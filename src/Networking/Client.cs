@@ -8,7 +8,6 @@ using CSM.Networking.Status;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -264,11 +263,13 @@ namespace CSM.Networking
                         CSM.Log($"Player {connect.Username} has connected!");
                         MultiplayerManager.Instance.PlayerList.Add(connect.Username);
                         break;
+
                     case CommandBase.ClientDisconnectCommandId:
                         var disconnect = CommandBase.Deserialize<ClientDisconnectCommand>(message);
                         CSM.Log($"Player {disconnect.Username} has disconnected!");
                         MultiplayerManager.Instance.PlayerList.Remove(disconnect.Username);
                         break;
+
                     case CommandBase.PlayerListCommand:
                         var list = CommandBase.Deserialize<PlayerListCommand>(message);
                         MultiplayerManager.Instance.PlayerList.Clear();
@@ -317,16 +318,15 @@ namespace CSM.Networking
                         }
                         break;
 
-					case CommandBase.BuildingRelocatedCommandID:
-						var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
-						long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-						long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
-						ushort BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
-						Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
-						break;
+                    case CommandBase.BuildingRelocatedCommandID:
+                        var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
+                        long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+                        long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
+                        ushort BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
+                        Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
+                        break;
 
-
-					case CommandBase.RoadCommandID:
+                    case CommandBase.RoadCommandID:
                         UnityEngine.Debug.Log("Road Command Recived");
                         var Roads = CommandBase.Deserialize<RoadCommand>(message);
                         NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);

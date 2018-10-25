@@ -7,12 +7,11 @@ using System.Reflection;
 namespace CSM.Extensions
 {
     /// <summary>
-    /// Handles game economy. Sends the MoneyAmount between Server and Client
-    /// Also sets the income and the expences to 0 on the client side, making the server handling income and expenses
+    ///     Handles game economy. Sends the MoneyAmount between Server and Client
+    ///     Also sets the income and the expenses to 0 on the client side, making the server handling income and expenses
     ///
-    /// TODO: The UI keeps track of the income and expenses by using the private arrays m_totalIncome and m_totalExpanses in EconomyManager
-    /// To get the income showing on the client UI these have to be send and copied to the client side, right now income and expences just show 0.
-    ///
+    ///     TODO: The UI keeps track of the income and expenses by using the private arrays m_totalIncome and m_totalExpanses in EconomyManager
+    ///     To get the income showing on the client UI these have to be send and copied to the client side, right now income and expences just show 0.
     /// </summary>
     public class EconomyExtension : EconomyExtensionBase
     {

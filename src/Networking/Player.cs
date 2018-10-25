@@ -18,6 +18,8 @@ namespace CSM.Networking
             LastPing = DateTime.UtcNow;
         }
 
-        public Player(string username) : this(null, username) {}
+        public Player(string username) : this(null, username)
+        {
+        }
     }
 }

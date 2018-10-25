@@ -29,9 +29,9 @@ namespace CSM.Commands
         public const byte MoneyCommandID = 102;
         public const byte BuildingCreatedCommandID = 103;
         public const byte BuildingRemovedCommandID = 104;
-		public const byte BuildingRelocatedCommandID = 105;
+        public const byte BuildingRelocatedCommandID = 105;
 
-		public const byte RoadCommandID = 110;
+        public const byte RoadCommandID = 110;
 
         #endregion Commands
 

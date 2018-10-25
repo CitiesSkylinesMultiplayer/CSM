@@ -6,7 +6,6 @@ namespace CSM.Networking
 {
     public class MultiplayerManager
     {
-
         /// <summary>
         /// The current player list as server or client.
         /// </summary>

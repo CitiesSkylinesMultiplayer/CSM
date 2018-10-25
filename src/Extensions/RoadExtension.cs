@@ -1,5 +1,11 @@
-﻿namespace CSM.Extensions
+﻿using ICities;
+
+namespace CSM.Extensions
 {
+    public class RoadExtension : ThreadingExtensionBase
+    {
+    }
+
     /*
 	public class RoadExtension: ThreadingExtensionBase
 	{

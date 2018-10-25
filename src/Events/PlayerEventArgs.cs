@@ -1,5 +1,5 @@
-﻿using System;
-using CSM.Networking;
+﻿using CSM.Networking;
+using System;
 
 namespace CSM.Events
 {

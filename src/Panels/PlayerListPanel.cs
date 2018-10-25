@@ -1,8 +1,8 @@
 ﻿using ColossalFramework.UI;
 using CSM.Helpers;
+using CSM.Networking;
 using System.Collections.Generic;
 using UnityEngine;
-using CSM.Networking;
 
 namespace CSM.Panels
 {

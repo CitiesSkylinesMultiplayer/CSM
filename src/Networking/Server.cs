@@ -1,10 +1,10 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
+using CSM.Events;
 using CSM.Extensions;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
-using CSM.Events;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Open.Nat;
@@ -49,6 +49,7 @@ namespace CSM.Networking
         public ServerStatus Status { get; private set; }
 
         public event PlayerConnectEventHandler ClientConnect;
+
         public event PlayerDisconnectEventHandler ClientDisconnect;
 
         public Server()
@@ -67,13 +68,15 @@ namespace CSM.Networking
             _pingTimer.Interval = 100;
             _pingTimer.Start();
 
-            ClientConnect += (Server server, PlayerEventArgs args) => {
+            ClientConnect += (Server server, PlayerEventArgs args) =>
+            {
                 CSM.Log($"Player {args.Player.Username} has connected!");
                 SendToClients(CommandBase.ClientConnectCommandId, new ClientConnectCommand { Username = args.Player.Username });
                 MultiplayerManager.Instance.PlayerList.Add(args.Player.Username);
             };
 
-            ClientDisconnect += (Server server, PlayerEventArgs args) => {
+            ClientDisconnect += (Server server, PlayerEventArgs args) =>
+            {
                 CSM.Log($"Player {args.Player.Username} has disconnected!");
                 SendToClients(CommandBase.ClientDisconnectCommandId, new ClientDisconnectCommand { Username = args.Player.Username });
                 MultiplayerManager.Instance.PlayerList.Remove(args.Player.Username);
@@ -203,8 +206,10 @@ namespace CSM.Networking
 
             // Timeout clients if they are not responding
             DateTime now = DateTime.UtcNow;
-            foreach (KeyValuePair<long, Player> player in _connectedClients) {
-                if (player.Value.LastPing.AddSeconds(TIMEOUT) < now) {
+            foreach (KeyValuePair<long, Player> player in _connectedClients)
+            {
+                if (player.Value.LastPing.AddSeconds(TIMEOUT) < now)
+                {
                     CSM.Log($"Player {player.Value.Username} has timed out!");
 
                     this._connectedClients.Remove(player.Key);
@@ -236,13 +241,15 @@ namespace CSM.Networking
                 var message = reader.Data.Skip(1).ToArray();
 
                 // Make sure we know about the connected client
-                if (messageType != CommandBase.ConnectionRequestCommandId && !this._connectedClients.ContainsKey(peer.ConnectId)) {
+                if (messageType != CommandBase.ConnectionRequestCommandId && !this._connectedClients.ContainsKey(peer.ConnectId))
+                {
                     CSM.Log($"Client from {peer.EndPoint.Host}:{peer.EndPoint.Port} tried to send packet but never joined with a ConnectionRequestCommand packet. Ignoring...");
                     return;
                 }
 
                 Player player = null;
-                if (messageType != CommandBase.ConnectionRequestCommandId) {
+                if (messageType != CommandBase.ConnectionRequestCommandId)
+                {
                     player = this._connectedClients[peer.ConnectId];
                 }
 
@@ -279,9 +286,11 @@ namespace CSM.Networking
                         SendToClient(peer, CommandBase.ConnectionCloseCommandId, new ConnectionCloseCommand());
 
                         break;
+
                     case CommandBase.PingCommandId:
                         player.LastPing = DateTime.UtcNow;
                         break;
+
                     case CommandBase.PauseCommandID:
                         var pause = CommandBase.Deserialize<PauseCommand>(message);
                         SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
@@ -316,14 +325,14 @@ namespace CSM.Networking
                         }
                         break;
 
-					case CommandBase.BuildingRelocatedCommandID:
-						var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
-						long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-						long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
-						var BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
-						Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
-						break;
-				}
+                    case CommandBase.BuildingRelocatedCommandID:
+                        var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
+                        long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+                        long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
+                        var BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
+                        Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -333,14 +342,16 @@ namespace CSM.Networking
 
         private void OnClientConnected(Player player)
         {
-            if (ClientConnect != null) {
+            if (ClientConnect != null)
+            {
                 ClientConnect(this, new PlayerEventArgs(player));
             }
         }
 
         private void OnClientDisconnected(Player player)
         {
-            if (ClientDisconnect != null) {
+            if (ClientDisconnect != null)
+            {
                 ClientDisconnect(this, new PlayerEventArgs(player));
             }
         }

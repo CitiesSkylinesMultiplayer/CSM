@@ -32,6 +32,7 @@ namespace CSM.Extensions
                         break;
                 }
             }
+
             if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused)
             {
                 switch (MultiplayerManager.Instance.CurrentRole)
