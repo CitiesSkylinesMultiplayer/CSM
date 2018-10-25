@@ -39,13 +39,13 @@ On every commit and pull request, Azure Pipelines will build a new version. You 
 *Initial phase for setting up the mod.*
 
 - [x] Build Basic UI
-- [x] Allow basic connect, disconnect and host. *Currently broken in game*
+- [x] Allow basic connect, disconnect and host.
 
 ### Phase 2
 *Make the mod easier to develop for/run. Build server management (kick users, view users). Allow sending messages through chat (works both in game and for debugging.*
 
 - [x] Automatic Build Script.
-- [ ] Keep track of and view clients connected to a server.
+- [x] Keep track of and view clients connected to a server.
 - [ ] Client can request a list of other clients connected to the server.
 - [ ] Build event system around client join, leave etc.
 
