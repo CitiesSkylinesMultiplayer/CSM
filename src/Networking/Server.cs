@@ -274,15 +274,16 @@ namespace CSM.Networking
                         }
 
                         // Check to see if the mod version matches
-                        if (connectionRequest.ModVersion != Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString())
-                        {
-                            SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
-                            {
-                                Success = false,
-                                Reason = $"Client and server have different CSM Mod versions. Client: {connectionRequest.ModVersion}, Server: {Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString()}."
-                            });
-                            break;
-                        }
+                        // TODO: Disable this on development, but enable on release.
+                        //if (connectionRequest.ModVersion != Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString())
+                        //{
+                        //    SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
+                        //    {
+                        //        Success = false,
+                        //        Reason = $"Client and server have different CSM Mod versions. Client: {connectionRequest.ModVersion}, Server: {Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString()}."
+                        //    });
+                        //    break;
+                        //}
 
                         // Check the client username to see if anyone on the server already have a username
                         var hasExistingPlayer = _connectedClients.Any(x => x.Value.Username == connectionRequest.Username);
