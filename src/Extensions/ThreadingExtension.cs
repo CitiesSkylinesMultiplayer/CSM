@@ -5,6 +5,7 @@ using ICities;
 namespace CSM.Extensions
 {
     /// <summary>
+    ///     TODO, We need to sync the current time as well
     /// </summary>
     public class ThreadingExtension : ThreadingExtensionBase
     {

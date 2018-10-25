@@ -239,16 +239,17 @@ namespace CSM.Networking
                         // Get the result
                         var connectionResult = CommandBase.Deserialize<ConnectionResultCommand>(message);
 
+                        // If we are allowed to connect
                         if (connectionResult.Success)
                         {
                             // Log and set that we are connected.
-                            CSM.Log($"Successfully connected to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}.");
+                            CSM.Log($"Successfully connected to server.");
                             Status = ClientStatus.Connected;
                         }
                         else
                         {
-                            CSM.Log($"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}");
-                            ConnectionMessage = $"Could not connect to server at {peer.EndPoint.Host}:{peer.EndPoint.Port}. Disconnecting... Error Message: {connectionResult.Reason}";
+                            CSM.Log($"Could not connect: {connectionResult.Reason}");
+                            ConnectionMessage = $"Could not connect: {connectionResult.Reason}";
                             Disconnect();
                         }
                         break;
@@ -327,10 +328,15 @@ namespace CSM.Networking
                         break;
 
                     case CommandBase.RoadCommandID:
-                        UnityEngine.Debug.Log("Road Command Recived");
                         var Roads = CommandBase.Deserialize<RoadCommand>(message);
                         NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);
                         Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.StartNode, Roads.EndNode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
+                        break;
+
+                    case CommandBase.WorldInfoCommand:
+                        var worldInfo = CommandBase.Deserialize<WorldInfoCommand>(message);
+                        SimulationManager.instance.m_currentGameTime = worldInfo.CurrentGameTime;
+                        SimulationManager.instance.m_currentDayTimeHour = worldInfo.CurrentDayTimeHour;
                         break;
                 }
             }

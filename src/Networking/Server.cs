@@ -256,22 +256,70 @@ namespace CSM.Networking
                 // Switch between all the messages
                 switch (messageType)
                 {
+                    // A client is requesting to connect to the server
                     case CommandBase.ConnectionRequestCommandId:
 
-                        var connectionResult = CommandBase.Deserialize<ConnectionRequestCommand>(message);
+                        // Get the connection request
+                        var connectionRequest = CommandBase.Deserialize<ConnectionRequestCommand>(message);
 
-                        CSM.Log($"Connection request from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Version: {connectionResult.GameVersion}, ModCount: {connectionResult.ModCount}, ModVersion: {connectionResult.ModVersion}");
+                        // Check to see if the game versions match
+                        if (connectionRequest.GameVersion != BuildConfig.applicationVersion)
+                        {
+                            SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
+                            {
+                                Success = false,
+                                Reason = $"Client and server have different game versions. Client: {connectionRequest.GameVersion}, Server: {BuildConfig.applicationVersion}."
+                            });
+                            break;
+                        }
 
-                        // TODO check these values, but for now, just accept the request.
-                        // TODO check if the username already exists
+                        // Check to see if the mod version matches
+                        if (connectionRequest.ModVersion != Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString())
+                        {
+                            SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
+                            {
+                                Success = false,
+                                Reason = $"Client and server have different CSM Mod versions. Client: {connectionRequest.ModVersion}, Server: {Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString()}."
+                            });
+                            break;
+                        }
 
-                        var newPlayer = new Player(peer, connectionResult.Username);
-                        this._connectedClients[peer.ConnectId] = newPlayer;
+                        // Check the client username to see if anyone on the server already have a username
+                        var hasExistingPlayer = _connectedClients.Any(x => x.Value.Username == connectionRequest.Username);
+                        if (hasExistingPlayer)
+                        {
+                            SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
+                            {
+                                Success = false,
+                                Reason = "This username is already in use."
+                            });
+                            break;
+                        }
+
+                        // Check the password to see if it matches (only if the server has provided a password).
+                        if (!string.IsNullOrEmpty(Config.Password))
+                        {
+                            if (connectionRequest.Password != Config.Password)
+                            {
+                                SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
+                                {
+                                    Success = false,
+                                    Reason = "Invalid password for this server."
+                                });
+                                break;
+                            }
+                        }
+
+                        var newPlayer = new Player(peer, connectionRequest.Username);
+                        _connectedClients[peer.ConnectId] = newPlayer;
 
                         SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true });
 
                         // Send current player list (without the newly joined player)
                         SendToClient(peer, CommandBase.PlayerListCommand, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
+
+                        // Send the world info command, sets up the players world
+                        SendToClient(peer, CommandBase.WorldInfoCommand, new WorldInfoCommand { CurrentGameTime = SimulationManager.instance.m_currentGameTime, CurrentDayTimeHour = SimulationManager.instance.m_currentDayTimeHour });
 
                         this.OnClientConnected(newPlayer);
                         break;

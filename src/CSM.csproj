@@ -78,11 +78,13 @@
     <Compile Include="Commands\PauseCommand.cs" />
     <Compile Include="Commands\RoadCommand.cs" />
     <Compile Include="Commands\SpeedCommand.cs" />
+    <Compile Include="Commands\WorldInfoCommand.cs" />
     <Compile Include="Events\PlayerEvents.cs" />
     <Compile Include="Events\PlayerEventArgs.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
+    <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Extensions\RoadExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
