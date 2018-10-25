@@ -342,18 +342,12 @@ namespace CSM.Networking
 
         private void OnClientConnected(Player player)
         {
-            if (ClientConnect != null)
-            {
-                ClientConnect(this, new PlayerEventArgs(player));
-            }
+            ClientConnect?.Invoke(this, new PlayerEventArgs(player));
         }
 
         private void OnClientDisconnected(Player player)
         {
-            if (ClientDisconnect != null)
-            {
-                ClientDisconnect(this, new PlayerEventArgs(player));
-            }
+            ClientDisconnect?.Invoke(this, new PlayerEventArgs(player));
         }
 
         /// <summary>

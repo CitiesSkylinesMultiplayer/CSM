@@ -81,6 +81,7 @@
     <Compile Include="Events\PlayerEvents.cs" />
     <Compile Include="Events\PlayerEventArgs.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
+    <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Extensions\RoadExtension.cs" />
