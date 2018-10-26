@@ -299,7 +299,10 @@ namespace CSM.Networking
                         var internalMoney = CommandBase.Deserialize<MoneyCommand>(message);
                         typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
                         typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-                        break;
+						typeof(EconomyManager).GetField("m_totalExpenses", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.TotalExpenses);
+						typeof(EconomyManager).GetField("m_totalIncome", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.TotalIncome);
+
+						break;
 
                     case CommandBase.BuildingCreatedCommandID:
                         var Buildings = CommandBase.Deserialize<BuildingCreatedCommand>(message);

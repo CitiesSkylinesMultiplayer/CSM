@@ -3,19 +3,21 @@ using CSM.Commands;
 using CSM.Networking;
 using ICities;
 using System.Reflection;
+using System;
 
 namespace CSM.Extensions
 {
     /// <summary>
     ///     Handles game economy. Sends the MoneyAmount between Server and Client
-    ///     Also sets the income and the expenses to 0 on the client side, making the server handling income and expenses
-    ///
-    ///     TODO: The UI keeps track of the income and expenses by using the private arrays m_totalIncome and m_totalExpanses in EconomyManager
-    ///     To get the income showing on the client UI these have to be send and copied to the client side, right now income and expences just show 0.
+    ///     sets the income and the expenses to 0 on the client side, making the server handling income and expenses
+	///     Sync the total income and expences on the UI
     /// </summary>
     public class EconomyExtension : EconomyExtensionBase
     {
         private long _lastMoneyAmount;
+		//private int[] _taxrate;
+		//private int[] _serviceBudgetNight;
+		//private int[] _serviceBudgetDay;
 
         public override long OnUpdateMoneyAmount(long internalMoneyAmount) //function that checks if the money updates
         {
@@ -24,17 +26,26 @@ namespace CSM.Extensions
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
                     case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.MoneyCommandID, new MoneyCommand
+						if (_lastMoneyAmount != (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance))
+							MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.MoneyCommandID, new MoneyCommand
                         {
-                            InternalMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance)
+							InternalMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance)
                         });
+
+
+
+
                         break;
 
                     case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.MoneyCommandID, new MoneyCommand
-                        {
-                            InternalMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance)
-                        });
+						if (_lastMoneyAmount != (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance))
+							MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.MoneyCommandID, new MoneyCommand
+							{
+								InternalMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance),
+								TotalExpenses = (long[])typeof(EconomyManager).GetField("m_totalExpenses", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance),
+								TotalIncome = (long[])typeof(EconomyManager).GetField("m_totalIncome", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance)
+
+							});
                         break;
                 }
             }
