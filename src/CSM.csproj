@@ -72,6 +72,7 @@
     <Compile Include="Commands\ConnectionCloseCommand.cs" />
     <Compile Include="Commands\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\ConnectionResultCommand.cs" />
+    <Compile Include="Commands\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\PlayerListCommand.cs" />
     <Compile Include="Commands\MoneyCommand.cs" />
     <Compile Include="Commands\PingCommand.cs" />

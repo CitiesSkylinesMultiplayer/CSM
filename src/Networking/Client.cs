@@ -338,7 +338,16 @@ namespace CSM.Networking
                         SimulationManager.instance.m_currentGameTime = worldInfo.CurrentGameTime;
                         SimulationManager.instance.m_currentDayTimeHour = worldInfo.CurrentDayTimeHour;
                         break;
-                }
+
+					case CommandBase.DemandDisplayedCommandID:
+						var DemandInfo = CommandBase.Deserialize<DemandDisplayedCommand>(message);
+						Singleton<ZoneManager>.instance.m_residentialDemand = DemandInfo.ResidentialDemand;
+						Singleton<ZoneManager>.instance.m_commercialDemand = DemandInfo.CommercialDemand;
+						Singleton<ZoneManager>.instance.m_workplaceDemand = DemandInfo.WorkplaceDemand;
+						break;
+
+
+				}
             }
             catch (Exception ex)
             {
