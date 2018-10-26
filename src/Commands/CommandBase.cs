@@ -31,6 +31,7 @@ namespace CSM.Commands
         public const byte BuildingCreatedCommandID = 103;
         public const byte BuildingRemovedCommandID = 104;
         public const byte BuildingRelocatedCommandID = 105;
+		public const byte DemandDisplayedCommandID = 106;
 
         public const byte RoadCommandID = 110;
 
