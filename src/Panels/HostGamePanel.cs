@@ -3,6 +3,7 @@ using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
 using System.Net;
+using System.Net.Sockets;
 
 namespace CSM.Panels
 {
@@ -56,7 +57,7 @@ namespace CSM.Panels
             _localIP = this.createLabel("", new Vector2(10, -400))
             _localIP.textAlignment = UIHorizontalAlignment.Center;
             _localIP.textColor = new Color32(0, 255, 0, 255);
-            _localIP.text = string.format("Local IP: {0}", getLocalIP());
+            _localIP.text = string.format("Local IP: {0}", GetLocalIPAddress());
 
             // Create Server Button
             _createButton = this.CreateButton("Create Server", new Vector2(10, -260));
@@ -115,8 +116,13 @@ namespace CSM.Panels
             isVisible = false;
         }
         
-        private static string getLocalIP() {
-            return Dns.GetHostByName(Dns.GetHostName()).AddressList[0].ToString();
+        private static string GetLocalIPAddress() {
+            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                return endPoint.Address.ToString();
+            }
         }
     }
 }
