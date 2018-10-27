@@ -11,6 +11,8 @@ namespace CSM.Panels
         private UITextField _passwordField;
 
         private UILabel _connectionStatus;
+        private UILabel _localIP;
+        private UILabel _externalIP;
 
         private UIButton _createButton;
         private UIButton _closeButton;
@@ -28,10 +30,10 @@ namespace CSM.Panels
             var view = UIView.GetAView();
 
             // Center this window in the game
-            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 200.0f);
+            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 215.0f);
 
             width = 360;
-            height = 400;
+            height = 430;
 
             // Title Label
             this.CreateTitleLabel("Host Server", new Vector2(120, -20));
@@ -50,12 +52,26 @@ namespace CSM.Panels
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
+            // Create Local IP Label
+            string sLocalIP = IPAddress.GetLocalIPAddress();
+            _localIP = this.CreateLabel("", new Vector2(10, -230));
+            _localIP.textAlignment = UIHorizontalAlignment.Center;
+            _localIP.textColor = sLocalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+            _localIP.text = string.Format("Local IP: {0}", sLocalIP);
+
+            // Create External IP Label
+            string sExternalIP = IPAddress.GetExternalIPAddress();
+            _externalIP = this.CreateLabel("", new Vector2(10, -250));
+            _externalIP.textAlignment = UIHorizontalAlignment.Center;
+            _externalIP.textColor = sExternalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+            _externalIP.text = string.Format("External IP: {0}", sExternalIP);
+
             // Create Server Button
-            _createButton = this.CreateButton("Create Server", new Vector2(10, -260));
+            _createButton = this.CreateButton("Create Server", new Vector2(10, -290));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -330));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -360));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
