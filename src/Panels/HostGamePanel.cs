@@ -58,6 +58,12 @@ namespace CSM.Panels
             _localIP.textColor = new Color32(0, 255, 0, 255);
             _localIP.text = string.Format("Local IP: {0}", IPAddress.GetLocalIPAddress());
 
+            // Create External IP Label
+            _externalIP = this.CreateLabel("", new Vector2(10, -430));
+            _externalIP.textAlignment = UIHorizontalAlignment.Center;
+            _externalIP.textColor = new Color32(0, 255, 0, 255);
+            _externalIP.text = string.Format("External IP: {0}", IPAddress.GetExternalIPAddress());
+
             // Create Server Button
             _createButton = this.CreateButton("Create Server", new Vector2(10, -260));
             _createButton.eventClick += OnCreateServerClick;
