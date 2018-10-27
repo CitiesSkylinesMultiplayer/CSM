@@ -2,8 +2,6 @@
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
-using System.Net;
-using System.Net.Sockets;
 
 namespace CSM.Panels
 {
@@ -14,6 +12,7 @@ namespace CSM.Panels
 
         private UILabel _connectionStatus;
         private UILabel _localIP;
+        private UILabel _externalIP;
 
         private UIButton _createButton;
         private UIButton _closeButton;
@@ -52,12 +51,12 @@ namespace CSM.Panels
             _connectionStatus = this.CreateLabel("", new Vector2(10, -230));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            
+
             // Create Local IP Label
-            _localIP = this.createLabel("", new Vector2(10, -400))
+            _localIP = this.CreateLabel("", new Vector2(10, -400));
             _localIP.textAlignment = UIHorizontalAlignment.Center;
             _localIP.textColor = new Color32(0, 255, 0, 255);
-            _localIP.text = string.format("Local IP: {0}", GetLocalIPAddress());
+            _localIP.text = string.Format("Local IP: {0}", IPAddress.GetLocalIPAddress());
 
             // Create Server Button
             _createButton = this.CreateButton("Create Server", new Vector2(10, -260));
@@ -114,15 +113,6 @@ namespace CSM.Panels
             // Clear warnings/errors and hide panel
             _connectionStatus.text = "";
             isVisible = false;
-        }
-        
-        private static string GetLocalIPAddress() {
-            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
-            {
-                socket.Connect("8.8.8.8", 65530);
-                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-                return endPoint.Address.ToString();
-            }
         }
     }
 }
