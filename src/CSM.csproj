@@ -94,6 +94,7 @@
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
+    <Compile Include="Networking\IPAddress.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
     <Compile Include="Networking\Player.cs" />
     <Compile Include="Networking\Server.cs" />
