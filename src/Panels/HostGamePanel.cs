@@ -63,7 +63,7 @@ namespace CSM.Panels
             string sExternalIP = IPAddress.GetExternalIPAddress();
             _externalIP = this.CreateLabel("", new Vector2(10, -450));
             _externalIP.textAlignment = UIHorizontalAlignment.Center;
-            _localIP.textColor = sExternalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+            _externalIP.textColor = sExternalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
             _externalIP.text = string.Format("External IP: {0}", sExternalIP);
 
             // Create Server Button
