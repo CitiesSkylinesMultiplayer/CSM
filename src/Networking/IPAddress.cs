@@ -23,5 +23,17 @@ namespace CSM.Networking
                 return "Not found";
             }
         }
+
+        public static string GetExternalIPAddress()
+        {
+            try
+            {
+                return new WebClient().DownloadString("https://api.ipify.org");
+            }
+            catch (Exception)
+            {
+                return "Not found";
+            }
+        }
     }
 }
