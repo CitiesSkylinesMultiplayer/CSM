@@ -1,5 +1,4 @@
 ﻿using CSM.Commands;
-using CSM.Networking;
 using ICities;
 
 namespace CSM.Extensions
@@ -16,42 +15,18 @@ namespace CSM.Extensions
         {
             if (_lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
             {
-                switch (MultiplayerManager.Instance.CurrentRole)
+                Command.SendToAll(new SpeedCommand
                 {
-                    case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.SpeedCommandID, new SpeedCommand
-                        {
-                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed
-                        });
-                        break;
-
-                    case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.SpeedCommandID, new SpeedCommand
-                        {
-                            SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed
-                        });
-                        break;
-                }
+                    SelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed
+                });
             }
 
             if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused)
             {
-                switch (MultiplayerManager.Instance.CurrentRole)
+                Command.SendToAll(new PauseCommand
                 {
-                    case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.PauseCommandID, new PauseCommand
-                        {
-                            SimulationPaused = SimulationManager.instance.SimulationPaused
-                        });
-                        break;
-
-                    case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.PauseCommandID, new PauseCommand
-                        {
-                            SimulationPaused = SimulationManager.instance.SimulationPaused
-                        });
-                        break;
-                }
+                    SimulationPaused = SimulationManager.instance.SimulationPaused
+                });
             }
 
             _lastSimulationPausedState = SimulationManager.instance.SimulationPaused;

@@ -1,6 +1,5 @@
 ﻿using CSM.Commands;
 using CSM.Helpers;
-using CSM.Networking;
 using ICities;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,30 +46,14 @@ namespace CSM.Extensions
 
             if (LastPosition != position)
             {
-                switch (MultiplayerManager.Instance.CurrentRole)
+                Command.SendToAll(new BuildingCreateCommand
                 {
-                    case MultiplayerRole.Server:
-                        MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.BuildingCreatedCommandID, new BuildingCreatedCommand
-                        {
-                            BuildingID = id,
-                            Position = position,
-                            Infoindex = infoindex,
-                            Angle = angle,
-                            Length = length,
-                        });
-                        break;
-
-                    case MultiplayerRole.Client:
-                        MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.BuildingCreatedCommandID, new BuildingCreatedCommand
-                        {
-                            BuildingID = id,
-                            Position = position,
-                            Infoindex = infoindex,
-                            Angle = angle,
-                            Length = length,
-                        });
-                        break;
-                }
+                    BuildingID = id,
+                    Position = position,
+                    Infoindex = infoindex,
+                    Angle = angle,
+                    Length = length,
+                });
             }
 
             // when a building is created its position is added to the dictionary
@@ -84,22 +67,11 @@ namespace CSM.Extensions
             base.OnBuildingReleased(id);
             var position = BuildingManager.instance.m_buildings.m_buffer[id].m_position; //Sending the position of the deleted building is nessesary to calculate the index in M_buildinggrid[index] and get the BuildingID
 
-            switch (MultiplayerManager.Instance.CurrentRole)
+            Command.SendToAll(new BuildingRemoveCommand
             {
-                case MultiplayerRole.Server:
-                    MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.BuildingRemovedCommandID, new BuildingRemovedCommand
-                    {
-                        Position = position,
-                    });
-                    break;
-
-                case MultiplayerRole.Client:
-                    MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.BuildingRemovedCommandID, new BuildingRemovedCommand
-                    {
-                        Position = position,
-                    });
-                    break;
-            }
+                Position = position
+            });
+            
             _oldPosition.Remove(id); // when a building is released its position is removed to the dictionary
         }
 
@@ -115,26 +87,12 @@ namespace CSM.Extensions
             var newPosition = BuildingManager.instance.m_buildings.m_buffer[id].m_position;
             var angle = BuildingManager.instance.m_buildings.m_buffer[id].m_angle;
 
-            switch (MultiplayerManager.Instance.CurrentRole)
+            Command.SendToAll(new BuildingRelocateCommand
             {
-                case MultiplayerRole.Server:
-                    MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.BuildingRelocatedCommandID, new BuildingRelocationCommand
-                    {
-                        OldPosition = oldPosition,
-                        NewPosition = newPosition,
-                        Angle = angle,
-                    });
-                    break;
-
-                case MultiplayerRole.Client:
-                    MultiplayerManager.Instance.CurrentClient.SendToServer(CommandBase.BuildingRelocatedCommandID, new BuildingRelocationCommand
-                    {
-                        OldPosition = oldPosition,
-                        NewPosition = newPosition,
-                        Angle = angle,
-                    });
-                    break;
-            }
+                OldPosition = oldPosition,
+                NewPosition = newPosition,
+                Angle = angle,
+            });
 
             _oldPosition.Remove(id);
             _oldPosition.Add(id, newPosition);

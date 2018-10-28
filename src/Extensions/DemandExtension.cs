@@ -40,7 +40,7 @@ namespace CSM.Extensions
 						var CommercialDemand = Singleton<ZoneManager>.instance.m_commercialDemand;
 						var WorkplaceDemant = Singleton<ZoneManager>.instance.m_workplaceDemand;
 
-						MultiplayerManager.Instance.CurrentServer.SendToClients(CommandBase.DemandDisplayedCommandID, new DemandDisplayedCommand
+						Command.SendToClients(new DemandDisplayedCommand
 						{
 							ResidentialDemand = ResidentialDemand,
 							CommercialDemand = CommercialDemand,
@@ -65,7 +65,5 @@ namespace CSM.Extensions
 			}
 			return base.OnCalculateWorkplaceDemand(originalDemand);
 		}
-
-
 	}
 }

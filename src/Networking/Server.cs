@@ -1,7 +1,6 @@
-﻿using ColossalFramework;
+﻿
 using CSM.Commands;
-using CSM.Events;
-using CSM.Extensions;
+using CSM.Commands.Handler;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
@@ -10,10 +9,7 @@ using LiteNetLib.Utils;
 using Open.Nat;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
-using UnityEngine;
 
 namespace CSM.Networking
 {
@@ -26,7 +22,7 @@ namespace CSM.Networking
         private const int TIMEOUT = 15;
 
         // The server
-        public LiteNetLib.NetManager NetServer { get; }
+        private LiteNetLib.NetManager _netServer;
 
         // Run a background processing thread
         private Thread _serverProcessingThread;
@@ -35,7 +31,7 @@ namespace CSM.Networking
         private System.Timers.Timer _pingTimer;
 
         // Connected clients
-        private readonly Dictionary<long, Player> _connectedClients = new Dictionary<long, Player>();
+        public Dictionary<long, Player> ConnectedPlayers { get; } = new Dictionary<long, Player>();
 
         // The player instance for the host player (TODO: Make name configurable)
         private Player _hostPlayer = new Player("Host player");
@@ -48,15 +44,11 @@ namespace CSM.Networking
         /// </summary>
         public ServerStatus Status { get; private set; }
 
-        public event PlayerConnectEventHandler ClientConnect;
-
-        public event PlayerDisconnectEventHandler ClientDisconnect;
-
         public Server()
         {
             // Set up network items
             var listener = new EventBasedNetListener();
-            NetServer = new LiteNetLib.NetManager(listener, "Tango");
+            _netServer = new LiteNetLib.NetManager(listener, "Tango");
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
@@ -67,20 +59,6 @@ namespace CSM.Networking
             _pingTimer.Elapsed += OnPing;
             _pingTimer.Interval = 100;
             _pingTimer.Start();
-
-            ClientConnect += (Server server, PlayerEventArgs args) =>
-            {
-                CSM.Log($"Player {args.Player.Username} has connected!");
-                SendToClients(CommandBase.ClientConnectCommandId, new ClientConnectCommand { Username = args.Player.Username });
-                MultiplayerManager.Instance.PlayerList.Add(args.Player.Username);
-            };
-
-            ClientDisconnect += (Server server, PlayerEventArgs args) =>
-            {
-                CSM.Log($"Player {args.Player.Username} has disconnected!");
-                SendToClients(CommandBase.ClientDisconnectCommandId, new ClientDisconnectCommand { Username = args.Player.Username });
-                MultiplayerManager.Instance.PlayerList.Remove(args.Player.Username);
-            };
         }
 
         /// <summary>
@@ -101,8 +79,8 @@ namespace CSM.Networking
             CSM.Log($"Attempting to start server on port {Config.Port}...");
 
             // Attempt to start the server
-            NetServer.DiscoveryEnabled = true;
-            var result = NetServer.Start(Config.Port);
+            _netServer.DiscoveryEnabled = true;
+            var result = _netServer.Start(Config.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
@@ -148,7 +126,7 @@ namespace CSM.Networking
         {
             // Update status and stop the server
             Status = ServerStatus.Stopped;
-            NetServer.Stop();
+            _netServer.Stop();
 
             MultiplayerManager.Instance.PlayerList.Clear();
 
@@ -165,7 +143,7 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            NetServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+            _netServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
         }
 
         /// <summary>
@@ -188,7 +166,7 @@ namespace CSM.Networking
             while (Status == ServerStatus.Running)
             {
                 // Poll for new events
-                NetServer.PollEvents();
+                _netServer.PollEvents();
 
                 // Wait
                 Thread.Sleep(15);
@@ -206,23 +184,21 @@ namespace CSM.Networking
 
             // Timeout clients if they are not responding
             DateTime now = DateTime.UtcNow;
-            foreach (KeyValuePair<long, Player> player in _connectedClients)
+            foreach (KeyValuePair<long, Player> player in ConnectedPlayers)
             {
                 if (player.Value.LastPing.AddSeconds(TIMEOUT) < now)
                 {
                     CSM.Log($"Player {player.Value.Username} has timed out!");
 
-                    this._connectedClients.Remove(player.Key);
-                    NetServer.DisconnectPeer(player.Value.NetPeer);
-                    this.OnClientDisconnected(player.Value);
+                    HandlePlayerDisconnect(player.Value);
                 }
             }
 
             // Loop though all connected peers
-            foreach (var player in _connectedClients.Values)
+            foreach (var player in ConnectedPlayers.Values)
             {
                 // Send a ping
-                player.NetPeer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
+                Command.SendToClient(player, new PingCommand());
             }
         }
 
@@ -234,169 +210,41 @@ namespace CSM.Networking
         {
             try
             {
-                // The message type is the first byte, (255 message types)
-                var messageType = reader.Data[0];
-
-                // Skip the first byte
-                var message = reader.Data.Skip(1).ToArray();
-
-                // Make sure we know about the connected client
-                if (messageType != CommandBase.ConnectionRequestCommandId && !this._connectedClients.ContainsKey(peer.ConnectId))
+                // Handle ConnectionRequest as special case
+                if (reader.Data[0] == 0)
                 {
-                    CSM.Log($"Client from {peer.EndPoint.Host}:{peer.EndPoint.Port} tried to send packet but never joined with a ConnectionRequestCommand packet. Ignoring...");
+                    Command.Parse(reader.Data, out CommandHandler handler, out byte[] message);
+                    ConnectionRequestHandler requestHandler = (ConnectionRequestHandler) handler;
+                    requestHandler.HandleOnServer(message, peer);
                     return;
                 }
 
-                Player player = null;
-                if (messageType != CommandBase.ConnectionRequestCommandId)
-                {
-                    player = this._connectedClients[peer.ConnectId];
-                }
+                this.ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player);
 
-                // Switch between all the messages
-                switch (messageType)
-                {
-                    // A client is requesting to connect to the server
-                    case CommandBase.ConnectionRequestCommandId:
-
-                        // Get the connection request
-                        var connectionRequest = CommandBase.Deserialize<ConnectionRequestCommand>(message);
-
-                        // Check to see if the game versions match
-                        if (connectionRequest.GameVersion != BuildConfig.applicationVersion)
-                        {
-                            SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
-                            {
-                                Success = false,
-                                Reason = $"Client and server have different game versions. Client: {connectionRequest.GameVersion}, Server: {BuildConfig.applicationVersion}."
-                            });
-                            break;
-                        }
-
-                        // Check to see if the mod version matches
-                        // TODO: Disable this on development, but enable on release.
-                        //if (connectionRequest.ModVersion != Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString())
-                        //{
-                        //    SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
-                        //    {
-                        //        Success = false,
-                        //        Reason = $"Client and server have different CSM Mod versions. Client: {connectionRequest.ModVersion}, Server: {Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString()}."
-                        //    });
-                        //    break;
-                        //}
-
-                        // Check the client username to see if anyone on the server already have a username
-                        var hasExistingPlayer = _connectedClients.Any(x => x.Value.Username == connectionRequest.Username);
-                        if (hasExistingPlayer)
-                        {
-                            SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
-                            {
-                                Success = false,
-                                Reason = "This username is already in use."
-                            });
-                            break;
-                        }
-
-                        // Check the password to see if it matches (only if the server has provided a password).
-                        if (!string.IsNullOrEmpty(Config.Password))
-                        {
-                            if (connectionRequest.Password != Config.Password)
-                            {
-                                SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand
-                                {
-                                    Success = false,
-                                    Reason = "Invalid password for this server."
-                                });
-                                break;
-                            }
-                        }
-
-                        var newPlayer = new Player(peer, connectionRequest.Username);
-                        _connectedClients[peer.ConnectId] = newPlayer;
-
-                        SendToClient(peer, CommandBase.ConnectionResultCommandId, new ConnectionResultCommand { Success = true });
-
-                        // Send current player list (without the newly joined player)
-                        SendToClient(peer, CommandBase.PlayerListCommand, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
-
-                        // Send the world info command, sets up the players world
-                        SendToClient(peer, CommandBase.WorldInfoCommand, new WorldInfoCommand { CurrentGameTime = SimulationManager.instance.m_currentGameTime, CurrentDayTimeHour = SimulationManager.instance.m_currentDayTimeHour });
-
-                        this.OnClientConnected(newPlayer);
-                        break;
-
-                    case CommandBase.ConnectionCloseCommandId:
-
-                        this._connectedClients.Remove(peer.ConnectId);
-
-                        this.OnClientDisconnected(player);
-
-                        // Send quit confirmation
-                        SendToClient(peer, CommandBase.ConnectionCloseCommandId, new ConnectionCloseCommand());
-
-                        break;
-
-                    case CommandBase.PingCommandId:
-                        player.LastPing = DateTime.UtcNow;
-                        break;
-
-                    case CommandBase.PauseCommandID:
-                        var pause = CommandBase.Deserialize<PauseCommand>(message);
-                        SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
-                        break;
-
-                    case CommandBase.SpeedCommandID:
-                        var speed = CommandBase.Deserialize<SpeedCommand>(message);
-                        SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
-                        break;
-
-                    case CommandBase.MoneyCommandID:
-                        var internalMoney = CommandBase.Deserialize<MoneyCommand>(message);
-                        typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-                        typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-                        break;
-
-                    case CommandBase.BuildingCreatedCommandID:
-                        var Buildings = CommandBase.Deserialize<BuildingCreatedCommand>(message);
-                        BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
-                        BuildingExtension.LastPosition = Buildings.Position;
-                        Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angle, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
-                        break;
-
-                    case CommandBase.BuildingRemovedCommandID:
-                        var BuildingRemovedPosition = CommandBase.Deserialize<BuildingRemovedCommand>(message);
-                        long num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d);  //The buildingID is stored in the M_buildingGrid[] which is calculated by thís arbitrary calculation using the buildings position
-                        long index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
-                        var BuildingId = BuildingManager.instance.m_buildingGrid[index];
-                        if (BuildingId != 0)
-                        {
-                            BuildingManager.instance.ReleaseBuilding(BuildingId);
-                        }
-                        break;
-
-                    case CommandBase.BuildingRelocatedCommandID:
-                        var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
-                        long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-                        long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
-                        var BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
-                        Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
-                        break;
-                }
+                Command.ParseOnServer(reader.Data, player);
             }
             catch (Exception ex)
             {
-                CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+                CSM.Log($"Encountered an error from {peer.EndPoint.Host}:{peer.EndPoint.Port} while reading command. Message: {ex.Message}");
             }
         }
 
-        private void OnClientConnected(Player player)
+        public void HandlePlayerConnect(Player player)
         {
-            ClientConnect?.Invoke(this, new PlayerEventArgs(player));
+            CSM.Log($"Player {player.Username} has connected!");
+            MultiplayerManager.Instance.PlayerList.Add(player.Username);
+            Command.HandleClientConnect(player);
         }
 
-        private void OnClientDisconnected(Player player)
+        public void HandlePlayerDisconnect(Player player)
         {
-            ClientDisconnect?.Invoke(this, new PlayerEventArgs(player));
+            CSM.Log($"Player {player.Username} has disconnected!");
+
+            _netServer.DisconnectPeer(player.NetPeer, ArrayHelpers.PrependByte(Command.GetCommandId(typeof(ConnectionCloseCommand)), new ConnectionCloseCommand().Serialize()));
+
+            MultiplayerManager.Instance.PlayerList.Remove(player.Username);
+            this.ConnectedPlayers.Remove(player.NetPeer.ConnectId);
+            Command.HandleClientDisconnect(player);
         }
 
         /// <summary>

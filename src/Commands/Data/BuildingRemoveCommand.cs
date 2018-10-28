@@ -7,7 +7,7 @@ namespace CSM.Commands
     ///     This command is sent when a building is removed.
     /// </summary>
     [ProtoContract]
-    public class BuildingRemovedCommand : CommandBase
+    public class BuildingRemoveCommand : CommandBase
     {
         /// <summary>
         ///     The position of the building to be removed.
