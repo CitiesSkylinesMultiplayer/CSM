@@ -54,12 +54,6 @@ On every commit and pull request, Azure Pipelines will build a new version. You 
 *TBD*
 
 ## Developer Resources
-### Introduction
-This repository is split into two projects. `CSM` and `CSM.Testing`. `CSM` is the base project and contains all logic for the mod. `CSM.Testing` on the other hand helps simplify testing of multiplayer elements without having two games open.
-
-The wiki contains more information, but I'm aiming to transfer that information to this file.
-
-Ideally you should be running the latest version of Visual Studio 2017 on Windows 10.
 
 ### Installation
 The mod can manually installed using the built in scripts. The following steps will guide you though this. Please note: You will need to have Visual Studio 2017 & Cities: Skylines installed, be running Windows 10 and have developer mode enabled.
@@ -69,6 +63,42 @@ This script will automatically pull in the required files (after specifying a fo
 2. Run the following command in powershell `.\build.ps1 -Update -Build -Install`. This will match the mod to your game, build it and then install it. 
 4. When you run this script, it will ask you for your steam folder. This is just the root folder of steam, e.g 'C:\Program Files\Steam\' 
 5. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
+
+### Command IDs
+
+Whenever a new command is created, please update this table. You can also use this table to see which Ids are avaliable. Max ID is 255.
+
+|ID|Command|Handler|
+|--|--|--|
+|0|`ConnectionRequestCommand`|`ConnectionRequestHandler`|
+|1|`ConnectionResultCommand`|`ConnectionResultHandler`|
+|2|`ConnectionCloseCommand`|`ConnectionCloseHandler`|
+|3|`PingCommand`|`PingHandler`|
+|50|`ClientConnectCommand`|`ClientConnectHandler`|
+|51|`ClientDisconnectCommand`|`ClientDisonnectHandler`|
+|52|`PlayerListCommand`|`PlayerListHandler`|
+|53|`WorldInfoCommand`|`WorldInfoHandler`|
+|100|`SpeedCommand`|`SpeedHandler`|
+|101|`PauseCommand`|`PauseHandler`|
+|102|`MoneyCommand`|`MoneyHandler`|
+|103|`BuildingCreateCommand`|`BuildingCreateHandler`|
+|104|`BuildingRemoveCommand`|`BuildingRemoveHandler`|
+|105|`BuildingRelocateCommand`|`BuildingRelocateHandler`|
+|106|`DemandDisplayedCommand`|`DemandDisplayedHandler`|
+|110|`RoadCommand`|`RoadHandler`|
+
+### Creating a Command
+1. Create a new class under the `CSM.Commands` namespace (`src/Commands/Data` folder) with a suffux of `Command` (see other commands as an example).
+2. Adjust the class to extend `CommandBase`. Implement the class level attribute of `[ProtoContract]`.
+3. Create your getters and setters, these should all be public and contain public level get and set: `public Vector3 Position { get; set; }`.
+4. Annotate your getters and setters using `[ProtoMember(int)]`. Start at 1 and work your way up.
+5. Make sure you document your getters/setters and class.
+6. Create a new class under the `CSM.Commands.Handler` namespace (`src/Commands/Handler` folder) with a suffix of `Handler` (see other handlers as an example).
+7. Adjust this class to extend `CommandHandler<COMMAND>` where COMMAND is your newly created command.
+8. Override the ID setter, set it to a new ID that's not being used (see the table above).
+9. Update the table above reflecting your new command, command handler and id.
+10. Override other methods and implement logic.
+
 
 ### Client-Server Model
 This mod uses the client-server model. A user will setup their game as a server and transmit information like currency, roads, needs etc. to all connected clients. Clients will connect to the server and retrieve currency, roads, needs etc. from the server, updating the client UI.
