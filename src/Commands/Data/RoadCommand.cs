@@ -16,7 +16,7 @@ namespace CSM.Commands
         public Vector3 StartDirection { get; set; }
 
         [ProtoMember(4)]
-        public Vector3 Enddirection { get; set; }
+        public Vector3 EndDirection { get; set; }
 
         [ProtoMember(5)]
         public uint ModifiedIndex { get; set; }

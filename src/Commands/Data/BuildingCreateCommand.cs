@@ -7,7 +7,7 @@ namespace CSM.Commands
     ///     This command is sent when a building is created.
     /// </summary>
     [ProtoContract]
-    public class BuildingCreatedCommand : CommandBase
+    public class BuildingCreateCommand : CommandBase
     {
         [ProtoMember(1)]
         public ushort BuildingID { get; set; }

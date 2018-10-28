@@ -25,7 +25,7 @@ namespace CSM.Networking
         private const int TIMEOUT = 15;
 
         // The client
-        public LiteNetLib.NetManager NetClient { get; }
+        private LiteNetLib.NetManager _netClient;
 
         // Run a background processing thread
         private Thread _clientProcessingThread;
@@ -42,19 +42,19 @@ namespace CSM.Networking
         /// <summary>
         ///     The current status of the client
         /// </summary>
-        public ClientStatus Status { get; private set; }
+        public ClientStatus Status { get; set; }
 
         /// <summary>
         ///     If the status is disconnected, this will contain
         ///     the reason why.
         /// </summary>
-        public string ConnectionMessage { get; private set; }
+        public string ConnectionMessage { get; set; } = "Unknown error";
 
         public Client()
         {
             // Set up network items
             var listener = new EventBasedNetListener();
-            NetClient = new LiteNetLib.NetManager(listener, "Tango");
+            _netClient = new LiteNetLib.NetManager(listener, "Tango");
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
@@ -92,7 +92,7 @@ namespace CSM.Networking
 
             // Start the client, if client setup fails, return out and
             // tell the user
-            var result = NetClient.Start();
+            var result = _netClient.Start();
             if (!result)
             {
                 CSM.Log("The client failed to start.");
@@ -103,7 +103,7 @@ namespace CSM.Networking
 
             // Try connect to server, update the status to say that
             // we are trying to connect.
-            NetClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
+            _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
 
             // Start processing networking
             Status = ClientStatus.Connecting;
@@ -151,19 +151,22 @@ namespace CSM.Networking
             // Send quit packet if we had a connection
             if (Status == ClientStatus.Connected)
             {
-                SendToServer(CommandBase.ConnectionCloseCommandId, new ConnectionCloseCommand());
+                Command.SendToServer(new ConnectionCloseCommand());
+            }
+            else
+            {
+                Disconnect();
             }
         }
 
         /// <summary>
         ///     Attempt to disconnect from the server
         /// </summary>
-        /// <returns></returns>
         public void Disconnect()
         {
             // Update status and stop client
             Status = ClientStatus.Disconnected;
-            NetClient.Stop();
+            _netClient.Stop();
 
             _pingTimer.Stop();
 
@@ -175,7 +178,7 @@ namespace CSM.Networking
             if (Status == ClientStatus.Disconnected)
                 return;
 
-            NetClient.GetFirstPeer().Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+            _netClient.GetFirstPeer().Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
         }
 
         /// <summary>
@@ -188,7 +191,7 @@ namespace CSM.Networking
             while (Status == ClientStatus.Connected || Status == ClientStatus.Connecting)
             {
                 // Poll for new events
-                NetClient.PollEvents();
+                _netClient.PollEvents();
 
                 // Wait
                 Thread.Sleep(15);
@@ -196,12 +199,12 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        ///     Check if we are still conencted to the server
+        ///     Check if we are still connected to the server
         /// </summary>
         private void OnPing(object sender, System.Timers.ElapsedEventArgs e)
         {
             // Client not connected, don't worry about this code
-            if (Status == ClientStatus.Disconnected)
+            if (Status != ClientStatus.Connected)
                 return;
 
             // If we have not heard from the server in TIMEOUT seconds, it's probably gone
@@ -222,140 +225,20 @@ namespace CSM.Networking
         {
             try
             {
-                // The message type is the first byte, (255 message types)
-                var messageType = reader.Data[0];
-
-                // Skip the first byte
-                var message = reader.Data.Skip(1).ToArray();
-
-                // Switch between all the messages
-                switch (messageType)
-                {
-                    case CommandBase.ConnectionResultCommandId:
-                        // We only want this message while connecting
-                        if (Status != ClientStatus.Connecting)
-                            break;
-
-                        // Get the result
-                        var connectionResult = CommandBase.Deserialize<ConnectionResultCommand>(message);
-
-                        // If we are allowed to connect
-                        if (connectionResult.Success)
-                        {
-                            // Log and set that we are connected.
-                            CSM.Log($"Successfully connected to server.");
-                            Status = ClientStatus.Connected;
-                        }
-                        else
-                        {
-                            CSM.Log($"Could not connect: {connectionResult.Reason}");
-                            ConnectionMessage = $"Could not connect: {connectionResult.Reason}";
-                            Disconnect();
-                        }
-                        break;
-
-                    // Connection close confirmation
-                    case CommandBase.ConnectionCloseCommandId:
-                        Disconnect();
-                        break;
-
-                    case CommandBase.ClientConnectCommandId:
-                        var connect = CommandBase.Deserialize<ClientConnectCommand>(message);
-                        CSM.Log($"Player {connect.Username} has connected!");
-                        MultiplayerManager.Instance.PlayerList.Add(connect.Username);
-                        break;
-
-                    case CommandBase.ClientDisconnectCommandId:
-                        var disconnect = CommandBase.Deserialize<ClientDisconnectCommand>(message);
-                        CSM.Log($"Player {disconnect.Username} has disconnected!");
-                        MultiplayerManager.Instance.PlayerList.Remove(disconnect.Username);
-                        break;
-
-                    case CommandBase.PlayerListCommand:
-                        var list = CommandBase.Deserialize<PlayerListCommand>(message);
-                        MultiplayerManager.Instance.PlayerList.Clear();
-                        MultiplayerManager.Instance.PlayerList.UnionWith(list.PlayerList);
-                        break;
-
-                    // Handle ping commands by returning the ping
-                    case CommandBase.PingCommandId:
-                        // Update the last server ping
-                        _lastServerPing = DateTime.UtcNow;
-                        // Send back a ping event
-                        peer.Send(ArrayHelpers.PrependByte(CommandBase.PingCommandId, new PingCommand().Serialize()), SendOptions.ReliableOrdered);
-                        break;
-
-                    case CommandBase.PauseCommandID:
-                        var pause = CommandBase.Deserialize<PauseCommand>(message);
-                        SimulationManager.instance.SimulationPaused = pause.SimulationPaused;
-                        break;
-
-                    case CommandBase.SpeedCommandID:
-                        var speed = CommandBase.Deserialize<SpeedCommand>(message);
-                        SimulationManager.instance.SelectedSimulationSpeed = speed.SelectedSimulationSpeed;
-                        break;
-
-                    case CommandBase.MoneyCommandID:
-                        var internalMoney = CommandBase.Deserialize<MoneyCommand>(message);
-                        typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-                        typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.InternalMoneyAmount);
-						typeof(EconomyManager).GetField("m_totalExpenses", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.TotalExpenses);
-						typeof(EconomyManager).GetField("m_totalIncome", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, internalMoney.TotalIncome);
-
-						break;
-
-                    case CommandBase.BuildingCreatedCommandID:
-                        var Buildings = CommandBase.Deserialize<BuildingCreatedCommand>(message);
-                        BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(Buildings.Infoindex);
-                        BuildingExtension.LastPosition = Buildings.Position;
-                        Singleton<BuildingManager>.instance.CreateBuilding(out ushort building, ref Singleton<SimulationManager>.instance.m_randomizer, info, Buildings.Position, Buildings.Angle, Buildings.Length, Singleton<SimulationManager>.instance.m_currentBuildIndex);
-                        break;
-
-                    case CommandBase.BuildingRemovedCommandID:
-                        var BuildingRemovedPosition = CommandBase.Deserialize<BuildingRemovedCommand>(message);
-                        long num = Mathf.Clamp((int)((BuildingRemovedPosition.Position.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-                        long index = (Mathf.Clamp((int)((BuildingRemovedPosition.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
-                        var BuildingId = BuildingManager.instance.m_buildingGrid[index];
-                        if (BuildingId != 0)
-                        {
-                            BuildingManager.instance.ReleaseBuilding(BuildingId);
-                        }
-                        break;
-
-                    case CommandBase.BuildingRelocatedCommandID:
-                        var BuildingRelocationData = CommandBase.Deserialize<BuildingRelocationCommand>(message);
-                        long num2 = Mathf.Clamp((int)((BuildingRelocationData.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-                        long index2 = (Mathf.Clamp((int)((BuildingRelocationData.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num2;
-                        ushort BuildingId2 = BuildingManager.instance.m_buildingGrid[index2];
-                        Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId2, BuildingRelocationData.NewPosition, BuildingRelocationData.Angle);
-                        break;
-
-                    case CommandBase.RoadCommandID:
-                        var Roads = CommandBase.Deserialize<RoadCommand>(message);
-                        NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(Roads.InfoIndex);
-                        Singleton<NetManager>.instance.CreateSegment(out ushort id, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, Roads.StartNode, Roads.EndNode, Roads.StartDirection, Roads.Enddirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Roads.ModifiedIndex, false);
-                        break;
-
-                    case CommandBase.WorldInfoCommand:
-                        var worldInfo = CommandBase.Deserialize<WorldInfoCommand>(message);
-                        SimulationManager.instance.m_currentGameTime = worldInfo.CurrentGameTime;
-                        SimulationManager.instance.m_currentDayTimeHour = worldInfo.CurrentDayTimeHour;
-                        break;
-
-					case CommandBase.DemandDisplayedCommandID:
-						var DemandInfo = CommandBase.Deserialize<DemandDisplayedCommand>(message);
-						Singleton<ZoneManager>.instance.m_residentialDemand = DemandInfo.ResidentialDemand;
-						Singleton<ZoneManager>.instance.m_commercialDemand = DemandInfo.CommercialDemand;
-						Singleton<ZoneManager>.instance.m_workplaceDemand = DemandInfo.WorkplaceDemand;
-						break;
-
-
-				}
+                Command.ParseOnClient(reader.Data);
             }
             catch (Exception ex)
             {
-                CSM.Log($"Received an error from {peer.EndPoint.Host}:{peer.EndPoint.Port}. Message: {ex.Message}");
+                CSM.Log($"Encountered an error from {peer.EndPoint.Host}:{peer.EndPoint.Port} while reading command. Message: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        ///     Updates the last ping value to the current time.
+        /// </summary>
+        public void UpdatePing()
+        {
+            _lastServerPing = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -375,8 +258,7 @@ namespace CSM.Networking
                 Username = _clientConfig.Username
             };
 
-            // Send the message
-            peer.Send(ArrayHelpers.PrependByte(CommandBase.ConnectionRequestCommandId, connectionRequest.Serialize()), SendOptions.ReliableOrdered);
+            Command.SendToServer(connectionRequest);
         }
 
         /// <summary>

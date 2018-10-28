@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class BuildingRelocationCommand : CommandBase
+    public class BuildingRelocateCommand : CommandBase
     {
         [ProtoMember(1)]
         public Vector3 NewPosition { get; set; }

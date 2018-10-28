@@ -21,7 +21,7 @@ namespace CSM
 
             // Game console
             var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
-            chatLog.AddMessage($"[CSM] {message}");
+            chatLog?.AddMessage($"[CSM] {message}");
         }
     }
 }
