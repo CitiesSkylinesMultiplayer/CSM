@@ -53,6 +53,12 @@ On every commit and pull request, Azure Pipelines will build a new version. You 
 ### Phase 3
 *TBD*
 
+## Contributors
+- [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)
+- [Sander Jochems (Sander0542)](https://github.com/Sander0542)
+- [Treholt (Treholt3103)](https://github.com/Treholt3103)
+- [kaenganxt](https://github.com/kaenganxt)
+
 ## Developer Resources
 
 ### Installation
