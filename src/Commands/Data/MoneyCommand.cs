@@ -3,8 +3,8 @@
 namespace CSM.Commands
 {
     /// <summary>
-    ///     This sends the current cash amount
-    ///    TODO: find out how top copy an array to reflection
+    ///     This sends the current cash amount and sync the income and expenses shown on the UI
+	///     
     /// /// </summary>
     [ProtoContract]
     public class MoneyCommand : CommandBase
@@ -18,14 +18,6 @@ namespace CSM.Commands
         [ProtoMember(3)]
         public long[] TotalExpenses { get; set; }
 
-		[ProtoMember(4)]
-		public int[] Taxrate { get; set; }
-
-		[ProtoMember(5)]
-		public int[] ServiceBudgetNight { get; set; }
-
-		[ProtoMember(6)]
-		public int[] ServiceBudgetDay { get; set; }
 
 		
 	}
