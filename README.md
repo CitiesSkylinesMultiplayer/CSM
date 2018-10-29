@@ -91,6 +91,8 @@ Whenever a new command is created, please update this table. You can also use th
 |104|`BuildingRemoveCommand`|`BuildingRemoveHandler`|
 |105|`BuildingRelocateCommand`|`BuildingRelocateHandler`|
 |106|`DemandDisplayedCommand`|`DemandDisplayedHandler`|
+|107|`TaxRateChangeCommand`|`TaxRateChangeHandler`|
+|108|`BudgetChangeCommand`|`BudgetChangeHandler`|
 |110|`RoadCommand`|`RoadHandler`|
 
 ### Creating a Command
