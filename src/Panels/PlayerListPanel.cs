@@ -31,7 +31,7 @@ namespace CSM.Panels
             height = 480;
 
             // Title Label
-            this.CreateTitleLabel("Connected Players", new Vector2(100, -20));
+            this.CreateTitleLabel("Connected Players", new Vector2(90, -20));
 
             // Close this dialog
             _closeButton = this.CreateButton("Close", new Vector2(10, -410));

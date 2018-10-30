@@ -145,7 +145,7 @@ namespace CSM.Panels
             {
                 isVisible = false;
 
-                MultiplayerManager.Instance.StopEverything(false);
+                MultiplayerManager.Instance.StopEverything();
             };
 
             _serverManageButton.eventClick += (component, param) =>

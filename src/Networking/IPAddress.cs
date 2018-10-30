@@ -7,8 +7,16 @@ namespace CSM.Networking
     public class IPAddress
     {
 
+        private static string _localIp = null;
+        private static string _externalIp = null;
+
         public static string GetLocalIPAddress()
         {
+            if (_localIp != null)
+            {
+                return _localIp;
+            }
+
             try
             {
                 //Create a new socket
@@ -19,7 +27,8 @@ namespace CSM.Networking
                     //Get the IPEndPoint
                     IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
                     //Get the IP Address (Internal) from the IPEndPoint
-                    return endPoint.Address.ToString();
+                    _localIp = endPoint.Address.ToString();
+                    return _localIp;
                 }
             }
             catch (Exception)
@@ -31,10 +40,16 @@ namespace CSM.Networking
 
         public static string GetExternalIPAddress()
         {
+            if (_externalIp != null)
+            {
+                return _externalIp;
+            }
+
             try
             {
                 //Get the External IP (IPv4) Address from internet
-                return new WebClient().DownloadString("http://api.ipify.org"); //HTTPS doesnt work
+                _externalIp = new WebClient().DownloadString("http://api.ipify.org"); //HTTPS doesnt work
+                return _externalIp;
             }
             catch (Exception)
             {

@@ -18,23 +18,17 @@ namespace CSM.Networking
     /// </summary>
     public class Server
     {
-        // The client timeout in seconds
-        private const int TIMEOUT = 15;
-
         // The server
         private LiteNetLib.NetManager _netServer;
 
         // Run a background processing thread
         private Thread _serverProcessingThread;
 
-        // Timer for handling ping
-        private System.Timers.Timer _pingTimer;
-
         // Connected clients
         public Dictionary<long, Player> ConnectedPlayers { get; } = new Dictionary<long, Player>();
 
-        // The player instance for the host player (TODO: Make name configurable)
-        private Player _hostPlayer = new Player("Host player");
+        // The player instance for the host player
+        private Player _hostPlayer;
 
         // Config options for server
         public ServerConfig Config { get; private set; }
@@ -53,12 +47,8 @@ namespace CSM.Networking
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
-
-            // Setup timer
-            _pingTimer = new System.Timers.Timer();
-            _pingTimer.Elapsed += OnPing;
-            _pingTimer.Interval = 100;
-            _pingTimer.Start();
+            listener.PeerDisconnectedEvent += ListenerOnPeerDisconnectedEvent;
+            listener.NetworkLatencyUpdateEvent += ListenerOnNetworkLatencyUpdateEvent;
         }
 
         /// <summary>
@@ -112,6 +102,8 @@ namespace CSM.Networking
             _serverProcessingThread = new Thread(ProcessEvents);
             _serverProcessingThread.Start();
 
+            // Initialize host player
+            _hostPlayer = new Player(Config.Username);
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
             // Update the console to let the user know the server is running
@@ -174,35 +166,6 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        ///     Ping all connected clients
-        /// </summary>
-        private void OnPing(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            // Server not running, don't send ping
-            if (Status == ServerStatus.Stopped)
-                return;
-
-            // Timeout clients if they are not responding
-            DateTime now = DateTime.UtcNow;
-            foreach (KeyValuePair<long, Player> player in ConnectedPlayers)
-            {
-                if (player.Value.LastPing.AddSeconds(TIMEOUT) < now)
-                {
-                    CSM.Log($"Player {player.Value.Username} has timed out!");
-
-                    HandlePlayerDisconnect(player.Value);
-                }
-            }
-
-            // Loop though all connected peers
-            foreach (var player in ConnectedPlayers.Values)
-            {
-                // Send a ping
-                Command.SendToClient(player, new PingCommand());
-            }
-        }
-
-        /// <summary>
         ///     When we get a message from a client, we handle the message here
         ///     and perform any necessary tasks.
         /// </summary>
@@ -229,6 +192,36 @@ namespace CSM.Networking
             }
         }
 
+        private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
+        {
+            if (!ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player))
+                return;
+
+            player.Latency = latency;
+        }
+
+        private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
+        {
+            if (!ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player))
+                return;
+
+
+            switch (disconnectInfo.Reason)
+            {
+                case DisconnectReason.RemoteConnectionClose:
+                    CSM.Log($"Player {player.Username} disconnected!");
+                    break;
+                case DisconnectReason.Timeout:
+                    CSM.Log($"Player {player.Username} timed out!");
+                    break;
+                default:
+                    CSM.Log($"Player {player.Username} lost connection!");
+                    break;
+            }
+
+            HandlePlayerDisconnect(player);
+        }
+
         public void HandlePlayerConnect(Player player)
         {
             CSM.Log($"Player {player.Username} has connected!");
@@ -238,10 +231,6 @@ namespace CSM.Networking
 
         public void HandlePlayerDisconnect(Player player)
         {
-            CSM.Log($"Player {player.Username} has disconnected!");
-
-            _netServer.DisconnectPeer(player.NetPeer, ArrayHelpers.PrependByte(Command.GetCommandId(typeof(ConnectionCloseCommand)), new ConnectionCloseCommand().Serialize()));
-
             MultiplayerManager.Instance.PlayerList.Remove(player.Username);
             this.ConnectedPlayers.Remove(player.NetPeer.ConnectId);
             Command.HandleClientDisconnect(player);

@@ -1,7 +1,6 @@
 ﻿
 using CSM.Networking;
 using LiteNetLib;
-using System.Linq;
 
 namespace CSM.Commands.Handler
 {
@@ -40,7 +39,7 @@ namespace CSM.Commands.Handler
             //}
 
             // Check the client username to see if anyone on the server already have a username
-            var hasExistingPlayer = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Any(x => x.Value.Username == command.Username);
+            var hasExistingPlayer = MultiplayerManager.Instance.PlayerList.Contains(command.Username);
             if (hasExistingPlayer)
             {
                 Command.SendToClient(peer, new ConnectionResultCommand

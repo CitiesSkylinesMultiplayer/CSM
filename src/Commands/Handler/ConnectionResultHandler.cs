@@ -19,7 +19,6 @@ namespace CSM.Commands.Handler
             {
                 // Log and set that we are connected.
                 CSM.Log($"Successfully connected to server.");
-                MultiplayerManager.Instance.CurrentClient.UpdatePing();
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
             }
             else

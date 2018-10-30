@@ -10,7 +10,7 @@ namespace CSM.Commands
     public class ClientDisconnectCommand : CommandBase
     {
         /// <summary>
-        ///     The user name of the newly connected user
+        ///     The user name of the disconnected user.
         /// </summary>
         [ProtoMember(1)]
         public string Username { get; set; }
