@@ -13,7 +13,7 @@ namespace CSM.Extensions
         public override void OnLevelUnloading()
         {
             // Stop everything
-            MultiplayerManager.Instance.StopEverything(true);
+            MultiplayerManager.Instance.StopEverything();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -55,16 +55,7 @@ namespace CSM.Extensions
 
                 if (panel != null)
                 {
-                    if (panel.isVisible)
-                    {
-                        panel.isVisible = false;
-                        _multiplayerButton.text = "Show Multiplayer Menu";
-                    }
-                    else
-                    {
-                        panel.isVisible = true;
-                        _multiplayerButton.text = "Hide Multiplayer Menu";
-                    }
+                    panel.isVisible = !panel.isVisible;
                 }
                 else
                 {

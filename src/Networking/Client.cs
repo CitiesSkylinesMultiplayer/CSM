@@ -1,7 +1,5 @@
-﻿using ColossalFramework;
-using ColossalFramework.Plugins;
+﻿using ColossalFramework.Plugins;
 using CSM.Commands;
-using CSM.Extensions;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
@@ -9,10 +7,8 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
-using UnityEngine;
 
 namespace CSM.Networking
 {
@@ -21,9 +17,6 @@ namespace CSM.Networking
     /// </summary>
     public class Client
     {
-        // The timeout in seconds
-        private const int TIMEOUT = 15;
-
         // The client
         private LiteNetLib.NetManager _netClient;
 
@@ -32,12 +25,6 @@ namespace CSM.Networking
 
         // Configuration options for server
         private ClientConfig _clientConfig;
-
-        // The last time we received a message from the server
-        private DateTime _lastServerPing;
-
-        // Timer to make sure the client is already connected to the server
-        private System.Timers.Timer _pingTimer;
 
         /// <summary>
         ///     The current status of the client
@@ -60,11 +47,7 @@ namespace CSM.Networking
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
-
-            // Setup timer
-            _pingTimer = new System.Timers.Timer();
-            _pingTimer.Elapsed += OnPing;
-            _pingTimer.Interval = 1000;
+            listener.PeerDisconnectedEvent += ListenerOnPeerDisconnectedEvent;
         }
 
         /// <summary>
@@ -95,7 +78,6 @@ namespace CSM.Networking
             var result = _netClient.Start();
             if (!result)
             {
-                CSM.Log("The client failed to start.");
                 ConnectionMessage = "The client failed to start.";
                 Disconnect(); // make sure we are fully disconnected
                 return false;
@@ -111,7 +93,6 @@ namespace CSM.Networking
             // Setup processing thread
             _clientProcessingThread = new Thread(ProcessEvents);
             _clientProcessingThread.Start();
-            _pingTimer.Start();
 
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
             // while we wait for a successful connection (Status = Connected) or a
@@ -139,24 +120,10 @@ namespace CSM.Networking
 
             // We have timed out
             ConnectionMessage = "Could not connect to server, timed out.";
-            CSM.Log("Could not connect to server, timed out.");
 
             // Did not connect
             Disconnect(); // make sure we are fully disconnected
             return false;
-        }
-
-        public void RequestDisconnect()
-        {
-            // Send quit packet if we had a connection
-            if (Status == ClientStatus.Connected)
-            {
-                Command.SendToServer(new ConnectionCloseCommand());
-            }
-            else
-            {
-                Disconnect();
-            }
         }
 
         /// <summary>
@@ -167,10 +134,6 @@ namespace CSM.Networking
             // Update status and stop client
             Status = ClientStatus.Disconnected;
             _netClient.Stop();
-
-            _pingTimer.Stop();
-
-            CSM.Log("Disconnected from server.");
         }
 
         public void SendToServer(byte messageId, CommandBase message)
@@ -199,25 +162,6 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        ///     Check if we are still connected to the server
-        /// </summary>
-        private void OnPing(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            // Client not connected, don't worry about this code
-            if (Status != ClientStatus.Connected)
-                return;
-
-            // If we have not heard from the server in TIMEOUT seconds, it's probably gone
-            // for now, we just disconnect. In the future we should try reconnecting and
-            // displaying a UI.
-            if (DateTime.UtcNow - _lastServerPing >= TimeSpan.FromSeconds(TIMEOUT))
-            {
-                CSM.Log($"Client lost connection with the server (time out, last ping > {TIMEOUT} seconds). Disconnecting...");
-                Disconnect();
-            }
-        }
-
-        /// <summary>
         ///     When we get a message from the server, we handle the message here
         ///     and perform any necessary tasks.
         /// </summary>
@@ -231,14 +175,6 @@ namespace CSM.Networking
             {
                 CSM.Log($"Encountered an error from {peer.EndPoint.Host}:{peer.EndPoint.Port} while reading command. Message: {ex.Message}");
             }
-        }
-
-        /// <summary>
-        ///     Updates the last ping value to the current time.
-        /// </summary>
-        public void UpdatePing()
-        {
-            _lastServerPing = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -259,6 +195,44 @@ namespace CSM.Networking
             };
 
             Command.SendToServer(connectionRequest);
+        }
+
+        private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
+        {
+            if (Status == ClientStatus.Connecting)
+            {
+                ConnectionMessage = "Failed to connect!";
+            }
+            else
+            {
+                switch (disconnectInfo.Reason)
+                {
+                    case DisconnectReason.Timeout:
+                        CSM.Log($"Timed out!");
+                        break;
+                    case DisconnectReason.DisconnectPeerCalled:
+                        CSM.Log($"Disconnected!");
+                        break;
+                    case DisconnectReason.RemoteConnectionClose:
+                        CSM.Log($"Server closed!");
+                        break;
+                    default:
+                        CSM.Log($"Connection lost!");
+                        break;
+                }
+            }
+
+            // If Disconnect was already called, don't do it again
+            if (Status == ClientStatus.Disconnected)
+                return;
+
+            if (Status == ClientStatus.Connected)
+            {
+                Disconnect();
+            }
+
+            // In the case of ClientStatus.Connecting, this also ends the wait loop
+            Status = ClientStatus.Disconnected;
         }
 
         /// <summary>

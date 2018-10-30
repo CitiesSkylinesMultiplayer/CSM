@@ -1,6 +1,8 @@
 ﻿using CSM.Networking.Config;
 using CSM.Networking.Status;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace CSM.Networking
 {
@@ -12,45 +14,63 @@ namespace CSM.Networking
         public HashSet<string> PlayerList { get; } = new HashSet<string>();
 
         /// <summary>
-        ///
+        /// The current role of the game.
         /// </summary>
         public MultiplayerRole CurrentRole { get; private set; }
 
         /// <summary>
-        /// The Current game server (warning, this will be null if the game is not a server
+        /// The current game server (Use only when this game acts as server!)
         /// </summary>
         public Server CurrentServer { get; } = new Server();
 
+        /// <summary>
+        /// The current client (Use only when this game acts as client!)
+        /// </summary>
         public Client CurrentClient { get; } = new Client();
 
-        public bool ConnectToServer(string ipAddress, int port, string username, string password = "")
+        /// <summary>
+        /// Starts the client and tries to connect to the given server.
+        /// </summary>
+        /// <param name="ipAddress">The server ip address.</param>
+        /// <param name="port">The server port.</param>
+        /// <param name="username">The username to connect with.</param>
+        /// <param name="password">The password to use.</param>
+        /// <param name="callback">This callback returns if the connection was successful.</param>
+        public void ConnectToServer(string ipAddress, int port, string username, string password, Action<bool> callback)
         {
             if (CurrentRole == MultiplayerRole.Server)
-                return false;
+            {
+                callback.Invoke(false);
+                return;
+            }
 
-            // Try connect
-            var connectionStatus = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password));
+            new Thread(() =>
+            {
+                // Try connect
+                var isConnected = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password));
 
-            // Set the current role
-            CurrentRole = connectionStatus ? MultiplayerRole.Client : MultiplayerRole.None;
+                // Set the current role
+                CurrentRole = isConnected ? MultiplayerRole.Client : MultiplayerRole.None;
 
-            // Return the status
-            return connectionStatus;
+                // Return the status
+                callback.Invoke(isConnected);
+            }).Start();
         }
 
         /// <summary>
-        ///
+        /// Starts the game server on the given port.
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public bool StartGameServer(int port = 4230, string password = "")
+        /// <param name="port">The port to start the server on.</param>
+        /// <param name="password">The password to use.</param>
+        /// <param name="hostUsername">The username of the host player.</param>
+        /// <returns>If the server was started successfully.</returns>
+        public bool StartGameServer(int port, string password, string hostUsername)
         {
-            if (CurrentServer.Status == ServerStatus.Running)
-                return true;
+            if (CurrentRole == MultiplayerRole.Client)
+                return false;
 
             // Create the server and start it
-            var isConnected = CurrentServer.StartServer(new ServerConfig(port));
+            var isConnected = CurrentServer.StartServer(new ServerConfig(port, hostUsername, password));
 
             // Set the current role
             CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
@@ -59,27 +79,14 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        ///
+        /// Stops the client or server, depending on the current role
         /// </summary>
-        /// <returns></returns>
-        public bool StopGameServer()
-        {
-            CurrentServer.StopServer();
-
-            CurrentRole = CurrentServer.Status == ServerStatus.Running ? MultiplayerRole.Server : MultiplayerRole.None;
-
-            return CurrentServer.Status != ServerStatus.Running;
-        }
-
-        public void StopEverything(bool instant)
+        public void StopEverything()
         {
             switch (CurrentRole)
             {
                 case MultiplayerRole.Client:
-                    if (instant)
-                        CurrentClient.Disconnect();
-                    else
-                        CurrentClient.RequestDisconnect();
+                    CurrentClient.Disconnect();
                     break;
 
                 case MultiplayerRole.Server:

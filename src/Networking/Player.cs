@@ -1,5 +1,4 @@
 ﻿using LiteNetLib;
-using System;
 
 namespace CSM.Networking
 {
@@ -9,13 +8,13 @@ namespace CSM.Networking
 
         public NetPeer NetPeer { get; set; }
 
-        public DateTime LastPing { get; set; }
+        public long Latency { get; set; }
 
         public Player(NetPeer peer, string username)
         {
             Username = username;
             NetPeer = peer;
-            LastPing = DateTime.UtcNow;
+            Latency = -1;
         }
 
         public Player(string username) : this(null, username)

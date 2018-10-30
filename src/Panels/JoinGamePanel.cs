@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace CSM.Panels
         private UITextField _ipAddressField;
         private UITextField _portField;
         private UITextField _nameField;
+        private UITextField _passwordField;
 
         private UILabel _connectionStatus;
 
@@ -29,10 +31,10 @@ namespace CSM.Panels
             var view = UIView.GetAView();
 
             // Center this window in the game
-            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 200.0f);
+            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
 
             width = 360;
-            height = 480;
+            height = 560;
 
             // Title Label
             this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
@@ -48,6 +50,7 @@ namespace CSM.Panels
 
             // Port field
             _portField = this.CreateTextField("4230", new Vector2(10, -180));
+            _portField.numericalOnly = true;
 
             // Username label
             this.CreateLabel("Username:", new Vector2(10, -230));
@@ -55,18 +58,25 @@ namespace CSM.Panels
             // Username field
             _nameField = this.CreateTextField("", new Vector2(10, -260));
 
+            // Password label
+            this.CreateLabel("Password:", new Vector2(10, -310));
+
+            // Password field
+            _passwordField = this.CreateTextField("", new Vector2(10, -340));
+            _passwordField.isPasswordField = true;
+
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -340));
+            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -420));
             _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -410));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -490));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -315));
+            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
         }
@@ -104,21 +114,24 @@ namespace CSM.Panels
                 return;
             }
 
-            // Todo: pass user in and password
             // Try connect and get the result
-            var result = MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text);
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, (success) => {
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() => {
+                    if (!success)
+                    {
+                        _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                        _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
+                        CSM.Log(MultiplayerManager.Instance.CurrentClient.ConnectionMessage);
+                    }
+                    else
+                    {
+                        _connectionStatus.text = "";
+                        CSM.Log("Connected!");
 
-            if (!result)
-            {
-                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
-                return;
-            }
-
-            _connectionStatus.textColor = new Color32(0, 255, 0, 255);
-            _connectionStatus.text = "Connected!";
-
-            isVisible = false;
+                        isVisible = false;
+                    }
+                });
+            });
         }
     }
 }
