@@ -9,7 +9,7 @@ This mod and its source code is licensed under the MIT license.
 ## Download & Install
 
 1. Download the latest build from the Azure DevOps site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11). Click on the latest successful build -> `Artifacts` -> `CitiesSkylinesMultiplayer` -> `CitiesSkylinesMultiplayer.{Version}.zip`.
-2. Either run the install script, or copy all the *.dll files to `%APPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
+2. Either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
 3. Open Cities: Skylines and enable the mod.
 
 If you want to build the mod yourself, follow the developer instructions below.
