@@ -91,7 +91,8 @@ Whenever a new command is created, please update this table. You can also use th
 |106|`DemandDisplayedCommand`|`DemandDisplayedHandler`|
 |107|`TaxRateChangeCommand`|`TaxRateChangeHandler`|
 |108|`BudgetChangeCommand`|`BudgetChangeHandler`|
-|110|`RoadCommand`|`RoadHandler`|
+|109|`NodeCommand`|`NodeHandler`|
+|110|`NodeSegmentCommand`|`NodeSegmentHandler`|
 
 ### Creating a Command
 1. Create a new class under the `CSM.Commands` namespace (`src/Commands/Data` folder) with a suffux of `Command` (see other commands as an example).
