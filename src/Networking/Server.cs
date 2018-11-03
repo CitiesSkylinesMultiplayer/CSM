@@ -1,5 +1,4 @@
-﻿
-using CSM.Commands;
+﻿using CSM.Commands;
 using CSM.Commands.Handler;
 using CSM.Helpers;
 using CSM.Networking.Config;
@@ -177,7 +176,7 @@ namespace CSM.Networking
                 if (reader.Data[0] == 0)
                 {
                     Command.Parse(reader.Data, out CommandHandler handler, out byte[] message);
-                    ConnectionRequestHandler requestHandler = (ConnectionRequestHandler) handler;
+                    ConnectionRequestHandler requestHandler = (ConnectionRequestHandler)handler;
                     requestHandler.HandleOnServer(message, peer);
                     return;
                 }
@@ -205,15 +204,16 @@ namespace CSM.Networking
             if (!ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player))
                 return;
 
-
             switch (disconnectInfo.Reason)
             {
                 case DisconnectReason.RemoteConnectionClose:
                     CSM.Log($"Player {player.Username} disconnected!");
                     break;
+
                 case DisconnectReason.Timeout:
                     CSM.Log($"Player {player.Username} timed out!");
                     break;
+
                 default:
                     CSM.Log($"Player {player.Username} lost connection!");
                     break;

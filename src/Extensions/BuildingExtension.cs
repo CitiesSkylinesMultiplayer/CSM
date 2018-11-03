@@ -71,7 +71,7 @@ namespace CSM.Extensions
             {
                 Position = position
             });
-            
+
             _oldPosition.Remove(id); // when a building is released its position is removed to the dictionary
         }
 

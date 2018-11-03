@@ -1,5 +1,5 @@
-﻿using CSM.Networking;
-using CSM.Extensions;
+﻿using CSM.Extensions;
+using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {

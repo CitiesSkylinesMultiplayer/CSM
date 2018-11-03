@@ -1,25 +1,30 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 using ProtoBuf;
 using System;
 using System.IO;
 
 namespace CSM.Commands.Handler
 {
-
     public abstract class CommandHandler
     {
         public abstract byte ID { get; }
 
         public abstract Type GetDataType();
+
         public abstract void ParseOnServer(byte[] message, Player player);
+
         public abstract void ParseOnClient(byte[] message);
 
-        public virtual void OnClientConnect(Player player) { }
-        public virtual void OnClientDisconnect(Player player) { }
+        public virtual void OnClientConnect(Player player)
+        {
+        }
+
+        public virtual void OnClientDisconnect(Player player)
+        {
+        }
     }
 
-    public abstract class CommandHandler<C> : CommandHandler where C: CommandBase
+    public abstract class CommandHandler<C> : CommandHandler where C : CommandBase
     {
         public abstract void HandleOnServer(C command, Player player);
 

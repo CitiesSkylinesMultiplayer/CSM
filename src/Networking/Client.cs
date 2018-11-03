@@ -210,12 +210,15 @@ namespace CSM.Networking
                     case DisconnectReason.Timeout:
                         CSM.Log($"Timed out!");
                         break;
+
                     case DisconnectReason.DisconnectPeerCalled:
                         CSM.Log($"Disconnected!");
                         break;
+
                     case DisconnectReason.RemoteConnectionClose:
                         CSM.Log($"Server closed!");
                         break;
+
                     default:
                         CSM.Log($"Connection lost!");
                         break;

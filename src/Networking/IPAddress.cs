@@ -6,7 +6,6 @@ namespace CSM.Networking
 {
     public class IPAddress
     {
-
         private static string _localIp = null;
         private static string _externalIp = null;
 

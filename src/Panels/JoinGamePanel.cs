@@ -115,8 +115,10 @@ namespace CSM.Panels
             }
 
             // Try connect and get the result
-            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, (success) => {
-                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() => {
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, (success) =>
+            {
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
                     if (!success)
                     {
                         _connectionStatus.textColor = new Color32(255, 0, 0, 255);

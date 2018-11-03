@@ -1,7 +1,6 @@
 ﻿using ColossalFramework;
-using CSM.Networking;
 using CSM.Helpers;
-using System.Threading;
+using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
