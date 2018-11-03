@@ -3,7 +3,7 @@ using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    public class DemAndDisplayedHandler : CommandHandler<DemandDisplayedCommand>
+    public class DemandDisplayedHandler : CommandHandler<DemandDisplayedCommand>
     {
         public override byte ID => 106;
 
