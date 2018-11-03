@@ -1,9 +1,8 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    class SpeedHandler : CommandHandler<SpeedCommand>
+    public class SpeedHandler : CommandHandler<SpeedCommand>
     {
         public override byte ID => 100;
 

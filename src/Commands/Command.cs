@@ -1,5 +1,4 @@
-﻿
-using CSM.Commands.Handler;
+﻿using CSM.Commands.Handler;
 using CSM.Networking;
 using CSM.Networking.Status;
 using LiteNetLib;
@@ -9,7 +8,7 @@ using System.Linq;
 
 namespace CSM.Commands
 {
-    class Command
+    public class Command
     {
         private static readonly Dictionary<byte, CommandHandler> _handlerMapping = new Dictionary<byte, CommandHandler>();
         private static readonly Dictionary<Type, byte> _cmdMapping = new Dictionary<Type, byte>();
@@ -211,7 +210,7 @@ namespace CSM.Commands
             // Create instances of the handlers and initialize mappings
             foreach (Type type in handlers)
             {
-                CommandHandler handler = (CommandHandler) Activator.CreateInstance(type);
+                CommandHandler handler = (CommandHandler)Activator.CreateInstance(type);
                 _handlerMapping.Add(handler.ID, handler);
                 _cmdMapping.Add(handler.GetDataType(), handler.ID);
             }

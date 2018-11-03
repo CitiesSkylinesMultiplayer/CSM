@@ -1,11 +1,10 @@
-﻿
-using ColossalFramework;
+﻿using ColossalFramework;
 using CSM.Extensions;
 using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    class BuildingCreateHandler : CommandHandler<BuildingCreateCommand>
+    public class BuildingCreateHandler : CommandHandler<BuildingCreateCommand>
     {
         public override byte ID => 103;
 

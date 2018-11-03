@@ -1,10 +1,9 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler
 {
-    class ConnectionResultHandler : CommandHandler<ConnectionResultCommand>
+    public class ConnectionResultHandler : CommandHandler<ConnectionResultCommand>
     {
         public override byte ID => 1;
 
@@ -29,6 +28,8 @@ namespace CSM.Commands.Handler
             }
         }
 
-        public override void HandleOnServer(ConnectionResultCommand command, Player player) { }
+        public override void HandleOnServer(ConnectionResultCommand command, Player player)
+        {
+        }
     }
 }

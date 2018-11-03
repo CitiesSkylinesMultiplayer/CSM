@@ -105,7 +105,7 @@
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
-    <Compile Include="Extensions\NodeandSegmentExtension.cs" />
+    <Compile Include="Extensions\NodeAndSegmentExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\StartEndNode.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />

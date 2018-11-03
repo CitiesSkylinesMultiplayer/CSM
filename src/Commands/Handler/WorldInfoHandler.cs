@@ -1,9 +1,8 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    class WorldInfoHandler : CommandHandler<WorldInfoCommand>
+    public class WorldInfoHandler : CommandHandler<WorldInfoCommand>
     {
         public override byte ID => 53;
 
@@ -13,7 +12,9 @@ namespace CSM.Commands.Handler
             SimulationManager.instance.m_currentDayTimeHour = command.CurrentDayTimeHour;
         }
 
-        public override void HandleOnServer(WorldInfoCommand command, Player player) { }
+        public override void HandleOnServer(WorldInfoCommand command, Player player)
+        {
+        }
 
         public override void OnClientConnect(Player player)
         {

@@ -1,16 +1,19 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 using LiteNetLib;
 
 namespace CSM.Commands.Handler
 {
-    class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
+    public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
         public override byte ID => 0;
 
-        public override void HandleOnServer(ConnectionRequestCommand command, Player player) { }
+        public override void HandleOnServer(ConnectionRequestCommand command, Player player)
+        {
+        }
 
-        public override void HandleOnClient(ConnectionRequestCommand command) { }
+        public override void HandleOnClient(ConnectionRequestCommand command)
+        {
+        }
 
         public void HandleOnServer(byte[] message, NetPeer peer)
         {

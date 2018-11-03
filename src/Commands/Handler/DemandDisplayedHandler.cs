@@ -1,10 +1,9 @@
-﻿
-using ColossalFramework;
+﻿using ColossalFramework;
 using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    class DemandDisplayedHandler : CommandHandler<DemandDisplayedCommand>
+    public class DemandDisplayedHandler : CommandHandler<DemandDisplayedCommand>
     {
         public override byte ID => 106;
 
@@ -15,6 +14,8 @@ namespace CSM.Commands.Handler
             Singleton<ZoneManager>.instance.m_workplaceDemand = command.WorkplaceDemand;
         }
 
-        public override void HandleOnServer(DemandDisplayedCommand command, Player player) { }
+        public override void HandleOnServer(DemandDisplayedCommand command, Player player)
+        {
+        }
     }
 }

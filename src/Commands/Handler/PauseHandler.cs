@@ -1,9 +1,8 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    class PauseHandler : CommandHandler<PauseCommand>
+    public class PauseHandler : CommandHandler<PauseCommand>
     {
         public override byte ID => 101;
 

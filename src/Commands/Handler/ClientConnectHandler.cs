@@ -1,9 +1,8 @@
-﻿
-using CSM.Networking;
+﻿using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
-    class ClientConnectHandler : CommandHandler<ClientConnectCommand>
+    public class ClientConnectHandler : CommandHandler<ClientConnectCommand>
     {
         public override byte ID => 50;
 
@@ -13,7 +12,9 @@ namespace CSM.Commands.Handler
             MultiplayerManager.Instance.PlayerList.Add(command.Username);
         }
 
-        public override void HandleOnServer(ClientConnectCommand command, Player player) { }
+        public override void HandleOnServer(ClientConnectCommand command, Player player)
+        {
+        }
 
         public override void OnClientConnect(Player player)
         {

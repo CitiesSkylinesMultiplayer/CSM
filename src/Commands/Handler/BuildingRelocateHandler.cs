@@ -1,11 +1,10 @@
-﻿
-using ColossalFramework;
+﻿using ColossalFramework;
 using CSM.Networking;
 using UnityEngine;
 
 namespace CSM.Commands.Handler
 {
-    class BuildingRelocateHandler : CommandHandler<BuildingRelocateCommand>
+    public class BuildingRelocateHandler : CommandHandler<BuildingRelocateCommand>
     {
         public override byte ID => 105;
 
@@ -15,8 +14,8 @@ namespace CSM.Commands.Handler
 
         private void HandleBuilding(BuildingRelocateCommand command)
         {
-            long num = Mathf.Clamp((int) ((command.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-            long index = (Mathf.Clamp((int) ((command.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num;
+            long num = Mathf.Clamp((int)((command.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
+            long index = (Mathf.Clamp((int)((command.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num;
             ushort BuildingId = BuildingManager.instance.m_buildingGrid[index];
             Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId, command.NewPosition, command.Angle);
         }
