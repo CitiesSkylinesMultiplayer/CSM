@@ -74,10 +74,11 @@
     <Compile Include="Commands\Data\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\Data\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\DemandDisplayedCommand.cs" />
+    <Compile Include="Commands\Data\NodeCommand.cs" />
+    <Compile Include="Commands\Data\NodeSegmentCommand.cs" />
     <Compile Include="Commands\Data\PlayerListCommand.cs" />
     <Compile Include="Commands\Data\MoneyCommand.cs" />
     <Compile Include="Commands\Data\PauseCommand.cs" />
-    <Compile Include="Commands\Data\RoadCommand.cs" />
     <Compile Include="Commands\Data\SpeedCommand.cs" />
     <Compile Include="Commands\Data\TaxRateChangeCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
@@ -85,6 +86,8 @@
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
+    <Compile Include="Commands\Handler\NodeHandler.cs" />
+    <Compile Include="Commands\Handler\NodeSegmentHandler.cs" />
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\ClientDisonnectHandler.cs" />
     <Compile Include="Commands\Handler\ClientConnectHandler.cs" />
@@ -94,7 +97,6 @@
     <Compile Include="Commands\Handler\ConnectionResultHandler.cs" />
     <Compile Include="Commands\Handler\DemandDisplayedHandler.cs" />
     <Compile Include="Commands\Handler\PauseHandler.cs" />
-    <Compile Include="Commands\Handler\RoadHandler.cs" />
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
@@ -103,8 +105,9 @@
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
-    <Compile Include="Extensions\RoadExtension.cs" />
+    <Compile Include="Extensions\NodeandSegmentExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
+    <Compile Include="Helpers\StartEndNode.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Helpers\Vector3Surrogate.cs" />
