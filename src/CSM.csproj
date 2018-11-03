@@ -95,7 +95,7 @@
     <Compile Include="Commands\Handler\BuildingCreateHandler.cs" />
     <Compile Include="Commands\Handler\CommandHandler.cs" />
     <Compile Include="Commands\Handler\ConnectionResultHandler.cs" />
-    <Compile Include="Commands\Handler\DemandDisplayedHandler.cs" />
+    <Compile Include="Commands\Handler\DemAndDisplayedHandler.cs" />
     <Compile Include="Commands\Handler\PauseHandler.cs" />
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />

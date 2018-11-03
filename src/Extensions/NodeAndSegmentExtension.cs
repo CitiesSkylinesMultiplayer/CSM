@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace CSM.Extensions
 {
-    public class NodeandSegmentExtension : ThreadingExtensionBase
+    public class NodeAndSegmentExtension : ThreadingExtensionBase
     {
         /// <summary>
         /// This Extensions Syncs Node and SegmentNodes, which is responsible for Roads, Powerlines, Waterpipes ect.
