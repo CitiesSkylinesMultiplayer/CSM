@@ -42,10 +42,10 @@ On every commit and pull request, Azure Pipelines will build a new version. You 
 - Money.
 - Building created.
 - Building removed.
-- Building relocated (?).
-- Demand (?).
-- Tax (?).
-- Budget (?).
+- Building relocated.
+- Demand.
+- Tax (Sync but be aware that it does not show on the UI).
+- Budget (Sync but be aware that it does not show on the UI).
 - Road creation.
 - Powerline creation.
 - Water pipe creation.
