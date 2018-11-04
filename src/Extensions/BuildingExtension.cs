@@ -2,20 +2,29 @@
 using CSM.Helpers;
 using ICities;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CSM.Extensions
 {
     public class BuildingExtension : BuildingExtensionBase
     {
-        public static Vector3 LastPosition { get; set; }
 
-        /// <summary>
-        ///     To find a buildings ID we use the position of the building, However when the building is relocated that is no longer possible
-        ///     this dictionary registre the position of a building when it is created, making it possible to send the old location to the Server/Client.
-        /// </summary>
-        private Dictionary<uint, Vector3> _oldPosition = new Dictionary<uint, Vector3>();
 
+		/// <summary>
+		///     This handles Creating, Releasing and Relocating buildings.
+		///     When a building is created it generate a random BuildingID which is it's placement in the m_buffer[] array since it is random this code relies on it being shared between the server and clients
+		///     On initialisation all existing initialized buildings are added to the dictionary, this takes advantage of the fact that copies of the same safe game, have the same BuildingID.
+		///     but it also makes it a requrement that both server and clients starts from exactely the same save game, which means that the save game will have to be reshared each time the game is loading
+		/// </summary>
+
+
+		public static Vector3 LastPosition { get; set; }
+		public static Dictionary<uint, uint> BuildingID = new Dictionary<uint, uint>();
+		public static ushort lastRelease;
+		public static ushort lastRelocation;
+		Vector3 Nonvector = new Vector3(0.0f, 0.0f, 0.0f);
+		
         public override void OnCreated(IBuilding building)
         {
             if (!ProtoBuf.Meta.RuntimeTypeModel.Default.IsDefined(typeof(Vector3)))
@@ -23,16 +32,18 @@ namespace CSM.Extensions
                 ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
             }
 
-            //  Since the dictionary is lost when the program is terminated, it has to be recreated at startup to ensure that the relocation function doesn't break when loading a saved game
-            // This for-Loop runs through the building grid to extract the location of all buildings on startup and add them to dictionary.
-            for (uint i = 0; i < BuildingManager.instance.m_buildingGrid.Length; i++)
-            {
-                if (BuildingManager.instance.m_buildingGrid[i] != 0)
-                {
-                    var BuildingID = BuildingManager.instance.m_buildingGrid[i];
-                    _oldPosition.Add(BuildingID, BuildingManager.instance.m_buildings.m_buffer[BuildingID].m_position);
-                }
-            }
+			//  Since the dictionary is lost when the program is terminated, it has to be recreated at startup this adds all buildings initialised in the m_buffer to the dictionary
+
+			for (int i = 0; i < BuildingManager.instance.m_buildings.m_buffer.Length; i++)
+			{
+				if (BuildingManager.instance.m_buildings.m_buffer[i].m_position != Nonvector)
+				{
+					BuildingID.Add((ushort)i,(ushort) i);
+				}
+
+			}
+
+
         }
 
         public override void OnBuildingCreated(ushort id)
@@ -43,7 +54,6 @@ namespace CSM.Extensions
             var angle = Instance.m_buildings.m_buffer[id].m_angle;
             var length = Instance.m_buildings.m_buffer[id].Length;
             var infoindex = Instance.m_buildings.m_buffer[id].m_infoIndex; //by sending the infoindex, the reciever can generate Building_info from the prefap
-
             if (LastPosition != position)
             {
                 Command.SendToAll(new BuildingCreateCommand
@@ -56,46 +66,50 @@ namespace CSM.Extensions
                 });
             }
 
-            // when a building is created its position is added to the dictionary
-            _oldPosition.Add(id, position);
-
             LastPosition = position;
-        }
+			//UnityEngine.Debug.Log($"Building Created ID {id}");
+		}
 
         public override void OnBuildingReleased(ushort id)
         {
             base.OnBuildingReleased(id);
-            var position = BuildingManager.instance.m_buildings.m_buffer[id].m_position; //Sending the position of the deleted building is nessesary to calculate the index in M_buildinggrid[index] and get the BuildingID
+            
+			if (lastRelease != id)
+			{
+				Command.SendToAll(new BuildingRemoveCommand
+				{
+					BuildingID = id
+				});
 
-            Command.SendToAll(new BuildingRemoveCommand
-            {
-                Position = position
-            });
+				foreach (var ID in BuildingID.Where(kvp => kvp.Value == id).ToList())
+				{
+					BuildingID.Remove(ID.Key);
+				}
 
-            _oldPosition.Remove(id); // when a building is released its position is removed to the dictionary
-        }
+			}
+			lastRelease = id;
+
+
+
+		}
 
         public override void OnBuildingRelocated(ushort id)
         {
             base.OnBuildingRelocated(id);
-
-            /// <summary>
-            /// Sends a buildings old position (for identification purpose), its new position and it new angle
-            /// </summary>
-
-            var oldPosition = _oldPosition[id];
             var newPosition = BuildingManager.instance.m_buildings.m_buffer[id].m_position;
             var angle = BuildingManager.instance.m_buildings.m_buffer[id].m_angle;
+			if(LastPosition != newPosition)
+			{
+				Command.SendToAll(new BuildingRelocateCommand
+				{
+					BuidlingId = id,
+					NewPosition = newPosition,
+					Angle = angle,
+				});
+			}
+			LastPosition = newPosition;
+			
 
-            Command.SendToAll(new BuildingRelocateCommand
-            {
-                OldPosition = oldPosition,
-                NewPosition = newPosition,
-                Angle = angle,
-            });
-
-            _oldPosition.Remove(id);
-            _oldPosition.Add(id, newPosition);
-        }
+		}
     }
 }

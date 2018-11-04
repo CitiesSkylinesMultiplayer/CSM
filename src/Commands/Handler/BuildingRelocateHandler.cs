@@ -14,10 +14,9 @@ namespace CSM.Commands.Handler
 
         private void HandleBuilding(BuildingRelocateCommand command)
         {
-            long num = Mathf.Clamp((int)((command.OldPosition.x / 64f) + 135f), 0, 0x10d); //The buildingID is stored in the M_buildingGrid[index] which is calculated by thís arbitrary calculation using the buildings position
-            long index = (Mathf.Clamp((int)((command.OldPosition.z / 64f) + 135f), 0, 0x10d) * 270) + num;
-            ushort BuildingId = BuildingManager.instance.m_buildingGrid[index];
-            Singleton<BuildingManager>.instance.RelocateBuilding(BuildingId, command.NewPosition, command.Angle);
+            uint BuildingId = Extensions.BuildingExtension.BuildingID[command.BuidlingId];
+			Extensions.BuildingExtension.lastRelocation = (ushort)BuildingId;
+            Singleton<BuildingManager>.instance.RelocateBuilding((ushort)BuildingId, command.NewPosition, command.Angle);
         }
     }
 }

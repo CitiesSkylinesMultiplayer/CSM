@@ -13,13 +13,10 @@ namespace CSM.Commands.Handler
 
         private void HandleBuilding(BuildingRemoveCommand command)
         {
-            long num = Mathf.Clamp((int)((command.Position.x / 64f) + 135f), 0, 0x10d); // The buildingID is stored in the M_buildingGrid[index] which is calculated by this arbitrary calculation using the buildings position
-            long index = (Mathf.Clamp((int)((command.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
-            var BuildingId = BuildingManager.instance.m_buildingGrid[index];
-            if (BuildingId != 0)
-            {
-                BuildingManager.instance.ReleaseBuilding(BuildingId);
-            }
+			uint buildingID = Extensions.BuildingExtension.BuildingID[command.BuildingID];
+			Extensions.BuildingExtension.lastRelease = (ushort)buildingID;
+            BuildingManager.instance.ReleaseBuilding((ushort)buildingID);
+            
         }
     }
 }

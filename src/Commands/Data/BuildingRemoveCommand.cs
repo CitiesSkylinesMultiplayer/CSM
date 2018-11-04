@@ -13,6 +13,6 @@ namespace CSM.Commands
         ///     The position of the building to be removed.
         /// </summary>
         [ProtoMember(1)]
-        public Vector3 Position { get; set; }
+        public uint BuildingID { get; set; }
     }
 }
