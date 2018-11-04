@@ -66,6 +66,7 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\BudgetChangeCommand.cs" />
     <Compile Include="Commands\Data\BuildingCreateCommand.cs" />
+    <Compile Include="Commands\Data\BuildingIDCommand.cs" />
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
     <Compile Include="Commands\Data\ClientDisconnectCommand.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Commands\Data\TaxRateChangeCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
     <Compile Include="Commands\Handler\BudgetChangeHandler.cs" />
+    <Compile Include="Commands\Handler\BuildingIDHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />

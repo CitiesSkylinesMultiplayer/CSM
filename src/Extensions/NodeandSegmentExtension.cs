@@ -211,13 +211,12 @@ namespace CSM.Extensions
                                 if (UpdateNetSegment)
                                 {
                                     _netSegment.CopyTo(_lastNetSegment, 0);
-                                    UnityEngine.Debug.Log("NetSegment Updated");
+                                    //UnityEngine.Debug.Log("NetSegment Updated");
                                     UpdateNetSegment = false;
                                 }
                                 if (UpdateNetNode)
                                 {
                                     _netNode.CopyTo(_lastNetNode, 0);
-                                    UnityEngine.Debug.Log("NetNode Updated");
                                     UpdateNetNode = false;
                                 }
                             }

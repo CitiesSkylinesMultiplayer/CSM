@@ -1,11 +1,12 @@
 ﻿using ColossalFramework;
-using CSM.Commands;
-using CSM.Helpers;
 using CSM.Networking;
 using ICities;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using CSM.Commands;
+using System.Collections.Generic;
 using UnityEngine;
+using CSM.Helpers;
 
 namespace CSM.Extensions
 {
@@ -210,13 +211,12 @@ namespace CSM.Extensions
                                 if (UpdateNetSegment)
                                 {
                                     _netSegment.CopyTo(_lastNetSegment, 0);
-                                    UnityEngine.Debug.Log("NetSegment Updated");
+                                    //UnityEngine.Debug.Log("NetSegment Updated");
                                     UpdateNetSegment = false;
                                 }
                                 if (UpdateNetNode)
                                 {
                                     _netNode.CopyTo(_lastNetNode, 0);
-                                    UnityEngine.Debug.Log("NetNode Updated");
                                     UpdateNetNode = false;
                                 }
                             }

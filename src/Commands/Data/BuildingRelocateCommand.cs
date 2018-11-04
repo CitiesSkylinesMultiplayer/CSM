@@ -10,7 +10,7 @@ namespace CSM.Commands
         public Vector3 NewPosition { get; set; }
 
         [ProtoMember(2)]
-        public Vector3 OldPosition { get; set; }
+        public uint BuidlingId { get; set; }
 
         [ProtoMember(3)]
         public float Angle { get; set; }
