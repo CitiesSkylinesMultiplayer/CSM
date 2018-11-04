@@ -16,7 +16,7 @@ If you want to build the mod yourself, follow the developer instructions below.
 
 ## Usage
 
-1. Create a new game / open an existing game.
+1. Create a new game / open an existing game. If you open an existing game, make sure both client and server load the exact same world.
 2. Click the `Show Multiplayer Menu` button in the top-left of your screen.
 3. To host a game click on `Host Game`.
 4. To join a game click on `Join Game` and enter the required information.
@@ -36,22 +36,19 @@ On every commit and pull request, Azure Pipelines will build a new version. You 
 
 ## Progress
 
-### Phase 1
-*Initial phase for setting up the mod.*
-
-- [x] Build Basic UI
-- [x] Allow basic connect, disconnect and host.
-
-### Phase 2
-*Make the mod easier to develop for/run. Build server management (kick users, view users). Allow sending messages through chat (works both in game and for debugging.*
-
-- [x] Automatic Build Script.
-- [x] Keep track of and view clients connected to a server.
-- [ ] Client can request a list of other clients connected to the server.
-- [ ] Build event system around client join, leave etc.
-
-### Phase 3
-*TBD*
+### Synced Items
+- Play/pause status.
+- Game speed.
+- Money.
+- Building created.
+- Building removed.
+- Building relocated (?).
+- Demand (?).
+- Tax (?).
+- Budget (?).
+- Road creation.
+- Powerline creation.
+- Water pipe creation.
 
 ## Contributors
 - [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)
