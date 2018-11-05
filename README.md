@@ -1,7 +1,10 @@
 # CSM - Cities: Skylines Multiplayer
 
 [![Discord](https://img.shields.io/discord/508902220943851522.svg)](https://discord.gg/RjACPhd)
-![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)
+[![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11)
+[![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=alert_status
+)](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
 
 ## Introduction
 CSM is an in-development multiplayer mod for Cities: Skylines. This mod aims to provide a simple client-server experience where users can play and build together in a single game. Initially, resources such as money, costs demand will be synced between clients alongside roads and buildings. Further along in development, terrain sculpting and more advanced features may become available.  
