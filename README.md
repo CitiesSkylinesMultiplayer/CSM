@@ -5,7 +5,7 @@
 [![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=alert_status
 )](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
-[![Steam File Size](https://img.shields.io/steam/size/1556336761.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1556336761)
+[![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
 
 ## Introduction
