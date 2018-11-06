@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class NodeCommand : CommandBase
+    public class NodeCreateCommand : CommandBase
     {
         [ProtoMember(1)]
         public Vector3 Position { get; set; }
@@ -13,6 +13,6 @@ namespace CSM.Commands
         public ushort InfoIndex { get; set; }
 
         [ProtoMember(3)]
-        public int NodeID { get; set; }
+        public uint NodeID { get; set; }
     }
 }

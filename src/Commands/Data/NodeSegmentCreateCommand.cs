@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class NodeSegmentCommand : CommandBase
+    public class NodeSegmentCreateCommand : CommandBase
     {
         [ProtoMember(1)]
         public ushort StartNode { get; set; }
