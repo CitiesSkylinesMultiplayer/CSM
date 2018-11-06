@@ -11,6 +11,5 @@ namespace CSM.Commands
 
 		[ProtoMember (2)]
 		public uint BuildingIDReciever { get; set; }
-
 	}
 }
