@@ -5,6 +5,8 @@
 [![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=alert_status
 )](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
+[![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
+
 
 ## Introduction
 CSM is an in-development multiplayer mod for Cities: Skylines. This mod aims to provide a simple client-server experience where users can play and build together in a single game. Initially, resources such as money, costs demand will be synced between clients alongside roads and buildings. Further along in development, terrain sculpting and more advanced features may become available.  
@@ -16,6 +18,8 @@ Feel free to join the development Discord server [here](https://discord.gg/RjACP
 This mod and its source code is licensed under the MIT license.
 
 ## Download & Install
+
+You can now also install this mod from the Steam Workshop [here](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291).
 
 1. Download the latest build from the Azure DevOps site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11). Click on the latest successful build -> `Artifacts` -> `CitiesSkylinesMultiplayer` -> `CitiesSkylinesMultiplayer.{Version}.zip`.
 2. Either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
