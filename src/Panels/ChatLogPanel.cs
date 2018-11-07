@@ -19,6 +19,9 @@ namespace CSM.Panels
             name = "MPChatLogPanel";
             color = new Color32(110, 110, 110, 200);
 
+            // Activates the dragging of the window
+            AddUIComponent(typeof(UIDragHandle));
+
             // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
 
