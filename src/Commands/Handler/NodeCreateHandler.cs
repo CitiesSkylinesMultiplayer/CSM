@@ -13,7 +13,7 @@ namespace CSM.Commands.Handler
 
         private void HandleCreateNode(NodeCreateCommand command)
         {
-            Extensions.NodeAndSegmentExtension.NetSegmentLocked = true;
+            //Extensions.NodeAndSegmentExtension.NetSegmentLocked = true;
             NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
             Extensions.NodeAndSegmentExtension.VectorDictionary.Add(command.Position, 100); //adds a dummynode to hinder ocilliation
             Singleton<NetManager>.instance.CreateNode(out ushort node, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, command.Position, Singleton<SimulationManager>.instance.m_currentBuildIndex);
@@ -41,8 +41,7 @@ namespace CSM.Commands.Handler
                         break;
                     }
             }
-            Extensions.NodeAndSegmentExtension.NetSegmentLocked = false;
-            //}
+            //Extensions.NodeAndSegmentExtension.NetSegmentLocked = false;
         }
     }
 }

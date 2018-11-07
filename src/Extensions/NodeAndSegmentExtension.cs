@@ -11,11 +11,11 @@ using UnityEngine;
 namespace CSM.Extensions
 {
     /// <summary>
-    /// This Extensions Syncs Node and SegmentNodes, which is responsible for Roads, Powerlines, Waterpipes ect.
-    /// The Nodes are the 'fundamental' building blocks, the NodeSegments contains a start node and an end node and makes a connection between them
-    /// It requres that the Clients and Server are using the same loaded game when connecting
+    ///     This Extensions Syncs Node and SegmentNodes, which is responsible for Roads, Powerlines, Waterpipes ect.
+    ///     The Nodes are the 'fundamental' building blocks, the NodeSegments contains a start node and an end node and makes a connection between them
+    ///     It requres that the Clients and Server are using the same loaded game when connecting
     ///
-    /// TODO: Change the release function to release nodesegments instead of nodes
+    ///     TODO: Change the release function to release nodesegments instead of nodes
     /// </summary>
     public class NodeAndSegmentExtension : ThreadingExtensionBase
     {
