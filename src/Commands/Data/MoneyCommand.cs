@@ -4,8 +4,7 @@ namespace CSM.Commands
 {
     /// <summary>
     ///     This sends the current cash amount and sync the income and expenses shown on the UI
-	///
-    /// /// </summary>
+    /// </summary>
     [ProtoContract]
     public class MoneyCommand : CommandBase
     {

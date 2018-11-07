@@ -23,21 +23,27 @@ namespace CSM.Extensions
         /// </summary>
 
         private List<Vector3> VectorList = new List<Vector3>();
-        public static bool _NetSegmentLocked = false;
-        private bool NodeReleased = false;
-        private bool TreadRunning = false;
-        private bool UpdateNetNode = false;
-        private bool UpdateNetSegment = false;
-        private bool NodeChange = false;
-        private bool Initialised = false;
-        public static Dictionary<Vector3, ushort> VectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vektor and ID, used to ensure against Nodes ocilliation between server and client
-        public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the reciever can set the StartNode and Endnode of the Segment
-        public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
-        private Vector3 NonVector = new Vector3(0.0f, 0.0f, 0.0f); //a non vector used to distingish between initialised and non initialised Nodes
-        public static NetSegment[] _netSegment = Singleton<NetManager>.instance.m_segments.m_buffer;
+
+        private bool _nodeReleased = false;
+        private bool _treadRunning = false;
+        private bool _updateNetNode = false;
+        private bool _updateNetSegment = false;
+        private bool _nodeChange = false;
+        private bool _initialised = false;
+        private Vector3 _nonVector = new Vector3(0.0f, 0.0f, 0.0f); //a non vector used to distinguish between initialized and non initialized Nodes
+
         private NetSegment[] _lastNetSegment = new NetSegment[Singleton<NetManager>.instance.m_segments.m_buffer.Length];
+
         private NetNode[] _netNode = Singleton<NetManager>.instance.m_nodes.m_buffer;
         private NetNode[] _lastNetNode = new NetNode[Singleton<NetManager>.instance.m_nodes.m_buffer.Length];
+
+        public static bool NetSegmentLocked = false;
+
+        public static Dictionary<Vector3, ushort> VectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
+        public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
+        public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
+
+        public static NetSegment[] NetSegments = Singleton<NetManager>.instance.m_segments.m_buffer;
 
         public override void OnBeforeSimulationTick()
         {
@@ -48,7 +54,7 @@ namespace CSM.Extensions
         {
             base.OnAfterSimulationTick();
 
-            if (Initialised == false)  //This is run when initiallised, it ensures that the dictionaries are filled and that we can change for later changes
+            if (_initialised == false)  //This is run when initialized, it ensures that the dictionaries are filled and that we can change for later changes
             {
                 switch (MultiplayerManager.Instance.CurrentRole)
                 {
@@ -56,57 +62,57 @@ namespace CSM.Extensions
 
                         for (ushort i = 0; i < _netNode.Length; i++)
                         {
-                            if (_netNode[i].m_position != NonVector)
+                            if (_netNode[i].m_position != _nonVector)
                             {
                                 VectorDictionary.Add(_netNode[i].m_position, i);
                                 NodeIDDictionary.Add(i, i);
                             }
                         }
 
-                        for (ushort i = 0; i < _netSegment.Length; i++)
+                        for (ushort i = 0; i < NetSegments.Length; i++)
                         {
-                            if (_netSegment[i].m_startNode != 0)
+                            if (NetSegments[i].m_startNode != 0)
                             {
-                                StartEndNode startEndNode = new StartEndNode(_netNode[_netSegment[i].m_startNode].m_position, _netNode[_netSegment[i].m_endNode].m_position);
+                                StartEndNode startEndNode = new StartEndNode(_netNode[NetSegments[i].m_startNode].m_position, _netNode[NetSegments[i].m_endNode].m_position);
                                 StartEndNodeDictionary.Add(startEndNode, i);
                             }
                         }
-                        _netSegment.CopyTo(_lastNetSegment, 0);
+                        NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
 
-                        Initialised = true;
+                        _initialised = true;
                         break;
 
                     case MultiplayerRole.Client:
 
                         for (ushort i = 0; i < _netNode.Length; i++)
                         {
-                            if (_netNode[i].m_position != NonVector)
+                            if (_netNode[i].m_position != _nonVector)
                             {
                                 VectorDictionary.Add(_netNode[i].m_position, i);
                                 NodeIDDictionary.Add(i, i);
                             }
                         }
 
-                        for (ushort i = 0; i < _netSegment.Length; i++)
+                        for (ushort i = 0; i < NetSegments.Length; i++)
                         {
-                            if (_netSegment[i].m_startNode != 0)
+                            if (NetSegments[i].m_startNode != 0)
                             {
-                                StartEndNode startEndNode = new StartEndNode(_netNode[_netSegment[i].m_startNode].m_position, _netNode[_netSegment[i].m_endNode].m_position);
+                                StartEndNode startEndNode = new StartEndNode(_netNode[NetSegments[i].m_startNode].m_position, _netNode[NetSegments[i].m_endNode].m_position);
                                 StartEndNodeDictionary.Add(startEndNode, i);
                             }
                         }
-                        _netSegment.CopyTo(_lastNetSegment, 0);
+                        NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
 
-                        Initialised = true;
+                        _initialised = true;
                         break;
                 }
             }
 
-            if (TreadRunning == false && Initialised == true)
+            if (_treadRunning == false && _initialised == true)
             {
-                TreadRunning = true;
+                _treadRunning = true;
                 new Thread(() =>
                 {
                     Thread.Sleep(100);
@@ -114,24 +120,24 @@ namespace CSM.Extensions
                     {
                         if (_netNode[i].m_position != _lastNetNode[i].m_position)
                         {
-                            NodeChange = true;
+                            _nodeChange = true;
                             break;
                         }
                     }
                     foreach (var Id in VectorDictionary)
                     {
-                        if (NodeChange == true)
+                        if (_nodeChange == true)
                             break;
 
                         ushort value = Id.Value;
                         if (_netNode[value].m_flags == 0)
                         {
-                            NodeReleased = true;
+                            _nodeReleased = true;
                             break;
                         }
                     }
 
-                    if (NodeChange == true)
+                    if (_nodeChange == true)
                     {
                         for (uint i = 0; i < _netNode.Length; i++)
                         {
@@ -140,7 +146,7 @@ namespace CSM.Extensions
                                 var position = _netNode[i].m_position;
                                 var infoIndex = _netNode[i].m_infoIndex;
                                 var nodeId = i;
-                                UpdateNetNode = true;
+                                _updateNetNode = true;
 
                                 if (!VectorDictionary.ContainsKey(_netNode[i].m_position))
                                 {
@@ -152,7 +158,7 @@ namespace CSM.Extensions
                                             {
                                                 Position = position,
                                                 InfoIndex = infoIndex,
-                                                NodeID = nodeId
+                                                NodeId = nodeId
                                             });
                                             break;
 
@@ -161,7 +167,7 @@ namespace CSM.Extensions
                                             {
                                                 Position = position,
                                                 InfoIndex = infoIndex,
-                                                NodeID = nodeId
+                                                NodeId = nodeId
                                             });
                                             break;
                                     }
@@ -169,17 +175,17 @@ namespace CSM.Extensions
                             }
                         }
                         Thread.Sleep(300);
-                        for (int i = 0; i < _netSegment.Length; i++)
+                        for (int i = 0; i < NetSegments.Length; i++)
                         {
-                            if (_netSegment[i].m_startNode != _lastNetSegment[i].m_startNode | _netSegment[i].m_endNode != _lastNetSegment[i].m_endNode)
+                            if (NetSegments[i].m_startNode != _lastNetSegment[i].m_startNode | NetSegments[i].m_endNode != _lastNetSegment[i].m_endNode)
                             {
-                                var startnode = _netSegment[i].m_startNode;
-                                var endnode = _netSegment[i].m_endNode;
-                                var startDirection = _netSegment[i].m_startDirection;
-                                var enddirection = _netSegment[i].m_endDirection;
-                                var modifiedIndex = _netSegment[i].m_modifiedIndex;
-                                var infoIndex = _netSegment[i].m_infoIndex;
-                                UpdateNetSegment = true;
+                                var startnode = NetSegments[i].m_startNode;
+                                var endnode = NetSegments[i].m_endNode;
+                                var startDirection = NetSegments[i].m_startDirection;
+                                var enddirection = NetSegments[i].m_endDirection;
+                                var modifiedIndex = NetSegments[i].m_modifiedIndex;
+                                var infoIndex = NetSegments[i].m_infoIndex;
+                                _updateNetSegment = true;
                                 StartEndNode startEndNode = new StartEndNode(_netNode[startnode].m_position, _netNode[endnode].m_position);
                                 if (!StartEndNodeDictionary.ContainsKey(startEndNode))
                                 {
@@ -214,23 +220,23 @@ namespace CSM.Extensions
                                 }
                             }
                         }
-                        if (UpdateNetSegment)
+                        if (_updateNetSegment)
                         {
-                            _netSegment.CopyTo(_lastNetSegment, 0);
-                            UpdateNetSegment = false;
+                            NetSegments.CopyTo(_lastNetSegment, 0);
+                            _updateNetSegment = false;
                         }
-                        if (UpdateNetNode)
+                        if (_updateNetNode)
                         {
                             _netNode.CopyTo(_lastNetNode, 0);
-                            UpdateNetNode = false;
+                            _updateNetNode = false;
                         }
                         UnityEngine.Debug.Log("Done Updating");
                         //}
                         //	}
-                        NodeChange = false;
+                        _nodeChange = false;
                     }
 
-                    if (NodeReleased == true)
+                    if (_nodeReleased == true)
                     {
                         foreach (var Id in VectorDictionary)
                         {
@@ -241,14 +247,14 @@ namespace CSM.Extensions
                                     case MultiplayerRole.Server:
                                         Command.SendToClients(new NodeReleaseCommand
                                         {
-                                            Nodeid = Id.Value
+                                            NodeId = Id.Value
                                         });
                                         break;
 
                                     case MultiplayerRole.Client:
                                         Command.SendToServer(new NodeReleaseCommand
                                         {
-                                            Nodeid = Id.Value
+                                            NodeId = Id.Value
                                         });
                                         break;
                                 }
@@ -264,9 +270,9 @@ namespace CSM.Extensions
                             VectorDictionary.Remove(vector);
                         }
                         VectorList.Clear();
-                        NodeReleased = false;
+                        _nodeReleased = false;
                     }
-                    TreadRunning = false;
+                    _treadRunning = false;
                 }).Start();
             }
         }

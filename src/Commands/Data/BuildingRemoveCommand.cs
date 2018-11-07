@@ -9,9 +9,9 @@ namespace CSM.Commands
     public class BuildingRemoveCommand : CommandBase
     {
         /// <summary>
-        ///     The position of the building to be removed.
+        ///     The id of the building to be removed
         /// </summary>
         [ProtoMember(1)]
-        public uint BuildingID { get; set; }
+        public uint BuildingId { get; set; }
     }
 }

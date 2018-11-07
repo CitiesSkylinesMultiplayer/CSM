@@ -2,17 +2,17 @@
 
 namespace CSM.Commands.Handler
 {
-    internal class NodeIDHandler : CommandHandler<NodeIDCommand>
+    public class NodeIdHandler : CommandHandler<NodeIdCommand>
     {
         public override byte ID => 113;
 
-        public override void HandleOnServer(NodeIDCommand command, Player player) => HandleNodeID(command);
+        public override void HandleOnServer(NodeIdCommand command, Player player) => HandleNodeID(command);
 
-        public override void HandleOnClient(NodeIDCommand command) => HandleNodeID(command);
+        public override void HandleOnClient(NodeIdCommand command) => HandleNodeID(command);
 
-        private void HandleNodeID(NodeIDCommand command)
+        private void HandleNodeID(NodeIdCommand command)
         {
-            Extensions.NodeAndSegmentExtension.NodeIDDictionary.Add((ushort)command.NodeIDSender, (ushort)command.NodeIDReciever);
+            Extensions.NodeAndSegmentExtension.NodeIDDictionary.Add((ushort)command.NodeIdSender, (ushort)command.NodeIdReciever);
         }
     }
 }

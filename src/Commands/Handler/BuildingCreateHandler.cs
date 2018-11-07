@@ -23,20 +23,20 @@ namespace CSM.Commands.Handler
             {
                 case MultiplayerRole.Client:
                     {
-                        Command.SendToServer(new BuildingIDCommand
+                        Command.SendToServer(new BuildingIdCommand
                         {
-                            BuildingIDSender = building,
-                            BuildingIDReciever = command.BuildingID
+                            BuildingIdSender = building,
+                            BuildingIdReciever = command.BuildingID
                         });
 
                         break;
                     }
                 case MultiplayerRole.Server:
                     {
-                        Command.SendToServer(new BuildingIDCommand
+                        Command.SendToServer(new BuildingIdCommand
                         {
-                            BuildingIDSender = building,
-                            BuildingIDReciever = command.BuildingID
+                            BuildingIdSender = building,
+                            BuildingIdReciever = command.BuildingID
                         });
                         break;
                     }

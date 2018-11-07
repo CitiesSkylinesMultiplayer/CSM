@@ -3,12 +3,12 @@
 namespace CSM.Commands
 {
     [ProtoContract]
-    internal class NodeIDCommand : CommandBase
+    public class NodeIdCommand : CommandBase
     {
         [ProtoMember(1)]
-        public uint NodeIDSender { get; set; }
+        public uint NodeIdSender { get; set; }
 
         [ProtoMember(2)]
-        public uint NodeIDReciever { get; set; }
+        public uint NodeIdReciever { get; set; }
     }
 }

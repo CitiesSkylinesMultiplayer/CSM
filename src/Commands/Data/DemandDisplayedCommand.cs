@@ -3,7 +3,7 @@
 namespace CSM.Commands
 {
     /// <summary>
-    /// This sends the demand displayed on the UI
+    ///     This sends the demand displayed on the UI
     /// </summary>
     [ProtoContract]
     public class DemandDisplayedCommand : CommandBase

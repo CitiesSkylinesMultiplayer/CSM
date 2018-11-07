@@ -10,8 +10,8 @@ namespace CSM.Extensions
     /// <summary>
     ///     Handles game economy. Sends the MoneyAmount between Server and Client
     ///     sets the income and the expenses to 0 on the client side, making the server handling income and expenses
-    ///     Sync the total income and expences on the UI
-    ///     sync the underlying Taxrate and Servicebudget
+    ///     Sync the total income and expenses on the UI
+    ///     sync the underlying tax rate and service budget
     ///
     ///		TODO Sync the EconomyPanel
     /// </summary>
@@ -20,6 +20,7 @@ namespace CSM.Extensions
         private long _lastMoneyAmount;
         private long[] _totalExpenses;
         private long[] _totalIncome;
+
         public static int[] _Taxrate;
         public static int[] _serviceBudgetNight;
         public static int[] _serviceBudgetDay;

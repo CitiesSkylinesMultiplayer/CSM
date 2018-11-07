@@ -20,7 +20,8 @@ namespace CSM.Extensions
         public static Dictionary<uint, uint> BuildingID = new Dictionary<uint, uint>();
         public static ushort lastRelease;
         public static ushort lastRelocation;
-        private Vector3 Nonvector = new Vector3(0.0f, 0.0f, 0.0f);
+
+        private Vector3 _nonvector = new Vector3(0.0f, 0.0f, 0.0f);
 
         public override void OnCreated(IBuilding building)
         {
@@ -33,7 +34,7 @@ namespace CSM.Extensions
 
             for (int i = 0; i < BuildingManager.instance.m_buildings.m_buffer.Length; i++)
             {
-                if (BuildingManager.instance.m_buildings.m_buffer[i].m_position != Nonvector)
+                if (BuildingManager.instance.m_buildings.m_buffer[i].m_position != _nonvector)
                 {
                     BuildingID.Add((ushort)i, (ushort)i);
                 }
@@ -72,7 +73,7 @@ namespace CSM.Extensions
             {
                 Command.SendToAll(new BuildingRemoveCommand
                 {
-                    BuildingID = id
+                    BuildingId = id
                 });
 
                 foreach (var ID in BuildingID.Where(kvp => kvp.Value == id).ToList())

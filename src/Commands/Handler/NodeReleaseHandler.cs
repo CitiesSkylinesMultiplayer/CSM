@@ -14,7 +14,7 @@ namespace CSM.Commands.Handler
 
         private void Handle(NodeReleaseCommand command)
         {
-            var NodeID = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.Nodeid];
+            var NodeID = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.NodeId];
 
             foreach (var ID in Extensions.NodeAndSegmentExtension.VectorDictionary.Where(kvp => kvp.Value == NodeID).ToList())
             {

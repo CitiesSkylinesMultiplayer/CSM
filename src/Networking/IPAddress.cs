@@ -47,7 +47,7 @@ namespace CSM.Networking
             try
             {
                 //Get the External IP (IPv4) Address from internet
-                _externalIp = new WebClient().DownloadString("http://api.ipify.org"); //HTTPS doesnt work
+                _externalIp = new WebClient().DownloadString("http://api.ipify.org"); // HTTPS doesn't work
                 return _externalIp;
             }
             catch (Exception)

@@ -3,12 +3,12 @@
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class BuildingIDCommand : CommandBase
+    public class BuildingIdCommand : CommandBase
     {
         [ProtoMember(1)]
-        public uint BuildingIDSender { get; set; }
+        public uint BuildingIdSender { get; set; }
 
         [ProtoMember(2)]
-        public uint BuildingIDReciever { get; set; }
+        public uint BuildingIdReciever { get; set; }
     }
 }

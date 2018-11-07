@@ -66,7 +66,7 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\BudgetChangeCommand.cs" />
     <Compile Include="Commands\Data\BuildingCreateCommand.cs" />
-    <Compile Include="Commands\Data\BuildingIDCommand.cs" />
+    <Compile Include="Commands\Data\BuildingIdCommand.cs" />
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
     <Compile Include="Commands\Data\ClientDisconnectCommand.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Commands\Data\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
-    <Compile Include="Commands\Data\NodeIDCommand.cs" />
+    <Compile Include="Commands\Data\NodeIdCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
     <Compile Include="Commands\Data\NodeSegmentCreateCommand.cs" />
     <Compile Include="Commands\Data\PlayerListCommand.cs" />
@@ -86,12 +86,12 @@
     <Compile Include="Commands\Data\TaxRateChangeCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
     <Compile Include="Commands\Handler\BudgetChangeHandler.cs" />
-    <Compile Include="Commands\Handler\BuildingIDHandler.cs" />
+    <Compile Include="Commands\Handler\BuildingIdHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
-    <Compile Include="Commands\Handler\NodeIDHandler.cs" />
+    <Compile Include="Commands\Handler\NodeIdHandler.cs" />
     <Compile Include="Commands\Handler\NodeReleaseHandler.cs" />
     <Compile Include="Commands\Handler\NodeSegmentCreateHandler.cs" />
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />

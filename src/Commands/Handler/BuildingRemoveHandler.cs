@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler
 
         private void HandleBuilding(BuildingRemoveCommand command)
         {
-            uint buildingID = Extensions.BuildingExtension.BuildingID[command.BuildingID];
+            uint buildingID = Extensions.BuildingExtension.BuildingID[command.BuildingId];
             Extensions.BuildingExtension.lastRelease = (ushort)buildingID;
             BuildingManager.instance.ReleaseBuilding((ushort)buildingID);
         }

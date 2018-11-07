@@ -6,6 +6,6 @@ namespace CSM.Commands
     public class NodeReleaseCommand : CommandBase
     {
         [ProtoMember(1)]
-        public ushort Nodeid { get; set; }
+        public ushort NodeId { get; set; }
     }
 }

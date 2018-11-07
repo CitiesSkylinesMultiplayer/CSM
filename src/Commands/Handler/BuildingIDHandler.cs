@@ -3,20 +3,20 @@
 namespace CSM.Commands.Handler
 {
     /// <summary>
-    /// When a building is created it generates a random BuildingID,
-    /// This returns the BuildingID of the reciever of a BuildingCommand, and adds it to the original senders BuildingID Dictionary
+    ///     When a building is created it generates a random BuildingID,
+    ///     This returns the BuildingID of the receiver of a BuildingCommand, and adds it to the original senders BuildingID Dictionary
     /// </summary>
-    internal class BuildingIDHandler : CommandHandler<BuildingIDCommand>
+    public class BuildingIdHandler : CommandHandler<BuildingIdCommand>
     {
         public override byte ID => 111;
 
-        public override void HandleOnServer(BuildingIDCommand command, Player player) => HandleBuilding(command);
+        public override void HandleOnServer(BuildingIdCommand command, Player player) => HandleBuilding(command);
 
-        public override void HandleOnClient(BuildingIDCommand command) => HandleBuilding(command);
+        public override void HandleOnClient(BuildingIdCommand command) => HandleBuilding(command);
 
-        private void HandleBuilding(BuildingIDCommand command)
+        private void HandleBuilding(BuildingIdCommand command)
         {
-            Extensions.BuildingExtension.BuildingID.Add(command.BuildingIDSender, command.BuildingIDReciever);
+            Extensions.BuildingExtension.BuildingID.Add(command.BuildingIdSender, command.BuildingIdReciever);
         }
     }
 }
