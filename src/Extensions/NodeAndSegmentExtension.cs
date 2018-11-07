@@ -10,18 +10,15 @@ using UnityEngine;
 
 namespace CSM.Extensions
 {
-    public class NodeAndSegmentExtension : ThreadingExtensionBase
-    {
-        /// <summary>
+    /// <summary>
         /// This Extensions Syncs Node and SegmentNodes, which is responsible for Roads, Powerlines, Waterpipes ect.
         /// The Nodes are the 'fundamental' building blocks, the NodeSegments contains a start node and an end node and makes a connection between them
         /// It requres that the Clients and Server are using the same loaded game when connecting
         ///
         /// TODO: Change the release function to release nodesegments instead of nodes
-		/// 
-        ///
         /// </summary>
-
+    public class NodeAndSegmentExtension : ThreadingExtensionBase
+    {
         private List<Vector3> VectorList = new List<Vector3>();
 
         private bool _nodeReleased = false;
@@ -43,9 +40,6 @@ namespace CSM.Extensions
         public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
         public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
         
-		
-		
-
 		public override void OnAfterSimulationTick()
         {
             base.OnAfterSimulationTick();
