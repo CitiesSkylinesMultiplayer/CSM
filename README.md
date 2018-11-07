@@ -98,9 +98,9 @@ Whenever a new command is created, please update this table. You can also use th
 |108|`BudgetChangeCommand`|`BudgetChangeHandler`|
 |109|`NodeCreateCommand`|`NodeCreateHandler`|
 |110|`NodeSegmentCreateCommand`|`NodeSegmentCreateHandler`|
-|111|`BuildingIDCommand`|`BuildingIDHandler`|
+|111|`BuildingIdCommand`|`BuildingIdHandler`|
 |112|`NodeReleaseCommand`|`NodeReleaseHandler`|
-|113|`NodeIDCommand`|`NodeIDHandler`|
+|113|`NodeIdCommand`|`NodeIdHandler`|
 
 ### Creating a Command
 1. Create a new class under the `CSM.Commands` namespace (`src/Commands/Data` folder) with a suffux of `Command` (see other commands as an example).
