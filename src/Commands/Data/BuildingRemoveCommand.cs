@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {

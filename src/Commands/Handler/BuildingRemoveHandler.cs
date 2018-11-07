@@ -1,5 +1,4 @@
 ﻿using CSM.Networking;
-using UnityEngine;
 
 namespace CSM.Commands.Handler
 {
@@ -13,10 +12,9 @@ namespace CSM.Commands.Handler
 
         private void HandleBuilding(BuildingRemoveCommand command)
         {
-			uint buildingID = Extensions.BuildingExtension.BuildingID[command.BuildingID];
-			Extensions.BuildingExtension.lastRelease = (ushort)buildingID;
+            uint buildingID = Extensions.BuildingExtension.BuildingID[command.BuildingID];
+            Extensions.BuildingExtension.lastRelease = (ushort)buildingID;
             BuildingManager.instance.ReleaseBuilding((ushort)buildingID);
-            
         }
     }
 }
