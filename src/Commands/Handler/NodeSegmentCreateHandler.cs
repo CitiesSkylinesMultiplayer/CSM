@@ -13,7 +13,6 @@ namespace CSM.Commands.Handler
 
         public override void HandleOnClient(NodeSegmentCreateCommand command)
         {
-            Extensions.NodeAndSegmentExtension.NetSegmentLocked = true;
 
             NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
             _startNode = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.StartNode]; //uses the Dictionary of the Client and Servers different NodeID to convert the recived NodeID the the NodeID of the reciever
@@ -26,7 +25,6 @@ namespace CSM.Commands.Handler
 
         public override void HandleOnServer(NodeSegmentCreateCommand command, Player player)
         {
-            Extensions.NodeAndSegmentExtension.NetSegmentLocked = true;
             NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
             var startNode = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.StartNode]; //uses the Dictionary of the Client and Servers different NodeID to convert the recived NodeID the the NodeID of the reciever
             var endNode = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.EndNode];
