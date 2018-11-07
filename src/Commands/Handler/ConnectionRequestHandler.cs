@@ -73,6 +73,8 @@ namespace CSM.Commands.Handler
             Command.SendToClient(peer, new ConnectionResultCommand { Success = true });
 
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
+
+            // Get map to send to client
         }
     }
 }

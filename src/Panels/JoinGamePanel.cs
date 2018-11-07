@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using ColossalFramework.Packaging;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
@@ -25,7 +26,7 @@ namespace CSM.Panels
 
             backgroundSprite = "GenericPanel";
             name = "MPJoinGamePanel";
-            color = new Color32(110, 110, 110, 250);
+            color = new Color32(110, 110, 110, 255);
 
             // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
@@ -74,6 +75,7 @@ namespace CSM.Panels
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
+                RemoveUIComponent(this);
             };
 
             _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));

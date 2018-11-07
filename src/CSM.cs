@@ -8,7 +8,22 @@ namespace CSM
     {
         public CSM()
         {
+            // Make sure the button is enabled after intro load
+            LoadingManager.instance.m_introLoaded += () => CreateJoinGameButton();
+
+            // We are in the main menu, so load the "Join Game" button.
+            if (!LoadingManager.instance.m_essentialScenesLoaded)
+            {
+                CreateJoinGameButton();
+            }
+        }
+
+        private static void CreateJoinGameButton()
+        {
             var uiView = UIView.GetAView().FindUIComponent("Menu") as UIPanel;
+
+            if (uiView == null)
+                return;
 
             var joinGameButton = UIView.GetAView().FindUIComponent("JoinGame") as UIButton;
 
@@ -45,14 +60,25 @@ namespace CSM
 
             joinGameButton.dropShadowOffset = new Vector2(0, -1.33f);
 
-            joinGameButton.eventClick -= JoinGameButton_eventClick;
-            joinGameButton.eventClick += JoinGameButton_eventClick;
+            // TODO, enable later
+            //    joinGameButton.eventClick -= JoinGameButton_eventClick;
+            //    joinGameButton.eventClick += JoinGameButton_eventClick;
         }
 
-        private void JoinGameButton_eventClick(UIComponent component, UIMouseEventParameter eventParam)
+        private static void JoinGameButton_eventClick(UIComponent component, UIMouseEventParameter eventParam)
         {
-            CSM.Log("test");
-            LoadingManager.instance.LoadIntro();
+            var panel = UIView.GetAView().FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
+
+            if (panel != null)
+            {
+                panel.isVisible = true;
+                panel.Focus();
+            }
+            else
+            {
+                var joinGamePanel = (JoinGamePanel)UIView.GetAView().AddUIComponent(typeof(JoinGamePanel));
+                joinGamePanel.Focus();
+            }
         }
 
         public string Name => "CSM";

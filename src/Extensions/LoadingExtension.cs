@@ -10,6 +10,11 @@ namespace CSM.Extensions
     {
         private UIButton _multiplayerButton;
 
+        public override void OnCreated(ILoading loading)
+        {
+            base.OnCreated(loading);
+        }
+
         public override void OnLevelUnloading()
         {
             // Stop everything
