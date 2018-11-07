@@ -17,8 +17,8 @@ namespace CSM.Extensions
         /// The Nodes are the 'fundamental' building blocks, the NodeSegments contains a start node and an end node and makes a connection between them
         /// It requres that the Clients and Server are using the same loaded game when connecting
         ///
-        /// TODO make the way it handles sending things between server and client in the right order.
-        /// It has to be ensured that all Nodes are send and added before any NodeSegments are send and added.
+        /// TODO: Change the release function to release nodesegments instead of nodes
+		/// 
         ///
         /// </summary>
 
@@ -30,27 +30,23 @@ namespace CSM.Extensions
         private bool _updateNetSegment = false;
         private bool _nodeChange = false;
         private bool _initialised = false;
-        private Vector3 _nonVector = new Vector3(0.0f, 0.0f, 0.0f); //a non vector used to distinguish between initialized and non initialized Nodes
-
-        private NetSegment[] _lastNetSegment = new NetSegment[Singleton<NetManager>.instance.m_segments.m_buffer.Length];
-
+		private bool ZoneChange = false;
+		private Vector3 _nonVector = new Vector3(0.0f, 0.0f, 0.0f); //a non vector used to distinguish between initialized and non initialized Nodes
+		private NetSegment[] NetSegments = Singleton<NetManager>.instance.m_segments.m_buffer;
+		private NetSegment[] _lastNetSegment = new NetSegment[Singleton<NetManager>.instance.m_segments.m_buffer.Length];
         private NetNode[] _netNode = Singleton<NetManager>.instance.m_nodes.m_buffer;
         private NetNode[] _lastNetNode = new NetNode[Singleton<NetManager>.instance.m_nodes.m_buffer.Length];
-
-        public static bool NetSegmentLocked = false;
+		private ZoneBlock[] _zoneBlock = Singleton<ZoneManager>.instance.m_blocks.m_buffer;
+		private ZoneBlock[] _lastZoneBlock = new ZoneBlock[Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length];
 
         public static Dictionary<Vector3, ushort> VectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
         public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
         public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
+        
+		
+		
 
-        public static NetSegment[] NetSegments = Singleton<NetManager>.instance.m_segments.m_buffer;
-
-        public override void OnBeforeSimulationTick()
-        {
-            base.OnBeforeSimulationTick();
-        }
-
-        public override void OnAfterSimulationTick()
+		public override void OnAfterSimulationTick()
         {
             base.OnAfterSimulationTick();
 
@@ -104,8 +100,9 @@ namespace CSM.Extensions
                         }
                         NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
+						_zoneBlock.CopyTo(_lastZoneBlock, 0);
 
-                        _initialised = true;
+						_initialised = true;
                         break;
                 }
             }
@@ -115,8 +112,7 @@ namespace CSM.Extensions
                 _treadRunning = true;
                 new Thread(() =>
                 {
-                    Thread.Sleep(100);
-                    for (int i = 0; i < _netNode.Length; i++) //this checks for changes by cheching if a node has been changed
+                    for (int i = 0; i < _netNode.Length; i++) //this checks if any new nodes has been created by cheching if any nodes positions has been changed
                     {
                         if (_netNode[i].m_position != _lastNetNode[i].m_position)
                         {
@@ -124,20 +120,33 @@ namespace CSM.Extensions
                             break;
                         }
                     }
-                    foreach (var Id in VectorDictionary)
-                    {
-                        if (_nodeChange == true)
-                            break;
+					foreach (var Id in VectorDictionary) // this checks if any nodes has been removed, by controlling if any of the nodes that we have created, has been deleted
+					{
+						if (_nodeChange == true)
+							break;
 
-                        ushort value = Id.Value;
-                        if (_netNode[value].m_flags == 0)
-                        {
-                            _nodeReleased = true;
-                            break;
-                        }
-                    }
+						ushort value = Id.Value;
+						if (_netNode[value].m_flags == 0)
+						{
+							_nodeReleased = true;
+							break;
+						}
+					}
+					/*
+					for (int i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
+					{
+						if (_zoneBlock[i].m_position != _lastZoneBlock[i].m_position)
+						{
+							UnityEngine.Debug.Log("Zone Changed");
+							Singleton<ZoneManager>.instance.m_blocks;
+							Singleton<ZoneManager>.instance.m_blocks.m_buffer[1].m_valid
+							ZoneChange = true;
+							break;
+						}
+					}
+					*/
 
-                    if (_nodeChange == true)
+					if (_nodeChange == true)
                     {
                         for (uint i = 0; i < _netNode.Length; i++)
                         {
@@ -174,7 +183,6 @@ namespace CSM.Extensions
                                 }
                             }
                         }
-                        Thread.Sleep(300);
                         for (int i = 0; i < NetSegments.Length; i++)
                         {
                             if (NetSegments[i].m_startNode != _lastNetSegment[i].m_startNode | NetSegments[i].m_endNode != _lastNetSegment[i].m_endNode)
@@ -231,8 +239,7 @@ namespace CSM.Extensions
                             _updateNetNode = false;
                         }
                         UnityEngine.Debug.Log("Done Updating");
-                        //}
-                        //	}
+
                         _nodeChange = false;
                     }
 
