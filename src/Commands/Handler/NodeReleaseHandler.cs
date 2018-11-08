@@ -16,9 +16,9 @@ namespace CSM.Commands.Handler
         {
             var NodeID = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.NodeId];
 
-            foreach (var ID in Extensions.NodeAndSegmentExtension.VectorDictionary.Where(kvp => kvp.Value == NodeID).ToList())
+            foreach (var ID in Extensions.NodeAndSegmentExtension.NodeVectorDictionary.Where(kvp => kvp.Value == NodeID).ToList())
             {
-                Extensions.NodeAndSegmentExtension.VectorDictionary.Remove(ID.Key);
+                Extensions.NodeAndSegmentExtension.NodeVectorDictionary.Remove(ID.Key);
             }
             Extensions.NodeAndSegmentExtension.NodeIDDictionary.Remove(NodeID);
             Singleton<NetManager>.instance.ReleaseNode(NodeID);
