@@ -33,10 +33,11 @@ namespace CSM.Extensions
         private NetSegment[] _lastNetSegment = new NetSegment[Singleton<NetManager>.instance.m_segments.m_buffer.Length];
         private NetNode[] _netNode = Singleton<NetManager>.instance.m_nodes.m_buffer;
         private NetNode[] _lastNetNode = new NetNode[Singleton<NetManager>.instance.m_nodes.m_buffer.Length];
-        private ZoneBlock[] _zoneBlock = Singleton<ZoneManager>.instance.m_blocks.m_buffer;
-        private ZoneBlock[] _lastZoneBlock = new ZoneBlock[Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length];
+        private ZoneBlock[] _ZoneBlock = Singleton<ZoneManager>.instance.m_blocks.m_buffer;
+        private ZoneBlock[] _LastZoneBlock = new ZoneBlock[Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length];
 
-        public static Dictionary<Vector3, ushort> VectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
+        public static Dictionary<Vector3, ushort> ZoneVectorDictionary = new Dictionary<Vector3, ushort>(); // This dictionary contains ZoneVectors and ZoneId and are used to identify the zoneId of a recived zone
+        public static Dictionary<Vector3, ushort> NodeVectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
         public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
         public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
 
@@ -54,7 +55,7 @@ namespace CSM.Extensions
                         {
                             if (_netNode[i].m_position != _nonVector)
                             {
-                                VectorDictionary.Add(_netNode[i].m_position, i);
+                                NodeVectorDictionary.Add(_netNode[i].m_position, i);
                                 NodeIDDictionary.Add(i, i);
                             }
                         }
@@ -67,8 +68,19 @@ namespace CSM.Extensions
                                 StartEndNodeDictionary.Add(startEndNode, i);
                             }
                         }
+                        for (ushort i = 0; i < _ZoneBlock.Length; i++)
+                        {
+                            if (_ZoneBlock[i].m_position != _nonVector)
+                            {
+                                ZoneVectorDictionary.Add(_ZoneBlock[i].m_position, i);
+                            }
+                        }
+
+
                         NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
+                        _ZoneBlock.CopyTo(_LastZoneBlock, 0);
+
 
                         _initialised = true;
                         break;
@@ -79,7 +91,7 @@ namespace CSM.Extensions
                         {
                             if (_netNode[i].m_position != _nonVector)
                             {
-                                VectorDictionary.Add(_netNode[i].m_position, i);
+                                NodeVectorDictionary.Add(_netNode[i].m_position, i);
                                 NodeIDDictionary.Add(i, i);
                             }
                         }
@@ -92,9 +104,17 @@ namespace CSM.Extensions
                                 StartEndNodeDictionary.Add(startEndNode, i);
                             }
                         }
+                        for (ushort i = 0; i < _ZoneBlock.Length; i++)
+                        {
+                            if (_ZoneBlock[i].m_position != _nonVector)
+                            {
+                                ZoneVectorDictionary.Add(_ZoneBlock[i].m_position, i);
+                            }
+                        }
+
                         NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
-                        _zoneBlock.CopyTo(_lastZoneBlock, 0);
+                        _ZoneBlock.CopyTo(_LastZoneBlock, 0);
 
                         _initialised = true;
                         break;
@@ -114,7 +134,7 @@ namespace CSM.Extensions
                             break;
                         }
                     }
-                    foreach (var Id in VectorDictionary) // this checks if any nodes has been removed, by controlling if any of the nodes that we have created, has been deleted
+                    foreach (var Id in NodeVectorDictionary) // this checks if any nodes has been removed, by controlling if any of the nodes that we have created, has been deleted
                     {
                         if (_nodeChange == true)
                             break;
@@ -126,19 +146,20 @@ namespace CSM.Extensions
                             break;
                         }
                     }
-                    /*
-					for (int i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
-					{
-						if (_zoneBlock[i].m_position != _lastZoneBlock[i].m_position)
-						{
-							UnityEngine.Debug.Log("Zone Changed");
-							Singleton<ZoneManager>.instance.m_blocks;
-							Singleton<ZoneManager>.instance.m_blocks.m_buffer[1].m_valid
-							ZoneChange = true;
-							break;
-						}
-					}
-					*/
+                    for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
+                    {
+                        if (_nodeChange == true | _nodeReleased == true)
+                            break;
+
+                        if (_ZoneBlock[i].m_position != _nonVector && !ZoneVectorDictionary.ContainsKey(_ZoneBlock[i].m_position)) // The zones are created when road is created, this detect all zoon created and adds it to dictionary
+                            ZoneVectorDictionary.Add(_ZoneBlock[i].m_position, i);
+
+                        if (_ZoneBlock[i].m_zone1 != _LastZoneBlock[i].m_zone1 | _ZoneBlock[i].m_zone2 != _LastZoneBlock[i].m_zone2) //this checks if anything have changed
+                        {
+                            ZoneChange = true;
+                            break;
+                        }
+                    }
 
                     if (_nodeChange == true)
                     {
@@ -151,9 +172,9 @@ namespace CSM.Extensions
                                 var nodeId = i;
                                 _updateNetNode = true;
 
-                                if (!VectorDictionary.ContainsKey(_netNode[i].m_position))
+                                if (!NodeVectorDictionary.ContainsKey(_netNode[i].m_position))
                                 {
-                                    VectorDictionary.Add(_netNode[i].m_position, (ushort)i);
+                                    NodeVectorDictionary.Add(_netNode[i].m_position, (ushort)i);
                                     switch (MultiplayerManager.Instance.CurrentRole)
                                     {
                                         case MultiplayerRole.Server:
@@ -239,7 +260,7 @@ namespace CSM.Extensions
 
                     if (_nodeReleased == true)
                     {
-                        foreach (var Id in VectorDictionary)
+                        foreach (var Id in NodeVectorDictionary)
                         {
                             if (_netNode[Id.Value].m_flags == 0)
                             {
@@ -268,10 +289,28 @@ namespace CSM.Extensions
                         };
                         foreach (var vector in _vectorList)
                         {
-                            VectorDictionary.Remove(vector);
+                            NodeVectorDictionary.Remove(vector);
                         }
                         _vectorList.Clear();
                         _nodeReleased = false;
+                    }
+                    if (ZoneChange == true)
+                    {
+                        for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
+                        {
+                            if (_ZoneBlock[i].m_zone1 != _LastZoneBlock[i].m_zone1 | _ZoneBlock[i].m_zone2 != _LastZoneBlock[i].m_zone2)   //this runs through all Zoneblocks and detect if the zonetype has changed
+                            {
+
+                                Command.SendToAll(new ZoneCommand
+                                {
+                                    Position = _ZoneBlock[i].m_position,
+                                    Zone1 = _ZoneBlock[i].m_zone1,
+                                    Zone2 = _ZoneBlock[i].m_zone2
+                                });
+                            }
+                        }
+                        _ZoneBlock.CopyTo(_LastZoneBlock, 0);
+                        ZoneChange = false;
                     }
                     _treadRunning = false;
                 }).Start();

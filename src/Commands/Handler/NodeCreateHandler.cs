@@ -15,10 +15,10 @@ namespace CSM.Commands.Handler
         {
             //Extensions.NodeAndSegmentExtension.NetSegmentLocked = true;
             NetInfo netinfo = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
-            Extensions.NodeAndSegmentExtension.VectorDictionary.Add(command.Position, 100); //adds a dummynode to hinder ocilliation
+            Extensions.NodeAndSegmentExtension.NodeVectorDictionary.Add(command.Position, 100); //adds a dummynode to hinder ocilliation
             Singleton<NetManager>.instance.CreateNode(out ushort node, ref Singleton<SimulationManager>.instance.m_randomizer, netinfo, command.Position, Singleton<SimulationManager>.instance.m_currentBuildIndex);
             Extensions.NodeAndSegmentExtension.NodeIDDictionary.Add((ushort)command.NodeId, node); //Adds the NodeID recived and the NodeID generated on NodeCreation.
-            Extensions.NodeAndSegmentExtension.VectorDictionary[command.Position] = node;
+            Extensions.NodeAndSegmentExtension.NodeVectorDictionary[command.Position] = node;
 
             switch (MultiplayerManager.Instance.CurrentRole) //returns the newly created Nodes NodeID so that it can be added to the original builders Dictionary
             {

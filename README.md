@@ -54,9 +54,10 @@ If you want to build the mod yourself, follow the developer instructions below.
 - Demand.
 - Tax (Sync but be aware that it does not show on the UI).
 - Budget (Sync but be aware that it does not show on the UI).
-- Road creation.
-- Powerline creation.
-- Water pipe creation.
+- Road creation and deletion.
+- Powerline creation and deletion.
+- Water pipe creation and deletion.
+- Zones.
 
 ## Contributors
 - [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)
@@ -101,6 +102,7 @@ Whenever a new command is created, please update this table. You can also use th
 |111|`BuildingIdCommand`|`BuildingIdHandler`|
 |112|`NodeReleaseCommand`|`NodeReleaseHandler`|
 |113|`NodeIdCommand`|`NodeIdHandler`|
+|114|`ZoneCommand`|`ZoneHandler`|
 
 ### Creating a Command
 1. Create a new class under the `CSM.Commands` namespace (`src/Commands/Data` folder) with a suffux of `Command` (see other commands as an example).
