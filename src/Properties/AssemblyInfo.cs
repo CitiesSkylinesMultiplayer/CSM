@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Cities: Skylines Muiltiplayer Mod")]
-[assembly: AssemblyDescription("Muiltiplayer mod for Cities: Skylines")]
+[assembly: AssemblyTitle("Cities: Skylines Multiplayer Mod")]
+[assembly: AssemblyDescription("Multiplayer mod for Cities: Skylines")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Grid Entertainment")]
-[assembly: AssemblyProduct("Cities: Skylines Muiltiplayer Mod")]
+[assembly: AssemblyProduct("Cities: Skylines Multiplayer Mod")]
 [assembly: AssemblyCopyright("Copyright © Dominic Maas 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
