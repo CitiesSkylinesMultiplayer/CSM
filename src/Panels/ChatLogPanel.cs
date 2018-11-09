@@ -13,6 +13,13 @@ namespace CSM.Panels
     {
         private UIListBox _messageBox;
 
+        public enum MessageType
+        {
+            Normal,
+            Warning,
+            Error
+        }
+
         public override void Start()
         {
             backgroundSprite = "GenericPanel";
@@ -42,7 +49,7 @@ namespace CSM.Panels
             base.Start();
         }
 
-        public void AddMessage(string message)
+        public void AddMessage(MessageType type, string message)
         {
             // Game console
             var existingItems = new List<string>();

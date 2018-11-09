@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using CSM.Common;
 using CSM.Panels;
 using UnityEngine;
 
@@ -91,12 +92,7 @@ namespace CSM
         /// <param name="message"></param>
         public static void Log(string message)
         {
-            // Console
-            Debug.Log($"[CSM] {message}");
-
-            // Game console
-            var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
-            chatLog?.AddMessage($"[CSM] {message}");
+            LogManager.LogMessage(message);
         }
     }
 }
