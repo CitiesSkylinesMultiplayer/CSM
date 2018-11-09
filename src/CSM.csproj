@@ -115,10 +115,10 @@
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Extensions\NodeAndSegmentExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
-    <Compile Include="Helpers\StartEndNode.cs" />
+    <Compile Include="Models\StartEndNode.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
-    <Compile Include="Helpers\Vector3Surrogate.cs" />
+    <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />

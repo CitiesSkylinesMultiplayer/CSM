@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
 using CSM.Helpers;
+using CSM.Models;
 using CSM.Networking;
 using ICities;
 using System.Collections.Generic;
@@ -76,11 +77,9 @@ namespace CSM.Extensions
                             }
                         }
 
-
                         NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
                         _ZoneBlock.CopyTo(_LastZoneBlock, 0);
-
 
                         _initialised = true;
                         break;
@@ -300,7 +299,6 @@ namespace CSM.Extensions
                         {
                             if (_ZoneBlock[i].m_zone1 != _LastZoneBlock[i].m_zone1 | _ZoneBlock[i].m_zone2 != _LastZoneBlock[i].m_zone2)   //this runs through all Zoneblocks and detect if the zonetype has changed
                             {
-
                                 Command.SendToAll(new ZoneCommand
                                 {
                                     Position = _ZoneBlock[i].m_position,

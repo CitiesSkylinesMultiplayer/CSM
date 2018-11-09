@@ -1,7 +1,7 @@
 ﻿using ProtoBuf;
 using UnityEngine;
 
-namespace CSM.Helpers
+namespace CSM.Models
 {
     [ProtoContract]
     public class Vector3Surrogate

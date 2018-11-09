@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CSM.Helpers
+namespace CSM.Models
 {
     public struct StartEndNode
     {
