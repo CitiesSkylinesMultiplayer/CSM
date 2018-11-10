@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking;
 using System.Collections.Generic;
@@ -102,7 +103,7 @@ namespace CSM.Panels
                 // If not connected to a server / hosting a server, tell the user and return
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
                 {
-                    AddMessage(MessageType.Warning, "<CSM> You can only use the chat feature hosting or connected.");
+                    AddMessage(MessageType.Warning, "<CSM> You can only use the chat feature when hosting or connected.");
                     return;
                 }
 
@@ -118,7 +119,14 @@ namespace CSM.Panels
                     playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
                 }
 
-                // TODO, Send this message.
+                // Build and send this message
+                var message = new ChatMessageCommand
+                {
+                    Username = playerName,
+                    Message = text
+                };
+
+                Command.SendToAll(message);
 
                 // Add the message to the chat UI
                 AddMessage(MessageType.Normal, $"<{playerName}> {text}");

@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Data\ChatMessageCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\BudgetChangeCommand.cs" />
     <Compile Include="Commands\Data\BuildingCreateCommand.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Commands\Handler\BuildingIdHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
+    <Compile Include="Commands\Handler\ChatMessageHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
     <Compile Include="Commands\Handler\NodeIdHandler.cs" />

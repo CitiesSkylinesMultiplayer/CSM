@@ -84,6 +84,7 @@ Whenever a new command is created, please update this table. You can also use th
 |--|--|--|
 |0|`ConnectionRequestCommand`|`ConnectionRequestHandler`|
 |1|`ConnectionResultCommand`|`ConnectionResultHandler`|
+|2|`ChatMessageCommand`|`ChatMessageHandler`|
 |50|`ClientConnectCommand`|`ClientConnectHandler`|
 |51|`ClientDisconnectCommand`|`ClientDisonnectHandler`|
 |52|`PlayerListCommand`|`PlayerListHandler`|
