@@ -1,5 +1,7 @@
 ﻿using ColossalFramework.UI;
 using CSM.Panels;
+using System;
+using System.IO;
 using UnityEngine;
 
 namespace CSM.Common
@@ -12,13 +14,20 @@ namespace CSM.Common
     {
         /// <summary>
         ///     Log a message to the Unity / Cities Skylines console and log file. This
-        ///     does not log a message to the chat (so useful for debugging).
+        ///     does not log a message to the chat (so useful for debugging). The log file
+        ///     is saved under the Cities Skylines install folder (multiplayer-log.txt).
         /// </summary>
         /// <param name="message">The message to log.</param>
         public static void LogDebug(string message)
         {
             // Unity / Cities Skylines
             Debug.Log(message);
+
+            // Write to log file
+            using (var writer = File.AppendText("multiplayer-log.txt"))
+            {
+                writer.WriteLine($"[{DateTime.Now.ToLongTimeString()}] [Debug] {message}");
+            }
         }
 
         /// <summary>
@@ -33,6 +42,12 @@ namespace CSM.Common
             // Game console
             var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
             chatLog?.AddMessage(ChatLogPanel.MessageType.Normal, message);
+
+            // Write to log file
+            using (var writer = File.AppendText("multiplayer-log.txt"))
+            {
+                writer.WriteLine($"[{DateTime.Now.ToLongTimeString()}] [Message] {message}");
+            }
         }
 
         /// <summary>
@@ -48,6 +63,12 @@ namespace CSM.Common
             // Game console
             var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
             chatLog?.AddMessage(ChatLogPanel.MessageType.Warning, message);
+
+            // Write to log file
+            using (var writer = File.AppendText("multiplayer-log.txt"))
+            {
+                writer.WriteLine($"[{DateTime.Now.ToLongTimeString()}] [Warning] {message}");
+            }
         }
 
         /// <summary>
@@ -63,6 +84,12 @@ namespace CSM.Common
             // Game console
             var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
             chatLog?.AddMessage(ChatLogPanel.MessageType.Error, message);
+
+            // Write to log file
+            using (var writer = File.AppendText("multiplayer-log.txt"))
+            {
+                writer.WriteLine($"[{DateTime.Now.ToLongTimeString()}] [Error] {message}");
+            }
         }
     }
 }

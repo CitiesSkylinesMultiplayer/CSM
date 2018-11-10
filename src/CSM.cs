@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.UI;
 using CSM.Common;
 using CSM.Panels;
+using System.IO;
 using UnityEngine;
 
 namespace CSM
@@ -17,6 +18,9 @@ namespace CSM
             {
                 CreateJoinGameButton();
             }
+
+            // Delete the log file on startup / reload
+            File.Delete("multiplayer-log.txt");
         }
 
         private static void CreateJoinGameButton()
