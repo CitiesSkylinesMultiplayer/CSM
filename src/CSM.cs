@@ -25,6 +25,9 @@ namespace CSM
 
         private static void CreateJoinGameButton()
         {
+            // Temp, we do not want to run this code on release as it's not ready yet.
+            return;
+
             var uiView = UIView.GetAView().FindUIComponent("Menu") as UIPanel;
 
             if (uiView == null)
