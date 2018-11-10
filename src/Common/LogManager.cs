@@ -40,7 +40,7 @@ namespace CSM.Common
             Debug.Log(message);
 
             // Game console
-            var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
+            var chatLog = UIView.GetAView().FindUIComponent("MPChatLogPanel") as ChatLogPanel;
             chatLog?.AddMessage(ChatLogPanel.MessageType.Normal, message);
 
             // Write to log file
@@ -61,7 +61,7 @@ namespace CSM.Common
             Debug.LogWarning(message);
 
             // Game console
-            var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
+            var chatLog = UIView.GetAView().FindUIComponent("MPChatLogPanel") as ChatLogPanel;
             chatLog?.AddMessage(ChatLogPanel.MessageType.Warning, message);
 
             // Write to log file
@@ -82,7 +82,7 @@ namespace CSM.Common
             Debug.LogError(message);
 
             // Game console
-            var chatLog = UIView.GetAView().FindUIComponent<ChatLogPanel>("MPChatLogPanel");
+            var chatLog = UIView.GetAView().FindUIComponent("MPChatLogPanel") as ChatLogPanel;
             chatLog?.AddMessage(ChatLogPanel.MessageType.Error, message);
 
             // Write to log file

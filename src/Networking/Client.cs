@@ -23,8 +23,10 @@ namespace CSM.Networking
         // Run a background processing thread
         private Thread _clientProcessingThread;
 
-        // Configuration options for server
-        private ClientConfig _clientConfig;
+        /// <summary>
+        ///     Configuration for the client
+        /// </summary>
+        public ClientConfig Config { get; private set; }
 
         /// <summary>
         ///     The current status of the client
@@ -68,10 +70,10 @@ namespace CSM.Networking
                 Disconnect();
 
             // Set the config
-            _clientConfig = clientConfig;
+            Config = clientConfig;
 
             // Let the user know that we are trying to connect to a server
-            CSM.Log($"Attempting to connect to server at {_clientConfig.HostAddress}:{_clientConfig.Port}...");
+            CSM.Log($"Attempting to connect to server at {Config.HostAddress}:{Config.Port}...");
 
             // Start the client, if client setup fails, return out and
             // tell the user
@@ -85,7 +87,7 @@ namespace CSM.Networking
 
             // Try connect to server, update the status to say that
             // we are trying to connect.
-            _netClient.Connect(_clientConfig.HostAddress, _clientConfig.Port);
+            _netClient.Connect(Config.HostAddress, Config.Port);
 
             // Start processing networking
             Status = ClientStatus.Connecting;
@@ -190,8 +192,8 @@ namespace CSM.Networking
                 GameVersion = BuildConfig.applicationVersion,
                 ModCount = PluginManager.instance.modCount,
                 ModVersion = Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString(),
-                Password = _clientConfig.Password,
-                Username = _clientConfig.Username
+                Password = Config.Password,
+                Username = Config.Username
             };
 
             Command.SendToServer(connectionRequest);

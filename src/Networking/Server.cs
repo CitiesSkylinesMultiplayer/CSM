@@ -181,9 +181,21 @@ namespace CSM.Networking
                     return;
                 }
 
-                this.ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player);
-
+                // Parse this message
+                ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player);
                 Command.ParseOnServer(reader.Data, player);
+
+                // Send this message to all other clients
+                var peers = _netServer.GetPeers();
+                foreach (var client in peers)
+                {
+                    // Don't send the message back to the client that sent it.
+                    if (client.ConnectId == peer.ConnectId)
+                        continue;
+
+                    // Send the message so the other client can stay in sync
+                    client.Send(reader.Data, SendOptions.ReliableOrdered);
+                }
             }
             catch (Exception ex)
             {
