@@ -18,27 +18,13 @@ namespace CSM.Extensions
         /// </summary>
 
         public static Vector3 LastPosition { get; set; }
-        public static Dictionary<uint, uint> BuildingID = new Dictionary<uint, uint>();
-        public static ushort lastRelease;
-        public static ushort lastRelocation;
-
-        private Vector3 _nonvector = new Vector3(0.0f, 0.0f, 0.0f);
+        public static uint lastRelease;
 
         public override void OnCreated(IBuilding building)
         {
             if (!ProtoBuf.Meta.RuntimeTypeModel.Default.IsDefined(typeof(Vector3)))
             {
                 ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
-            }
-
-            //  Since the dictionary is lost when the program is terminated, it has to be recreated at startup this adds all buildings initialised in the m_buffer to the dictionary
-
-            for (int i = 0; i < BuildingManager.instance.m_buildings.m_buffer.Length; i++)
-            {
-                if (BuildingManager.instance.m_buildings.m_buffer[i].m_position != _nonvector)
-                {
-                    BuildingID.Add((ushort)i, (ushort)i);
-                }
             }
         }
 
@@ -63,7 +49,6 @@ namespace CSM.Extensions
             }
 
             LastPosition = position;
-            //UnityEngine.Debug.Log($"Building Created ID {id}");
         }
 
         public override void OnBuildingReleased(ushort id)
@@ -76,11 +61,6 @@ namespace CSM.Extensions
                 {
                     BuildingId = id
                 });
-
-                foreach (var ID in BuildingID.Where(kvp => kvp.Value == id).ToList())
-                {
-                    BuildingID.Remove(ID.Key);
-                }
             }
             lastRelease = id;
         }

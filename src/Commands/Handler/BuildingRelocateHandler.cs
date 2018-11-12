@@ -13,9 +13,7 @@ namespace CSM.Commands.Handler
 
         private void HandleBuilding(BuildingRelocateCommand command)
         {
-            uint BuildingId = Extensions.BuildingExtension.BuildingID[command.BuidlingId];
-            Extensions.BuildingExtension.lastRelocation = (ushort)BuildingId;
-            Singleton<BuildingManager>.instance.RelocateBuilding((ushort)BuildingId, command.NewPosition, command.Angle);
+            Singleton<BuildingManager>.instance.RelocateBuilding((ushort)command.BuidlingId, command.NewPosition, command.Angle);
         }
     }
 }
