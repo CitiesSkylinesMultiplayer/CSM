@@ -14,14 +14,11 @@ namespace CSM.Commands.Handler
 
         private void Handle(NodeReleaseCommand command)
         {
-            var NodeID = Extensions.NodeAndSegmentExtension.NodeIDDictionary[command.NodeId];
-
-            foreach (var ID in Extensions.NodeAndSegmentExtension.NodeVectorDictionary.Where(kvp => kvp.Value == NodeID).ToList())
-            {
-                Extensions.NodeAndSegmentExtension.NodeVectorDictionary.Remove(ID.Key);
+            lock (Extensions.NodeAndSegmentExtension.NodesCreated)
+            { 
+            Extensions.NodeAndSegmentExtension.NodesCreated.Remove(command.NodeId);
+            Singleton<NetManager>.instance.ReleaseNode(command.NodeId);
             }
-            Extensions.NodeAndSegmentExtension.NodeIDDictionary.Remove(NodeID);
-            Singleton<NetManager>.instance.ReleaseNode(NodeID);
         }
     }
 }

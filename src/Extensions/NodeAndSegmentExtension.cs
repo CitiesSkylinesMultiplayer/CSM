@@ -1,7 +1,6 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
 using CSM.Helpers;
-using CSM.Models;
 using CSM.Networking;
 using ICities;
 using System.Collections.Generic;
@@ -23,6 +22,7 @@ namespace CSM.Extensions
         private List<Vector3> _vectorList = new List<Vector3>();
 
         private bool _nodeReleased = false;
+        private bool _segmentReleased = false;
         private bool _treadRunning = false;
         private bool _updateNetNode = false;
         private bool _updateNetSegment = false;
@@ -38,9 +38,15 @@ namespace CSM.Extensions
         private ZoneBlock[] _LastZoneBlock = new ZoneBlock[Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length];
 
         public static Dictionary<Vector3, ushort> ZoneVectorDictionary = new Dictionary<Vector3, ushort>(); // This dictionary contains ZoneVectors and ZoneId and are used to identify the zoneId of a recived zone
-        public static Dictionary<Vector3, ushort> NodeVectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
-        public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
-        public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
+        public static List<ushort> NodesCreated = new List<ushort>();
+        public static List<ushort> SegmentsCreated = new List<ushort>();
+        public static List<ushort> updatelist = new List<ushort>();
+        private List<ushort> tempNodeRemovalList = new List<ushort>();
+        private List<ushort> tempSegmentRemovalList = new List<ushort>();
+
+        //public static Dictionary<Vector3, ushort> NodeVectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
+        //public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
+        //public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
 
         public override void OnAfterSimulationTick()
         {
@@ -56,8 +62,7 @@ namespace CSM.Extensions
                         {
                             if (_netNode[i].m_position != _nonVector)
                             {
-                                NodeVectorDictionary.Add(_netNode[i].m_position, i);
-                                NodeIDDictionary.Add(i, i);
+                                NodesCreated.Add(i);
                             }
                         }
 
@@ -65,10 +70,10 @@ namespace CSM.Extensions
                         {
                             if (NetSegments[i].m_startNode != 0)
                             {
-                                StartEndNode startEndNode = new StartEndNode(_netNode[NetSegments[i].m_startNode].m_position, _netNode[NetSegments[i].m_endNode].m_position);
-                                StartEndNodeDictionary.Add(startEndNode, i);
+                                SegmentsCreated.Add(i);
                             }
                         }
+
                         for (ushort i = 0; i < _ZoneBlock.Length; i++)
                         {
                             if (_ZoneBlock[i].m_position != _nonVector)
@@ -76,7 +81,6 @@ namespace CSM.Extensions
                                 ZoneVectorDictionary.Add(_ZoneBlock[i].m_position, i);
                             }
                         }
-
                         NetSegments.CopyTo(_lastNetSegment, 0);
                         _netNode.CopyTo(_lastNetNode, 0);
                         _ZoneBlock.CopyTo(_LastZoneBlock, 0);
@@ -90,8 +94,7 @@ namespace CSM.Extensions
                         {
                             if (_netNode[i].m_position != _nonVector)
                             {
-                                NodeVectorDictionary.Add(_netNode[i].m_position, i);
-                                NodeIDDictionary.Add(i, i);
+                                NodesCreated.Add(i);
                             }
                         }
 
@@ -99,8 +102,7 @@ namespace CSM.Extensions
                         {
                             if (NetSegments[i].m_startNode != 0)
                             {
-                                StartEndNode startEndNode = new StartEndNode(_netNode[NetSegments[i].m_startNode].m_position, _netNode[NetSegments[i].m_endNode].m_position);
-                                StartEndNodeDictionary.Add(startEndNode, i);
+                                SegmentsCreated.Add(i);
                             }
                         }
                         for (ushort i = 0; i < _ZoneBlock.Length; i++)
@@ -133,21 +135,36 @@ namespace CSM.Extensions
                             break;
                         }
                     }
-                    foreach (var Id in NodeVectorDictionary) // this checks if any nodes has been removed, by controlling if any of the nodes that we have created, has been deleted
+
+                    foreach (var id in NodesCreated) // this checks if any nodes has been removed, by controlling if any of the nodes that we have created, has been deleted
                     {
                         if (_nodeChange == true)
                             break;
 
-                        ushort value = Id.Value;
-                        if (_netNode[value].m_flags == 0)
+                        if (_netNode[id].m_flags == 0)
                         {
                             _nodeReleased = true;
                             break;
                         }
                     }
-                    for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
+
+                    foreach (var id in SegmentsCreated) // this checks for released segments
                     {
                         if (_nodeChange == true | _nodeReleased == true)
+                            break;
+
+                        if (NetSegments[id].m_flags == 0)
+                        {
+                            _segmentReleased = true;
+                            break;
+                        }
+                    }
+
+
+
+                    for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
+                    {
+                        if (_nodeChange == true | _nodeReleased == true | _segmentReleased == true)
                             break;
 
                         if (_ZoneBlock[i].m_position != _nonVector && !ZoneVectorDictionary.ContainsKey(_ZoneBlock[i].m_position)) // The zones are created when road is created, this detect all zoon created and adds it to dictionary
@@ -162,6 +179,7 @@ namespace CSM.Extensions
 
                     if (_nodeChange == true)
                     {
+
                         for (uint i = 0; i < _netNode.Length; i++)
                         {
                             if (_netNode[i].m_position != _lastNetNode[i].m_position)
@@ -171,9 +189,9 @@ namespace CSM.Extensions
                                 var nodeId = i;
                                 _updateNetNode = true;
 
-                                if (!NodeVectorDictionary.ContainsKey(_netNode[i].m_position))
+                                if (!NodesCreated.Contains((ushort)i))
                                 {
-                                    NodeVectorDictionary.Add(_netNode[i].m_position, (ushort)i);
+                                    NodesCreated.Add((ushort)i);
                                     switch (MultiplayerManager.Instance.CurrentRole)
                                     {
                                         case MultiplayerRole.Server:
@@ -195,12 +213,14 @@ namespace CSM.Extensions
                                             break;
                                     }
                                 }
+
                             }
                         }
-                        for (int i = 0; i < NetSegments.Length; i++)
+                        for (uint i = 0; i < NetSegments.Length; i++)
                         {
                             if (NetSegments[i].m_startNode != _lastNetSegment[i].m_startNode | NetSegments[i].m_endNode != _lastNetSegment[i].m_endNode)
                             {
+                                uint segmentID = i;
                                 var startnode = NetSegments[i].m_startNode;
                                 var endnode = NetSegments[i].m_endNode;
                                 var startDirection = NetSegments[i].m_startDirection;
@@ -208,10 +228,14 @@ namespace CSM.Extensions
                                 var modifiedIndex = NetSegments[i].m_modifiedIndex;
                                 var infoIndex = NetSegments[i].m_infoIndex;
                                 _updateNetSegment = true;
-                                StartEndNode startEndNode = new StartEndNode(_netNode[startnode].m_position, _netNode[endnode].m_position);
-                                if (!StartEndNodeDictionary.ContainsKey(startEndNode))
+                                if (!SegmentsCreated.Contains((ushort)i))
                                 {
-                                    StartEndNodeDictionary.Add(startEndNode, (ushort)i);
+                                    SegmentsCreated.Add((ushort)i);
+
+                                    if (!updatelist.Contains(NetSegments[i].m_startNode))
+                                        updatelist.Add(NetSegments[i].m_startNode);
+                                    if (!updatelist.Contains(NetSegments[i].m_endNode))
+                                        updatelist.Add(NetSegments[i].m_endNode);
 
                                     switch (MultiplayerManager.Instance.CurrentRole)
                                     {
@@ -223,7 +247,9 @@ namespace CSM.Extensions
                                                 StartDirection = startDirection,
                                                 EndDirection = enddirection,
                                                 ModifiedIndex = modifiedIndex,
-                                                InfoIndex = infoIndex
+                                                InfoIndex = infoIndex,
+                                                SegmentID = segmentID
+
                                             });
                                             break;
 
@@ -235,13 +261,41 @@ namespace CSM.Extensions
                                                 StartDirection = startDirection,
                                                 EndDirection = enddirection,
                                                 ModifiedIndex = modifiedIndex,
-                                                InfoIndex = infoIndex
+                                                InfoIndex = infoIndex,
+                                                SegmentID = segmentID
                                             });
                                             break;
                                     }
                                 }
                             }
                         }
+                        /*
+                        for (int i = 0; i < updatelist.Count; i++)
+                        {
+                            var segment0 = _netNode[updatelist[i]].m_segment0;
+                            var segment1 = _netNode[updatelist[i]].m_segment1;
+                            var segment2 = _netNode[updatelist[i]].m_segment2;
+                            var segment3 = _netNode[updatelist[i]].m_segment3;
+                            var segment4 = _netNode[updatelist[i]].m_segment4;
+                            var segment5 = _netNode[updatelist[i]].m_segment5;
+                            var segment6 = _netNode[updatelist[i]].m_segment6;
+                            var segment7 = _netNode[updatelist[i]].m_segment7;
+
+                            Command.SendToAll(new NodeUpdateCommand
+                            {
+                                NodeID = updatelist[i],
+                                Segment0 = segment0,
+                                Segment1 = segment1,
+                                Segment2 = segment2,
+                                Segment3 = segment3,
+                                Segment4 = segment4,
+                                Segment5 = segment5,
+                                Segment6 = segment6,
+                                Segment7 = segment7,
+                            });
+                        }
+                        updatelist.Clear();
+                        */
                         if (_updateNetSegment)
                         {
                             NetSegments.CopyTo(_lastNetSegment, 0);
@@ -252,53 +306,93 @@ namespace CSM.Extensions
                             _netNode.CopyTo(_lastNetNode, 0);
                             _updateNetNode = false;
                         }
-                        UnityEngine.Debug.Log("Done Updating");
 
                         _nodeChange = false;
                     }
 
                     if (_nodeReleased == true)
                     {
-                        foreach (var Id in NodeVectorDictionary)
+                        foreach (var Id in NodesCreated)
                         {
-                            if (_netNode[Id.Value].m_flags == 0)
+                            if (_netNode[Id].m_flags == 0)
                             {
+
                                 switch (MultiplayerManager.Instance.CurrentRole)
                                 {
                                     case MultiplayerRole.Server:
                                         Command.SendToClients(new NodeReleaseCommand
                                         {
-                                            NodeId = Id.Value
+                                            NodeId = Id
                                         });
                                         break;
 
                                     case MultiplayerRole.Client:
                                         Command.SendToServer(new NodeReleaseCommand
                                         {
-                                            NodeId = Id.Value
+                                            NodeId = Id
                                         });
                                         break;
+
                                 }
-                                _vectorList.Add(Id.Key);
-                                foreach (var ID in NodeIDDictionary.Where(kvp => kvp.Value == Id.Value).ToList())
-                                {
-                                    NodeIDDictionary.Remove(Id.Value);
-                                }
+                                tempNodeRemovalList.Add(Id);
                             }
-                        };
-                        foreach (var vector in _vectorList)
-                        {
-                            NodeVectorDictionary.Remove(vector);
+
                         }
-                        _vectorList.Clear();
+                        foreach (var id in tempNodeRemovalList)
+                        {
+                            NodesCreated.Remove(id);
+                        }
+                        tempNodeRemovalList.Clear();
                         _nodeReleased = false;
                     }
+                    if (_segmentReleased == true)
+                    {
+                        foreach (var Id in SegmentsCreated)
+                        {
+                            if (NetSegments[Id].m_flags == 0)
+                            {/*
+                                switch (MultiplayerManager.Instance.CurrentRole)
+                                {
+                                    case MultiplayerRole.Server:
+                                        Command.SendToClients(new SegmentReleaseCommand
+                                        {
+                                            SegmentId = Id
+                                        });
+                                        UnityEngine.Debug.Log("Removed ID");
+                                        break;
+
+                                    case MultiplayerRole.Client:
+                                        Command.SendToServer(new SegmentReleaseCommand
+                                        {
+                                            SegmentId = Id
+                                        });
+                                        break;
+
+                                }*/
+                                tempSegmentRemovalList.Add(Id);
+
+
+                            }
+
+                        }
+                        foreach (var id in tempSegmentRemovalList)
+                        {
+                            SegmentsCreated.Remove(id);
+                        }
+                        tempSegmentRemovalList.Clear();
+                        _segmentReleased = false;
+                    }
+
+
+
+
                     if (ZoneChange == true)
                     {
                         for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
                         {
                             if (_ZoneBlock[i].m_zone1 != _LastZoneBlock[i].m_zone1 | _ZoneBlock[i].m_zone2 != _LastZoneBlock[i].m_zone2)   //this runs through all Zoneblocks and detect if the zonetype has changed
                             {
+
                                 Command.SendToAll(new ZoneCommand
                                 {
                                     Position = _ZoneBlock[i].m_position,

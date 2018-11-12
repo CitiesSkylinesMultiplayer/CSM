@@ -23,5 +23,8 @@ namespace CSM.Commands
 
         [ProtoMember(6)]
         public ushort InfoIndex { get; set; }
+
+        [ProtoMember(7)]
+        public uint SegmentID { get; set; }
     }
 }

@@ -7,6 +7,7 @@
 )](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
 [![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
+
 ## Introduction
 CSM is an in-development multiplayer mod for Cities: Skylines. This mod aims to provide a simple client-server experience where users can play and build together in a single game. Initially, resources such as money, costs demand will be synced between clients alongside roads and buildings. Further along in development, terrain sculpting and more advanced features may become available.  
 
@@ -99,9 +100,9 @@ Whenever a new command is created, please update this table. You can also use th
 |108|`BudgetChangeCommand`|`BudgetChangeHandler`|
 |109|`NodeCreateCommand`|`NodeCreateHandler`|
 |110|`NodeSegmentCreateCommand`|`NodeSegmentCreateHandler`|
-|111|`BuildingIdCommand`|`BuildingIdHandler`|
+|111|`NodeUpdateCommand`|`NodeUpdateHandler`|
 |112|`NodeReleaseCommand`|`NodeReleaseHandler`|
-|113|`NodeIdCommand`|`NodeIdHandler`|
+|113|`SegmentReleaseCommand`|`SegmentReleaseHandler`|
 |114|`ZoneCommand`|`ZoneHandler`|
 
 ### Creating a Command
