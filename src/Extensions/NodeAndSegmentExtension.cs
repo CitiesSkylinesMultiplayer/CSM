@@ -29,6 +29,7 @@ namespace CSM.Extensions
         private bool _nodeChange = false;
         private bool _initialised = false;
         private bool ZoneChange = false;
+        private bool ZoneReleased = false;
         private Vector3 _nonVector = new Vector3(0.0f, 0.0f, 0.0f); //a non vector used to distinguish between initialized and non initialized Nodes
         private NetSegment[] NetSegments = Singleton<NetManager>.instance.m_segments.m_buffer;
         private NetSegment[] _lastNetSegment = new NetSegment[Singleton<NetManager>.instance.m_segments.m_buffer.Length];
@@ -163,19 +164,14 @@ namespace CSM.Extensions
 
                         if (_ZoneBlock[id.Value].m_flags == 0)
                         {
-                            tempZoneRemovalList.Add(id.Key);
+                            ZoneReleased = true;
+                            break;
                         }
                     }
-                    foreach (var id in tempZoneRemovalList)
-                    {
-                        //UnityEngine.Debug.Log("removes zone from dictionary");
-                        ZoneVectorDictionary.Remove(id);
-                    }
-                    tempZoneRemovalList.Clear();
 
                     for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++) // this checks if any zones has been added
                     {
-                        if (_nodeChange == true | _nodeReleased == true | _segmentReleased == true)
+                    if (_nodeChange == true | _nodeReleased == true | _segmentReleased == true | ZoneReleased == true)
                             break;
 
                         if (_ZoneBlock[i].m_flags != 0 && !ZoneVectorDictionary.ContainsKey(_ZoneBlock[i].m_position)) // The zones are created when road is created, this detect all zoon created and adds it to dictionary
@@ -399,15 +395,33 @@ namespace CSM.Extensions
                     }
 
 
+                    if (ZoneReleased == true)
+                    {
+                        foreach (var id in ZoneVectorDictionary)
+                        {
+                            if (_ZoneBlock[id.Value].m_flags == 0)
+                            {
+                                tempZoneRemovalList.Add(id.Key);
+                            }
+                        }
+                        foreach (var id in tempZoneRemovalList)
+                        {
+                            UnityEngine.Debug.Log("removes zone from dictionary");
+                            ZoneVectorDictionary.Remove(id);
+                        }
+                        tempZoneRemovalList.Clear();
+                        ZoneReleased = false;
+                    }
 
 
+                
                     if (ZoneChange == true)
                     {
                         for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
                         {
                             if (_ZoneBlock[i].m_zone1 != _LastZoneBlock[i].m_zone1 | _ZoneBlock[i].m_zone2 != _LastZoneBlock[i].m_zone2)   //this runs through all Zoneblocks and detect if the zonetype has changed
                             {
-
+                                UnityEngine.Debug.Log("zone changed");
                                 Command.SendToAll(new ZoneCommand
                                 {
                                     Position = _ZoneBlock[i].m_position,
