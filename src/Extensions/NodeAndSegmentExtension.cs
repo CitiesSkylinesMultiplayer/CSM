@@ -43,10 +43,7 @@ namespace CSM.Extensions
         public static List<ushort> updatelist = new List<ushort>();
         private List<ushort> tempNodeRemovalList = new List<ushort>();
         private List<ushort> tempSegmentRemovalList = new List<ushort>();
-
-        //public static Dictionary<Vector3, ushort> NodeVectorDictionary = new Dictionary<Vector3, ushort>(); //This dictionary contains a combination of a nodes vector and ID, used to ensure against Nodes ocilliation between server and client
-        //public static Dictionary<ushort, ushort> NodeIDDictionary = new Dictionary<ushort, ushort>(); // This dictionary contains a combination of The server's and the Clients NodeID, This is used so the receiver can set the StartNode and Endnode of the Segment
-        //public static Dictionary<StartEndNode, ushort> StartEndNodeDictionary = new Dictionary<StartEndNode, ushort>(); //This dictionary contains a combination of start and end nodes, is used to ensure against NodesSegment ocilliation between server and client
+        private List<Vector3> tempZoneRemovalList = new List<Vector3>();
 
         public override void OnAfterSimulationTick()
         {
@@ -159,15 +156,29 @@ namespace CSM.Extensions
                             break;
                         }
                     }
-
-
-
-                    for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
+                    foreach (var id in ZoneVectorDictionary) //removes uninitialized Zones from the ZoneVectorDictionary
                     {
                         if (_nodeChange == true | _nodeReleased == true | _segmentReleased == true)
                             break;
 
-                        if (_ZoneBlock[i].m_position != _nonVector && !ZoneVectorDictionary.ContainsKey(_ZoneBlock[i].m_position)) // The zones are created when road is created, this detect all zoon created and adds it to dictionary
+                        if (_ZoneBlock[id.Value].m_flags == 0)
+                        {
+                            tempZoneRemovalList.Add(id.Key);
+                        }
+                    }
+                    foreach (var id in tempZoneRemovalList)
+                    {
+                        //UnityEngine.Debug.Log("removes zone from dictionary");
+                        ZoneVectorDictionary.Remove(id);
+                    }
+                    tempZoneRemovalList.Clear();
+
+                    for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++) // this checks if any zones has been added
+                    {
+                        if (_nodeChange == true | _nodeReleased == true | _segmentReleased == true)
+                            break;
+
+                        if (_ZoneBlock[i].m_flags != 0 && !ZoneVectorDictionary.ContainsKey(_ZoneBlock[i].m_position)) // The zones are created when road is created, this detect all zoon created and adds it to dictionary
                             ZoneVectorDictionary.Add(_ZoneBlock[i].m_position, i);
 
                         if (_ZoneBlock[i].m_zone1 != _LastZoneBlock[i].m_zone1 | _ZoneBlock[i].m_zone2 != _LastZoneBlock[i].m_zone2) //this checks if anything have changed
@@ -176,6 +187,10 @@ namespace CSM.Extensions
                             break;
                         }
                     }
+
+
+
+
 
                     if (_nodeChange == true)
                     {
@@ -404,6 +419,7 @@ namespace CSM.Extensions
                         _ZoneBlock.CopyTo(_LastZoneBlock, 0);
                         ZoneChange = false;
                     }
+
                     _treadRunning = false;
                 }).Start();
             }
