@@ -3,6 +3,7 @@ using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -135,7 +136,17 @@ namespace CSM.Panels
 
         private void ParseCommand(string command)
         {
-            AddMessage(MessageType.Warning, "<CSM> Commands are not yet supported.");
+            switch (command.TrimStart('/'))
+            {
+                case "version":
+                    AddMessage(MessageType.Normal, "<CSM> Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
+                    AddMessage(MessageType.Normal, "<CSM> Game Version : " + BuildConfig.applicationVersion);
+                    break;
+
+                default:
+                    AddMessage(MessageType.Warning, $"<CSM> {command.TrimStart('/')} is not a valid command.");
+                    break;
+            }
         }
 
         public void AddMessage(MessageType type, string message)
