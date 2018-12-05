@@ -110,6 +110,7 @@ if ($Install)
     Copy-Item -Path "$($OutputDirectory)\CSM.dll"               -Destination "$($ModDirectory)\CSM.dll" -Force
     Copy-Item -Path "$($OutputDirectory)\Open.Nat.dll"          -Destination "$($ModDirectory)\Open.Nat.dll" -Force
     Copy-Item -Path "$($OutputDirectory)\System.Threading.dll"  -Destination "$($ModDirectory)\System.Threading.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)\0Harmony.dll"          -Destination "$($ModDirectory)\0Harmony.dll" -Force
 
     # Done
     Write-Host "[CSM Install Script] Completed Copy"

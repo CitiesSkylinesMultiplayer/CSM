@@ -1,13 +1,19 @@
 ﻿using ColossalFramework.UI;
 using CSM.Common;
 using CSM.Panels;
+using Harmony;
+using System;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
+
+        private HarmonyInstance _harmony;
+
         public CSM()
         {
             // Make sure the button is enabled after intro load
@@ -21,6 +27,23 @@ namespace CSM
 
             // Delete the log file on startup / reload
             File.Delete("multiplayer-log.txt");
+
+
+            _harmony = HarmonyInstance.Create("csm"); // Todo: Should use domain syntax com.example.project
+            try
+            {
+                _harmony.PatchAll(Assembly.GetExecutingAssembly());
+            }
+            catch (Exception ex)
+            {
+                CSM.Log(ex.Message);
+            }
+        }
+
+        ~CSM()
+        {
+            _harmony.UnpatchAll();
+            CSM.Log("Destruction complete!");
         }
 
         private static void CreateJoinGameButton()
