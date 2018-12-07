@@ -13,6 +13,6 @@ namespace CSM.Commands
         public ushort InfoIndex { get; set; }
 
         [ProtoMember(3)]
-        public uint NodeId { get; set; }
+        public ushort NodeId { get; set; }
     }
 }

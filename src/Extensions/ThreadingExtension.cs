@@ -1,4 +1,5 @@
 ﻿using CSM.Commands;
+using CSM.Networking;
 using ICities;
 
 namespace CSM.Extensions
@@ -10,6 +11,12 @@ namespace CSM.Extensions
     {
         private int _lastSelectedSimulationSpeed;
         private bool _lastSimulationPausedState;
+
+        public override void OnBeforeSimulationTick()
+        {
+            base.OnBeforeSimulationTick();
+            MultiplayerManager.Instance.ProcessEvents();
+        }
 
         public override void OnAfterSimulationTick()
         {

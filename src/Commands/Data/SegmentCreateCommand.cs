@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class NodeSegmentCreateCommand : CommandBase
+    public class SegmentCreateCommand : CommandBase
     {
         [ProtoMember(1)]
         public ushort StartNode { get; set; }
@@ -25,6 +25,9 @@ namespace CSM.Commands
         public ushort InfoIndex { get; set; }
 
         [ProtoMember(7)]
-        public uint SegmentID { get; set; }
+        public ushort SegmentID { get; set; }
+
+        [ProtoMember(8)]
+        public bool Invert { get; set; }
     }
 }

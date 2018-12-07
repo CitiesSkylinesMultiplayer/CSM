@@ -20,9 +20,6 @@ namespace CSM.Networking
         // The server
         private LiteNetLib.NetManager _netServer;
 
-        // Run a background processing thread
-        private Thread _serverProcessingThread;
-
         // Connected clients
         public Dictionary<long, Player> ConnectedPlayers { get; } = new Dictionary<long, Player>();
 
@@ -97,10 +94,6 @@ namespace CSM.Networking
             // Update the status
             Status = ServerStatus.Running;
 
-            // Set up processing thread
-            _serverProcessingThread = new Thread(ProcessEvents);
-            _serverProcessingThread.Start();
-
             // Initialize host player
             _hostPlayer = new Player(Config.Username);
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
@@ -149,19 +142,12 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        ///     Runs in the background of the game (another thread), polls for new updates
-        ///     from the clients.
+        ///     Polls new events from the clients.
         /// </summary>
-        private void ProcessEvents()
+        public void ProcessEvents()
         {
-            while (Status == ServerStatus.Running)
-            {
-                // Poll for new events
-                _netServer.PollEvents();
-
-                // Wait
-                Thread.Sleep(15);
-            }
+            // Poll for new events
+            _netServer.PollEvents();
         }
 
         /// <summary>
@@ -199,7 +185,8 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                CSM.Log($"Encountered an error from {peer.EndPoint.Host}:{peer.EndPoint.Port} while reading command. Message: {ex.Message}");
+                CSM.Log($"Encountered an error while reading command from {peer.EndPoint.Host}:{peer.EndPoint.Port}:");
+                CSM.Log(ex.ToString());
             }
         }
 

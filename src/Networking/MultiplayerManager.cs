@@ -27,6 +27,25 @@ namespace CSM.Networking
         /// </summary>
         public Client CurrentClient { get; } = new Client();
 
+        public void ProcessEvents()
+        {
+            switch (CurrentRole)
+            {
+                case MultiplayerRole.Client:
+                    CurrentClient.ProcessEvents();
+                    break;
+                case MultiplayerRole.Server:
+                    CurrentServer.ProcessEvents();
+                    break;
+                case MultiplayerRole.None:
+                    if (CurrentClient.Status == Status.ClientStatus.Connecting)
+                    {
+                        CurrentClient.ProcessEvents();
+                    }
+                    break;
+            }
+        }
+
         /// <summary>
         /// Starts the client and tries to connect to the given server.
         /// </summary>

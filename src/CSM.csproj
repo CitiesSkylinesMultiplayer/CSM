@@ -79,7 +79,7 @@
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
     <Compile Include="Commands\Data\NodeIdCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
-    <Compile Include="Commands\Data\NodeSegmentCreateCommand.cs" />
+    <Compile Include="Commands\Data\SegmentCreateCommand.cs" />
     <Compile Include="Commands\Data\PlayerListCommand.cs" />
     <Compile Include="Commands\Data\MoneyCommand.cs" />
     <Compile Include="Commands\Data\PauseCommand.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
     <Compile Include="Commands\Handler\NodeReleaseHandler.cs" />
-    <Compile Include="Commands\Handler\NodeSegmentCreateHandler.cs" />
+    <Compile Include="Commands\Handler\SegmentCreateHandler.cs" />
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\ClientDisonnectHandler.cs" />
     <Compile Include="Commands\Handler\ClientConnectHandler.cs" />
@@ -118,8 +118,10 @@
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
-    <Compile Include="Extensions\NodeAndSegmentExtension.cs" />
+    <Compile Include="Extensions\ZoneExtension.cs" />
+    <Compile Include="Helpers\Array16Extension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
+    <Compile Include="Injections\NodeHandler.cs" />
     <Compile Include="Models\StartEndNode.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
@@ -143,6 +145,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Lib.Harmony">
+      <Version>1.2.0.1</Version>
+    </PackageReference>
     <PackageReference Include="LiteNetLib">
       <Version>0.7.7.3</Version>
     </PackageReference>
