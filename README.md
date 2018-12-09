@@ -2,9 +2,6 @@
 
 [![Discord](https://img.shields.io/discord/508902220943851522.svg)](https://discord.gg/RjACPhd)
 [![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11)
-[![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=DominicMaas_Tango&metric=alert_status
-)](https://sonarcloud.io/dashboard?id=DominicMaas_Tango)
 [![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
 
@@ -40,7 +37,7 @@ If you want to build the mod yourself, follow the developer instructions below.
 * You may have to allow Cities: Skylines under your local firewall.
 * You can find the Local (LAN) & External IP of your computer in the Host Game menu.
 * If you're playing over LAN (in the same house for example), run `ipconfig` on the computer that will be hosting the server to find the local IP address. This is the address that you will want to use when connecting a client.
-* If you're playing over the Internet, you may need  to portforward your router to expose the server to the internet (this is usually port `4230`). Once port forwarded, Google "What's my IP" on the server computer to find the IP address for the client to connect to.
+* If you're playing over the Internet, you may need to port forward your router to expose the server to the internet (this is usually port `4230`). Once port forwarded, Google "What's my IP" on the server computer to find the IP address for the client to connect to.
 
 ## Progress
 
@@ -66,168 +63,4 @@ If you want to build the mod yourself, follow the developer instructions below.
 - [kaenganxt](https://github.com/kaenganxt)
 
 ## Developer Resources
-
-### Installation
-The mod can manually installed using the built in scripts. The following steps will guide you though this. Please note: You will need to have Visual Studio 2017 & Cities: Skylines installed, be running Windows 10 and have developer mode enabled.
-This script will automatically pull in the required files (after specifying a folder), build the mod and then install it.
-
-1. Open the `scripts` folder.
-2. Run the following command in powershell `.\build.ps1 -Update -Build -Install`. This will match the mod to your game, build it and then install it. 
-4. When you run this script, it will ask you for your steam folder. This is just the root folder of steam, e.g 'C:\Program Files\Steam\' 
-5. Run Cities: Skylines and enable the mod. The mod can also be built and installed when the game is running (in most cases).
-
-### Command IDs
-
-Whenever a new command is created, please update this table. You can also use this table to see which Ids are avaliable. Max ID is 255.
-
-|ID|Command|Handler|
-|--|--|--|
-|0|`ConnectionRequestCommand`|`ConnectionRequestHandler`|
-|1|`ConnectionResultCommand`|`ConnectionResultHandler`|
-|2|`ChatMessageCommand`|`ChatMessageHandler`|
-|50|`ClientConnectCommand`|`ClientConnectHandler`|
-|51|`ClientDisconnectCommand`|`ClientDisonnectHandler`|
-|52|`PlayerListCommand`|`PlayerListHandler`|
-|53|`WorldInfoCommand`|`WorldInfoHandler`|
-|100|`SpeedCommand`|`SpeedHandler`|
-|101|`PauseCommand`|`PauseHandler`|
-|102|`MoneyCommand`|`MoneyHandler`|
-|103|`BuildingCreateCommand`|`BuildingCreateHandler`|
-|104|`BuildingRemoveCommand`|`BuildingRemoveHandler`|
-|105|`BuildingRelocateCommand`|`BuildingRelocateHandler`|
-|106|`DemandDisplayedCommand`|`DemandDisplayedHandler`|
-|107|`TaxRateChangeCommand`|`TaxRateChangeHandler`|
-|108|`BudgetChangeCommand`|`BudgetChangeHandler`|
-|109|`NodeCreateCommand`|`NodeCreateHandler`|
-|110|`NodeSegmentCreateCommand`|`NodeSegmentCreateHandler`|
-|111|`NodeUpdateCommand`|`NodeUpdateHandler`|
-|112|`NodeReleaseCommand`|`NodeReleaseHandler`|
-|113|`SegmentReleaseCommand`|`SegmentReleaseHandler`|
-|114|`ZoneCommand`|`ZoneHandler`|
-
-### Creating a Command
-1. Create a new class under the `CSM.Commands` namespace (`src/Commands/Data` folder) with a suffux of `Command` (see other commands as an example).
-2. Adjust the class to extend `CommandBase`. Implement the class level attribute of `[ProtoContract]`.
-3. Create your getters and setters, these should all be public and contain public level get and set: `public Vector3 Position { get; set; }`.
-4. Annotate your getters and setters using `[ProtoMember(int)]`. Start at 1 and work your way up.
-5. Make sure you document your getters/setters and class.
-6. Create a new class under the `CSM.Commands.Handler` namespace (`src/Commands/Handler` folder) with a suffix of `Handler` (see other handlers as an example).
-7. Adjust this class to extend `CommandHandler<COMMAND>` where COMMAND is your newly created command.
-8. Override the ID setter, set it to a new ID that's not being used (see the table above).
-9. Update the table above reflecting your new command, command handler and id.
-10. Override other methods and implement logic.
-
-
-### Client-Server Model
-This mod uses the client-server model. A user will setup their game as a server and transmit information like currency, roads, needs etc. to all connected clients. Clients will connect to the server and retrieve currency, roads, needs etc. from the server, updating the client UI.
-
-This is all done by running a UDP server alongside Cities Skylines. This UDP server will interact with the extension methods in the ICities DLL. It is important that we extend and override the base methods for these extensions (as we override some values).
-
-### Logic Flow
-Below is information that I have jotted down about the flow of this mod.
-
-**Server:**
-1. Open a level (new or existing).
-2. "Show Multiplayer Menu" --> "Host Game". User enters port and password (optional).
-3. Server is setup and message process queue is started. (`Networking/Server.cs`)
-
-Message Queue:
-* Parse incoming messages and call appropriate event handlers (UpdateEconomy etc.)
-* On extension changes, send a packet to all clients.
-
-**Client:**
-* User launches game, enabled mod, loads a level.
-* Click "Show Multiplayer Menu" --> "Join Game".
-* Enter game IP address / port.
-  * Unload the level
-  * Connect the client using `Networking/Client.cs`.
-  * Client connects to server (try) and performs setup functions (check mods same etc.)
-  * Update the client to mirror the server
-  * On all events, update the server.
-  * On incoming message, update client UI.
-  
-### `ICities.dll` Extensions
-Here is a list of extensions that can be used in the ICities.dll (not much documentation elsewhere).
-
-#### AreasExtensionBase
-We can use these extension methods to sync which areas have been bought.
-
-|Method|Return|
-|--|--|
-|`OnCanUnlockArea(int x, int z, bool originalResult)`|`originalResult`|
-|`OnGetAreaPrice(uint ore, uint oil, uint forest, uint fertility, uint water, bool road, bool train, bool ship, bool plane, float landFlatness, int originalPrice)`|`originalPrice`|
-|`OnUnlockArea(int x, int z)`|**VOID**|
-
-#### BuildingExtensionBase
-We can use this to find out where builds are. Looks like it may be quite complicated. Guess we will see.
-
-|Method|Return|
-|--|--|
-|`SpawnData OnCalculateSpawn(Vector3 location, SpawnData spawn)`|`spawn`|
-|`OnBuildingCreated(ushort id)`|**VOID**|
-|`OnBuildingRelocated(ushort id)`|**VOID**|
-|`OnBuildingReleased(ushort id)`|**VOID**|
-
-#### ChirperExtensionBase
-This really is not that important, (I personally don't really like the "Twitter" like feature), but it can still be implemented. On Server we send the new chirper message to the clients on `OnNewMessage` event. Client side we ignore these chirpers.
-
-|Method|Return|
-|--|--|
-|`OnNewMessage(IChirperMessage message)`|**VOID**|
-
-#### DemandExtensionBase
-This extension will allow us to synchronize demand across all connected clients. More research is required, but from what I understand, we need to override the `OnCalculate*Demmand` methods to grab the calculated demand from the server. On the server we will access the demand manager to get the current demand. The `OnUpdateDemand` method will also be used for server-client syncing.
-
-|Method|Return|
-|--|--|
-|`OnCalculateResidentialDemand(int originalDemand)`|`originalDemand`|
-|`OnCalculateCommercialDemand(int originalDemand)`|`originalDemand`|
-|`OnCalculateWorkplaceDemand(int originalDemand)`|`originalDemand`|
-|`OnUpdateDemand(int lastDemand, int nextDemand, int targetDemand)`|`nextDemand`|
-
-#### EconomyExtensionBase
-Currently looking at implementing `OnUpdateMoneyAmount` to sync money between clients. Some basic testing showed that this was only updating the UI? Need to look further into it.
-
-|Method|Return|
-|--|--|
-|`OnAddResource(EconomyResource resource, int amount, Service service, SubService subService, Level level)`|`amount`|
-|`OnFetchResource(EconomyResource resource, int amount, Service service, SubService subService, Level level)`|`amount`|
-|`OnPeekResource(EconomyResource resource, int amount)`|`amount`|
-|`OnGetConstructionCost(int originalConstructionCost, Service service, SubService subService, Level level)`|`amount`|
-|`OnGetMaintenanceCost(int originalMaintenanceCost, Service service, SubService subService, Level level)`|`amount`|
-|`OnGetRelocationCost(int constructionCost, int relocationCost, Service service, SubService subService, Level level)`|`amount`|
-|`OnGetRefundAmount(int constructionCost, int refundAmount, Service service, SubService subService, Level level)`|`amount`|
-|`OnUpdateMoneyAmount(long internalMoneyAmount)`|`internalMoneyAmount`|
-
-#### IDisasterBase
-This has a different naming scheme for some reason? This would be used for syncing disasters (going to be interesting to setup)
-
-|Method|Return|
-|--|--|
-|`OnDisasterCreated(ushort disasterID)`|**VOID**|
-|`OnDisasterStarted(ushort disasterID)`|**VOID**|
-|`OnDisasterDetected(ushort disasterID)`|**VOID**|
-|`OnDisasterActivated(ushort disasterID)`|**VOID**|
-|`OnDisasterDeactivated(ushort disasterID)`|**VOID**|
-|`OnDisasterFinished(ushort disasterID)`|**VOID**|
-
-#### LevelUpExtensionBase
-todo
-
-#### LoadingExtensionBase
-todo
-
-#### MilestonesExtensionBase
-todo
-
-#### ResourceExtensionBase
-todo
-
-#### SerializableDataExtensionBase
-todo
-
-#### TerrainExtensionBase
-todo
-
-#### ThreadingExtensionBase
-todo
+Developer recourses can be found on the GitHub wiki.

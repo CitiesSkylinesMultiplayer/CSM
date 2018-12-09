@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CSM.Commands
+﻿namespace CSM.Commands
 {
     /// <summary>
     ///     This class contains a list of command IDs used in this mod,
@@ -35,9 +30,9 @@ namespace CSM.Commands
         public const byte TaxRateChangeCommand = 107;
         public const byte BudgetChangeCommand = 108;
         public const byte NodeCreateCommand = 109;
-        public const byte SegmentCreateCommand = 110;
-        public const byte NodeUpdateCommand = 111;
-        public const byte NodeReleaseCommand = 112;
+        public const byte NodeUpdateCommand = 110;
+        public const byte NodeReleaseCommand = 111;
+        public const byte SegmentCreateCommand = 112;
         public const byte SegmentReleaseCommand = 113;
         public const byte ZoneCommand = 114;
 
