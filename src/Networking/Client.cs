@@ -20,9 +20,6 @@ namespace CSM.Networking
         // The client
         private LiteNetLib.NetManager _netClient;
 
-        // Run a background processing thread
-        private Thread _clientProcessingThread;
-
         /// <summary>
         ///     Configuration for the client
         /// </summary>
@@ -92,10 +89,6 @@ namespace CSM.Networking
             // Start processing networking
             Status = ClientStatus.Connecting;
 
-            // Setup processing thread
-            _clientProcessingThread = new Thread(ProcessEvents);
-            _clientProcessingThread.Start();
-
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
             // while we wait for a successful connection (Status = Connected) or a
             // failed connection (Status = Disconnected).
@@ -147,20 +140,12 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        ///     Runs in the background of the game (another thread), polls for new updates
-        ///     from the server.
+        ///     Polls new events from the server.
         /// </summary>
-        private void ProcessEvents()
+        public void ProcessEvents()
         {
-            // Run this loop while we are connected or if we are still trying to connect.
-            while (Status == ClientStatus.Connected || Status == ClientStatus.Connecting)
-            {
-                // Poll for new events
-                _netClient.PollEvents();
-
-                // Wait
-                Thread.Sleep(15);
-            }
+            // Poll for new events
+            _netClient.PollEvents();
         }
 
         /// <summary>
@@ -175,7 +160,8 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                CSM.Log($"Encountered an error from {peer.EndPoint.Host}:{peer.EndPoint.Port} while reading command. Message: {ex.Message}");
+                CSM.Log($"Encountered an error while reading command from {peer.EndPoint.Host}:{peer.EndPoint.Port}:");
+                CSM.Log(ex.ToString());
             }
         }
 
@@ -233,7 +219,7 @@ namespace CSM.Networking
 
             if (Status == ClientStatus.Connected)
             {
-                Disconnect();
+                MultiplayerManager.Instance.StopEverything();
             }
 
             // In the case of ClientStatus.Connecting, this also ends the wait loop

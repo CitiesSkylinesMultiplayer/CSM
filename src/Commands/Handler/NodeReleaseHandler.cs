@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using CSM.Injections;
 using CSM.Networking;
 using System.Linq;
 
@@ -14,11 +15,9 @@ namespace CSM.Commands.Handler
 
         private void Handle(NodeReleaseCommand command)
         {
-            lock (Extensions.NodeAndSegmentExtension.NodesCreated)
-            { 
-            Extensions.NodeAndSegmentExtension.NodesCreated.Remove(command.NodeId);
+            NodeHandler.IgnoreNodes.Add(command.NodeId);
             Singleton<NetManager>.instance.ReleaseNode(command.NodeId);
-            }
+            NodeHandler.IgnoreNodes.Remove(command.NodeId);
         }
     }
 }

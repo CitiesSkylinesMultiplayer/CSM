@@ -14,7 +14,7 @@ namespace CSM.Commands.Handler
 
         private void Handle(ZoneCommand command)
         {
-            var id = Extensions.NodeAndSegmentExtension.ZoneVectorDictionary[command.Position];
+            var id = Extensions.ZoneExtension.ZoneVectorDictionary[command.Position];
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[id].m_zone1 = command.Zone1;
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[id].m_zone2 = command.Zone2;
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[id].RefreshZoning(id);  //this Command is neccesery to get the Zone to render, else it will first show when a building is build on it

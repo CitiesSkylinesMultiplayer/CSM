@@ -91,6 +91,8 @@ namespace CSM.Commands.Handler
             Singleton<BuildingManager>.instance.UpdateBuilding(building);
             Singleton<BuildingManager>.instance.UpdateBuildingColors(building);
             Singleton<BuildingManager>.instance.m_buildingCount = ((int)Singleton<BuildingManager>.instance.m_buildings.ItemCount()) - 1;
+
+            Singleton<SimulationManager>.instance.m_currentBuildIndex++;
         }
     }
 }
