@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class TaxRateChangeHandler : CommandHandler<TaxRateChangeCommand>
     {
-        public override byte ID => 107;
+        public override byte ID => CommandIds.TaxRateChangeCommand;
 
         public override void HandleOnServer(TaxRateChangeCommand command, Player player) => Handle(command);
 

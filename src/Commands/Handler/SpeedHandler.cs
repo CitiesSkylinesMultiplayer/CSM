@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class SpeedHandler : CommandHandler<SpeedCommand>
     {
-        public override byte ID => 100;
+        public override byte ID => CommandIds.SpeedCommand;
 
         public override void HandleOnClient(SpeedCommand command) => Handle(command);
 

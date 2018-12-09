@@ -7,7 +7,7 @@ namespace CSM.Commands.Handler
 {
     public class BuildingCreateHandler : CommandHandler<BuildingCreateCommand>
     {
-        public override byte ID => 103;
+        public override byte ID => CommandIds.BuildingCreateCommand;
 
         public override void HandleOnServer(BuildingCreateCommand command, Player player) => HandleBuilding(command);
 

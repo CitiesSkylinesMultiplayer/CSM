@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class PauseHandler : CommandHandler<PauseCommand>
     {
-        public override byte ID => 101;
+        public override byte ID => CommandIds.PauseCommand;
 
         public override void HandleOnClient(PauseCommand command) => Handle(command);
 

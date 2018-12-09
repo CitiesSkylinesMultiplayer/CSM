@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class BuildingRelocateHandler : CommandHandler<BuildingRelocateCommand>
     {
-        public override byte ID => 105;
+        public override byte ID => CommandIds.BuildingRelocateCommand;
 
         public override void HandleOnServer(BuildingRelocateCommand command, Player player) => HandleBuilding(command);
 

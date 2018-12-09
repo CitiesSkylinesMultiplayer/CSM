@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class BudgetChangeHandler : CommandHandler<BudgetChangeCommand>
     {
-        public override byte ID => 108;
+        public override byte ID => CommandIds.BudgetChangeCommand;
 
         public override void HandleOnServer(BudgetChangeCommand command, Player player) => HandleBudget(command);
 

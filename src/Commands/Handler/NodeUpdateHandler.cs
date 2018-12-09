@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class NodeUpdateHandler : CommandHandler<NodeUpdateCommand>
     {
-        public override byte ID => 111;
+        public override byte ID => CommandIds.NodeUpdateCommand;
 
         public override void HandleOnServer(NodeUpdateCommand command, Player player) => Handle(command);
 

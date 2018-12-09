@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class ClientDisconnectHandler : CommandHandler<ClientDisconnectCommand>
     {
-        public override byte ID => 51;
+        public override byte ID => CommandIds.ClientDisconnectCommand;
 
         public override void HandleOnClient(ClientDisconnectCommand command)
         {

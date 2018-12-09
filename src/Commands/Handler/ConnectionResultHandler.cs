@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class ConnectionResultHandler : CommandHandler<ConnectionResultCommand>
     {
-        public override byte ID => 1;
+        public override byte ID => CommandIds.ConnectionResultCommand;
 
         public override void HandleOnClient(ConnectionResultCommand command)
         {

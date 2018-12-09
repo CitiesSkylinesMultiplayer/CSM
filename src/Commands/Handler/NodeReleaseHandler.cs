@@ -6,7 +6,7 @@ namespace CSM.Commands.Handler
 {
     public class NodeReleaseHandler : CommandHandler<NodeReleaseCommand>
     {
-        public override byte ID => 112;
+        public override byte ID => CommandIds.NodeReleaseCommand;
 
         public override void HandleOnServer(NodeReleaseCommand command, Player player) => Handle(command);
 

@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class DemandDisplayedHandler : CommandHandler<DemandDisplayedCommand>
     {
-        public override byte ID => 106;
+        public override byte ID => CommandIds.DemandDisplayedCommand;
 
         public override void HandleOnClient(DemandDisplayedCommand command)
         {

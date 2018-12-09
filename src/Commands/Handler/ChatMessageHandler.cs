@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class ChatMessageHandler : CommandHandler<ChatMessageCommand>
     {
-        public override byte ID => 2;
+        public override byte ID => CommandIds.ChatMessageCommand;
 
         public override void HandleOnClient(ChatMessageCommand command)
         {

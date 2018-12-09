@@ -6,7 +6,7 @@ namespace CSM.Commands.Handler
 {
     public class MoneyHandler : CommandHandler<MoneyCommand>
     {
-        public override byte ID => 102;
+        public override byte ID => CommandIds.MoneyCommand;
 
         public override void HandleOnClient(MoneyCommand command) => HandleClient(command);
 

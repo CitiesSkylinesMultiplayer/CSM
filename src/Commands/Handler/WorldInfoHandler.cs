@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class WorldInfoHandler : CommandHandler<WorldInfoCommand>
     {
-        public override byte ID => 53;
+        public override byte ID => CommandIds.WorldInfoCommand;
 
         public override void HandleOnClient(WorldInfoCommand command)
         {

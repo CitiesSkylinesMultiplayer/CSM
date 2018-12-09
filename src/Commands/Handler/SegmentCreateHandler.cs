@@ -15,7 +15,7 @@ namespace CSM.Commands.Handler
             _initializeSegment = typeof(NetManager).GetMethod("InitializeSegment", AccessTools.all);
         }
 
-        public override byte ID => 110;
+        public override byte ID => CommandIds.SegmentCreateCommand;
 
         public override void HandleOnClient(SegmentCreateCommand command) => HandleCreateSegment(command);
 

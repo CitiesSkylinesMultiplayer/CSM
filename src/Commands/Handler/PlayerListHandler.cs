@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class PlayerListHandler : CommandHandler<PlayerListCommand>
     {
-        public override byte ID => 52;
+        public override byte ID => CommandIds.PlayerListCommand;
 
         public override void HandleOnClient(PlayerListCommand command)
         {

@@ -15,7 +15,7 @@ namespace CSM.Commands.Handler
             _initializeNode = typeof(NetManager).GetMethod("InitializeNode", AccessTools.all);
         }
 
-        public override byte ID => 109;
+        public override byte ID => CommandIds.NodeCreateCommand;
 
         public override void HandleOnServer(NodeCreateCommand command, Player player) => HandleCreateNode(command);
 

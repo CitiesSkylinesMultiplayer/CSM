@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class ClientConnectHandler : CommandHandler<ClientConnectCommand>
     {
-        public override byte ID => 50;
+        public override byte ID => CommandIds.ClientConnectCommand;
 
         public override void HandleOnClient(ClientConnectCommand command)
         {

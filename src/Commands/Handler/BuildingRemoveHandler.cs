@@ -4,7 +4,7 @@ namespace CSM.Commands.Handler
 {
     public class BuildingRemoveHandler : CommandHandler<BuildingRemoveCommand>
     {
-        public override byte ID => 104;
+        public override byte ID => CommandIds.BuildingRemoveCommand;
 
         public override void HandleOnServer(BuildingRemoveCommand command, Player player) => HandleBuilding(command);
 

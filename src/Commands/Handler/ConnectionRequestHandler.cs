@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        public override byte ID => 0;
+        public override byte ID => CommandIds.ConnectionRequestCommand;
 
         public override void HandleOnServer(ConnectionRequestCommand command, Player player)
         {
