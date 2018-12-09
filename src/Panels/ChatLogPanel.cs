@@ -143,6 +143,13 @@ namespace CSM.Panels
                     AddMessage(MessageType.Normal, "<CSM> Game Version : " + BuildConfig.applicationVersion);
                     break;
 
+                case "players":
+                    foreach (var player in MultiplayerManager.Instance.PlayerList)
+                    {
+                        AddMessage(MessageType.Normal, player);
+                    }
+                    break;
+
                 default:
                     AddMessage(MessageType.Warning, $"<CSM> {command.TrimStart('/')} is not a valid command.");
                     break;

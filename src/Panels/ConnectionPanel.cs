@@ -15,7 +15,6 @@ namespace CSM.Panels
         private UIButton _disconnectButton;
 
         private UIButton _serverManageButton;
-        private UIButton _playerListButton;
 
         public override void Start()
         {
@@ -49,7 +48,6 @@ namespace CSM.Panels
                         Hide(_serverConnectButton);
                         Show(_disconnectButton);
                         Show(_serverManageButton);
-                        Hide(_playerListButton);
 
                         _disconnectButton.text = "Stop server";
                     }
@@ -59,7 +57,6 @@ namespace CSM.Panels
                         Show(_serverConnectButton);
                         Hide(_disconnectButton);
                         Hide(_serverManageButton);
-                        Hide(_playerListButton);
                     }
                 }
                 else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
@@ -68,7 +65,6 @@ namespace CSM.Panels
                     Hide(_serverConnectButton);
                     Show(_disconnectButton);
                     Hide(_serverManageButton);
-                    Show(_playerListButton);
 
                     _disconnectButton.text = "Disconnect";
                 }
@@ -78,7 +74,6 @@ namespace CSM.Panels
                     Show(_serverConnectButton);
                     Hide(_disconnectButton);
                     Hide(_serverManageButton);
-                    Hide(_playerListButton);
                 }
             };
 
@@ -99,10 +94,6 @@ namespace CSM.Panels
             _disconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
             _disconnectButton.isEnabled = false;
             _disconnectButton.isVisible = false;
-
-            _playerListButton = this.CreateButton("View Players", new Vector2(10, -60));
-            _playerListButton.isEnabled = false;
-            _playerListButton.isVisible = false;
 
             _clientConnectButton.eventClick += (component, param) =>
             {
@@ -159,24 +150,6 @@ namespace CSM.Panels
                 else
                 {
                     panel = (ManageGamePanel)view.AddUIComponent(typeof(ManageGamePanel));
-                }
-
-                panel.Focus();
-
-                isVisible = false;
-            };
-
-            _playerListButton.eventClick += (component, param) =>
-            {
-                var panel = view.FindUIComponent<PlayerListPanel>("MPPlayerListPanel");
-
-                if (panel != null)
-                {
-                    panel.isVisible = true;
-                }
-                else
-                {
-                    panel = (PlayerListPanel)view.AddUIComponent(typeof(PlayerListPanel));
                 }
 
                 panel.Focus();

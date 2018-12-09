@@ -12,7 +12,6 @@ namespace CSM.Panels
         private UITextField _externalIpField;
 
         private UIButton _closeButton;
-        private UIButton _listButton;
 
         private string _portVal, _localIpVal, _externalIpVal;
 
@@ -71,24 +70,6 @@ namespace CSM.Panels
             _externalIpField.eventTextChanged += (UIComponent ui, string val) =>
             {
                 _externalIpField.text = _externalIpVal;
-            };
-
-            _listButton = this.CreateButton("View Players", new Vector2(10, -300));
-            _listButton.eventClick += (component, param) =>
-            {
-                var panel = view.FindUIComponent<PlayerListPanel>("MPPlayerListPanel");
-
-                if (panel != null)
-                {
-                    panel.isVisible = true;
-                }
-                else
-                {
-                    panel = (PlayerListPanel)view.AddUIComponent(typeof(PlayerListPanel));
-                }
-
-                panel.Focus();
-                isVisible = false;
             };
 
             // Close this dialog
