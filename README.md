@@ -56,6 +56,13 @@ If you want to build the mod yourself, follow the developer instructions below.
 - Water pipe creation and deletion.
 - Zones.
 
+## Chat Commands
+
+|Command|Description|
+|---|---|
+|`/version`|Prints the game and mod versions.|
+|`/players`|Prints a list of players currently connected to the server.|
+
 ## Contributors
 - [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)
 - [Sander Jochems (Sander0542)](https://github.com/Sander0542)
@@ -63,4 +70,4 @@ If you want to build the mod yourself, follow the developer instructions below.
 - [kaenganxt](https://github.com/kaenganxt)
 
 ## Developer Resources
-Developer recourses can be found on the GitHub wiki.
+Developer resources can be found on the GitHub wiki.
