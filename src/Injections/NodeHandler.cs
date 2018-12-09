@@ -15,14 +15,14 @@ namespace CSM.Injections
 
     [HarmonyPatch(typeof(NetManager))]
     [HarmonyPatch("CreateNode")]
-    class CreateNode
+    public class CreateNode
     {
         /// <summary>
         /// This handler is executed after a new NetNode is created using NetManager::CreateNode
         /// </summary>
         /// <param name="__result">The boolean return value of CreateNode states if the node was created successfully</param>
         /// <param name="node">This is the node id set by CreateNode</param>
-        static void Postfix(bool __result, ref ushort node)
+        public static void Postfix(bool __result, ref ushort node)
         {
             if (__result)
             {
@@ -38,14 +38,14 @@ namespace CSM.Injections
     }
 
     [HarmonyPatch(typeof(NetManager))]
-    class ReleaseNodeImpl
+    public class ReleaseNodeImpl
     {
         /// <summary>
         /// This handler is executed before a NetNode is released using NetManager::ReleaseNodeImplementation.
         /// </summary>
         /// <param name="node">The node id</param>
         /// <param name="data">The NetNode object</param>
-        static void Prefix(ushort node, ref NetNode data)
+        public static void Prefix(ushort node, ref NetNode data)
         {
             if (data.m_flags != 0 && !NodeHandler.IgnoreNodes.Contains(node))
             {
@@ -57,7 +57,7 @@ namespace CSM.Injections
         }
 
         // Get target method NetManager::ReleaseNodeImplementation(ushort, ref NetNode)
-        static MethodBase TargetMethod()
+        public static MethodBase TargetMethod()
         {
             return typeof(NetManager).GetMethod("ReleaseNodeImplementation", AccessTools.all, null, new Type[] { typeof(ushort), typeof(NetNode).MakeByRefType() }, new ParameterModifier[] { });
         }
@@ -65,13 +65,13 @@ namespace CSM.Injections
 
     [HarmonyPatch(typeof(NetManager))]
     [HarmonyPatch("UpdateNodeFlags")]
-    class UpdateNodeFlags
+    public class UpdateNodeFlags
     {
         /// <summary>
         /// This handler is executed after a node was refreshed in any way.
         /// </summary>
         /// <param name="node">The node id</param>
-        static void Postfix(ushort node)
+        public static void Postfix(ushort node)
         {
             NetNode netNode = Singleton<NetManager>.instance.m_nodes.m_buffer[node];
             ushort[] segments = new ushort[8];
@@ -94,14 +94,14 @@ namespace CSM.Injections
 
     [HarmonyPatch(typeof(NetManager))]
     [HarmonyPatch("CreateSegment")]
-    class CreateSegment
+    public class CreateSegment
     {
         /// <summary>
         /// This handler is executed after a segment was created using NetManager::CreateSegment
         /// </summary>
         /// <param name="__result">The boolean return value of CreateSegment states if the segment was created successfully</param>
         /// <param name="segment">The segment id</param>
-        static void Postfix(bool __result, ref ushort segment)
+        public static void Postfix(bool __result, ref ushort segment)
         {
             if (__result)
             {
@@ -122,7 +122,7 @@ namespace CSM.Injections
     }
 
     [HarmonyPatch(typeof(NetManager))]
-    class ReleaseSegmentImpl
+    public class ReleaseSegmentImpl
     {
         /// <summary>
         /// This handler is executed before a segment is released using NetManager::ReleaseSegmentImplementation
@@ -130,7 +130,7 @@ namespace CSM.Injections
         /// <param name="segment">The segment id</param>
         /// <param name="data">The NetSegment object</param>
         /// <param name="keepNodes">If adjacent nodes should also be released</param>
-        static void Prefix(ushort segment, ref NetSegment data, bool keepNodes)
+        public static void Prefix(ushort segment, ref NetSegment data, bool keepNodes)
         {
             if (data.m_flags != 0 && !NodeHandler.IgnoreSegments.Contains(segment))
             {
@@ -143,7 +143,7 @@ namespace CSM.Injections
         }
 
         // Get target method NetManager::ReleaseSegmentImplementation(ushort, ref NetNode, bool)
-        static MethodBase TargetMethod()
+        public static MethodBase TargetMethod()
         {
             return typeof(NetManager).GetMethod("ReleaseSegmentImplementation", AccessTools.all, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, new ParameterModifier[] { });
         }

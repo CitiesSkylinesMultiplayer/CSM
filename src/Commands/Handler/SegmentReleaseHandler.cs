@@ -1,11 +1,10 @@
 ﻿using ColossalFramework;
 using CSM.Injections;
 using CSM.Networking;
-using System.Linq;
 
 namespace CSM.Commands.Handler
 {
-    class SegmentReleaseHandler : CommandHandler<SegmentReleaseCommand>
+    public class SegmentReleaseHandler : CommandHandler<SegmentReleaseCommand>
     {
         public override byte ID => 113;
 

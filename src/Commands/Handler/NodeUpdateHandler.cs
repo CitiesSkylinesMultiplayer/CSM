@@ -1,5 +1,5 @@
-﻿using CSM.Networking;
-using ColossalFramework;
+﻿using ColossalFramework;
+using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {

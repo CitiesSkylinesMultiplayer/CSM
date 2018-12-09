@@ -7,11 +7,11 @@ namespace CSM.Helpers
     {
         public static void RemoveUnused<T>(this Array16<T> arr, uint id)
         {
-            ushort[] unusedItems = (ushort[]) arr.GetType().GetField("m_unusedItems", AccessTools.all).GetValue(arr);
+            ushort[] unusedItems = (ushort[])arr.GetType().GetField("m_unusedItems", AccessTools.all).GetValue(arr);
             FieldInfo unusedCountField = arr.GetType().GetField("m_unusedCount", AccessTools.all);
-            uint unusedCount = (uint) unusedCountField.GetValue(arr);
+            uint unusedCount = (uint)unusedCountField.GetValue(arr);
 
-            uint expectedPos = (uint) id - 1;
+            uint expectedPos = (uint)id - 1;
             // Special case, when array was modified (search for the id)
             if (unusedItems[expectedPos] != id)
             {

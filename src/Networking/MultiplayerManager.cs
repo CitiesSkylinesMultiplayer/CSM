@@ -34,9 +34,11 @@ namespace CSM.Networking
                 case MultiplayerRole.Client:
                     CurrentClient.ProcessEvents();
                     break;
+
                 case MultiplayerRole.Server:
                     CurrentServer.ProcessEvents();
                     break;
+
                 case MultiplayerRole.None:
                     if (CurrentClient.Status == Status.ClientStatus.Connecting)
                     {

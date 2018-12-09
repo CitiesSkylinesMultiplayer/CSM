@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler
             BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(command.Infoindex);
             BuildingExtension.LastPosition = command.Position;
             ushort building = command.BuildingID;
-            
+
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_flags = Building.Flags.Created;
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].Info = info;
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].Width = info.m_cellWidth;

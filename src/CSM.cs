@@ -11,7 +11,6 @@ namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
-
         private HarmonyInstance _harmony;
 
         public CSM()
@@ -27,7 +26,6 @@ namespace CSM
 
             // Delete the log file on startup / reload
             File.Delete("multiplayer-log.txt");
-
 
             _harmony = HarmonyInstance.Create("csm"); // Todo: Should use domain syntax com.example.project
             try

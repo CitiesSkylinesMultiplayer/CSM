@@ -88,7 +88,6 @@ namespace CSM.Extensions
                         ZoneReleased = false;
                     }
 
-                
                     if (ZoneChange == true)
                     {
                         for (ushort i = 0; i < Singleton<ZoneManager>.instance.m_blocks.m_buffer.Length; i++)
