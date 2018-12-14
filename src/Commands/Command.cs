@@ -13,6 +13,8 @@ namespace CSM.Commands
         private static readonly Dictionary<byte, CommandHandler> _handlerMapping = new Dictionary<byte, CommandHandler>();
         private static readonly Dictionary<Type, byte> _cmdMapping = new Dictionary<Type, byte>();
 
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// This method is used to parse an incoming message on the client
         /// and execute the appropriate actions.
@@ -44,7 +46,7 @@ namespace CSM.Commands
             // Make sure we know about the connected client
             if (player == null)
             {
-                CSM.Log($"Client tried to send packet {handler.GetType().Name} but never joined with a ConnectionRequestCommand packet. Ignoring...");
+                _logger.Warn($"Client tried to send packet {handler.GetType().Name} but never joined with a ConnectionRequestCommand packet. Ignoring...");
                 return;
             }
 
@@ -68,7 +70,7 @@ namespace CSM.Commands
 
             if (!_handlerMapping.TryGetValue(messageType, out handler))
             {
-                CSM.Log($"Command {messageType} not found!");
+                _logger.Error($"Command {messageType} not found!");
                 return;
             }
         }

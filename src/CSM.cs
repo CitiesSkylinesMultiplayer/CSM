@@ -39,6 +39,15 @@ namespace CSM
             {
                 _logger.Error(ex);
             }
+
+            _logger.Info("Construction Complete!");
+        }
+
+        ~CSM()
+        {
+            _logger.Info("Unpatching Harmony...");
+            _harmony.UnpatchAll();
+            _logger.Info("Destruction complete!");
         }
 
         /// <summary>
@@ -72,12 +81,6 @@ namespace CSM
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
 
             LogManager.Configuration = config;
-        }
-
-        ~CSM()
-        {
-            _harmony.UnpatchAll();
-            CSM.Log("Destruction complete!");
         }
 
         private static void CreateJoinGameButton()

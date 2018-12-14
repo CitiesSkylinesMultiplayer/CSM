@@ -114,7 +114,7 @@ namespace CSM.Panels
                 // If not connected to a server / hosting a server, tell the user and return
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
                 {
-                    AddMessage(MessageType.Warning, "<CSM> You can only use the chat feature when hosting or connected.");
+                    AddGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
                     return;
                 }
 
@@ -140,7 +140,7 @@ namespace CSM.Panels
                 Command.SendToAll(message);
 
                 // Add the message to the chat UI
-                AddMessage(MessageType.Normal, $"<{playerName}> {text}");
+                AddChatMessage(playerName, text);
             }
         }
 
@@ -149,19 +149,19 @@ namespace CSM.Panels
             switch (command.TrimStart('/'))
             {
                 case "version":
-                    AddMessage(MessageType.Normal, "<CSM> Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
-                    AddMessage(MessageType.Normal, "<CSM> Game Version : " + BuildConfig.applicationVersion);
+                    AddGameMessage(MessageType.Normal, "Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
+                    AddGameMessage(MessageType.Normal, "Game Version : " + BuildConfig.applicationVersion);
                     break;
 
                 case "players":
                     foreach (var player in MultiplayerManager.Instance.PlayerList)
                     {
-                        AddMessage(MessageType.Normal, player);
+                        AddGameMessage(MessageType.Normal, player);
                     }
                     break;
 
                 default:
-                    AddMessage(MessageType.Warning, $"<CSM> {command.TrimStart('/')} is not a valid command.");
+                    AddGameMessage(MessageType.Warning, $"{command.TrimStart('/')} is not a valid command.");
                     break;
             }
         }
@@ -177,6 +177,16 @@ namespace CSM.Panels
 
             // Scroll to the bottom
             _messageBox.scrollPosition = (_messageBox.items.Length * 20) + 10;
+        }
+
+        public void AddChatMessage(string username, string message)
+        {
+            AddMessage(MessageType.Normal, $"<{username}> {message}");
+        }
+
+        public void AddGameMessage(MessageType type, string message)
+        {
+            AddMessage(type, $"<CSM> {message}");
         }
     }
 }

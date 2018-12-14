@@ -20,6 +20,9 @@ namespace CSM.Networking
         // The server
         private LiteNetLib.NetManager _netServer;
 
+        // Class logger
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         // Connected clients
         public Dictionary<long, Player> ConnectedPlayers { get; } = new Dictionary<long, Player>();
 
@@ -38,7 +41,7 @@ namespace CSM.Networking
         {
             // Set up network items
             var listener = new EventBasedNetListener();
-            _netServer = new LiteNetLib.NetManager(listener, "Tango");
+            _netServer = new LiteNetLib.NetManager(listener, "Cities: Skylines Multiplayer");
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
