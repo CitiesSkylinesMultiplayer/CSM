@@ -113,7 +113,6 @@
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
     <Compile Include="Commands\Handler\ZoneHandler.cs" />
     <Compile Include="Commands\CommandIds.cs" />
-    <Compile Include="Common\LogManager.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
@@ -150,6 +149,9 @@
     </PackageReference>
     <PackageReference Include="LiteNetLib">
       <Version>0.7.7.3</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.5.11</Version>
     </PackageReference>
     <PackageReference Include="Open.Nat">
       <Version>2.1.0</Version>

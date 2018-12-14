@@ -1,5 +1,5 @@
-﻿using CSM.Common;
-using CSM.Networking;
+﻿using CSM.Networking;
+using CSM.Panels;
 
 namespace CSM.Commands.Handler
 {
@@ -9,12 +9,12 @@ namespace CSM.Commands.Handler
 
         public override void HandleOnClient(ChatMessageCommand command)
         {
-            LogManager.LogMessage($"<{command.Username}> {command.Message}");
+            ChatLogPanel.GetDefault().AddMessage(ChatLogPanel.MessageType.Normal, $"<{command.Username}> {command.Message}");
         }
 
         public override void HandleOnServer(ChatMessageCommand command, Player player)
         {
-            LogManager.LogMessage($"<{command.Username}> {command.Message}");
+            ChatLogPanel.GetDefault().AddMessage(ChatLogPanel.MessageType.Normal, $"<{command.Username}> {command.Message}");
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using ColossalFramework.UI;
-using CSM.Common;
 using CSM.Panels;
 using Harmony;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using System;
-using System.IO;
 using System.Reflection;
 using UnityEngine;
 
@@ -11,31 +12,66 @@ namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
-        private HarmonyInstance _harmony;
+        private readonly HarmonyInstance _harmony;
+
+        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CSM()
         {
+            // Setup the correct logging configuration
+            SetupLogging();
+
             // Make sure the button is enabled after intro load
             LoadingManager.instance.m_introLoaded += () => CreateJoinGameButton();
 
             // We are in the main menu, so load the "Join Game" button.
             if (!LoadingManager.instance.m_essentialScenesLoaded)
-            {
                 CreateJoinGameButton();
-            }
 
-            // Delete the log file on startup / reload
-            File.Delete("multiplayer-log.txt");
-
-            _harmony = HarmonyInstance.Create("csm"); // Todo: Should use domain syntax com.example.project
             try
             {
+                _logger.Info("Attempting to match Cities: Skylines using Harmony...");
+                _harmony = HarmonyInstance.Create("net.gridentertainment.csm");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
+                _logger.Info("Successfully patches Cities: Skylines!");
             }
             catch (Exception ex)
             {
-                CSM.Log(ex.Message);
+                _logger.Error(ex);
             }
+        }
+
+        /// <summary>
+        ///     This code sets up the different
+        ///     logging levels for the mod.
+        /// </summary>
+        private void SetupLogging()
+        {
+            var config = new LoggingConfiguration();
+
+            // The layout of the log
+            var layout = "[${time}] [version] [${level}] ${message}";
+
+            // Target for file logging
+            var logfile = new FileTarget("logfile")
+            {
+                FileName = "multiplayer-logs/log-current.txt",
+                ArchiveFileName = "multiplayer-logs/log-${shortdate}.txt",
+                Layout = layout,
+                ArchiveEvery = FileArchivePeriod.Day,
+                MaxArchiveFiles = 7,
+                ConcurrentWrites = true,
+            };
+
+            // Target for console logging
+            var logconsole = new ConsoleTarget("logconsole") { Layout = layout };
+
+            // While in development set both levels to start at debug, later on we
+            // want to set an option to do this.
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logconsole);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+
+            LogManager.Configuration = config;
         }
 
         ~CSM()
@@ -110,7 +146,7 @@ namespace CSM
             }
         }
 
-        public string Name => "CSM";
+        public string Name => "Cities: Skylines Multiplayer";
 
         public string Description => "Multiplayer mod for Cities: Skylines.";
 
@@ -118,9 +154,10 @@ namespace CSM
         ///     Log a message to the console.
         /// </summary>
         /// <param name="message"></param>
+        [Obsolete("Use NLog instead.")]
         public static void Log(string message)
         {
-            LogManager.LogMessage(message);
+            _logger.Info(message);
         }
     }
 }

@@ -25,6 +25,16 @@ namespace CSM.Panels
             Error
         }
 
+        /// <summary>
+        ///     A static method allowing other parts of the application to
+        ///     grab the chat log panel.
+        /// </summary>
+        /// <returns>The chat log panel in the game.</returns>
+        public static ChatLogPanel GetDefault()
+        {
+            return (ChatLogPanel)UIView.GetAView().FindUIComponent("MPChatLogPanel");
+        }
+
         public override void Start()
         {
             // Generates the following UI:
