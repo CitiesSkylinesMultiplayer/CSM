@@ -87,6 +87,7 @@
     <Compile Include="Commands\Data\SpeedCommand.cs" />
     <Compile Include="Commands\Data\TaxRateChangeCommand.cs" />
     <Compile Include="Commands\Data\NodeUpdateCommand.cs" />
+    <Compile Include="Commands\Data\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
     <Compile Include="Commands\Data\ZoneCommand.cs" />
     <Compile Include="Commands\Handler\BudgetChangeHandler.cs" />
@@ -110,9 +111,11 @@
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />
     <Compile Include="Commands\Handler\NodeUpdateHandler.cs" />
+    <Compile Include="Commands\Handler\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
     <Compile Include="Commands\Handler\ZoneHandler.cs" />
     <Compile Include="Commands\CommandIds.cs" />
+    <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
