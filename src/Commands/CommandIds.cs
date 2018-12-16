@@ -37,7 +37,6 @@
         public const byte ZoneCommand = 114;
         public const byte UnlockAreaCommand = 115;
 
-
-        // 115 - 255
+        // 116 - 255
     }
 }

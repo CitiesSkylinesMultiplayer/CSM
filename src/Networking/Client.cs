@@ -200,12 +200,16 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnPeerConnectedEvent(NetPeer peer)
         {
+            // Get the major.minor version
+            var version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
+            var versionString = $"{version.Major}.{version.Minor}";
+
             // Build the connection request
             var connectionRequest = new ConnectionRequestCommand
             {
                 GameVersion = BuildConfig.applicationVersion,
                 ModCount = PluginManager.instance.modCount,
-                ModVersion = Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString(),
+                ModVersion = versionString,
                 Password = Config.Password,
                 Username = Config.Username
             };

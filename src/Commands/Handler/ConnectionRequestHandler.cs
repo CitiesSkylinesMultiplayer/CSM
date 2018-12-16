@@ -1,5 +1,6 @@
 ﻿using CSM.Networking;
 using LiteNetLib;
+using System.Reflection;
 
 namespace CSM.Commands.Handler
 {
@@ -30,16 +31,18 @@ namespace CSM.Commands.Handler
             }
 
             // Check to see if the mod version matches
-            // TODO: Disable this on development, but enable on release.
-            //if (command.ModVersion != Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString())
-            //{
-            //    Command.SendToClient(peer, new ConnectionResultCommand
-            //    {
-            //        Success = false,
-            //        Reason = $"Client and server have different CSM Mod versions. Client: {command.ModVersion}, Server: {Assembly.GetAssembly(typeof(Client)).GetName().Version.ToString()}."
-            //    });
-            //    return;
-            //}
+            var version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
+            var versionString = $"{version.Major}.{version.Minor}";
+
+            if (command.ModVersion != versionString)
+            {
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = $"Client and server have different CSM Mod versions. Client: {command.ModVersion}, Server: {versionString}."
+                });
+                return;
+            }
 
             // Check the client username to see if anyone on the server already have a username
             var hasExistingPlayer = MultiplayerManager.Instance.PlayerList.Contains(command.Username);
