@@ -89,7 +89,7 @@
     <Compile Include="Commands\Data\NodeUpdateCommand.cs" />
     <Compile Include="Commands\Data\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
-    <Compile Include="Commands\Data\ZoneCommand.cs" />
+    <Compile Include="Commands\Data\ZoneUpdateCommand.cs" />
     <Compile Include="Commands\Handler\BudgetChangeHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Commands\Handler\NodeUpdateHandler.cs" />
     <Compile Include="Commands\Handler\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
-    <Compile Include="Commands\Handler\ZoneHandler.cs" />
+    <Compile Include="Commands\Handler\ZoneUpdateHandler.cs" />
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
@@ -121,10 +121,10 @@
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
-    <Compile Include="Extensions\ZoneExtension.cs" />
     <Compile Include="Helpers\Array16Extension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Injections\NodeHandler.cs" />
+    <Compile Include="Injections\ZoneHandler.cs" />
     <Compile Include="Models\StartEndNode.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />

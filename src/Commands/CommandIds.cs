@@ -34,7 +34,7 @@
         public const byte NodeReleaseCommand = 111;
         public const byte SegmentCreateCommand = 112;
         public const byte SegmentReleaseCommand = 113;
-        public const byte ZoneCommand = 114;
+        public const byte ZoneUpdateCommand = 114;
         public const byte UnlockAreaCommand = 115;
 
         // 116 - 255

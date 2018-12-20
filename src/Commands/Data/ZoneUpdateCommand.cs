@@ -1,13 +1,12 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class ZoneCommand : CommandBase
+    public class ZoneUpdateCommand : CommandBase
     {
         [ProtoMember(1)]
-        public Vector3 Position { get; set; }
+        public ushort ZoneId { get; set; }
 
         [ProtoMember(2)]
         public ulong Zone1 { get; set; }
