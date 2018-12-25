@@ -71,7 +71,7 @@ namespace CSM.Commands.Handler
             }
 
             var newPlayer = new Player(peer, command.Username);
-            MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.ConnectId] = newPlayer;
+            MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
             Command.SendToClient(peer, new ConnectionResultCommand { Success = true });
 

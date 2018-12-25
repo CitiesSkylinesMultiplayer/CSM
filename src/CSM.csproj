@@ -76,6 +76,7 @@
     <Compile Include="Commands\Data\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\Data\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\DemandDisplayedCommand.cs" />
+    <Compile Include="Commands\Data\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
     <Compile Include="Commands\Data\NodeIdCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
     <Compile Include="Commands\Handler\ChatMessageHandler.cs" />
+    <Compile Include="Commands\Handler\FinishTransactionHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
     <Compile Include="Commands\Handler\NodeReleaseHandler.cs" />
@@ -123,9 +125,9 @@
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Helpers\Array16Extension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
+    <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\NodeHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
-    <Compile Include="Models\StartEndNode.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Networking\Server.cs" />
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />
+    <Compile Include="Commands\TransactionHandler.cs" />
     <Compile Include="Panels\ChatLogPanel.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\ManageGamePanel.cs" />
@@ -151,7 +154,7 @@
       <Version>1.2.0.1</Version>
     </PackageReference>
     <PackageReference Include="LiteNetLib">
-      <Version>0.7.7.3</Version>
+      <Version>0.8.2-beta</Version>
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.5.11</Version>

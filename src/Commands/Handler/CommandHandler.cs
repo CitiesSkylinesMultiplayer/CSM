@@ -9,6 +9,16 @@ namespace CSM.Commands.Handler
     {
         public abstract byte ID { get; }
 
+        /// <summary>
+        /// If this is true, client -> server packets are relayed to all other clients.
+        /// </summary>
+        public bool RelayOnServer { get; protected set; } = true;
+
+        /// <summary>
+        /// If this is not NONE, all packets of this TransactionType are queued until a FinishTransactionCommand is received.
+        /// </summary>
+        public TransactionType Transaction { get; protected set; } = TransactionType.NONE;
+
         public abstract Type GetDataType();
 
         public abstract void ParseOnServer(byte[] message, Player player);

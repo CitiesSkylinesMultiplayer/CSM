@@ -19,13 +19,18 @@ namespace CSM.Commands
         /// This method is used to parse an incoming message on the client
         /// and execute the appropriate actions.
         /// </summary>
-        /// <param name="msg">The incoming byte array including the command type byte.</param>
-        public static void ParseOnClient(byte[] msg)
+        /// <param name="reader">The incoming packet including the command type byte.</param>
+        public static void ParseOnClient(NetPacketReader reader)
         {
-            Parse(msg, out CommandHandler handler, out byte[] message);
+            Parse(reader, out CommandHandler handler, out byte[] message);
 
             if (handler == null)
                 return;
+
+            if (TransactionHandler.CheckReceived(handler, message, null))
+            {
+                return;
+            }
 
             handler.ParseOnClient(message);
         }
@@ -34,39 +39,46 @@ namespace CSM.Commands
         /// This method is used parse an incoming message on the server
         /// and execute the appropriate actions.
         /// </summary>
-        /// <param name="msg">The incoming byte array including the command type byte.</param>
+        /// <param name="reader">The incoming packet including the command type byte.</param>
         /// <param name="player">The player object of the sending client. May be null if the sender is not known.</param>
-        public static void ParseOnServer(byte[] msg, Player player)
+        public static bool ParseOnServer(NetPacketReader reader, Player player)
         {
-            Parse(msg, out CommandHandler handler, out byte[] message);
+            Parse(reader, out CommandHandler handler, out byte[] message);
 
             if (handler == null)
-                return;
+                return false;
 
             // Make sure we know about the connected client
             if (player == null)
             {
                 _logger.Warn($"Client tried to send packet {handler.GetType().Name} but never joined with a ConnectionRequestCommand packet. Ignoring...");
-                return;
+                return false;
+            }
+
+            if (TransactionHandler.CheckReceived(handler, message, player))
+            {
+                return handler.RelayOnServer;
             }
 
             handler.ParseOnServer(message, player);
+
+            return handler.RelayOnServer;
         }
 
         /// <summary>
         /// This method is used to extract the command type from an incoming message
         /// and return the matching handler object.
         /// </summary>
-        /// <param name="msg">The incoming byte array including the command type byte.</param>
+        /// <param name="reader">The incoming packet including the command type byte.</param>
         /// <param name="handler">This returns the command handler object. May be null if the command was not found.</param>
         /// <param name="message">This returns the message byte array without the command type byte.</param>
-        public static void Parse(byte[] msg, out CommandHandler handler, out byte[] message)
+        public static void Parse(NetPacketReader reader, out CommandHandler handler, out byte[] message)
         {
             // The message type is the first byte, (255 message types)
-            byte messageType = msg[0];
+            byte messageType = reader.GetByte();
 
             // Skip the first byte
-            message = msg.Skip(1).ToArray();
+            message = reader.GetRemainingBytes();
 
             if (!_handlerMapping.TryGetValue(messageType, out handler))
             {
@@ -154,6 +166,9 @@ namespace CSM.Commands
         /// <param name="command">The command to send.</param>
         public static void SendToAll(CommandBase command)
         {
+            // Check if this command belongs to a transaction
+            TransactionHandler.CheckSendTransaction(command);
+
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 SendToServer(command);
@@ -198,6 +213,17 @@ namespace CSM.Commands
         public static byte GetCommandId(Type commandType)
         {
             return _cmdMapping[commandType];
+        }
+
+        /// <summary>
+        /// This method is used to get the handler of given command.
+        /// </summary>
+        /// <param name="commandType">The Type of a CommandBase subclass.</param>
+        /// <returns>The handler for the given command.</returns>
+        public static CommandHandler GetCommandHandler(Type commandType)
+        {
+            _handlerMapping.TryGetValue(GetCommandId(commandType), out CommandHandler handler);
+            return handler;
         }
 
         static Command()

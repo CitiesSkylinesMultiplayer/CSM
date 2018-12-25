@@ -1,10 +1,14 @@
 ﻿using CSM.Networking;
 using CSM.Networking.Status;
+using CSM.Panels;
 
 namespace CSM.Commands.Handler
 {
     public class ConnectionResultHandler : CommandHandler<ConnectionResultCommand>
     {
+        // Class logger
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         public override byte ID => CommandIds.ConnectionResultCommand;
 
         public override void HandleOnClient(ConnectionResultCommand command)
@@ -17,13 +21,14 @@ namespace CSM.Commands.Handler
             if (command.Success)
             {
                 // Log and set that we are connected.
-                CSM.Log($"Successfully connected to server.");
+                _logger.Info("Successfully connected to server.");
+                ChatLogPanel.PrintGameMessage("Successfully connected to server.");
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
             }
             else
             {
-                CSM.Log($"Could not connect: {command.Reason}");
-                MultiplayerManager.Instance.CurrentClient.ConnectionMessage = $"Could not connect: {command.Reason}";
+                _logger.Info($"Could not connect: {command.Reason}");
+                MultiplayerManager.Instance.CurrentClient.ConnectionMessage = command.Reason;
                 MultiplayerManager.Instance.CurrentClient.Disconnect();
             }
         }

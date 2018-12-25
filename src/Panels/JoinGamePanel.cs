@@ -124,13 +124,10 @@ namespace CSM.Panels
                     {
                         _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                         _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
-                        CSM.Log(MultiplayerManager.Instance.CurrentClient.ConnectionMessage);
                     }
                     else
                     {
                         _connectionStatus.text = "";
-                        CSM.Log("Connected!");
-
                         isVisible = false;
                     }
                 });

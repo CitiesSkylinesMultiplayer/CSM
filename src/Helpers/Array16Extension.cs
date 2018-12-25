@@ -1,4 +1,6 @@
-﻿using Harmony;
+﻿using CSM.Panels;
+using Harmony;
+using NLog;
 using System.Reflection;
 
 namespace CSM.Helpers
@@ -29,7 +31,8 @@ namespace CSM.Helpers
                 if (!found)
                 {
                     // The arrays are no longer in sync
-                    CSM.Log("Error: Received id already in use. Please restart the multiplayer session!");
+                    LogManager.GetCurrentClassLogger().Error("Array16: Received id already in use. Please restart the multiplayer session!");
+                    ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "ID collision. Please restart the multiplayer session.");
                     return;
                 }
             }
