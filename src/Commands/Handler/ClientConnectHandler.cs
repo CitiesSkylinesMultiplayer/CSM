@@ -1,4 +1,6 @@
 ﻿using CSM.Networking;
+using CSM.Panels;
+using NLog;
 
 namespace CSM.Commands.Handler
 {
@@ -8,7 +10,9 @@ namespace CSM.Commands.Handler
 
         public override void HandleOnClient(ClientConnectCommand command)
         {
-            CSM.Log($"Player {command.Username} has connected!");
+            LogManager.GetCurrentClassLogger().Info($"Player {command.Username} has connected!");
+            ChatLogPanel.PrintGameMessage($"Player {command.Username} has connected!");
+
             MultiplayerManager.Instance.PlayerList.Add(command.Username);
         }
 

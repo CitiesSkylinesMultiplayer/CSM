@@ -17,6 +17,7 @@
         public const byte ClientDisconnectCommand = 51;
         public const byte PlayerListCommand = 52;
         public const byte WorldInfoCommand = 53;
+        public const byte FinishTransactionCommand = 54;
 
         // 54 - 99
 

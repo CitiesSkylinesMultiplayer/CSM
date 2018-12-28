@@ -9,12 +9,12 @@ namespace CSM.Commands.Handler
 
         public override void HandleOnClient(ChatMessageCommand command)
         {
-            ChatLogPanel.GetDefault().AddChatMessage(command.Username, command.Message);
+            ChatLogPanel.PrintChatMessage(command.Username, command.Message);
         }
 
         public override void HandleOnServer(ChatMessageCommand command, Player player)
         {
-            ChatLogPanel.GetDefault().AddChatMessage(command.Username, command.Message);
+            ChatLogPanel.PrintChatMessage(command.Username, command.Message);
         }
     }
 }

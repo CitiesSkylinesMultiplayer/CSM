@@ -8,6 +8,11 @@ namespace CSM.Commands.Handler
     {
         public override byte ID => CommandIds.MoneyCommand;
 
+        public MoneyHandler()
+        {
+            RelayOnServer = false;
+        }
+
         public override void HandleOnClient(MoneyCommand command) => HandleClient(command);
 
         public override void HandleOnServer(MoneyCommand command, Player player) => HandleServer(command);

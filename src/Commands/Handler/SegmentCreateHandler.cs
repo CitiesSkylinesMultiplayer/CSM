@@ -12,6 +12,8 @@ namespace CSM.Commands.Handler
 
         public SegmentCreateHandler()
         {
+            Transaction = TransactionType.NODES;
+
             _initializeSegment = typeof(NetManager).GetMethod("InitializeSegment", AccessTools.all);
         }
 

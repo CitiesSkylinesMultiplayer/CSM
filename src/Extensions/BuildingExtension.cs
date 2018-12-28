@@ -17,14 +17,6 @@ namespace CSM.Extensions
         public static Vector3 LastPosition { get; set; }
         public static uint lastRelease;
 
-        public override void OnCreated(IBuilding building)
-        {
-            if (!ProtoBuf.Meta.RuntimeTypeModel.Default.IsDefined(typeof(Vector3)))
-            {
-                ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
-            }
-        }
-
         public override void OnBuildingCreated(ushort id)
         {
             base.OnBuildingCreated(id);

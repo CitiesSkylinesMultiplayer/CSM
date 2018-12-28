@@ -1,4 +1,5 @@
 ﻿using CSM.Commands;
+using CSM.Injections;
 using CSM.Networking;
 using ICities;
 
@@ -38,6 +39,9 @@ namespace CSM.Extensions
 
             _lastSimulationPausedState = SimulationManager.instance.SimulationPaused;
             _lastSelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed;
+
+            // Finish transactions
+            TransactionHandler.FinishSend();
         }
     }
 }

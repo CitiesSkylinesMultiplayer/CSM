@@ -3,11 +3,14 @@ using CSM.Commands.Handler;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
+using CSM.Panels;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Open.Nat;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace CSM.Networking
@@ -41,13 +44,14 @@ namespace CSM.Networking
         {
             // Set up network items
             var listener = new EventBasedNetListener();
-            _netServer = new LiteNetLib.NetManager(listener, "Cities: Skylines Multiplayer");
+            _netServer = new LiteNetLib.NetManager(listener);
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerDisconnectedEvent += ListenerOnPeerDisconnectedEvent;
             listener.NetworkLatencyUpdateEvent += ListenerOnNetworkLatencyUpdateEvent;
+            listener.ConnectionRequestEvent += ListenerOnConnectionRequestEvent;
         }
 
         /// <summary>
@@ -65,7 +69,8 @@ namespace CSM.Networking
             Config = serverConfig;
 
             // Let the user know that we are trying to start the server
-            CSM.Log($"Attempting to start server on port {Config.Port}...");
+            _logger.Info($"Attempting to start server on port {Config.Port}...");
+
 
             // Attempt to start the server
             _netServer.DiscoveryEnabled = true;
@@ -74,7 +79,7 @@ namespace CSM.Networking
             // If the server has not started, tell the user and return false.
             if (!result)
             {
-                CSM.Log("The server failed to start.");
+                _logger.Error("The server failed to start.");
                 StopServer(); // Make sure the server is fully stopped
                 return false;
             }
@@ -91,7 +96,8 @@ namespace CSM.Networking
             }
             catch (Exception e)
             {
-                CSM.Log("Failed to automatically open port. Manual Port Forwarding is required. " + e.Message);
+                _logger.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
+                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
             }
 
             // Update the status
@@ -102,7 +108,8 @@ namespace CSM.Networking
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
             // Update the console to let the user know the server is running
-            CSM.Log("The server has started.");
+            _logger.Info("The server has started.");
+            ChatLogPanel.PrintGameMessage("The server has started.");
             return true;
         }
 
@@ -117,7 +124,7 @@ namespace CSM.Networking
 
             MultiplayerManager.Instance.PlayerList.Clear();
 
-            CSM.Log("Stopped server");
+            _logger.Info("Server stopped.");
         }
 
         /// <summary>
@@ -130,7 +137,9 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            _netServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+            _netServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), DeliveryMethod.ReliableOrdered);
+
+            _logger.Debug($"Sending message id of {messageId} to all clients");
         }
 
         /// <summary>
@@ -141,7 +150,9 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            peer.Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), SendOptions.ReliableOrdered);
+            peer.Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), DeliveryMethod.ReliableOrdered);
+
+            _logger.Debug($"Sending message id of {messageId} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
         }
 
         /// <summary>
@@ -157,45 +168,52 @@ namespace CSM.Networking
         ///     When we get a message from a client, we handle the message here
         ///     and perform any necessary tasks.
         /// </summary>
-        private void ListenerOnNetworkReceiveEvent(NetPeer peer, NetDataReader reader)
+        private void ListenerOnNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
             try
             {
                 // Handle ConnectionRequest as special case
-                if (reader.Data[0] == 0)
+                if (reader.PeekByte() == 0)
                 {
-                    Command.Parse(reader.Data, out CommandHandler handler, out byte[] message);
+                    Command.Parse(reader, out CommandHandler handler, out byte[] message);
                     ConnectionRequestHandler requestHandler = (ConnectionRequestHandler)handler;
                     requestHandler.HandleOnServer(message, peer);
                     return;
                 }
 
                 // Parse this message
-                ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player);
-                Command.ParseOnServer(reader.Data, player);
+                ConnectedPlayers.TryGetValue(peer.Id, out Player player);
+                bool relayOnServer = Command.ParseOnServer(reader, player);
 
-                // Send this message to all other clients
-                var peers = _netServer.GetPeers();
-                foreach (var client in peers)
+                if (relayOnServer)
                 {
-                    // Don't send the message back to the client that sent it.
-                    if (client.ConnectId == peer.ConnectId)
-                        continue;
+                    // Copy relevant message part (exclude protocol headers)
+                    byte[] data = new byte[reader.UserDataSize];
+                    Array.Copy(reader.RawData, reader.UserDataOffset, data, 0, reader.UserDataSize);
 
-                    // Send the message so the other client can stay in sync
-                    client.Send(reader.Data, SendOptions.ReliableOrdered);
+                    // Send this message to all other clients
+                    var peers = _netServer.ConnectedPeerList;
+                    foreach (var client in peers)
+                    {
+                        // Don't send the message back to the client that sent it.
+                        if (client.Id == peer.Id)
+                            continue;
+
+                        // Send the message so the other client can stay in sync
+                        client.Send(data, DeliveryMethod.ReliableOrdered);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                CSM.Log($"Encountered an error while reading command from {peer.EndPoint.Host}:{peer.EndPoint.Port}:");
-                CSM.Log(ex.ToString());
+                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Error while parsing command. See log.");
+                _logger.Error(ex, $"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:");
             }
         }
 
         private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
         {
-            if (!ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player))
+            if (!ConnectedPlayers.TryGetValue(peer.Id, out Player player))
                 return;
 
             player.Latency = latency;
@@ -203,30 +221,38 @@ namespace CSM.Networking
 
         private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
         {
-            if (!ConnectedPlayers.TryGetValue(peer.ConnectId, out Player player))
+            if (!ConnectedPlayers.TryGetValue(peer.Id, out Player player))
                 return;
+
+            _logger.Info($"Player {player.Username} lost connection! Reason: {disconnectInfo.Reason}");
 
             switch (disconnectInfo.Reason)
             {
                 case DisconnectReason.RemoteConnectionClose:
-                    CSM.Log($"Player {player.Username} disconnected!");
+                    ChatLogPanel.PrintGameMessage($"Player {player.Username} disconnected!");
                     break;
 
                 case DisconnectReason.Timeout:
-                    CSM.Log($"Player {player.Username} timed out!");
+                    ChatLogPanel.PrintGameMessage($"Player {player.Username} timed out!");
                     break;
 
                 default:
-                    CSM.Log($"Player {player.Username} lost connection!");
+                    ChatLogPanel.PrintGameMessage($"Player {player.Username} lost connection!");
                     break;
             }
 
             HandlePlayerDisconnect(player);
         }
 
+        private void ListenerOnConnectionRequestEvent(ConnectionRequest request)
+        {
+            request.AcceptIfKey("CSM");
+        }
+
         public void HandlePlayerConnect(Player player)
         {
-            CSM.Log($"Player {player.Username} has connected!");
+            _logger.Info($"Player {player.Username} has connected!");
+            ChatLogPanel.PrintGameMessage($"Player {player.Username} has connected!");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
             Command.HandleClientConnect(player);
         }
@@ -234,7 +260,7 @@ namespace CSM.Networking
         public void HandlePlayerDisconnect(Player player)
         {
             MultiplayerManager.Instance.PlayerList.Remove(player.Username);
-            this.ConnectedPlayers.Remove(player.NetPeer.ConnectId);
+            this.ConnectedPlayers.Remove(player.NetPeer.Id);
             Command.HandleClientDisconnect(player);
         }
 
@@ -242,9 +268,9 @@ namespace CSM.Networking
         ///     Called whenever an error happens, we
         ///     log this to the console for now.
         /// </summary>
-        private void ListenerOnNetworkErrorEvent(NetEndPoint endpoint, int socketerrorcode)
+        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerrorcode)
         {
-            CSM.Log($"Received an error from {endpoint.Host}:{endpoint.Port}. Code: {socketerrorcode}");
+            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerrorcode}");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CSM.Networking.Config;
+using CSM.Panels;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -107,10 +108,12 @@ namespace CSM.Networking
             {
                 case MultiplayerRole.Client:
                     CurrentClient.Disconnect();
+                    ChatLogPanel.PrintGameMessage("Disconnected from server.");
                     break;
 
                 case MultiplayerRole.Server:
                     CurrentServer.StopServer();
+                    ChatLogPanel.PrintGameMessage("Server stopped.");
                     break;
             }
             CurrentRole = MultiplayerRole.None;

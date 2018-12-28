@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using CSM.Models;
 using CSM.Panels;
 using Harmony;
 using NLog;
@@ -18,6 +19,12 @@ namespace CSM
 
         public CSM()
         {
+            // Initialize ProtoBuf
+            if (!ProtoBuf.Meta.RuntimeTypeModel.Default.IsDefined(typeof(Vector3)))
+            {
+                ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
+            }
+
             // Setup the correct logging configuration
             SetupLogging();
 
@@ -30,14 +37,14 @@ namespace CSM
 
             try
             {
-                _logger.Info("Attempting to match Cities: Skylines using Harmony...");
+                _logger.Info("Attempting to patch Cities: Skylines using Harmony...");
                 _harmony = HarmonyInstance.Create("net.gridentertainment.csm");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
-                _logger.Info("Successfully patches Cities: Skylines!");
+                _logger.Info("Successfully patched Cities: Skylines!");
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                _logger.Error(ex, "Patching failed");
             }
 
             _logger.Info("Construction Complete!");
@@ -59,7 +66,7 @@ namespace CSM
             var config = new LoggingConfiguration();
 
             // The layout of the log
-            var layout = "[${time}] [version] [${level}] ${message}";
+            var layout = "[${time}] [version] [${level}] ${message} ${exception:format=tostring}";
 
             // Target for file logging
             var logfile = new FileTarget("logfile")

@@ -6,6 +6,11 @@ namespace CSM.Commands.Handler
 {
     public class SegmentReleaseHandler : CommandHandler<SegmentReleaseCommand>
     {
+        public SegmentReleaseHandler()
+        {
+            Transaction = TransactionType.NODES;
+        }
+
         public override byte ID => CommandIds.SegmentReleaseCommand;
 
         public override void HandleOnServer(SegmentReleaseCommand command, Player player) => Handle(command);

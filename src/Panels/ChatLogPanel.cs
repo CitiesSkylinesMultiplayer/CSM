@@ -26,13 +26,40 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     A static method allowing other parts of the application to
-        ///     grab the chat log panel.
+        ///     Prints a game message to the ChatLogPanel with MessageType.NORMAL.
         /// </summary>
-        /// <returns>The chat log panel in the game.</returns>
-        public static ChatLogPanel GetDefault()
+        /// <param name="msg">The message.</param>
+        public static void PrintGameMessage(string msg)
         {
-            return (ChatLogPanel)UIView.GetAView().FindUIComponent("MPChatLogPanel");
+            PrintGameMessage(MessageType.Normal, msg);
+        }
+
+        /// <summary>
+        ///     Prints a game message to the ChatLogPanel.
+        /// </summary>
+        /// <param name="type">The message type.</param>
+        /// <param name="msg">The message.</param>
+        public static void PrintGameMessage(MessageType type, string msg)
+        {
+            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            {
+                var panel = (ChatLogPanel) UIView.GetAView().FindUIComponent("MPChatLogPanel");
+                panel?.AddGameMessage(type, msg); // The panel sometimes seems to be null?
+            });
+        }
+
+        /// <summary>
+        ///     Prints a chat message to the ChatLogPanel.
+        /// </summary>
+        /// <param name="username">The name of the sending user.</param>
+        /// <param name="msg">The message.</param>
+        public static void PrintChatMessage(string username, string msg)
+        {
+            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            {
+                var panel = (ChatLogPanel) UIView.GetAView().FindUIComponent("MPChatLogPanel");
+                panel?.AddChatMessage(username, msg);
+            });
         }
 
         public override void Start()
@@ -87,7 +114,6 @@ namespace CSM.Panels
             _chatText.textColor = new Color32(0, 0, 0, 255);
             _chatText.padding = new RectOffset(6, 6, 6, 6);
             _chatText.selectionSprite = "EmptySprite";
-
             base.Start();
         }
 
@@ -114,7 +140,7 @@ namespace CSM.Panels
                 // If not connected to a server / hosting a server, tell the user and return
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
                 {
-                    AddGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
+                    PrintGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
                     return;
                 }
 
@@ -140,7 +166,7 @@ namespace CSM.Panels
                 Command.SendToAll(message);
 
                 // Add the message to the chat UI
-                AddChatMessage(playerName, text);
+                PrintChatMessage(playerName, text);
             }
         }
 
@@ -149,24 +175,24 @@ namespace CSM.Panels
             switch (command.TrimStart('/'))
             {
                 case "version":
-                    AddGameMessage(MessageType.Normal, "Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
-                    AddGameMessage(MessageType.Normal, "Game Version : " + BuildConfig.applicationVersion);
+                    PrintGameMessage("Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
+                    PrintGameMessage("Game Version : " + BuildConfig.applicationVersion);
                     break;
 
                 case "players":
                     foreach (var player in MultiplayerManager.Instance.PlayerList)
                     {
-                        AddGameMessage(MessageType.Normal, player);
+                        PrintGameMessage(player);
                     }
                     break;
 
                 default:
-                    AddGameMessage(MessageType.Warning, $"{command.TrimStart('/')} is not a valid command.");
+                    PrintGameMessage(MessageType.Warning, $"{command.TrimStart('/')} is not a valid command.");
                     break;
             }
         }
 
-        public void AddMessage(MessageType type, string message)
+        private void AddMessage(MessageType type, string message)
         {
             // Game console
             var existingItems = new List<string>();
@@ -179,12 +205,12 @@ namespace CSM.Panels
             _messageBox.scrollPosition = (_messageBox.items.Length * 20) + 10;
         }
 
-        public void AddChatMessage(string username, string message)
+        private void AddChatMessage(string username, string message)
         {
             AddMessage(MessageType.Normal, $"<{username}> {message}");
         }
 
-        public void AddGameMessage(MessageType type, string message)
+        private void AddGameMessage(MessageType type, string message)
         {
             AddMessage(type, $"<CSM> {message}");
         }
