@@ -37,6 +37,9 @@
         public const byte SegmentReleaseCommand = 113;
         public const byte ZoneUpdateCommand = 114;
         public const byte UnlockAreaCommand = 115;
+        public const byte TreeCreateCommand = 116;
+        public const byte TreeMoveCommand = 117;
+        public const byte TreeReleaseCommand = 118;
 
         // 116 - 255
     }
