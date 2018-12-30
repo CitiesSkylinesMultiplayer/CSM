@@ -129,7 +129,7 @@
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
-    <Compile Include="Helpers\Array16Extension.cs" />
+    <Compile Include="Helpers\ArrayXExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\NodeHandler.cs" />

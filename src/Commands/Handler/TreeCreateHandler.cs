@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using CSM.Helpers;
 using CSM.Networking;
 using Harmony;
 using System.Reflection;
@@ -24,6 +25,8 @@ namespace CSM.Commands.Handler
         {
             TreeInfo info = PrefabCollection<TreeInfo>.GetPrefab(command.InfoIndex);
             uint tree = command.TreeID;
+            TreeManager.instance.m_trees.RemoveUnused(tree);
+
             TreeManager.instance.m_trees.m_buffer[tree].m_flags = 1;
             TreeManager.instance.m_trees.m_buffer[tree].Info = info;
             TreeManager.instance.m_trees.m_buffer[tree].Single = command.Single;
