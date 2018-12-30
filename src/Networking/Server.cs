@@ -123,6 +123,7 @@ namespace CSM.Networking
             _netServer.Stop();
 
             MultiplayerManager.Instance.PlayerList.Clear();
+            TransactionHandler.ClearTransactions();
 
             _logger.Info("Server stopped.");
         }

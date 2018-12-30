@@ -99,6 +99,14 @@ namespace CSM.Commands
                 _receivedTransactions[type].RemoveAll((Tuple<CommandHandler, byte[], Player> tuple) => { return tuple.Var3 == player; });
             }
         }
+
+        /// <summary>
+        /// Clears all transactions.
+        /// </summary>
+        public static void ClearTransactions()
+        {
+            _receivedTransactions.Clear();
+        }
     }
 
     public enum TransactionType

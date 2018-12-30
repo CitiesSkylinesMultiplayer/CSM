@@ -162,6 +162,7 @@ namespace CSM.Networking
             Status = ClientStatus.Disconnected;
             _netClient.Stop();
             MultiplayerManager.Instance.PlayerList.Clear();
+            TransactionHandler.ClearTransactions();
 
             _logger.Info("Disconnected from server");
         }
