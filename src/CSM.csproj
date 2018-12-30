@@ -77,6 +77,7 @@
     <Compile Include="Commands\Data\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\Data\FinishTransactionCommand.cs" />
+    <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
     <Compile Include="Commands\Data\NodeIdCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
@@ -88,6 +89,8 @@
     <Compile Include="Commands\Data\SpeedCommand.cs" />
     <Compile Include="Commands\Data\TaxRateChangeCommand.cs" />
     <Compile Include="Commands\Data\NodeUpdateCommand.cs" />
+    <Compile Include="Commands\Data\TreeCreateCommand.cs" />
+    <Compile Include="Commands\Data\TreeReleaseCommand.cs" />
     <Compile Include="Commands\Data\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
     <Compile Include="Commands\Data\ZoneUpdateCommand.cs" />
@@ -113,6 +116,9 @@
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />
     <Compile Include="Commands\Handler\NodeUpdateHandler.cs" />
+    <Compile Include="Commands\Handler\TreeCreateHandler.cs" />
+    <Compile Include="Commands\Handler\TreeMoveHandler.cs" />
+    <Compile Include="Commands\Handler\TreeReleaseHandler.cs" />
     <Compile Include="Commands\Handler\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
     <Compile Include="Commands\Handler\ZoneUpdateHandler.cs" />
@@ -127,6 +133,7 @@
     <Compile Include="Helpers\ArrayHelpers.cs" />
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\NodeHandler.cs" />
+    <Compile Include="Injections\TreeHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
