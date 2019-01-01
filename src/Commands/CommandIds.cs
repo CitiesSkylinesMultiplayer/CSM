@@ -40,7 +40,9 @@
         public const byte TreeCreateCommand = 116;
         public const byte TreeMoveCommand = 117;
         public const byte TreeReleaseCommand = 118;
-
+        public const byte DistrictCreateCommand = 119;
+        public const byte DistrictAreaModifyCommand = 120;
+        public const byte DistrictReleaseCommand = 121;
         // 116 - 255
     }
 }
