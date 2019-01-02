@@ -15,6 +15,7 @@ namespace CSM.Commands.Handler
         {
             DistrictHandler.IgnoreAreaModified.Add(command.StartPosition);
             DistrictTool.ApplyBrush(command.Layer, command.District, command.BrushRadius, command.StartPosition, command.EndPosition);
+            DistrictManager.instance.NamesModified();
             DistrictHandler.IgnoreAreaModified.Remove(command.StartPosition);
         }
 
