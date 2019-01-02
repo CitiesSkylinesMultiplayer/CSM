@@ -66,7 +66,7 @@ namespace CSM.Injections
                 {
                     DistrictID = district,
                 });
-            }
+            }            
         }
     }
 
