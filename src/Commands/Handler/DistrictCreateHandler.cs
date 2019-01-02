@@ -17,7 +17,6 @@ namespace CSM.Commands.Handler
             DistrictHandler.IgnoreDistricts.Add(command.DistrictID);
             DistrictManager.instance.CreateDistrict(out byte district);
             DistrictHandler.IgnoreDistricts.Remove(command.DistrictID);
-            UnityEngine.Debug.Log($"district: {district}");
         }
     }
 }

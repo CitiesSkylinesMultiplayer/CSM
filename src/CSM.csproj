@@ -70,6 +70,7 @@
     <Compile Include="Commands\Data\BuildingIdCommand.cs" />
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
+    <Compile Include="Commands\Data\CityPolicyCommand.cs" />
     <Compile Include="Commands\Data\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\Data\ClientConnectCommand.cs" />
     <Compile Include="Commands\Data\CommandBase.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Commands\Data\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\Data\DistrictAreaModifyCommand.cs" />
     <Compile Include="Commands\Data\DistrictCreateCommand.cs" />
+    <Compile Include="Commands\Data\DistrictPolicyCommand.cs" />
     <Compile Include="Commands\Data\DistrictReleaseCommand.cs" />
     <Compile Include="Commands\Data\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
@@ -101,8 +103,10 @@
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
     <Compile Include="Commands\Handler\ChatMessageHandler.cs" />
+    <Compile Include="Commands\Handler\CityPolicyHandler.cs" />
     <Compile Include="Commands\Handler\DistrictAreaModifyHandler.cs" />
     <Compile Include="Commands\Handler\DistrictCreateHandler.cs" />
+    <Compile Include="Commands\Handler\DistrictPolicyHandler.cs" />
     <Compile Include="Commands\Handler\DistrictReleaseHandler.cs" />
     <Compile Include="Commands\Handler\FinishTransactionHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />

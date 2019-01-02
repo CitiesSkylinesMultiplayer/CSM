@@ -13,6 +13,7 @@ namespace CSM.Injections
     {
         public static List<ushort> IgnoreDistricts { get; } = new List<ushort>();
         public static List<Vector3> IgnoreAreaModified { get; } = new List<Vector3>();
+        public static bool ignoreCityPolicy;
     }
 
 
@@ -69,6 +70,43 @@ namespace CSM.Injections
             }            
         }
     }
+
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("SetDistrictPolicy")]
+    public class SetDistrictPolicy
+    {
+        public static void Postfix(DistrictPolicies.Policies policy, byte district)
+        {
+            if (!DistrictHandler.IgnoreDistricts.Contains(district))
+                Command.SendToAll(new DistrictPolicyCommand
+                {
+                    Policy = policy,
+                    DistrictID = district
+                });
+        }
+    }
+
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("SetCityPolicy")]
+    public class SetCityPolicy
+    {
+        public static void Postfix (DistrictPolicies.Policies policy)
+        {
+            if (!DistrictHandler.ignoreCityPolicy)
+            {
+                Command.SendToAll(new CityPolicyCommand
+                {
+                    Policy = policy
+                });
+            }
+        }
+    }
+
+
+
+
+
+
 
 
 }
