@@ -44,7 +44,10 @@
         public const byte DistrictAreaModifyCommand = 120;
         public const byte DistrictReleaseCommand = 121;
         public const byte DistrictPolicyCommand = 122;
-        public const byte CityPolicyCommand = 123;
+        public const byte DistrictCityPolicyCommand = 123;
+        public const byte DistrictPolicyUnsetCommand = 124;
+        public const byte DistrictCityPolicyUnsetCommand = 125;
+
         // 116 - 255
     }
 }

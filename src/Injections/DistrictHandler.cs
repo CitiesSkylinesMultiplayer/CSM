@@ -94,7 +94,7 @@ namespace CSM.Injections
         {
             if (!DistrictHandler.ignoreCityPolicy)
             {
-                Command.SendToAll(new CityPolicyCommand
+                Command.SendToAll(new DistrictCityPolicyCommand
                 {
                     Policy = policy
                 });
@@ -102,8 +102,34 @@ namespace CSM.Injections
         }
     }
 
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("UnsetDistrictPolicy")]
+    public class UnsetDistrictPolicy
+    {
+        public static void Postfix (DistrictPolicies.Policies policy, byte district)
+        {
+            if (!DistrictHandler.IgnoreDistricts.Contains(district))
+                Command.SendToAll(new DistrictPolicyUnsetCommand
+                {
+                    Policy = policy,
+                    DistrictID = district
+                });
+        }
+    }
 
-
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("UnsetCityPolicy")]
+    public class UnsetCityPolicy
+    {
+        public static void Postfix(DistrictPolicies.Policies policy)
+        {
+            if (!DistrictHandler.ignoreCityPolicy)
+                Command.SendToAll(new DistrictCityPolicyUnsetCommand
+                {
+                    Policy = policy,
+                });
+        }
+    }
 
 
 
