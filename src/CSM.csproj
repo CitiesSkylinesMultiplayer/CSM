@@ -84,6 +84,7 @@
     <Compile Include="Commands\Data\DistrictReleaseCommand.cs" />
     <Compile Include="Commands\Data\DistrictPolicyUnsetCommand.cs" />
     <Compile Include="Commands\Data\FinishTransactionCommand.cs" />
+    <Compile Include="Commands\Data\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
     <Compile Include="Commands\Data\NodeIdCommand.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />
     <Compile Include="Commands\Handler\NodeUpdateHandler.cs" />
+    <Compile Include="Commands\Handler\TerrainModificationHandler.cs" />
     <Compile Include="Commands\Handler\TreeCreateHandler.cs" />
     <Compile Include="Commands\Handler\TreeMoveHandler.cs" />
     <Compile Include="Commands\Handler\TreeReleaseHandler.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\NodeHandler.cs" />
+    <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TreeHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
