@@ -17,13 +17,13 @@ namespace CSM.Injections
 [HarmonyPatch("ApplyBrush")]
 public class ApplyTerrainBrush
     {
-        public static void Prefix()//ref float ___m_strength, ref float ___m_brushSize, ref Vector3 ___m_startPosition, ref Vector3 ___m_endPosition, ref bool ___m_mouseLeftDown, ref bool ___m_mouseRightDown, ref Vector3 m_mousePosition, ref Mode ___m_mode, ref int ___m_strokeXmin, ref int ___m_strokeXmax, ref int ___m_strokeZmin, ref int ___m_strokeZmax)
+        public static void Prefix()
         {
             if (!TerrainHandler.ignoreTerrainModify)
             {                
                 Command.SendToAll(new TerrainModificationCommand
                 {
-                    BrushData = Singleton<ToolController>.instance.BrushData,//(float[])typeof(ToolController).GetField("BrushData", AccessTools.all).GetValue(Singleton<ToolController>.instance), //ï'm preatty sure this one is wrong, but its not this one that is causing the problem
+                    BrushData = Singleton<ToolController>.instance.BrushData,
                     BrushSize = Singleton<TerrainTool>.instance.m_brushSize,
                     StartPosition = (Vector3)typeof(TerrainTool).GetField("m_startPosition", AccessTools.all).GetValue(ToolsModifierControl.GetTool<TerrainTool>()),
                     EndPosition = (Vector3)typeof(TerrainTool).GetField("m_endPosition", AccessTools.all).GetValue(ToolsModifierControl.GetTool<TerrainTool>()),
