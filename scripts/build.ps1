@@ -70,10 +70,6 @@ If ($Update)
     # Start copying the items
     Write-Host "[CSM Update Script] Copying assemblies..."
 
-    # Recreate the assemblies folder
-    Remove-Item "..\assemblies" -Recurse -ErrorAction Ignore
-    New-Item -ItemType directory -Path "..\assemblies" | Out-Null
-
     Copy-Item -Path "$($AssemblyDirectory)Assembly-CSharp.dll"  -Destination "..\assemblies\Assembly-CSharp.dll" -Force
     Copy-Item -Path "$($AssemblyDirectory)ColossalManaged.dll"  -Destination "..\assemblies\ColossalManaged.dll" -Force
     Copy-Item -Path "$($AssemblyDirectory)ICities.dll"          -Destination "..\assemblies\ICities.dll" -Force
