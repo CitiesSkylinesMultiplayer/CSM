@@ -34,6 +34,18 @@ namespace CSM.Commands
         [ProtoMember(9)]
         public bool MouseLeftDown;
 
+        [ProtoMember(10)]
+        public int StrokeXmax;
+
+        [ProtoMember(11)]
+        public int StrokeZmin;
+
+        [ProtoMember(12)]
+        public int StrokeZmax;
+
+        [ProtoMember(13)]
+        public int StrokeXmin;
+
 
 
     }
