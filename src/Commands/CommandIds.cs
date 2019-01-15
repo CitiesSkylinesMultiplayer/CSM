@@ -48,7 +48,9 @@
         public const byte DistrictPolicyUnsetCommand = 124;
         public const byte DistrictCityPolicyUnsetCommand = 125;
         public const byte TerrainModificationCommand = 126;
-
+        public const byte PropCreateCommand = 127;
+        public const byte PropMoveCommand = 128;
+        public const byte PropReleaseCommand = 129;
         // 116 - 255
     }
 }
