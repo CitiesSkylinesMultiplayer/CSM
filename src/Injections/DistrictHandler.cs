@@ -13,6 +13,7 @@ namespace CSM.Injections
     {
         public static List<ushort> IgnoreDistricts { get; } = new List<ushort>();
         public static List<Vector3> IgnoreAreaModified { get; } = new List<Vector3>();
+        public static List<ushort> IgnoreParks { get; } = new List<ushort>();
         public static bool ignoreCityPolicy;
     }
 
@@ -132,8 +133,37 @@ namespace CSM.Injections
         
     }
 
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("CreatePark")]
+    public class CreatePark
+    {
+        public static void Postfix(bool __result, ref byte park, DistrictPark.ParkType type, DistrictPark.ParkLevel level)
+        {
+            if (__result && !DistrictHandler.IgnoreParks.Contains(park))
+            {
+                Command.SendToAll(new ParkCreateCommand
+                {
+                    ParkID = park,
+                    ParkType = type,
+                    ParkLevel = level,
+                });
+            }
+        }
+    }
 
-
-
-
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("ReleasePark")]
+    public class ReleasePark
+    {
+        public static void Prefix(ref byte park)
+        {
+            if (!DistrictHandler.IgnoreParks.Contains(park))
+            {
+                Command.SendToAll(new ParkReleaseCommand
+                {
+                    ParkID = park
+                });
+            }
+        }
+    }
 }
