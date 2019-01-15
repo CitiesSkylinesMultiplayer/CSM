@@ -51,6 +51,8 @@
         public const byte PropCreateCommand = 127;
         public const byte PropMoveCommand = 128;
         public const byte PropReleaseCommand = 129;
+        public const byte ParkCreateCommand = 130;
+        public const byte ParkReleaseCommand = 131;
         // 116 - 255
     }
 }

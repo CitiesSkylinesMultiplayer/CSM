@@ -70,6 +70,7 @@
     <Compile Include="Commands\Data\BuildingIdCommand.cs" />
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
+    <Compile Include="Commands\Data\ParkCreateCommand.cs" />
     <Compile Include="Commands\Data\DistrictCityPolicyCommand.cs" />
     <Compile Include="Commands\Data\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\Data\ClientConnectCommand.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Commands\Data\PropCreateCommand.cs" />
     <Compile Include="Commands\Data\PropMoveCommand.cs" />
     <Compile Include="Commands\Data\PropReleaseCommand.cs" />
+    <Compile Include="Commands\Data\ParkReleaseCommand.cs" />
     <Compile Include="Commands\Data\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
@@ -120,6 +122,8 @@
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
     <Compile Include="Commands\Handler\NodeReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\ParkCreateHandler.cs" />
+    <Compile Include="Commands\Handler\ParkReleaseHandler.cs" />
     <Compile Include="Commands\Handler\PropCreateHandler.cs" />
     <Compile Include="Commands\Handler\PropMoveHandler.cs" />
     <Compile Include="Commands\Handler\PropReleaseHandlercs.cs" />
