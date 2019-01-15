@@ -8,6 +8,11 @@ namespace CSM.Commands.Handler
     {
         public override byte ID => CommandIds.ClientDisconnectCommand;
 
+        public ClientDisconnectHandler()
+        {
+            TransactionCmd = false;
+        }
+
         public override void HandleOnClient(ClientDisconnectCommand command)
         {
             LogManager.GetCurrentClassLogger().Info($"Player {command.Username} has disconnected!");

@@ -8,7 +8,5 @@ namespace CSM.Commands.Data
     [ProtoContract]
     public class FinishTransactionCommand : CommandBase
     {
-        [ProtoMember(1)]
-        public TransactionType Type;
     }
 }

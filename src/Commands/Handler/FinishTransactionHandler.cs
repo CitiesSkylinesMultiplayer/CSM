@@ -7,14 +7,20 @@ namespace CSM.Commands.Handler
     {
         public override byte ID => CommandIds.FinishTransactionCommand;
 
+        public FinishTransactionHandler()
+        {
+            RelayOnServer = false;
+            TransactionCmd = false;
+        }
+
         public override void HandleOnServer(FinishTransactionCommand command, Player player)
         {
-            TransactionHandler.FinishReceived(command.Type, player);
+            TransactionHandler.FinishReceived(player);
         }
 
         public override void HandleOnClient(FinishTransactionCommand command)
         {
-            TransactionHandler.FinishReceived(command.Type, null);
+            TransactionHandler.FinishReceived(null);
         }
     }
 }

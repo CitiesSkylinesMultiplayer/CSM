@@ -8,6 +8,11 @@ namespace CSM.Commands.Handler
     {
         public override byte ID => CommandIds.ConnectionRequestCommand;
 
+        public ConnectionRequestHandler()
+        {
+            TransactionCmd = false;
+        }
+
         public override void HandleOnServer(ConnectionRequestCommand command, Player player)
         {
         }

@@ -8,6 +8,11 @@ namespace CSM.Commands.Handler
     {
         public override byte ID => CommandIds.ClientConnectCommand;
 
+        public ClientConnectHandler()
+        {
+            TransactionCmd = false;
+        }
+
         public override void HandleOnClient(ClientConnectCommand command)
         {
             LogManager.GetCurrentClassLogger().Info($"Player {command.Username} has connected!");

@@ -194,14 +194,21 @@ namespace CSM.Networking
 
                     // Send this message to all other clients
                     var peers = _netServer.ConnectedPeerList;
+                    bool sent = false;
                     foreach (var client in peers)
                     {
                         // Don't send the message back to the client that sent it.
                         if (client.Id == peer.Id)
                             continue;
 
+                        sent = true;
                         // Send the message so the other client can stay in sync
                         client.Send(data, DeliveryMethod.ReliableOrdered);
+                    }
+
+                    if (sent)
+                    {
+                        TransactionHandler.StartTransaction();
                     }
                 }
             }

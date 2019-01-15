@@ -34,10 +34,10 @@ namespace CSM.Helpers
 
                 uint expectedPos = Convert.ToUInt32(id) - 1;
                 // Special case, when array was modified (search for the id)
-                if (!EqualityComparer<N>.Default.Equals(unusedItems[expectedPos], id))
+                if (expectedPos >= unusedCount || !EqualityComparer<N>.Default.Equals(unusedItems[expectedPos], id))
                 {
                     bool found = false;
-                    for (uint num = 0; num <= unusedCount; num++)
+                    for (uint num = 0; num < unusedCount; num++)
                     {
                         if (EqualityComparer<N>.Default.Equals(unusedItems[num], id))
                         {
@@ -50,7 +50,7 @@ namespace CSM.Helpers
                     if (!found)
                     {
                         // The arrays are no longer in sync
-                        LogManager.GetCurrentClassLogger().Error($"{type}: Received id already in use. Please restart the multiplayer session!");
+                        LogManager.GetCurrentClassLogger().Error($"{type}: Received id {id} already in use. Please restart the multiplayer session!");
                         ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "ID collision. Please restart the multiplayer session.");
                         return;
                     }

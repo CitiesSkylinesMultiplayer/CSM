@@ -11,6 +11,11 @@ namespace CSM.Commands.Handler
 
         public override byte ID => CommandIds.ConnectionResultCommand;
 
+        public ConnectionResultHandler()
+        {
+            TransactionCmd = false;
+        }
+
         public override void HandleOnClient(ConnectionResultCommand command)
         {
             // We only want this message while connecting

@@ -15,9 +15,9 @@ namespace CSM.Commands.Handler
         public bool RelayOnServer { get; protected set; } = true;
 
         /// <summary>
-        /// If this is not NONE, all packets of this TransactionType are queued until a FinishTransactionCommand is received.
+        /// If this is true, this command is only executed after the FinishTransactionCommand is received.
         /// </summary>
-        public TransactionType Transaction { get; protected set; } = TransactionType.NONE;
+        public bool TransactionCmd { get; protected set; } = true;
 
         public abstract Type GetDataType();
 

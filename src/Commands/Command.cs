@@ -98,6 +98,8 @@ namespace CSM.Commands
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Server)
                 return;
 
+            TransactionHandler.StartTransaction(command);
+
             byte id = _cmdMapping[command.GetType()];
             MultiplayerManager.Instance.CurrentServer.SendToClient(peer, id, command);
         }
@@ -122,6 +124,8 @@ namespace CSM.Commands
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Server)
                 return;
+
+            TransactionHandler.StartTransaction(command);
 
             byte id = _cmdMapping[command.GetType()];
             MultiplayerManager.Instance.CurrentServer.SendToClients(id, command);
@@ -154,6 +158,8 @@ namespace CSM.Commands
             if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Disconnected)
                 return;
 
+            TransactionHandler.StartTransaction(command);
+
             byte id = _cmdMapping[command.GetType()];
             MultiplayerManager.Instance.CurrentClient.SendToServer(id, command);
         }
@@ -166,9 +172,6 @@ namespace CSM.Commands
         /// <param name="command">The command to send.</param>
         public static void SendToAll(CommandBase command)
         {
-            // Check if this command belongs to a transaction
-            TransactionHandler.CheckSendTransaction(command);
-
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 SendToServer(command);

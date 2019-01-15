@@ -13,8 +13,6 @@ namespace CSM.Commands.Handler
 
         public NodeCreateHandler()
         {
-            Transaction = TransactionType.NODES;
-
             _initializeNode = typeof(NetManager).GetMethod("InitializeNode", AccessTools.all);
         }
 

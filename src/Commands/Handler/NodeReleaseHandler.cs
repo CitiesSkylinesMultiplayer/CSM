@@ -6,11 +6,6 @@ namespace CSM.Commands.Handler
 {
     public class NodeReleaseHandler : CommandHandler<NodeReleaseCommand>
     {
-        public NodeReleaseHandler()
-        {
-            Transaction = TransactionType.NODES;
-        }
-
         public override byte ID => CommandIds.NodeReleaseCommand;
 
         public override void HandleOnServer(NodeReleaseCommand command, Player player) => Handle(command);
