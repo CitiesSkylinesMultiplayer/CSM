@@ -47,6 +47,7 @@
         public const byte DistrictCityPolicyCommand = 123;
         public const byte DistrictPolicyUnsetCommand = 124;
         public const byte DistrictCityPolicyUnsetCommand = 125;
+        public const byte TerrainModificationCommand = 126;
 
         // 116 - 255
     }

@@ -127,8 +127,9 @@ namespace CSM.Injections
                 Command.SendToAll(new DistrictCityPolicyUnsetCommand
                 {
                     Policy = policy,
-                });
+                });           
         }
+        
     }
 
 
