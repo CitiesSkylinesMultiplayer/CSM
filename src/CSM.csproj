@@ -84,6 +84,9 @@
     <Compile Include="Commands\Data\DistrictReleaseCommand.cs" />
     <Compile Include="Commands\Data\DistrictPolicyUnsetCommand.cs" />
     <Compile Include="Commands\Data\FinishTransactionCommand.cs" />
+    <Compile Include="Commands\Data\PropCreateCommand.cs" />
+    <Compile Include="Commands\Data\PropMoveCommand.cs" />
+    <Compile Include="Commands\Data\PropReleaseCommand.cs" />
     <Compile Include="Commands\Data\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
@@ -117,6 +120,9 @@
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
     <Compile Include="Commands\Handler\NodeReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\PropCreateHandler.cs" />
+    <Compile Include="Commands\Handler\PropMoveHandler.cs" />
+    <Compile Include="Commands\Handler\PropReleaseHandlercs.cs" />
     <Compile Include="Commands\Handler\SegmentCreateHandler.cs" />
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\ClientDisonnectHandler.cs" />
@@ -150,6 +156,7 @@
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\NodeHandler.cs" />
+    <Compile Include="Injections\PropHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TreeHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
