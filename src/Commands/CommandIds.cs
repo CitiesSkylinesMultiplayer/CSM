@@ -7,52 +7,71 @@
     /// </summary>
     public class CommandIds
     {
+        // 0 - 9: Connection handling packets
         public const byte ConnectionRequestCommand = 0;
         public const byte ConnectionResultCommand = 1;
-        public const byte ChatMessageCommand = 2;
 
-        // 3 - 49
+        // 10 - 29: Non-game commands
+        public const byte ClientConnectCommand = 10;
+        public const byte ClientDisconnectCommand = 11;
 
-        public const byte ClientConnectCommand = 50;
-        public const byte ClientDisconnectCommand = 51;
-        public const byte PlayerListCommand = 52;
-        public const byte WorldInfoCommand = 53;
-        public const byte FinishTransactionCommand = 54;
+        public const byte PlayerListCommand = 12;
+        public const byte ChatMessageCommand = 13;
 
-        // 54 - 99
+        public const byte FinishTransactionCommand = 14;
 
-        public const byte SpeedCommand = 100;
-        public const byte PauseCommand = 101;
-        public const byte MoneyCommand = 102;
-        public const byte BuildingCreateCommand = 103;
-        public const byte BuildingRemoveCommand = 104;
-        public const byte BuildingRelocateCommand = 105;
-        public const byte DemandDisplayedCommand = 106;
-        public const byte TaxRateChangeCommand = 107;
-        public const byte BudgetChangeCommand = 108;
-        public const byte NodeCreateCommand = 109;
-        public const byte NodeUpdateCommand = 110;
-        public const byte NodeReleaseCommand = 111;
-        public const byte SegmentCreateCommand = 112;
-        public const byte SegmentReleaseCommand = 113;
-        public const byte ZoneUpdateCommand = 114;
-        public const byte UnlockAreaCommand = 115;
-        public const byte TreeCreateCommand = 116;
-        public const byte TreeMoveCommand = 117;
-        public const byte TreeReleaseCommand = 118;
-        public const byte DistrictCreateCommand = 119;
-        public const byte DistrictAreaModifyCommand = 120;
-        public const byte DistrictReleaseCommand = 121;
-        public const byte DistrictPolicyCommand = 122;
-        public const byte DistrictCityPolicyCommand = 123;
-        public const byte DistrictPolicyUnsetCommand = 124;
-        public const byte DistrictCityPolicyUnsetCommand = 125;
-        public const byte TerrainModificationCommand = 126;
-        public const byte PropCreateCommand = 127;
-        public const byte PropMoveCommand = 128;
-        public const byte PropReleaseCommand = 129;
-        public const byte ParkCreateCommand = 130;
-        public const byte ParkReleaseCommand = 131;
-        // 116 - 255
+        // 30 - 39: Game management commands
+        public const byte WorldInfoCommand = 30;
+        public const byte SpeedCommand = 31;
+        public const byte PauseCommand = 32;
+        public const byte DemandDisplayedCommand = 33;
+
+        // 40 - 44: Money and tax commands
+        public const byte MoneyCommand = 40;
+        public const byte TaxRateChangeCommand = 41;
+        public const byte BudgetChangeCommand = 42;
+
+        // 45 - 49: Building commands
+        public const byte BuildingCreateCommand = 45;
+        public const byte BuildingRemoveCommand = 46;
+        public const byte BuildingRelocateCommand = 47;
+
+        // 50 - 59: Net commands
+        public const byte NodeCreateCommand = 50;
+        public const byte NodeReleaseCommand = 51;
+        public const byte NodeUpdateCommand = 52;
+        public const byte SegmentCreateCommand = 53;
+        public const byte SegmentReleaseCommand = 54;
+
+        // 60 - 64: Zone and area commands
+        public const byte ZoneUpdateCommand = 60;
+        public const byte UnlockAreaCommand = 61;
+
+        // 65 - 69: Tree commands
+        public const byte TreeCreateCommand = 65;
+        public const byte TreeMoveCommand = 66;
+        public const byte TreeReleaseCommand = 67;
+
+        // 70 - 79: District commands
+        public const byte DistrictCreateCommand = 70;
+        public const byte DistrictReleaseCommand = 71;
+        public const byte DistrictAreaModifyCommand = 72;
+        public const byte DistrictPolicyCommand = 73;
+        public const byte DistrictPolicyUnsetCommand = 74;
+        public const byte DistrictCityPolicyCommand = 75;
+        public const byte DistrictCityPolicyUnsetCommand = 76;
+
+        // 80 - 84: Terrain commands
+        public const byte TerrainModificationCommand = 80;
+
+        // 85 - 89: Prop commands
+        public const byte PropCreateCommand = 85;
+        public const byte PropReleaseCommand = 86;
+        public const byte PropMoveCommand = 87;
+
+        // 90 - 94: Park commands
+        public const byte ParkCreateCommand = 90;
+        public const byte ParkReleaseCommand = 91;
+
     }
 }
