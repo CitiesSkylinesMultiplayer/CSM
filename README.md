@@ -4,25 +4,34 @@
 [![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11)
 [![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
+## Quick Links
+
+- [Discord Server](https://discord.gg/RjACPhd)
+- [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
+- [Developer Resources](https://github.com/DominicMaas/Tango/wiki/Developer-Resources)
+- [FAQ](https://github.com/DominicMaas/Tango/wiki/Frequently-Asked-Questions)
+- [Patreon](https://www.patreon.com/CSM_MultiplayerMod)
 
 ## Introduction
-CSM is an in-development multiplayer mod for Cities: Skylines. This mod aims to provide a simple client-server experience where users can play and build together in a single game. Initially, resources such as money, costs demand will be synced between clients alongside roads and buildings. Further along in development, terrain sculpting and more advanced features may become available.  
+CSM is an in-development multiplayer mod for Cities: Skylines. This mod aims to provide a simple client-server experience where users can play and build together in a single game.
 
-Instructions to download and install the latest build of the mod can be seen below, alongside developer information about extending the mod. Pull requests and contributions would be much appreciated as I'm only developing this mod in my free time (although I will have a lot more free time during November 2018 - February 2019).
+Instructions to download and install the latest build of the mod can be seen below. Frequently asked questions, developer information and other information can be found on the GitHub [wiki](https://github.com/DominicMaas/Tango/wiki) for this mod.
 
 Feel free to join the development Discord server [here](https://discord.gg/RjACPhd).
 
 This mod and its source code is licensed under the MIT license.
 
 ## Download & Install
+ 
+The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). You can also download the latest development builds by following the instructions below.
+ 
+1. Navigate to the Azure Devops site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11).
+2. Click on the latest successful build (green tick).
+3. Click on the `Artifacts` button (top right) and dowload the zip folder.
+4. Extract the folder and either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
+5. Open Cities: Skylines and enable the mod.
 
-You can now also install this mod from the Steam Workshop [here](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291).
-
-1. Download the latest build from the Azure DevOps site [here](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11). Click on the latest successful build -> `Artifacts` -> `CitiesSkylinesMultiplayer` -> `CitiesSkylinesMultiplayer.{Version}.zip`.
-2. Either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
-3. Open Cities: Skylines and enable the mod.
-
-If you want to build the mod yourself, follow the developer instructions below.
+If you want to build the mod yourself, follow the developer instructions in the wiki located [here](https://github.com/DominicMaas/Tango/wiki/Developer-Resources).
 
 ## Usage
 
@@ -39,23 +48,6 @@ If you want to build the mod yourself, follow the developer instructions below.
 * If you're playing over LAN (in the same house for example), run `ipconfig` on the computer that will be hosting the server to find the local IP address. This is the address that you will want to use when connecting a client.
 * If you're playing over the Internet, you may need to port forward your router to expose the server to the internet (this is usually port `4230`). Once port forwarded, Google "What's my IP" on the server computer to find the IP address for the client to connect to.
 
-## Progress
-
-### Synced Items
-- Play/pause status.
-- Game speed.
-- Money.
-- Building created.
-- Building removed.
-- Building relocated.
-- Demand.
-- Tax (Sync but be aware that it does not show on the UI).
-- Budget (Sync but be aware that it does not show on the UI).
-- Road creation and deletion.
-- Powerline creation and deletion.
-- Water pipe creation and deletion.
-- Zones.
-
 ## Chat Commands
 
 |Command|Description|
@@ -68,6 +60,3 @@ If you want to build the mod yourself, follow the developer instructions below.
 - [Sander Jochems (Sander0542)](https://github.com/Sander0542)
 - [Treholt (Treholt3103)](https://github.com/Treholt3103)
 - [kaenganxt](https://github.com/kaenganxt)
-
-## Developer Resources
-Developer resources can be found on the GitHub wiki.
