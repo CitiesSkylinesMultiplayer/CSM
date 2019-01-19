@@ -41,8 +41,9 @@ If you want to build the mod yourself, follow the developer instructions in the 
 4. To join a game click on `Join Game` and enter the required information.
 
 ## Patreons
-
-// TODO @Treholt3103
+We would like to give a special thanks to the people backing us financialy through [Patreon](https://www.patreon.com/CSM_MultiplayerMod)
+- Henrik Nielsen
+- Daimyo
 
 ## Contributors
 - [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)
