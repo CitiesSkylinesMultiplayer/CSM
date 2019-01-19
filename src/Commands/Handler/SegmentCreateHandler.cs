@@ -1,6 +1,5 @@
 ﻿using ColossalFramework;
 using CSM.Helpers;
-using CSM.Networking;
 using Harmony;
 using System.Reflection;
 
@@ -15,13 +14,7 @@ namespace CSM.Commands.Handler
             _initializeSegment = typeof(NetManager).GetMethod("InitializeSegment", AccessTools.all);
         }
 
-        public override byte ID => CommandIds.SegmentCreateCommand;
-
-        public override void HandleOnClient(SegmentCreateCommand command) => HandleCreateSegment(command);
-
-        public override void HandleOnServer(SegmentCreateCommand command, Player player) => HandleCreateSegment(command);
-
-        private void HandleCreateSegment(SegmentCreateCommand command)
+        public override void Handle(SegmentCreateCommand command)
         {
             NetInfo info = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
             ushort segment = command.SegmentID;
@@ -88,7 +81,7 @@ namespace CSM.Commands.Handler
             Singleton<NetManager>.instance.UpdateSegmentColors(segment);
             Singleton<NetManager>.instance.m_segments.m_buffer[segment].UpdateBounds(segment);
             Singleton<NetManager>.instance.m_segments.m_buffer[segment].UpdateZones(segment);
-            Singleton<NetManager>.instance.m_segmentCount = ((int)Singleton<NetManager>.instance.m_segments.ItemCount()) - 1;
+            Singleton<NetManager>.instance.m_segmentCount = ((int) Singleton<NetManager>.instance.m_segments.ItemCount()) - 1;
 
             Singleton<SimulationManager>.instance.m_currentBuildIndex++;
         }

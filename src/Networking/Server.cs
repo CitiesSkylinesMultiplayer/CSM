@@ -27,7 +27,7 @@ namespace CSM.Networking
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Connected clients
-        public Dictionary<long, Player> ConnectedPlayers { get; } = new Dictionary<long, Player>();
+        public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
 
         // The player instance for the host player
         private Player _hostPlayer;
@@ -133,27 +133,27 @@ namespace CSM.Networking
         /// </summary>
         /// <param name="messageId">Message type/id</param>
         /// <param name="message">The actual message</param>
-        public void SendToClients(byte messageId, CommandBase message)
+        public void SendToClients(CommandBase message)
         {
             if (Status != ServerStatus.Running)
                 return;
 
-            _netServer.SendToAll(ArrayHelpers.PrependByte(messageId, message.Serialize()), DeliveryMethod.ReliableOrdered);
+            _netServer.SendToAll(message.Serialize(), DeliveryMethod.ReliableOrdered);
 
-            _logger.Debug($"Sending message id of {messageId} to all clients");
+            _logger.Debug($"Sending {message.GetType().Name} to all clients");
         }
 
         /// <summary>
         ///     Send a message to a specific client
         /// </summary>
-        public void SendToClient(NetPeer peer, byte messageId, CommandBase message)
+        public void SendToClient(NetPeer peer, CommandBase message)
         {
             if (Status != ServerStatus.Running)
                 return;
 
-            peer.Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), DeliveryMethod.ReliableOrdered);
+            peer.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
 
-            _logger.Debug($"Sending message id of {messageId} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
+            _logger.Debug($"Sending {message.GetType().Name} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
         }
 
         /// <summary>
@@ -173,18 +173,8 @@ namespace CSM.Networking
         {
             try
             {
-                // Handle ConnectionRequest as special case
-                if (reader.PeekByte() == 0)
-                {
-                    Command.Parse(reader, out CommandHandler handler, out byte[] message);
-                    ConnectionRequestHandler requestHandler = (ConnectionRequestHandler)handler;
-                    requestHandler.HandleOnServer(message, peer);
-                    return;
-                }
-
                 // Parse this message
-                ConnectedPlayers.TryGetValue(peer.Id, out Player player);
-                bool relayOnServer = Command.ParseOnServer(reader, player);
+                bool relayOnServer = CommandReceiver.Parse(reader, peer);
 
                 if (relayOnServer)
                 {
@@ -194,21 +184,14 @@ namespace CSM.Networking
 
                     // Send this message to all other clients
                     var peers = _netServer.ConnectedPeerList;
-                    bool sent = false;
                     foreach (var client in peers)
                     {
                         // Don't send the message back to the client that sent it.
                         if (client.Id == peer.Id)
                             continue;
 
-                        sent = true;
                         // Send the message so the other client can stay in sync
                         client.Send(data, DeliveryMethod.ReliableOrdered);
-                    }
-
-                    if (sent)
-                    {
-                        TransactionHandler.StartTransaction();
                     }
                 }
             }
@@ -270,15 +253,16 @@ namespace CSM.Networking
             MultiplayerManager.Instance.PlayerList.Remove(player.Username);
             this.ConnectedPlayers.Remove(player.NetPeer.Id);
             Command.HandleClientDisconnect(player);
+            TransactionHandler.ClearTransactions(player.NetPeer.Id);
         }
 
         /// <summary>
         ///     Called whenever an error happens, we
-        ///     log this to the console for now.
+        ///     write it to the log file.
         /// </summary>
-        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerrorcode)
+        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerror)
         {
-            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerrorcode}");
+            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerror}");
         }
     }
 }

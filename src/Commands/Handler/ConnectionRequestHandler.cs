@@ -6,24 +6,16 @@ namespace CSM.Commands.Handler
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        public override byte ID => CommandIds.ConnectionRequestCommand;
-
         public ConnectionRequestHandler()
         {
             TransactionCmd = false;
+            RelayOnServer = false;
         }
 
-        public override void HandleOnServer(ConnectionRequestCommand command, Player player)
-        {
-        }
+        public override void Handle(ConnectionRequestCommand command) { }
 
-        public override void HandleOnClient(ConnectionRequestCommand command)
+        public void HandleOnServer(ConnectionRequestCommand command, NetPeer peer)
         {
-        }
-
-        public void HandleOnServer(byte[] message, NetPeer peer)
-        {
-            ConnectionRequestCommand command = base.Parse(message);
             // Check to see if the game versions match
             if (command.GameVersion != BuildConfig.applicationVersion)
             {
@@ -78,7 +70,11 @@ namespace CSM.Commands.Handler
             var newPlayer = new Player(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
-            Command.SendToClient(peer, new ConnectionResultCommand { Success = true });
+            Command.SendToClient(peer, new ConnectionResultCommand
+            {
+                Success = true,
+                ClientId = peer.Id
+            });
 
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
 

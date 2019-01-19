@@ -1,7 +1,5 @@
 ﻿using ColossalFramework;
 using CSM.Helpers;
-using CSM.Injections;
-using CSM.Networking;
 using Harmony;
 using System.Reflection;
 
@@ -16,13 +14,7 @@ namespace CSM.Commands.Handler
             _initializeNode = typeof(NetManager).GetMethod("InitializeNode", AccessTools.all);
         }
 
-        public override byte ID => CommandIds.NodeCreateCommand;
-
-        public override void HandleOnServer(NodeCreateCommand command, Player player) => HandleCreateNode(command);
-
-        public override void HandleOnClient(NodeCreateCommand command) => HandleCreateNode(command);
-
-        private void HandleCreateNode(NodeCreateCommand command)
+        public override void Handle(NodeCreateCommand command)
         {
             NetInfo info = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
             ushort node = command.NodeId;
@@ -56,7 +48,7 @@ namespace CSM.Commands.Handler
             Singleton<NetManager>.instance.UpdateNode(node);
             Singleton<NetManager>.instance.UpdateNodeColors(node);
             Singleton<NetManager>.instance.m_nodes.m_buffer[node].UpdateBounds(node);
-            Singleton<NetManager>.instance.m_nodeCount = ((int)Singleton<NetManager>.instance.m_nodes.ItemCount()) - 1;
+            Singleton<NetManager>.instance.m_nodeCount = ((int) Singleton<NetManager>.instance.m_nodes.ItemCount()) - 1;
 
             Singleton<SimulationManager>.instance.m_currentBuildIndex++;
         }

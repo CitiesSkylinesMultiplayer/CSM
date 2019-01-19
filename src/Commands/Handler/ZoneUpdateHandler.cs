@@ -1,18 +1,11 @@
 ﻿using ColossalFramework;
 using CSM.Injections;
-using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
     public class ZoneUpdateHandler : CommandHandler<ZoneUpdateCommand>
     {
-        public override byte ID => CommandIds.ZoneUpdateCommand;
-
-        public override void HandleOnServer(ZoneUpdateCommand command, Player player) => Handle(command);
-
-        public override void HandleOnClient(ZoneUpdateCommand command) => Handle(command);
-
-        private void Handle(ZoneUpdateCommand command)
+        public override void Handle(ZoneUpdateCommand command)
         {
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[command.ZoneId].m_zone1 = command.Zone1;
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[command.ZoneId].m_zone2 = command.Zone2;

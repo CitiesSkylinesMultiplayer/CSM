@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using CSM.Networking;
+using ProtoBuf;
 using System.IO;
 
 namespace CSM.Commands
@@ -13,6 +14,13 @@ namespace CSM.Commands
     [ProtoContract]
     public abstract class CommandBase
     {
+
+        /// <summary>
+        ///     The id of the sending player. -1 for the server.
+        /// </summary>
+        [ProtoMember(1)]
+        public int SenderId { get; set; }
+
         /// <summary>
         ///     Serializes the command into a byte array for sending over the network.
         /// </summary>
@@ -23,7 +31,7 @@ namespace CSM.Commands
 
             using (var stream = new MemoryStream())
             {
-                Serializer.Serialize(stream, this);
+                Command.Model.Serialize(stream, this);
                 result = stream.ToArray();
             }
 

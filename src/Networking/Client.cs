@@ -37,6 +37,11 @@ namespace CSM.Networking
         public ClientStatus Status { get; set; }
 
         /// <summary>
+        ///     The assigned client id.
+        /// </summary>
+        public int ClientId { get; set; }
+
+        /// <summary>
         ///     If the status is disconnected, this will contain
         ///     the reason why.
         /// </summary>
@@ -114,6 +119,7 @@ namespace CSM.Networking
 
             // Start processing networking
             Status = ClientStatus.Connecting;
+            ClientId = 0;
 
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
             // while we wait for a successful connection (Status = Connected) or a
@@ -167,7 +173,7 @@ namespace CSM.Networking
             _logger.Info("Disconnected from server");
         }
 
-        public void SendToServer(byte messageId, CommandBase message)
+        public void SendToServer(CommandBase message)
         {
             if (Status == ClientStatus.Disconnected)
             {
@@ -177,9 +183,9 @@ namespace CSM.Networking
 
             var server = _netClient.ConnectedPeerList[0];
 
-            _logger.Debug($"Sending message id of {messageId} to server");
+            _logger.Debug($"Sending {message.GetType().Name} to server");
 
-            server.Send(ArrayHelpers.PrependByte(messageId, message.Serialize()), DeliveryMethod.ReliableOrdered);
+            server.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
         }
 
         /// <summary>
@@ -199,7 +205,7 @@ namespace CSM.Networking
         {
             try
             {
-                Command.ParseOnClient(reader);
+                CommandReceiver.Parse(reader, peer);
             }
             catch (Exception ex)
             {
@@ -274,11 +280,11 @@ namespace CSM.Networking
 
         /// <summary>
         ///     Called whenever an error happens, we
-        ///     log this to the console for now.
+        ///     write it to the log file.
         /// </summary>
-        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerrorcode)
+        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerror)
         {
-            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerrorcode}");
+            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerror}");
         }
     }
 }

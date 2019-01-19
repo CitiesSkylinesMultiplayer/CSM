@@ -19,12 +19,6 @@ namespace CSM
 
         public CSM()
         {
-            // Initialize ProtoBuf
-            if (!ProtoBuf.Meta.RuntimeTypeModel.Default.IsDefined(typeof(Vector3)))
-            {
-                ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
-            }
-
             // Setup the correct logging configuration
             SetupLogging();
 

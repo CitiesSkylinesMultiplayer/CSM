@@ -1,25 +1,16 @@
 ﻿using ColossalFramework;
-using CSM.Injections;
-using CSM.Networking;
 using System;
 using UnityEngine;
-using System.Reflection;
 using static TerrainTool;
 using Harmony;
 
 namespace CSM.Commands.Handler
 {
-    class TerrainModificationHandler : CommandHandler<TerrainModificationCommand>
+    public class TerrainModificationHandler : CommandHandler<TerrainModificationCommand>
     {
-        public override byte ID => CommandIds.TerrainModificationCommand;
-
-        public override void HandleOnClient(TerrainModificationCommand command) => Handle(command);
-
-        public override void HandleOnServer(TerrainModificationCommand command, Player player) => Handle(command);
-
-        private void Handle(TerrainModificationCommand command)
+        public override void Handle(TerrainModificationCommand command)
         {
-            ushort[] m_tempBuffer = (ushort[])typeof(TerrainTool).GetField("m_tempBuffer", AccessTools.all).GetValue(ToolsModifierControl.GetTool<TerrainTool>());
+            ushort[] m_tempBuffer = (ushort[]) typeof(TerrainTool).GetField("m_tempBuffer", AccessTools.all).GetValue(ToolsModifierControl.GetTool<TerrainTool>());
 
 
             TerrainManager instance = Singleton<TerrainManager>.instance;
@@ -52,8 +43,8 @@ namespace CSM.Commands.Handler
             int dirtBuffer = instance.DirtBuffer;
             int num14 = 0x80000;
             int dirtPrice = 0;
-            
-             if (flag)
+
+            if (flag)
             {
                 if (manager2.PointOutOfArea(mousePosition))
                 {
@@ -66,11 +57,11 @@ namespace CSM.Commands.Handler
                     dirtPrice = properties.m_dirtPrice;
                 }
             }
-            
-            int num16 = Mathf.Max((int)(((mousePosition.x - num) / num2) + (b * 0.5f)), 0);
-            int num17 = Mathf.Max((int)(((mousePosition.z - num) / num2) + (b * 0.5f)), 0);
-            int num18 = Mathf.Min(((int)(((mousePosition.x + num) / num2) + (b * 0.5f))) + 1, b);
-            int num19 = Mathf.Min(((int)(((mousePosition.z + num) / num2) + (b * 0.5f))) + 1, b);
+
+            int num16 = Mathf.Max((int) (((mousePosition.x - num) / num2) + (b * 0.5f)), 0);
+            int num17 = Mathf.Max((int) (((mousePosition.z - num) / num2) + (b * 0.5f)), 0);
+            int num18 = Mathf.Min(((int) (((mousePosition.x + num) / num2) + (b * 0.5f))) + 1, b);
+            int num19 = Mathf.Min(((int) (((mousePosition.z + num) / num2) + (b * 0.5f))) + 1, b);
             if (command.mode == Mode.Shift)
             {
                 if (command.MouseRightDown)
@@ -103,7 +94,7 @@ namespace CSM.Commands.Handler
                     float y = 0f;
                     if (flag && manager2.PointOutOfArea(new Vector3(x, mousePosition.y, z), num2 * 0.5f))
                     {
-                        m_tempBuffer[(((i - num17) * ((num18 - num16) + 1)) + k) - num16] = (ushort)num30;
+                        m_tempBuffer[(((i - num17) * ((num18 - num16) + 1)) + k) - num16] = (ushort) num30;
                     }
                     else
                     {
@@ -117,7 +108,7 @@ namespace CSM.Commands.Handler
                         t *= strength;
                         if (t <= 0f)
                         {
-                            m_tempBuffer[(((i - num17) * ((num18 - num16) + 1)) + k) - num16] = (ushort)num30;
+                            m_tempBuffer[(((i - num17) * ((num18 - num16) + 1)) + k) - num16] = (ushort) num30;
                         }
                         else
                         {
@@ -140,7 +131,7 @@ namespace CSM.Commands.Handler
                                 {
                                     for (int n = num40; n <= num42; n++)
                                     {
-                                        float num47 = 1f - (((float)(((n - k) * (n - k)) + ((m - i) * (m - i)))) / ((float)(num5 * num5)));
+                                        float num47 = 1f - (((float) (((n - k) * (n - k)) + ((m - i) * (m - i)))) / ((float) (num5 * num5)));
                                         if (num47 > 0f)
                                         {
                                             y += finalHeights[(m * (b + 1)) + n] * (num6 * num47);
@@ -161,7 +152,7 @@ namespace CSM.Commands.Handler
                             {
                                 float num48 = (k - (b * 0.5f)) * num2;
                                 float num49 = (i - (b * 0.5f)) * num2;
-                                float num50 = (((num48 - command.StartPosition.x) * vector2.x) + ((num49 -command.StartPosition.z) * vector2.z)) * sqrMagnitude;
+                                float num50 = (((num48 - command.StartPosition.x) * vector2.x) + ((num49 - command.StartPosition.z) * vector2.z)) * sqrMagnitude;
                                 y = Mathf.Lerp(command.StartPosition.y, command.EndPosition.y, num50);
                             }
                             float num51 = y;
@@ -182,7 +173,7 @@ namespace CSM.Commands.Handler
                                     num52--;
                                 }
                             }
-                            m_tempBuffer[(((i - num17) * ((num18 - num16) + 1)) + k) - num16] = (ushort)num52;
+                            m_tempBuffer[(((i - num17) * ((num18 - num16) + 1)) + k) - num16] = (ushort) num52;
                             if (flag)
                             {
                                 if (num52 > num30)
@@ -194,7 +185,7 @@ namespace CSM.Commands.Handler
                                     num11 += num30 - num52;
                                 }
                                 int num54 = backupHeights[(i * (b + 1)) + k];
-                                int num55 = Mathf.Abs((int)(num52 - num54)) - Mathf.Abs((int)(num30 - num54));
+                                int num55 = Mathf.Abs((int) (num52 - num54)) - Mathf.Abs((int) (num30 - num54));
                                 //currentCost += num55 * dirtPrice;
                             }
                         }
@@ -291,12 +282,12 @@ namespace CSM.Commands.Handler
                             dirtBuffer -= num62;
                         }
                         int num63 = backupHeights[(j * (b + 1)) + k];
-                        int num64 = Mathf.Abs((int)(num61 - num63)) - Mathf.Abs((int)(num60 - num63));
+                        int num64 = Mathf.Abs((int) (num61 - num63)) - Mathf.Abs((int) (num60 - num63));
                         //currentCost += num64 * dirtPrice;
                     }
                     if (num61 != num60)
                     {
-                        rawHeights[(j * (b + 1)) + k] = (ushort)num61;
+                        rawHeights[(j * (b + 1)) + k] = (ushort) num61;
 
 
                         int _strokeXmin = Math.Min(command.StrokeXmin, k);
@@ -304,11 +295,11 @@ namespace CSM.Commands.Handler
                         int _strokeZmin = Math.Min(command.StrokeZmin, j);
                         int _strokeZmax = Math.Max(command.StrokeZmax, j);
 
-                        typeof(TerrainTool).GetField("m_strokeXmin", AccessTools.all).SetValue(ToolsModifierControl.GetTool<TerrainTool>(),_strokeXmin);
-                        typeof(TerrainTool).GetField("m_strokeXmax", AccessTools.all).SetValue(ToolsModifierControl.GetTool<TerrainTool>(),_strokeXmax);
+                        typeof(TerrainTool).GetField("m_strokeXmin", AccessTools.all).SetValue(ToolsModifierControl.GetTool<TerrainTool>(), _strokeXmin);
+                        typeof(TerrainTool).GetField("m_strokeXmax", AccessTools.all).SetValue(ToolsModifierControl.GetTool<TerrainTool>(), _strokeXmax);
                         typeof(TerrainTool).GetField("m_strokeZmin", AccessTools.all).SetValue(ToolsModifierControl.GetTool<TerrainTool>(), _strokeZmin);
                         typeof(TerrainTool).GetField("m_strokeZmax", AccessTools.all).SetValue(ToolsModifierControl.GetTool<TerrainTool>(), _strokeZmax);
-                       
+
                     }
                 }
             }
@@ -317,10 +308,7 @@ namespace CSM.Commands.Handler
                 instance.DirtBuffer = dirtBuffer;
                 //this.m_currentCost = currentCost;
             }
-            TerrainModify.UpdateArea((int)(num16 - 2), (int)(num17 - 2), (int)(num18 + 2), (int)(num19 + 2), true, false, false);
+            TerrainModify.UpdateArea((int) (num16 - 2), (int) (num17 - 2), (int) (num18 + 2), (int) (num19 + 2), true, false, false);
         }
     }
-    
-
- }
-
+}

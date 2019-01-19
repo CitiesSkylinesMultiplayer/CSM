@@ -9,7 +9,7 @@ namespace CSM.Commands
     public class TransactionHandler
     {
         private static bool _sendStarted = false;
-        private static readonly List<Tuple<CommandHandler, byte[], Player>> _receivedTransactions = new List<Tuple<CommandHandler, byte[], Player>>();
+        private static readonly List<Tuple<CommandHandler, CommandBase, int>> _receivedTransactions = new List<Tuple<CommandHandler, CommandBase, int>>();
 
         /// <summary>
         /// Starts a transaction.
@@ -48,17 +48,16 @@ namespace CSM.Commands
         /// and queues it until a FinishTransactionCommand is received.
         /// </summary>
         /// <param name="handler">The received command type.</param>
-        /// <param name="data">The received data.</param>
-        /// <param name="player">The sending player, may be null if it's the server.</param>
+        /// <param name="cmd">The received command.</param>
         /// <returns>true, if the command is a transaction command</returns>
-        public static bool CheckReceived(CommandHandler handler, byte[] data, Player player)
+        public static bool CheckReceived(CommandHandler handler, CommandBase cmd)
         {
             if (!handler.TransactionCmd)
             {
                 return false;
             }
 
-            _receivedTransactions.Add(new Tuple<CommandHandler, byte[], Player>(handler, data, player));
+            _receivedTransactions.Add(new Tuple<CommandHandler, CommandBase, int>(handler, cmd, cmd.SenderId));
 
             return true;
         }
@@ -66,26 +65,29 @@ namespace CSM.Commands
         /// <summary>
         /// Called when the FinishTransactionCommand was received.
         /// </summary>
-        /// <param name="player">The sending player, may be null if it's the server.</param>
-        public static void FinishReceived(Player player)
+        /// <param name="sender">The sending player, -1 if it's the server.</param>
+        public static void FinishReceived(int sender)
         {
-            foreach (Tuple<CommandHandler, byte[], Player> transaction in _receivedTransactions)
+            foreach (Tuple<CommandHandler, CommandBase, int> transaction in _receivedTransactions)
             {
-                if (transaction.Var3 != player)
+                if (transaction.Var3 != sender)
                 {
                     continue;
                 }
 
-                if (MultiplayerManager.Instance.CurrentClient.Status == Networking.Status.ClientStatus.Connected)
-                {
-                    transaction.Var1.ParseOnClient(transaction.Var2);
-                }
-                else if (MultiplayerManager.Instance.CurrentServer.Status == Networking.Status.ServerStatus.Running)
-                {
-                    transaction.Var1.ParseOnServer(transaction.Var2, transaction.Var3);
-                }
+                transaction.Var1.Parse(transaction.Var2);
             }
-            _receivedTransactions.RemoveAll((Tuple<CommandHandler, byte[], Player> tuple) => { return tuple.Var3 == player; });
+
+            ClearTransactions(sender);
+        }
+
+        /// <summary>
+        /// Clears all transactions by the given sender.
+        /// </summary>
+        /// <param name="clientId">The sender's client id.</param>
+        public static void ClearTransactions(int clientId)
+        {
+            _receivedTransactions.RemoveAll((Tuple<CommandHandler, CommandBase, int> tuple) => { return tuple.Var3 == clientId; });
         }
 
         /// <summary>

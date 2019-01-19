@@ -9,14 +9,12 @@ namespace CSM.Commands.Handler
         // Class logger
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public override byte ID => CommandIds.ConnectionResultCommand;
-
         public ConnectionResultHandler()
         {
             TransactionCmd = false;
         }
 
-        public override void HandleOnClient(ConnectionResultCommand command)
+        public override void Handle(ConnectionResultCommand command)
         {
             // We only want this message while connecting
             if (MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connecting)
@@ -29,6 +27,7 @@ namespace CSM.Commands.Handler
                 _logger.Info("Successfully connected to server.");
                 ChatLogPanel.PrintGameMessage("Successfully connected to server.");
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
+                MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
             }
             else
             {
@@ -36,10 +35,6 @@ namespace CSM.Commands.Handler
                 MultiplayerManager.Instance.CurrentClient.ConnectionMessage = command.Reason;
                 MultiplayerManager.Instance.CurrentClient.Disconnect();
             }
-        }
-
-        public override void HandleOnServer(ConnectionResultCommand command, Player player)
-        {
         }
     }
 }

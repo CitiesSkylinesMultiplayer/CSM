@@ -1,18 +1,15 @@
-﻿using CSM.Networking;
-using CSM.Panels;
+﻿using CSM.Panels;
 
 namespace CSM.Commands.Handler
 {
     public class ChatMessageHandler : CommandHandler<ChatMessageCommand>
     {
-        public override byte ID => CommandIds.ChatMessageCommand;
-
-        public override void HandleOnClient(ChatMessageCommand command)
+        public ChatMessageHandler()
         {
-            ChatLogPanel.PrintChatMessage(command.Username, command.Message);
+            TransactionCmd = false;
         }
 
-        public override void HandleOnServer(ChatMessageCommand command, Player player)
+        public override void Handle(ChatMessageCommand command)
         {
             ChatLogPanel.PrintChatMessage(command.Username, command.Message);
         }
