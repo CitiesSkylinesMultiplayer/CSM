@@ -4,16 +4,10 @@ namespace CSM.Commands.Handler
 {
     public class WorldInfoHandler : CommandHandler<WorldInfoCommand>
     {
-        public override byte ID => CommandIds.WorldInfoCommand;
-
-        public override void HandleOnClient(WorldInfoCommand command)
+        public override void Handle(WorldInfoCommand command)
         {
             SimulationManager.instance.m_currentGameTime = command.CurrentGameTime;
             SimulationManager.instance.m_currentDayTimeHour = command.CurrentDayTimeHour;
-        }
-
-        public override void HandleOnServer(WorldInfoCommand command, Player player)
-        {
         }
 
         public override void OnClientConnect(Player player)

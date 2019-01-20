@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandReceiver.cs" />
     <Compile Include="Commands\Data\ChatMessageCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\BudgetChangeCommand.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="Commands\Handler\ParkReleaseHandler.cs" />
     <Compile Include="Commands\Handler\PropCreateHandler.cs" />
     <Compile Include="Commands\Handler\PropMoveHandler.cs" />
-    <Compile Include="Commands\Handler\PropReleaseHandlercs.cs" />
+    <Compile Include="Commands\Handler\PropReleaseHandler.cs" />
     <Compile Include="Commands\Handler\SegmentCreateHandler.cs" />
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\ClientDisonnectHandler.cs" />
@@ -148,7 +149,6 @@
     <Compile Include="Commands\Handler\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
     <Compile Include="Commands\Handler\ZoneUpdateHandler.cs" />
-    <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />

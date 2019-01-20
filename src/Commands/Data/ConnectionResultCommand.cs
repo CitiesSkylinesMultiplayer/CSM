@@ -23,5 +23,12 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(2)]
         public string Reason { get; set; }
+
+        /// <summary>
+        ///     The assigned client id if the connection
+        ///     request was successful.
+        /// </summary>
+        [ProtoMember(3)]
+        public int ClientId { get; set; }
     }
 }

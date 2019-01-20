@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CSM.Commands
 {
     [ProtoContract]
-    class PropMoveCommand : CommandBase
+    public class PropMoveCommand : CommandBase
     {
         [ProtoMember(1)]
         public ushort PropID { get; set; }

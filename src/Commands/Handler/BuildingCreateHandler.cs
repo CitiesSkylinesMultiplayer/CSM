@@ -1,19 +1,12 @@
 ﻿using ColossalFramework;
 using CSM.Extensions;
-using CSM.Networking;
 using UnityEngine;
 
 namespace CSM.Commands.Handler
 {
     public class BuildingCreateHandler : CommandHandler<BuildingCreateCommand>
     {
-        public override byte ID => CommandIds.BuildingCreateCommand;
-
-        public override void HandleOnServer(BuildingCreateCommand command, Player player) => HandleBuilding(command);
-
-        public override void HandleOnClient(BuildingCreateCommand command) => HandleBuilding(command);
-
-        private void HandleBuilding(BuildingCreateCommand command)
+        public override void Handle(BuildingCreateCommand command)
         {
             BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(command.Infoindex);
             BuildingExtension.LastPosition = command.Position;
@@ -83,14 +76,14 @@ namespace CSM.Commands.Handler
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_frame1 = Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_frame0;
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_frame2 = Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_frame0;
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_frame3 = Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_frame0;
-            int num = Mathf.Clamp((int)((command.Position.x / 64f) + 135f), 0, 0x10d);
-            int index = (Mathf.Clamp((int)((command.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
+            int num = Mathf.Clamp((int) ((command.Position.x / 64f) + 135f), 0, 0x10d);
+            int index = (Mathf.Clamp((int) ((command.Position.z / 64f) + 135f), 0, 0x10d) * 270) + num;
             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_nextGridBuilding = Singleton<BuildingManager>.instance.m_buildingGrid[index];
             Singleton<BuildingManager>.instance.m_buildingGrid[index] = building;
 
             Singleton<BuildingManager>.instance.UpdateBuilding(building);
             Singleton<BuildingManager>.instance.UpdateBuildingColors(building);
-            Singleton<BuildingManager>.instance.m_buildingCount = ((int)Singleton<BuildingManager>.instance.m_buildings.ItemCount()) - 1;
+            Singleton<BuildingManager>.instance.m_buildingCount = ((int) Singleton<BuildingManager>.instance.m_buildings.ItemCount()) - 1;
 
             Singleton<SimulationManager>.instance.m_currentBuildIndex++;
         }

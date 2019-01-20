@@ -1,26 +1,17 @@
 ﻿using CSM.Commands.Data;
-using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
     public class FinishTransactionHandler : CommandHandler<FinishTransactionCommand>
     {
-        public override byte ID => CommandIds.FinishTransactionCommand;
-
         public FinishTransactionHandler()
         {
-            RelayOnServer = false;
             TransactionCmd = false;
         }
 
-        public override void HandleOnServer(FinishTransactionCommand command, Player player)
+        public override void Handle(FinishTransactionCommand command)
         {
-            TransactionHandler.FinishReceived(player);
-        }
-
-        public override void HandleOnClient(FinishTransactionCommand command)
-        {
-            TransactionHandler.FinishReceived(null);
+            TransactionHandler.FinishReceived(command.SenderId);
         }
     }
 }

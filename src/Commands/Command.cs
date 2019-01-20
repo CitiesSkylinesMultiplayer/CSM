@@ -1,91 +1,23 @@
 ﻿using CSM.Commands.Handler;
+using CSM.Models;
 using CSM.Networking;
 using CSM.Networking.Status;
 using LiteNetLib;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace CSM.Commands
 {
     public class Command
     {
-        private static readonly Dictionary<byte, CommandHandler> _handlerMapping = new Dictionary<byte, CommandHandler>();
-        private static readonly Dictionary<Type, byte> _cmdMapping = new Dictionary<Type, byte>();
+        private static readonly Dictionary<Type, CommandHandler> _cmdMapping = new Dictionary<Type, CommandHandler>();
 
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// This method is used to parse an incoming message on the client
-        /// and execute the appropriate actions.
-        /// </summary>
-        /// <param name="reader">The incoming packet including the command type byte.</param>
-        public static void ParseOnClient(NetPacketReader reader)
-        {
-            Parse(reader, out CommandHandler handler, out byte[] message);
-
-            if (handler == null)
-                return;
-
-            if (TransactionHandler.CheckReceived(handler, message, null))
-            {
-                return;
-            }
-
-            handler.ParseOnClient(message);
-        }
-
-        /// <summary>
-        /// This method is used parse an incoming message on the server
-        /// and execute the appropriate actions.
-        /// </summary>
-        /// <param name="reader">The incoming packet including the command type byte.</param>
-        /// <param name="player">The player object of the sending client. May be null if the sender is not known.</param>
-        public static bool ParseOnServer(NetPacketReader reader, Player player)
-        {
-            Parse(reader, out CommandHandler handler, out byte[] message);
-
-            if (handler == null)
-                return false;
-
-            // Make sure we know about the connected client
-            if (player == null)
-            {
-                _logger.Warn($"Client tried to send packet {handler.GetType().Name} but never joined with a ConnectionRequestCommand packet. Ignoring...");
-                return false;
-            }
-
-            if (TransactionHandler.CheckReceived(handler, message, player))
-            {
-                return handler.RelayOnServer;
-            }
-
-            handler.ParseOnServer(message, player);
-
-            return handler.RelayOnServer;
-        }
-
-        /// <summary>
-        /// This method is used to extract the command type from an incoming message
-        /// and return the matching handler object.
-        /// </summary>
-        /// <param name="reader">The incoming packet including the command type byte.</param>
-        /// <param name="handler">This returns the command handler object. May be null if the command was not found.</param>
-        /// <param name="message">This returns the message byte array without the command type byte.</param>
-        public static void Parse(NetPacketReader reader, out CommandHandler handler, out byte[] message)
-        {
-            // The message type is the first byte, (255 message types)
-            byte messageType = reader.GetByte();
-
-            // Skip the first byte
-            message = reader.GetRemainingBytes();
-
-            if (!_handlerMapping.TryGetValue(messageType, out handler))
-            {
-                _logger.Error($"Command {messageType} not found!");
-                return;
-            }
-        }
+        public static TypeModel Model { get; private set; }
 
         /// <summary>
         /// This method is used to send a command to a connected client.
@@ -99,9 +31,9 @@ namespace CSM.Commands
                 return;
 
             TransactionHandler.StartTransaction(command);
+            SetSenderId(command);
 
-            byte id = _cmdMapping[command.GetType()];
-            MultiplayerManager.Instance.CurrentServer.SendToClient(peer, id, command);
+            MultiplayerManager.Instance.CurrentServer.SendToClient(peer, command);
         }
 
         /// <summary>
@@ -126,9 +58,9 @@ namespace CSM.Commands
                 return;
 
             TransactionHandler.StartTransaction(command);
+            SetSenderId(command);
 
-            byte id = _cmdMapping[command.GetType()];
-            MultiplayerManager.Instance.CurrentServer.SendToClients(id, command);
+            MultiplayerManager.Instance.CurrentServer.SendToClients(command);
         }
 
         /// <summary>
@@ -159,9 +91,9 @@ namespace CSM.Commands
                 return;
 
             TransactionHandler.StartTransaction(command);
+            SetSenderId(command);
 
-            byte id = _cmdMapping[command.GetType()];
-            MultiplayerManager.Instance.CurrentClient.SendToServer(id, command);
+            MultiplayerManager.Instance.CurrentClient.SendToServer(command);
         }
 
         /// <summary>
@@ -183,13 +115,29 @@ namespace CSM.Commands
         }
 
         /// <summary>
+        /// Sets the client/server id of the command.
+        /// </summary>
+        /// <param name="command">The command to modify.</param>
+        private static void SetSenderId(CommandBase command)
+        {
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            {
+                command.SenderId = -1;
+            }
+            else
+            {
+                command.SenderId = MultiplayerManager.Instance.CurrentClient.ClientId;
+            }
+        }
+
+        /// <summary>
         /// This method is used to handle a connecting client.
         /// It calls the OnClientConnect methods of all handlers.
         /// </summary>
         /// <param name="player">The connected player.</param>
         public static void HandleClientConnect(Player player)
         {
-            foreach (CommandHandler handler in _handlerMapping.Values)
+            foreach (CommandHandler handler in _cmdMapping.Values)
             {
                 handler.OnClientConnect(player);
             }
@@ -202,20 +150,10 @@ namespace CSM.Commands
         /// <param name="player">The disconnected player.</param>
         public static void HandleClientDisconnect(Player player)
         {
-            foreach (CommandHandler handler in _handlerMapping.Values)
+            foreach (CommandHandler handler in _cmdMapping.Values)
             {
                 handler.OnClientDisconnect(player);
             }
-        }
-
-        /// <summary>
-        /// This method is used to get the id of a given command.
-        /// </summary>
-        /// <param name="commandType">The Type of a CommandBase subclass.</param>
-        /// <returns>The id of the given command.</returns>
-        public static byte GetCommandId(Type commandType)
-        {
-            return _cmdMapping[commandType];
         }
 
         /// <summary>
@@ -225,25 +163,55 @@ namespace CSM.Commands
         /// <returns>The handler for the given command.</returns>
         public static CommandHandler GetCommandHandler(Type commandType)
         {
-            _handlerMapping.TryGetValue(GetCommandId(commandType), out CommandHandler handler);
+            _cmdMapping.TryGetValue(commandType, out CommandHandler handler);
             return handler;
         }
 
         static Command()
         {
-            // Get all CommandHandler subclasses in the CSM.Commands.Handler namespace
-            Type[] handlers = typeof(Command).Assembly.GetTypes()
-              .Where(t => String.Equals(t.Namespace, "CSM.Commands.Handler", StringComparison.Ordinal))
-              .Where(t => t.IsSubclassOf(typeof(CommandHandler)))
-              .Where(t => !t.IsAbstract)
-              .ToArray();
-
-            // Create instances of the handlers and initialize mappings
-            foreach (Type type in handlers)
+            try
             {
-                CommandHandler handler = (CommandHandler)Activator.CreateInstance(type);
-                _handlerMapping.Add(handler.ID, handler);
-                _cmdMapping.Add(handler.GetDataType(), handler.ID);
+                // Get all CommandHandler subclasses in the CSM.Commands.Handler namespace
+                Type[] handlers = typeof(Command).Assembly.GetTypes()
+                  .Where(t => String.Equals(t.Namespace, "CSM.Commands.Handler", StringComparison.Ordinal))
+                  .Where(t => t.IsSubclassOf(typeof(CommandHandler)))
+                  .Where(t => !t.IsAbstract)
+                  .ToArray();
+
+                // Create a protobuf model
+                RuntimeTypeModel model = TypeModel.Create();
+
+                // Set type surrogates
+                model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
+
+                // Add base command to the protobuf model with all attributes
+                model.Add(typeof(CommandBase), true);
+                MetaType baseCmd = model[typeof(CommandBase)];
+
+                // Lowest id of the subclasses
+                int id = 100;
+
+                // Create instances of the handlers, initialize mappings and register command subclasses in the protobuf model
+                foreach (Type type in handlers)
+                {
+                    CommandHandler handler = (CommandHandler) Activator.CreateInstance(type);
+                    _cmdMapping.Add(handler.GetDataType(), handler);
+
+                    // Add subtype to the protobuf model with all attributes
+                    baseCmd.AddSubType(id, handler.GetDataType());
+                    model.Add(handler.GetDataType(), true);
+
+                    id++;
+                }
+
+                // Compile the protobuf model
+                model.CompileInPlace();
+
+                Model = model;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Failed to initialize data model");
             }
         }
     }

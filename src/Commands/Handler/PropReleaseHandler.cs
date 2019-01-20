@@ -2,12 +2,12 @@
 
 namespace CSM.Commands.Handler
 {
-    public class PropMoveHandler : CommandHandler<PropMoveCommand>
+    public class PropReleaseHandler : CommandHandler<PropReleaseCommand>
     {
-        public override void Handle(PropMoveCommand command)
+        public override void Handle(PropReleaseCommand command)
         {
             PropHandler.IgnoreProp.Add(command.PropID);
-            PropManager.instance.MoveProp(command.PropID, command.Position);
+            PropManager.instance.ReleaseProp(command.PropID);
             PropHandler.IgnoreProp.Remove(command.PropID);
         }
     }

@@ -1,12 +1,11 @@
 ﻿using ColossalFramework;
 using CSM.Helpers;
-using CSM.Networking;
 using Harmony;
 using System.Reflection;
 
 namespace CSM.Commands.Handler
 {
-    public class TreeCreateHandler: CommandHandler<TreeCreateCommand>
+    public class TreeCreateHandler : CommandHandler<TreeCreateCommand>
     {
         private MethodInfo _initializeTree;
 
@@ -15,13 +14,7 @@ namespace CSM.Commands.Handler
             _initializeTree = typeof(TreeManager).GetMethod("InitializeTree", AccessTools.all);
         }
 
-        public override byte ID => CommandIds.TreeCreateCommand;
-
-        public override void HandleOnClient(TreeCreateCommand command) => Handle(command);
-
-        public override void HandleOnServer(TreeCreateCommand command, Player player) => Handle(command);
-
-        private void Handle(TreeCreateCommand command)
+        public override void Handle(TreeCreateCommand command)
         {
             TreeInfo info = PrefabCollection<TreeInfo>.GetPrefab(command.InfoIndex);
             uint tree = command.TreeID;
@@ -38,12 +31,7 @@ namespace CSM.Commands.Handler
             ItemClass.Availability mode = Singleton<ToolManager>.instance.m_properties.m_mode;
             _initializeTree.Invoke(Singleton<TreeManager>.instance, new object[] { tree, Singleton<TreeManager>.instance.m_trees.m_buffer[tree], ((mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None) });
             TreeManager.instance.UpdateTree(tree);
-            TreeManager.instance.m_treeCount = ((int)TreeManager.instance.m_trees.ItemCount()) - 1;
+            TreeManager.instance.m_treeCount = ((int) TreeManager.instance.m_trees.ItemCount()) - 1;
         }
-
-
-
-
-        }
+    }
 }
-

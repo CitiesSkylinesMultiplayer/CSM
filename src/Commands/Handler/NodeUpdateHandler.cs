@@ -1,17 +1,10 @@
 ﻿using ColossalFramework;
-using CSM.Networking;
 
 namespace CSM.Commands.Handler
 {
     public class NodeUpdateHandler : CommandHandler<NodeUpdateCommand>
     {
-        public override byte ID => CommandIds.NodeUpdateCommand;
-
-        public override void HandleOnServer(NodeUpdateCommand command, Player player) => Handle(command);
-
-        public override void HandleOnClient(NodeUpdateCommand command) => Handle(command);
-
-        private void Handle(NodeUpdateCommand command)
+        public override void Handle(NodeUpdateCommand command)
         {
             var nodeid = command.NodeID;
             Singleton<NetManager>.instance.m_nodes.m_buffer[nodeid].m_segment0 = command.Segments[0];

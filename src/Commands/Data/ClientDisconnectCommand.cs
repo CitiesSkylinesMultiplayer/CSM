@@ -14,5 +14,11 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(1)]
         public string Username { get; set; }
+
+        /// <summary>
+        ///     The client id of the disconnected user.
+        /// </summary>
+        [ProtoMember(2)]
+        public int ClientId { get; set; }
     }
 }
