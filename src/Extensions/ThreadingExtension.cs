@@ -21,6 +21,12 @@ namespace CSM.Extensions
 
         public override void OnAfterSimulationTick()
         {
+            // Normally, the game is paused when the player is in Esc or similar menus. We ignore this setting.
+            if (SimulationManager.instance.ForcedSimulationPaused && MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None)
+            {
+                SimulationManager.instance.ForcedSimulationPaused = false;
+            }
+
             if (_lastSelectedSimulationSpeed != SimulationManager.instance.SelectedSimulationSpeed)
             {
                 Command.SendToAll(new SpeedCommand
