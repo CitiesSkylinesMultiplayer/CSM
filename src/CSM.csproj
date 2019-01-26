@@ -149,6 +149,7 @@
     <Compile Include="Commands\Handler\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\WorldInfoHandler.cs" />
     <Compile Include="Commands\Handler\ZoneUpdateHandler.cs" />
+    <Compile Include="Common\ChatCommand.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
