@@ -18,6 +18,11 @@ namespace CSM.Panels
         private UIListBox _messageBox;
         private UITextField _chatText;
 
+        // Class logger
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public const string NAME = "MPChatLogPanel";
+
         public enum MessageType
         {
             Normal,
@@ -43,8 +48,11 @@ namespace CSM.Panels
         {
             SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                var panel = (ChatLogPanel) UIView.GetAView().FindUIComponent("MPChatLogPanel");
-                panel?.AddGameMessage(type, msg); // The panel sometimes seems to be null?
+                // Get the chat log panel
+                var panel = UIView.GetAView().FindUIComponent(ChatLogPanel.NAME) as ChatLogPanel;
+
+                // Add the chat log
+                panel?.AddGameMessage(type, msg);
             });
         }
 
@@ -57,7 +65,10 @@ namespace CSM.Panels
         {
             SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                var panel = (ChatLogPanel) UIView.GetAView().FindUIComponent("MPChatLogPanel");
+                // Get the chat log panel
+                var panel = UIView.GetAView().FindUIComponent(ChatLogPanel.NAME) as ChatLogPanel;
+
+                // Add the chat log
                 panel?.AddChatMessage(username, msg);
             });
         }
@@ -66,6 +77,8 @@ namespace CSM.Panels
         {
             // Generates the following UI:
             // |---------------|
+            // | Game Chat   |x| <-- _titleBar / hideButton
+            // |---------------|
             // |               | <-- _messageBox
             // |               |
             // |---------------|
@@ -73,7 +86,7 @@ namespace CSM.Panels
             // |---------------|
 
             backgroundSprite = "GenericPanel";
-            name = "MPChatLogPanel";
+            name = ChatLogPanel.NAME;
             color = new Color32(22, 22, 22, 240);
 
             // Activates the dragging of the window
@@ -184,6 +197,12 @@ namespace CSM.Panels
                     {
                         PrintGameMessage(player);
                     }
+                    break;
+                // Causes the chat to reload (destroy this view and create another, useful for debugging the
+                // chat log.
+                case "reload-chat":
+                    Destroy(UIView.GetAView().FindUIComponent(ChatLogPanel.NAME));
+                    UIView.GetAView().AddUIComponent(typeof(ChatLogPanel));
                     break;
 
                 default:
