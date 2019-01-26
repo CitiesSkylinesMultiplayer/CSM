@@ -11,7 +11,7 @@ namespace CSM.Injections
     public class MainMenuAwake
     {
         /// <summary>
-        ///     This handler is used to place the 'JOIN MULTIPLAYER GAME' button to the start
+        ///     This handler is used to place the 'JOIN GAME' button to the start
         ///     of the main menu (handles reloading the intro etc.
         /// </summary>
         public static void Prefix()

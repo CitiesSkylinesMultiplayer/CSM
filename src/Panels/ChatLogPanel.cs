@@ -4,6 +4,8 @@ using CSM.Common;
 using CSM.Helpers;
 using CSM.Networking;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using UnityEngine;
 
@@ -71,7 +73,7 @@ namespace CSM.Panels
                         PrintGameMessage(player);
                     }
                 }),
-                new ChatCommand("hide", "Hides the chat console. Can be displayed again by pressing the '`' key.", (command) =>
+                new ChatCommand("hide-chat", "Hides the chat console. Can be displayed again by pressing the '`' key.", (command) =>
                 {
                     opacity = 0.0f;
                 }),
@@ -84,6 +86,10 @@ namespace CSM.Panels
                 new ChatCommand("clear", "Clear everything from the chat log.", (command) =>
                 {
                     _messageBox.items = new string[0];
+                }),
+                new ChatCommand("open-log", "Opens the multiplayer log.", (command) =>
+                {
+                    Process.Start(Path.GetFullPath(".") + "/multiplayer-logs/log-current.txt");
                 })
             };
         }

@@ -54,7 +54,7 @@ namespace CSM
             var config = new LoggingConfiguration();
 
             // The layout of the log
-            var layout = "[${time}] [version] [${level}] ${message} ${exception:format=tostring}";
+            var layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString() + "] [${level}] ${message} ${exception:format=tostring}";
 
             // Target for file logging
             var logfile = new FileTarget("logfile")
