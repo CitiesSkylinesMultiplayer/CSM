@@ -24,6 +24,7 @@ namespace CSM.Injections
         /// <param name="node">This is the node id set by CreateNode</param>
         public static void Postfix(bool __result, ref ushort node)
         {
+            UnityEngine.Debug.Log($"Create Node");
             if (__result)
             {
                 NetNode netNode = Singleton<NetManager>.instance.m_nodes.m_buffer[node];
@@ -47,6 +48,7 @@ namespace CSM.Injections
         /// <param name="data">The NetNode object</param>
         public static void Prefix(ushort node, ref NetNode data)
         {
+            UnityEngine.Debug.Log($"Release node");
             if (data.m_flags != 0 && !NodeHandler.IgnoreNodes.Contains(node))
             {
                 Command.SendToAll(new NodeReleaseCommand
@@ -73,6 +75,7 @@ namespace CSM.Injections
         /// <param name="node">The node id</param>
         public static void Postfix(ushort node)
         {
+            UnityEngine.Debug.Log($"Update Node Flags");
             NetNode netNode = Singleton<NetManager>.instance.m_nodes.m_buffer[node];
             ushort[] segments = new ushort[8];
             segments[0] = netNode.m_segment0;
@@ -105,6 +108,7 @@ namespace CSM.Injections
         {
             if (__result)
             {
+                UnityEngine.Debug.Log($"CreateSegment {segment}");
                 NetSegment seg = Singleton<NetManager>.instance.m_segments.m_buffer[segment];
                 Command.SendToAll(new SegmentCreateCommand
                 {
@@ -132,6 +136,7 @@ namespace CSM.Injections
         /// <param name="keepNodes">If adjacent nodes should also be released</param>
         public static void Prefix(ushort segment, ref NetSegment data, bool keepNodes)
         {
+            UnityEngine.Debug.Log($"Release segment");
             if (data.m_flags != 0 && !NodeHandler.IgnoreSegments.Contains(segment))
             {
                 Command.SendToAll(new SegmentReleaseCommand

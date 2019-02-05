@@ -13,8 +13,9 @@ namespace CSM.Commands.Handler
 
         public override void Handle(MoneyCommand command)
         {
-            typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, command.InternalMoneyAmount);
-            typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, command.InternalMoneyAmount);
+
+            typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, command.MoneyAmount);
+            typeof(EconomyManager).GetField("m_lastCashAmount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, command.MoneyAmount);
 
             // Only on the client
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)

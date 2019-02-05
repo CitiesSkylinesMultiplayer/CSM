@@ -9,7 +9,7 @@ namespace CSM.Commands
     public class MoneyCommand : CommandBase
     {
         [ProtoMember(1)]
-        public long InternalMoneyAmount { get; set; }
+        public long MoneyAmount { get; set; }
 
         [ProtoMember(2)]
         public long[] TotalIncome { get; set; }
