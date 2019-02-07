@@ -1,8 +1,11 @@
 ﻿using ColossalFramework.UI;
 using CSM.Commands;
+using CSM.Common;
 using CSM.Helpers;
 using CSM.Networking;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using UnityEngine;
 
@@ -18,11 +21,77 @@ namespace CSM.Panels
         private UIListBox _messageBox;
         private UITextField _chatText;
 
+        private float _initialOpacity;
+
+        // Class logger
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        // Name of this component
+        public const string NAME = "MPChatLogPanel";
+
+        private readonly List<ChatCommand> _chatCommands;
+
         public enum MessageType
         {
             Normal,
             Warning,
             Error
+        }
+
+        public ChatLogPanel()
+        {
+            _chatCommands = new List<ChatCommand>
+            {
+                new ChatCommand("help", "Displays information about which commands can be displayed.", (command) =>
+                {
+                    foreach (var c in _chatCommands)
+                    {
+                        PrintGameMessage($"/{c.Command} : {c.Description}");
+                    };
+                }),
+                new ChatCommand("version", "Displays version information about the mod and game.", (command) =>
+                {
+                    PrintGameMessage("Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
+                    PrintGameMessage("Game Version : " + BuildConfig.applicationVersion);
+                }),
+                new ChatCommand("support", "Display support links for the mod.", (command) =>
+                {
+                    PrintGameMessage("GitHub : https://github.com/DominicMaas/Tango");
+                    PrintGameMessage("Discord : https://www.patreon.com/CSM_MultiplayerMod");
+                    PrintGameMessage("Steam Workshop : https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291");
+                }),
+                new ChatCommand("players", "Displays a list of players connected to the server", (command) =>
+                {
+                    if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
+                    {
+                        PrintGameMessage("You are not hosting or connected to any servers.");
+                        return;
+                    }
+
+                    foreach (var player in MultiplayerManager.Instance.PlayerList)
+                    {
+                        PrintGameMessage(player);
+                    }
+                }),
+                new ChatCommand("hide-chat", "Hides the chat console. Can be displayed again by pressing the '`' key.", (command) =>
+                {
+                    opacity = 0.0f;
+                }),
+                new ChatCommand("donate", "Find out how to support the mod developers", (command) =>
+                {
+                    PrintGameMessage("Want to help support the mod?");
+                    PrintGameMessage("Help develop the mod here: https://github.com/DominicMaas/Tango");
+                    PrintGameMessage("Donate to the developers here: https://www.patreon.com/CSM_MultiplayerMod");
+                }),
+                new ChatCommand("clear", "Clear everything from the chat log.", (command) =>
+                {
+                    _messageBox.items = new string[0];
+                }),
+                new ChatCommand("open-log", "Opens the multiplayer log.", (command) =>
+                {
+                    Process.Start(Path.GetFullPath(".") + "/multiplayer-logs/log-current.txt");
+                })
+            };
         }
 
         /// <summary>
@@ -43,8 +112,11 @@ namespace CSM.Panels
         {
             SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                var panel = (ChatLogPanel) UIView.GetAView().FindUIComponent("MPChatLogPanel");
-                panel?.AddGameMessage(type, msg); // The panel sometimes seems to be null?
+                // Get the chat log panel
+                var panel = UIView.GetAView().FindUIComponent(ChatLogPanel.NAME) as ChatLogPanel;
+
+                // Add the chat log
+                panel?.AddGameMessage(type, msg);
             });
         }
 
@@ -57,9 +129,23 @@ namespace CSM.Panels
         {
             SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                var panel = (ChatLogPanel) UIView.GetAView().FindUIComponent("MPChatLogPanel");
+                // Get the chat log panel
+                var panel = UIView.GetAView().FindUIComponent(ChatLogPanel.NAME) as ChatLogPanel;
+
+                // Add the chat log
                 panel?.AddChatMessage(username, msg);
             });
+        }
+
+        public override void Update()
+        {
+            // Toggle the chat when the tidle key is pressed.
+            if (Input.GetKeyDown(KeyCode.BackQuote))
+            {
+                opacity = opacity == _initialOpacity ? 0.0f : _initialOpacity;
+            }
+
+            base.Update();
         }
 
         public override void Start()
@@ -73,7 +159,7 @@ namespace CSM.Panels
             // |---------------|
 
             backgroundSprite = "GenericPanel";
-            name = "MPChatLogPanel";
+            name = ChatLogPanel.NAME;
             color = new Color32(22, 22, 22, 240);
 
             // Activates the dragging of the window
@@ -98,6 +184,7 @@ namespace CSM.Panels
             _messageBox.multilineItems = true;
             _messageBox.textScale = 0.8f;
             _messageBox.itemHeight = 20;
+            _messageBox.multilineItems = true;
 
             // Create the message text box (used for sending messages)
             _chatText = (UITextField)AddUIComponent(typeof(UITextField));
@@ -114,6 +201,15 @@ namespace CSM.Panels
             _chatText.textColor = new Color32(0, 0, 0, 255);
             _chatText.padding = new RectOffset(6, 6, 6, 6);
             _chatText.selectionSprite = "EmptySprite";
+
+            _initialOpacity = opacity;
+
+            PrintGameMessage("Welcome to Cities: Skylines Multiplayer!");
+            PrintGameMessage("Press the ~ (tilde) key to show or hide the chat.");
+            PrintGameMessage("Join our discord server at: https://discord.gg/RjACPhd");
+            PrintGameMessage("Type '/help' to see a list of commands and usage.");
+            PrintGameMessage("Type '/support' to find out where to report bugs and get help.");
+
             base.Start();
         }
 
@@ -133,7 +229,16 @@ namespace CSM.Panels
                 // If a command, parse it
                 if (text.StartsWith("/"))
                 {
-                    ParseCommand(text);
+                    var command = _chatCommands.Find(x => x.Command == text.TrimStart('/'));
+                    if (command == null)
+                    {
+                        PrintGameMessage(MessageType.Warning, $"'{text.TrimStart('/')}' is not a valid command.");
+                        return;
+                    }
+
+                    // Run the command
+                    command.Action.Invoke(text.TrimStart('/'));
+
                     return;
                 }
 
@@ -167,28 +272,6 @@ namespace CSM.Panels
 
                 // Add the message to the chat UI
                 PrintChatMessage(playerName, text);
-            }
-        }
-
-        private void ParseCommand(string command)
-        {
-            switch (command.TrimStart('/'))
-            {
-                case "version":
-                    PrintGameMessage("Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
-                    PrintGameMessage("Game Version : " + BuildConfig.applicationVersion);
-                    break;
-
-                case "players":
-                    foreach (var player in MultiplayerManager.Instance.PlayerList)
-                    {
-                        PrintGameMessage(player);
-                    }
-                    break;
-
-                default:
-                    PrintGameMessage(MessageType.Warning, $"{command.TrimStart('/')} is not a valid command.");
-                    break;
             }
         }
 

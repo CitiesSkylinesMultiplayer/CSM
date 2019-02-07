@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using CSM.Models;
 using CSM.Panels;
 using Harmony;
@@ -21,13 +22,6 @@ namespace CSM
         {
             // Setup the correct logging configuration
             SetupLogging();
-
-            // Make sure the button is enabled after intro load
-            LoadingManager.instance.m_introLoaded += () => CreateJoinGameButton();
-
-            // We are in the main menu, so load the "Join Game" button.
-            if (!LoadingManager.instance.m_essentialScenesLoaded)
-                CreateJoinGameButton();
 
             try
             {
@@ -60,7 +54,7 @@ namespace CSM
             var config = new LoggingConfiguration();
 
             // The layout of the log
-            var layout = "[${time}] [version] [${level}] ${message} ${exception:format=tostring}";
+            var layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString() + "] [${level}] ${message} ${exception:format=tostring}";
 
             // Target for file logging
             var logfile = new FileTarget("logfile")
@@ -82,72 +76,6 @@ namespace CSM
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
 
             LogManager.Configuration = config;
-        }
-
-        private static void CreateJoinGameButton()
-        {
-            // Temp, we do not want to run this code on release as it's not ready yet.
-            return;
-
-            var uiView = UIView.GetAView().FindUIComponent("Menu") as UIPanel;
-
-            if (uiView == null)
-                return;
-
-            var joinGameButton = UIView.GetAView().FindUIComponent("JoinGame") as UIButton;
-
-            // Create the button if it does not exist
-            if (joinGameButton == null)
-                joinGameButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
-
-            joinGameButton.name = "JoinGame";
-            joinGameButton.text = "JOIN GAME";
-            joinGameButton.width = 411;
-            joinGameButton.height = 56;
-
-            joinGameButton.textHorizontalAlignment = UIHorizontalAlignment.Center;
-
-            joinGameButton.focusedColor = new Color32(254, 254, 254, 255);
-            joinGameButton.focusedTextColor = new Color32(255, 255, 255, 255);
-
-            joinGameButton.hoveredColor = new Color32(94, 195, 255, 255);
-            joinGameButton.hoveredFgSprite = "MenuPanelInfo";
-            joinGameButton.hoveredTextColor = new Color32(7, 123, 255, 255);
-
-            joinGameButton.bottomColor = new Color32(163, 226, 254, 255);
-
-            joinGameButton.textColor = new Color32(254, 254, 254, 255);
-            joinGameButton.textScale = 1.5f;
-
-            joinGameButton.pressedColor = new Color32(185, 221, 254, 255);
-            joinGameButton.pressedFgSprite = "MenuPanelInfo";
-            joinGameButton.pressedTextColor = new Color32(30, 30, 44, 255);
-
-            joinGameButton.useDropShadow = true;
-            joinGameButton.useGradient = true;
-            joinGameButton.useGUILayout = true;
-
-            joinGameButton.dropShadowOffset = new Vector2(0, -1.33f);
-
-            // TODO, enable later
-            //    joinGameButton.eventClick -= JoinGameButton_eventClick;
-            //    joinGameButton.eventClick += JoinGameButton_eventClick;
-        }
-
-        private static void JoinGameButton_eventClick(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            var panel = UIView.GetAView().FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
-
-            if (panel != null)
-            {
-                panel.isVisible = true;
-                panel.Focus();
-            }
-            else
-            {
-                var joinGamePanel = (JoinGamePanel)UIView.GetAView().AddUIComponent(typeof(JoinGamePanel));
-                joinGamePanel.Focus();
-            }
         }
 
         public string Name => "Cities: Skylines Multiplayer";
