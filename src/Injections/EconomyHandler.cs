@@ -12,6 +12,9 @@ using ICities;
 
 namespace CSM.Injections
 {
+    /// <summary>
+    /// This removes 
+    /// </summary>
     class EconomyHandler
     {
     }
@@ -25,7 +28,7 @@ namespace CSM.Injections
         public static bool Prefix(Resource resource, int amount, out int __result)
         {
             __result = amount;
-            //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 switch (resource)
                 {
@@ -38,9 +41,16 @@ namespace CSM.Injections
                             amount = 0;
                             return false;
                         }
+                    default:
+                        {
+                            Command.SendToAll(new MoneyCommand
+                            {
+                                MoneyAmount = amount,
+                            });
+                            break;
+                        }
                 }
-            }            
-            UnityEngine.Debug.Log($"{resource} added, amount: {amount}");
+            }           
             return true;
         }
     }
@@ -87,7 +97,6 @@ namespace CSM.Injections
                             }
                     }
                 }
-                UnityEngine.Debug.Log($"{resource} fetched, amount {amount}");
                 return true;
             }
           
