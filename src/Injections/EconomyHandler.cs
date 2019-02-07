@@ -22,9 +22,9 @@ namespace CSM.Injections
 
     public class AddResource
     {
-        public static void Prefix(Resource resource, int amount, out object __state)
+        public static bool Prefix(Resource resource, int amount, out int __result)
         {
-            __state = amount;
+            __result = amount;
             //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 switch (resource)
@@ -36,65 +36,60 @@ namespace CSM.Injections
                     case Resource.TourismIncome:
                         {
                             amount = 0;
-                            break;
+                            return false;
                         }
-
                 }
-            }
+            }            
             UnityEngine.Debug.Log($"{resource} added, amount: {amount}");
+            return true;
         }
     }
 
     [HarmonyPatch(typeof(EconomyManager))]
-    [HarmonyPatch("AddResource")]
-    [HarmonyPatch(new Type[] { typeof(Resource), typeof(int), typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(ItemClass.Level), typeof(DistrictPolicies.Taxation) })]
-
-    public class AddResourcePostfix
+    [HarmonyPatch("AddPrivateIncome")]
+    public class AddPrivateIncome
     {
-        public static void Postfix(int __state)
+        public static bool Prefix(ref int amount, int taxRate, out int __result)
         {
-            UnityEngine.Debug.Log($"postfix løber");
+            __result = amount;
+            return false;
         }
     }
-
 
     [HarmonyPatch(typeof(EconomyManager))]
     [HarmonyPatch("FetchResource")]
     [HarmonyPatch(new Type[] { typeof(Resource), typeof(int), typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(ItemClass.Level) })]
     public class FetchResource
     {
-        public static void Prefix(Resource resource, ref int amount)
+        public static bool Prefix(Resource resource, ref int amount, ref int __result )
         {
-            //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
-            
-                switch (resource)
+                __result = amount;
+                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 {
-                    case Resource.CitizenIncome:
-                    case Resource.LoanPayment:
-                    case Resource.Maintenance:
-                    case Resource.PolicyCost:
-                        {
-                        amount = 0;
-                        //EconomyManager.instance.AddResource(Resource.RefundAmount, amount, ItemClass.Service.None, ItemClass.SubService.None,ItemClass.Level.None,DistrictPolicies.Taxation.None);
-                        break;
-                        }
-                    default:
-                        {
-                            Command.SendToAll(new MoneyCommand
+                    switch (resource)
+                    {
+                        case Resource.CitizenIncome:
+                        case Resource.LoanPayment:
+                        case Resource.Maintenance:
+                        case Resource.PolicyCost:
                             {
-                                MoneyAmount = amount,
-                            });
-                            break;
-                        }                        
-                }                               
+                                amount = 0;
+                                return false;
+                            }
+                        default:
+                            {
+                                Command.SendToAll(new MoneyCommand
+                                {
+                                    MoneyAmount = -amount,
+                                });
+                                break;
+                            }
+                    }
+                }
+                UnityEngine.Debug.Log($"{resource} fetched, amount {amount}");
+                return true;
             }
-            UnityEngine.Debug.Log($"{resource} fetched, amount {amount}");
-
-            //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-            //{
-            //    UnityEngine.Debug.Log("virker stadig");
-            //}
           
         }
     }
