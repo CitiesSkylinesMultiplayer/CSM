@@ -161,6 +161,7 @@
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\MainMenuHandler.cs" />
+    <Compile Include="Injections\EconomyHandler.cs" />
     <Compile Include="Injections\NodeHandler.cs" />
     <Compile Include="Injections\PropHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />

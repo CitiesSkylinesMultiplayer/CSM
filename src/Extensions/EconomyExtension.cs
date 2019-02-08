@@ -46,14 +46,6 @@ namespace CSM.Extensions
             switch (MultiplayerManager.Instance.CurrentRole)
             {
                 case MultiplayerRole.Client:
-                    if (_lastMoneyAmount != (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance))
-                    {
-                        Command.SendToServer(new MoneyCommand
-                        {
-                            InternalMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance)
-                        });
-                    }
-
                     if (!_LastserviceBudgetDay.SequenceEqual(_serviceBudgetDay) | !_LastserviceBudgetNight.SequenceEqual(_serviceBudgetNight))
                     {
                         Command.SendToServer(new BudgetChangeCommand
@@ -74,7 +66,6 @@ namespace CSM.Extensions
 
                         _Taxrate.CopyTo(_LastTaxrate, 0);
                     }
-
                     break;
 
                 case MultiplayerRole.Server:
@@ -82,7 +73,7 @@ namespace CSM.Extensions
                     {
                         Command.SendToClients(new MoneyCommand
                         {
-                            InternalMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance),
+                            MoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance),
                             TotalExpenses = (long[])typeof(EconomyManager).GetField("m_totalExpenses", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance),
                             TotalIncome = (long[])typeof(EconomyManager).GetField("m_totalIncome", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance)
                         });
@@ -113,35 +104,6 @@ namespace CSM.Extensions
 
             _lastMoneyAmount = (long)typeof(EconomyManager).GetField("m_cashAmount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Singleton<EconomyManager>.instance);
             return (internalMoneyAmount);
-        }
-
-        public override int OnAddResource(EconomyResource resource, int amount, Service service, SubService subService, Level level)
-        {
-            switch (MultiplayerManager.Instance.CurrentRole)
-            {
-                case MultiplayerRole.Client:
-                    {
-                        typeof(EconomyManager).GetField("m_taxMultiplier", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Singleton<EconomyManager>.instance, 0);
-                        break;
-                    }
-            }
-            return amount;
-        }
-
-        public override int OnGetMaintenanceCost(int originalMaintenanceCost, Service service, SubService subService, Level level)
-        {
-            switch (MultiplayerManager.Instance.CurrentRole)
-            {
-                case MultiplayerRole.Client:
-                    {
-                        return 0;
-                    }
-                case MultiplayerRole.Server:
-                    {
-                        return originalMaintenanceCost;
-                    }
-            }
-            return originalMaintenanceCost;
         }
     }
 }
