@@ -6,9 +6,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(DistrictCreateCommand command)
         {
-            DistrictHandler.IgnoreDistricts.Add(command.DistrictID);
+            DistrictHandler.IgnoreAll = true;
             DistrictManager.instance.CreateDistrict(out byte district);
-            DistrictHandler.IgnoreDistricts.Remove(command.DistrictID);
+            DistrictHandler.IgnoreAll = false;
         }
     }
 }

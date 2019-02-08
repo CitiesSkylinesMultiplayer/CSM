@@ -2,15 +2,13 @@
 using CSM.Commands;
 using Harmony;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace CSM.Injections
 {
     public class NodeHandler
     {
-        public static List<ushort> IgnoreSegments { get; } = new List<ushort>();
-        public static List<ushort> IgnoreNodes { get; } = new List<ushort>();
+        public static bool IgnoreAll { get; set; } = false;
     }
 
     [HarmonyPatch(typeof(NetManager))]
@@ -24,9 +22,13 @@ namespace CSM.Injections
         /// <param name="node">This is the node id set by CreateNode</param>
         public static void Postfix(bool __result, ref ushort node)
         {
+            if (NodeHandler.IgnoreAll)
+                return;
+
             if (__result)
             {
                 NetNode netNode = Singleton<NetManager>.instance.m_nodes.m_buffer[node];
+
                 Command.SendToAll(new NodeCreateCommand
                 {
                     Position = netNode.m_position,
@@ -47,7 +49,10 @@ namespace CSM.Injections
         /// <param name="data">The NetNode object</param>
         public static void Prefix(ushort node, ref NetNode data)
         {
-            if (data.m_flags != 0 && !NodeHandler.IgnoreNodes.Contains(node))
+            if (NodeHandler.IgnoreAll)
+                return;
+
+            if (data.m_flags != 0)
             {
                 Command.SendToAll(new NodeReleaseCommand
                 {
@@ -73,6 +78,9 @@ namespace CSM.Injections
         /// <param name="node">The node id</param>
         public static void Postfix(ushort node)
         {
+            if (NodeHandler.IgnoreAll)
+                return;
+
             NetNode netNode = Singleton<NetManager>.instance.m_nodes.m_buffer[node];
             ushort[] segments = new ushort[8];
             segments[0] = netNode.m_segment0;
@@ -103,6 +111,9 @@ namespace CSM.Injections
         /// <param name="segment">The segment id</param>
         public static void Postfix(bool __result, ref ushort segment)
         {
+            if (NodeHandler.IgnoreAll)
+                return;
+
             if (__result)
             {
                 NetSegment seg = Singleton<NetManager>.instance.m_segments.m_buffer[segment];
@@ -132,7 +143,10 @@ namespace CSM.Injections
         /// <param name="keepNodes">If adjacent nodes should also be released</param>
         public static void Prefix(ushort segment, ref NetSegment data, bool keepNodes)
         {
-            if (data.m_flags != 0 && !NodeHandler.IgnoreSegments.Contains(segment))
+            if (NodeHandler.IgnoreAll)
+                return;
+
+            if (data.m_flags != 0)
             {
                 Command.SendToAll(new SegmentReleaseCommand
                 {

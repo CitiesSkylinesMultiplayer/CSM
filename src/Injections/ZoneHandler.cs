@@ -1,12 +1,11 @@
 ﻿using CSM.Commands;
 using Harmony;
-using System.Collections.Generic;
 
 namespace CSM.Injections
 {
     public class ZoneHandler
     {
-        public static List<ushort> IgnoreZones { get; } = new List<ushort>();
+        public static bool IgnoreAll { get; set; } = false;
     }
     
     /*
@@ -28,10 +27,8 @@ namespace CSM.Injections
         /// <param name="___m_zone2">Zone storage attribute 2</param>
         public static void Postfix(ushort blockID, ulong ___m_zone1, ulong ___m_zone2)
         {
-            if (ZoneHandler.IgnoreZones.Contains(blockID))
-            {
+            if (ZoneHandler.IgnoreAll)
                 return;
-            }
 
             Command.SendToAll(new ZoneUpdateCommand
             {

@@ -1,16 +1,13 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
 using Harmony;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    class PropHandler
+    public class PropHandler
     {
-        public static List<ushort> IgnoreProp { get; } = new List<ushort>();
+        public static bool IgnoreAll { get; set; } = false;
     }
 
     [HarmonyPatch(typeof(PropManager))]
@@ -19,6 +16,9 @@ namespace CSM.Injections
     {
         public static void Postfix(bool __result, ref ushort prop, Vector3 position, float angle, bool single)
         {
+            if (PropHandler.IgnoreAll)
+                return;
+
             if (__result)
             {
                 PropInstance propInstance = Singleton<PropManager>.instance.m_props.m_buffer[prop];
@@ -40,14 +40,14 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort prop, Vector3 position)
         {
-            if (!PropHandler.IgnoreProp.Contains(prop))
+            if (PropHandler.IgnoreAll)
+                return;
+
+            Command.SendToAll(new PropMoveCommand
             {
-                Command.SendToAll(new PropMoveCommand
-                {
-                    PropID = prop,
-                    Position = position
-                });
-            }
+                PropID = prop,
+                Position = position
+            });
         }
     }
 
@@ -57,15 +57,13 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort prop)
         {
-            if (!PropHandler.IgnoreProp.Contains(prop))
-            {
-                Command.SendToAll(new PropReleaseCommand
-                {
-                    PropID = prop
-                });
+            if (PropHandler.IgnoreAll)
+                return;
 
-            }
+            Command.SendToAll(new PropReleaseCommand
+            {
+                PropID = prop
+            });
         }
     }
 }
-
