@@ -24,7 +24,6 @@ namespace CSM.Injections
         /// <param name="node">This is the node id set by CreateNode</param>
         public static void Postfix(bool __result, ref ushort node)
         {
-            UnityEngine.Debug.Log($"Create Node");
             if (__result)
             {
                 NetNode netNode = Singleton<NetManager>.instance.m_nodes.m_buffer[node];

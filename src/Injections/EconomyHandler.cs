@@ -62,7 +62,14 @@ namespace CSM.Injections
         public static bool Prefix(ref int amount, int taxRate, out int __result)
         {
             __result = amount;
-            return false;
+
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            {
+                
+                return false;
+            }
+            return true;
+
         }
     }
 
