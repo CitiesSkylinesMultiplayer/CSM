@@ -30,7 +30,7 @@ namespace CSM.Extensions
             _multiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
 
             _multiplayerButton.text = "Multiplayer";
-            _multiplayerButton.width = 240;
+            _multiplayerButton.width = 150;
             _multiplayerButton.height = 40;
 
             _multiplayerButton.normalBgSprite = "ButtonMenu";
