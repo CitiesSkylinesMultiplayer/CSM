@@ -29,7 +29,7 @@ namespace CSM.Extensions
 
             _multiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
 
-            _multiplayerButton.text = "Show Multiplayer Menu";
+            _multiplayerButton.text = "Multiplayer";
             _multiplayerButton.width = 240;
             _multiplayerButton.height = 40;
 
@@ -62,14 +62,6 @@ namespace CSM.Extensions
                 else
                 {
                     var newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
-                    _multiplayerButton.text = "Hide Multiplayer Menu";
-
-                    // Bind visibility changed event to update button text
-                    newConnectionPanel.eventVisibilityChanged +=
-                        (uiComponent, value) =>
-                        {
-                            _multiplayerButton.text = uiComponent.isVisible ? "Hide Multiplayer Menu" : "Show Multiplayer Menu";
-                        };
                 }
             };
         }
