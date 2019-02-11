@@ -1,18 +1,14 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
 using Harmony;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 namespace CSM.Injections
 {
     public class TreeHandler
     {
-        public static List<uint> IgnoreTrees { get; } = new List<uint>();
+        public static bool IgnoreAll { get; set; } = false;
     }
-
 
     [HarmonyPatch(typeof(TreeManager))]
     [HarmonyPatch("CreateTree")]
@@ -20,6 +16,9 @@ namespace CSM.Injections
     {
         public static void Postfix(bool __result, ref uint tree, Vector3 position, bool single)
         {
+            if (TreeHandler.IgnoreAll)
+                return;
+
             if (__result)
             {
                 TreeInstance treeInstance = Singleton<TreeManager>.instance.m_trees.m_buffer[tree];
@@ -41,14 +40,14 @@ namespace CSM.Injections
     {
         public static void Postfix(uint tree, Vector3 position)
         {
-            if (!TreeHandler.IgnoreTrees.Contains(tree))
+            if (TreeHandler.IgnoreAll)
+                return;
+
+            Command.SendToAll(new TreeMoveCommand
             {
-                Command.SendToAll(new TreeMoveCommand
-                {
-                    TreeID = tree,
-                    Position = position
-                });
-            }
+                TreeID = tree,
+                Position = position
+            });
         }
     }
 
@@ -58,15 +57,13 @@ namespace CSM.Injections
     {
         public static void Prefix(uint tree)
         {
-            if (!TreeHandler.IgnoreTrees.Contains(tree))
+            if (TreeHandler.IgnoreAll)
+                return;
+
+            Command.SendToAll(new TreeReleaseCommand
             {
-                Command.SendToAll(new TreeReleaseCommand
-                {
-                    TreeID = tree
-                });
-
-            }
+                TreeID = tree
+            });
+        }
     }
-    }
-
 }

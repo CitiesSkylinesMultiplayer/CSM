@@ -6,10 +6,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(DistrictCityPolicyUnsetCommand command)
         {
-            DistrictHandler.ignoreCityPolicy = true;
+            DistrictHandler.IgnoreAll = true;
             DistrictManager.instance.UnsetCityPolicy(command.Policy);
-            DistrictHandler.ignoreCityPolicy = false;
+            DistrictHandler.IgnoreAll = false;
         }
-
     }
 }

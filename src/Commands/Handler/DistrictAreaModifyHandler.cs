@@ -6,12 +6,13 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(DistrictAreaModifyCommand command)
         {
-            DistrictHandler.IgnoreAreaModified.Add(command.StartPosition);
+            DistrictHandler.IgnoreAll = true;
+
             DistrictTool.ApplyBrush(command.Layer, command.District, command.BrushRadius, command.StartPosition, command.EndPosition);
             DistrictManager.instance.NamesModified();
             DistrictManager.instance.ParkNamesModified();
-            DistrictHandler.IgnoreAreaModified.Remove(command.StartPosition);
-        }
 
+            DistrictHandler.IgnoreAll = false;
+        }
     }
 }

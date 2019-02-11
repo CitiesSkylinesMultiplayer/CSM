@@ -6,9 +6,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(ParkCreateCommand command)
         {
-            DistrictHandler.IgnoreParks.Add(command.ParkID);
+            DistrictHandler.IgnoreAll = true;
             DistrictManager.instance.CreatePark(out byte Park, command.ParkType, command.ParkLevel);
-            DistrictHandler.IgnoreParks.Remove(command.ParkID);
+            DistrictHandler.IgnoreAll = false;
         }
     }
 }
