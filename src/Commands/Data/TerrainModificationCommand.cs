@@ -17,7 +17,7 @@ namespace CSM.Commands
         public float Strength;
 
         [ProtoMember(4)]
-        public Vector3 mousePosition;
+        public Vector3 MousePosition;
 
         [ProtoMember(5)]
         public Vector3 StartPosition;
@@ -26,27 +26,9 @@ namespace CSM.Commands
         public Vector3 EndPosition;
 
         [ProtoMember(7)]
-        public Mode mode;
+        public Mode Mode;
 
         [ProtoMember(8)]
         public bool MouseRightDown;
-
-        [ProtoMember(9)]
-        public bool MouseLeftDown;
-
-        [ProtoMember(10)]
-        public int StrokeXmax;
-
-        [ProtoMember(11)]
-        public int StrokeZmin;
-
-        [ProtoMember(12)]
-        public int StrokeZmax;
-
-        [ProtoMember(13)]
-        public int StrokeXmin;
-
-
-
     }
 }

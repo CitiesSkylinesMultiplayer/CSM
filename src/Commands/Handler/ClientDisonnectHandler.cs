@@ -1,4 +1,5 @@
-﻿using CSM.Networking;
+﻿using CSM.Common;
+using CSM.Networking;
 using CSM.Panels;
 using NLog;
 
@@ -19,6 +20,7 @@ namespace CSM.Commands.Handler
             MultiplayerManager.Instance.PlayerList.Remove(command.Username);
 
             TransactionHandler.ClearTransactions(command.ClientId);
+            ToolSimulator.RemoveSender(command.ClientId);
         }
 
         public override void OnClientDisconnect(Player player)
