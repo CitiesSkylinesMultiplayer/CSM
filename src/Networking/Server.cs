@@ -1,5 +1,6 @@
 ﻿using CSM.Commands;
 using CSM.Commands.Handler;
+using CSM.Common;
 using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
@@ -124,6 +125,7 @@ namespace CSM.Networking
 
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
+            ToolSimulator.Clear();
 
             _logger.Info("Server stopped.");
         }
@@ -254,6 +256,7 @@ namespace CSM.Networking
             this.ConnectedPlayers.Remove(player.NetPeer.Id);
             Command.HandleClientDisconnect(player);
             TransactionHandler.ClearTransactions(player.NetPeer.Id);
+            ToolSimulator.RemoveSender(player.NetPeer.Id);
         }
 
         /// <summary>
