@@ -6,9 +6,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(PropReleaseCommand command)
         {
-            PropHandler.IgnoreProp.Add(command.PropID);
+            PropHandler.IgnoreAll = true;
             PropManager.instance.ReleaseProp(command.PropID);
-            PropHandler.IgnoreProp.Remove(command.PropID);
+            PropHandler.IgnoreAll = false;
         }
     }
 }

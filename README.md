@@ -46,6 +46,9 @@ We would like to give a special thanks to the people backing us financialy throu
 - Daimyo
 - Motey
 - Ewan Colyer
+- Kevin Prüßner
+- C Zhang
+
 
 ## Contributors
 - [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)

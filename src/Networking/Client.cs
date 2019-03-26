@@ -1,5 +1,6 @@
 ﻿using ColossalFramework.Plugins;
 using CSM.Commands;
+using CSM.Common;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
@@ -167,6 +168,7 @@ namespace CSM.Networking
             _netClient.Stop();
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
+            ToolSimulator.Clear();
 
             _logger.Info("Disconnected from server");
         }

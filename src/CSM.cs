@@ -1,14 +1,9 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
-using CSM.Models;
-using CSM.Panels;
-using Harmony;
+﻿using Harmony;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Reflection;
-using UnityEngine;
 
 namespace CSM
 {

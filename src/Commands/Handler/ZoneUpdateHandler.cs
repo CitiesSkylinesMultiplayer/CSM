@@ -10,10 +10,10 @@ namespace CSM.Commands.Handler
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[command.ZoneId].m_zone1 = command.Zone1;
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[command.ZoneId].m_zone2 = command.Zone2;
 
-            ZoneHandler.IgnoreZones.Add(command.ZoneId);
+            ZoneHandler.IgnoreAll = true;
             // This Command is necessary to get the Zone to render, else it will first show when a building is build on it.
             Singleton<ZoneManager>.instance.m_blocks.m_buffer[command.ZoneId].RefreshZoning(command.ZoneId);
-            ZoneHandler.IgnoreZones.Remove(command.ZoneId);
+            ZoneHandler.IgnoreAll = false;
         }
     }
 }
