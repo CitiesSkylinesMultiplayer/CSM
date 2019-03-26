@@ -44,7 +44,7 @@ namespace CSM.Panels
             height = 560;
 
             // Title Label
-            this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
+            this.CreateTitleLabel("Connect to Server (NOT WORKING)", new Vector2(80, -20));
 
             // IP Address Label
             this.CreateLabel("IP Address:", new Vector2(10, -70));
@@ -91,6 +91,9 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
+            // TEMP
+            return;
+
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
             _connectionStatus.text = "Connecting...";
 
