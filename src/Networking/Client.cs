@@ -1,11 +1,9 @@
 ﻿using ColossalFramework.Plugins;
 using CSM.Commands;
-using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
 using LiteNetLib;
-using LiteNetLib.Utils;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -231,7 +229,8 @@ namespace CSM.Networking
                 ModCount = PluginManager.instance.modCount,
                 ModVersion = versionString,
                 Password = Config.Password,
-                Username = Config.Username
+                Username = Config.Username,
+                RequestWorld = Config.RequestWorld,
             };
 
             _logger.Info("Sending connection request to server...");

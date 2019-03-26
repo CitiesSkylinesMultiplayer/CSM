@@ -44,5 +44,12 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(5)]
         public string GameVersion { get; set; }
+
+        /// <summary>
+        ///     The client is requesting the server world, this is called when the client
+        ///     connects from the main menu.
+        /// </summary>
+        [ProtoMember(6)]
+        public bool RequestWorld { get; set; }
     }
 }

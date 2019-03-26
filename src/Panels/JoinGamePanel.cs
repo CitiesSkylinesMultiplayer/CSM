@@ -116,7 +116,7 @@ namespace CSM.Panels
             }
 
             // Try connect and get the result
-            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, (success) =>
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, false, (success) =>
             {
                 Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {

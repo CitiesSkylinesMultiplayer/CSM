@@ -1,5 +1,7 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using CSM.Helpers;
+using CSM.Networking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +44,7 @@ namespace CSM.Panels
             height = 560;
 
             // Title Label
-            this.CreateTitleLabel("Connect to Server (NOT WORKING)", new Vector2(80, -20));
+            this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
 
             // IP Address Label
             this.CreateLabel("IP Address:", new Vector2(10, -70));
@@ -89,54 +91,54 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            //_connectionStatus.textColor = new Color32(255, 255, 0, 255);
-            //_connectionStatus.text = "Connecting...";
+            _connectionStatus.textColor = new Color32(255, 255, 0, 255);
+            _connectionStatus.text = "Connecting...";
 
-            //if (string.IsNullOrEmpty(_portField.text) || string.IsNullOrEmpty(_ipAddressField.text))
-            //{
-            //    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            //    _connectionStatus.text = "Invalid Port or IP";
-            //    return;
-            //}
+            if (string.IsNullOrEmpty(_portField.text) || string.IsNullOrEmpty(_ipAddressField.text))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Port or IP";
+                return;
+            }
 
-            //if (string.IsNullOrEmpty(_nameField.text))
-            //{
-            //    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            //    _connectionStatus.text = "Invalid Username";
-            //    return;
-            //}
+            if (string.IsNullOrEmpty(_nameField.text))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Username";
+                return;
+            }
 
-            //if (!int.TryParse(_portField.text, out var port))
-            //{
-            //    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            //    _connectionStatus.text = "Invalid Port";
-            //    return;
-            //}
+            if (!int.TryParse(_portField.text, out var port))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Invalid Port";
+                return;
+            }
 
-            //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-            //{
-            //    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            //    _connectionStatus.text = "Already Running Server";
-            //    return;
-            //}
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Already Running Server";
+                return;
+            }
 
-            //// Try connect and get the result
-            //MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, (success) =>
-            //{
-            //    Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
-            //    {
-            //        if (!success)
-            //        {
-            //            _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-            //            _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
-            //        }
-            //        else
-            //        {
-            //            _connectionStatus.text = "";
-            //            isVisible = false;
-            //        }
-            //    });
-            //});
+            // Try connect and get the result
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, true, (success) =>
+            {
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
+                    if (!success)
+                    {
+                        _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                        _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
+                    }
+                    else
+                    {
+                        _connectionStatus.text = "";
+                        isVisible = false;
+                    }
+                });
+            });
         }
     }
 }

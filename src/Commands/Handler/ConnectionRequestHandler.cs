@@ -1,5 +1,10 @@
-﻿using CSM.Networking;
+﻿using ColossalFramework;
+using ColossalFramework.IO;
+using ColossalFramework.Packaging;
+using CSM.Common;
+using CSM.Networking;
 using LiteNetLib;
+using System.IO;
 using System.Reflection;
 
 namespace CSM.Commands.Handler
@@ -12,7 +17,9 @@ namespace CSM.Commands.Handler
             RelayOnServer = false;
         }
 
-        public override void Handle(ConnectionRequestCommand command) { }
+        public override void Handle(ConnectionRequestCommand command)
+        {
+        }
 
         public void HandleOnServer(ConnectionRequestCommand command, NetPeer peer)
         {
@@ -67,18 +74,35 @@ namespace CSM.Commands.Handler
                 }
             }
 
+            // Add the new player as a connected player
             var newPlayer = new Player(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
-            Command.SendToClient(peer, new ConnectionResultCommand
+            // Get a serialized version of the server world to send to the player.
+            if (command.RequestWorld)
             {
-                Success = true,
-                ClientId = peer.Id
-            });
+                // Get the world
+                var world = WorldManager.GetWorld();
+
+                // Send the result command
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = true,
+                    ClientId = peer.Id,
+                    World = world
+                });
+            }
+            else
+            {
+                // Send the result command
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = true,
+                    ClientId = peer.Id
+                });
+            }
 
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
-
-            // Get map to send to client
         }
     }
 }

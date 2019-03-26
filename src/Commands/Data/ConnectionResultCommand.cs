@@ -30,5 +30,10 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(3)]
         public int ClientId { get; set; }
+
+        /// <summary>
+        ///     The world in a serialized byte array.
+        /// </summary>
+        public byte[] World { get; set; }
     }
 }
