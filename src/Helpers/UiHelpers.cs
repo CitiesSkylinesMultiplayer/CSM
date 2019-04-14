@@ -83,6 +83,36 @@ namespace CSM.Helpers
             return textField;
         }
 
+        public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text,Vector2 position)
+        {
+            UICheckBox checkBox = (UICheckBox)uiComponent.AddUIComponent(typeof(UICheckBox));
+
+            checkBox.width = 300f;
+            checkBox.height = 20f;
+            checkBox.clipChildren = true;
+            checkBox.position = position;
+
+            UISprite sprite = checkBox.AddUIComponent<UISprite>();
+            sprite.atlas = GetAtlas("Ingame");
+            sprite.spriteName = "ToggleBase";
+            sprite.size = new Vector2(16f, 16f);
+            sprite.relativePosition = Vector3.zero;
+
+            checkBox.checkedBoxObject = sprite.AddUIComponent<UISprite>();
+            ((UISprite)checkBox.checkedBoxObject).atlas = GetAtlas("Ingame");
+            ((UISprite)checkBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
+            checkBox.checkedBoxObject.size = new Vector2(16f, 16f);
+            checkBox.checkedBoxObject.relativePosition = Vector3.zero;
+            checkBox.checkedBoxObject.isInteractive = false;
+
+            checkBox.label = checkBox.AddUIComponent<UILabel>();
+            checkBox.label.text = text;
+            checkBox.label.textScale = 0.9f;
+            checkBox.label.relativePosition = new Vector3(22f, 2f);
+
+            return checkBox;
+        }
+
         // Sourced from : https://github.com/SamsamTS/CS-MoveIt/blob/master/MoveIt/UIUtils.cs
         // I found his code after I started this class, the below atlas feature is quite neat!
 
