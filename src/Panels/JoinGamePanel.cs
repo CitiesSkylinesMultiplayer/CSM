@@ -3,6 +3,7 @@ using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
+using ColossalFramework.PlatformServices;
 
 namespace CSM.Panels
 {
@@ -10,13 +11,15 @@ namespace CSM.Panels
     {
         private UITextField _ipAddressField;
         private UITextField _portField;
-        private UITextField _nameField;
+        private UITextField _usernameField;
         private UITextField _passwordField;
 
         private UILabel _connectionStatus;
 
         private UIButton _connectButton;
         private UIButton _closeButton;
+
+        private UICheckBox _passwordBox;
 
         public override void Start()
         {
@@ -56,10 +59,17 @@ namespace CSM.Panels
             this.CreateLabel("Username:", new Vector2(10, -230));
 
             // Username field
-            _nameField = this.CreateTextField("", new Vector2(10, -260));
+            _usernameField = this.CreateTextField("", new Vector2(10, -260));
+            if (PlatformService.active == true)
+            {
+                _usernameField.text = PlatformService.personaName.ToString();
+            }
 
             // Password label
             this.CreateLabel("Password:", new Vector2(10, -310));
+
+            // Password checkbox
+            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(120, -310));
 
             // Password field
             _passwordField = this.CreateTextField("", new Vector2(10, -340));
@@ -80,6 +90,18 @@ namespace CSM.Panels
             _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+
+            _passwordBox.eventClicked += (component, param) =>
+            {
+                if (_passwordBox.isChecked == true)
+                {
+                    _passwordField.isPasswordField = false;
+                }
+                else
+                {
+                    _passwordField.isPasswordField = true;
+                }
+            };
         }
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
@@ -94,7 +116,7 @@ namespace CSM.Panels
                 return;
             }
 
-            if (string.IsNullOrEmpty(_nameField.text))
+            if (string.IsNullOrEmpty(_usernameField.text))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Username";
@@ -116,7 +138,7 @@ namespace CSM.Panels
             }
 
             // Try connect and get the result
-            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _nameField.text, _passwordField.text, false, (success) =>
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, false, (success) =>
             {
                 Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {

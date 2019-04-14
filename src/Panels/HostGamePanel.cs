@@ -4,6 +4,7 @@ using CSM.Helpers;
 using CSM.Networking;
 using System.Threading;
 using UnityEngine;
+using ColossalFramework.PlatformServices;
 
 namespace CSM.Panels
 {
@@ -19,6 +20,8 @@ namespace CSM.Panels
 
         private UIButton _createButton;
         private UIButton _closeButton;
+
+        private UICheckBox _passwordBox;
 
         public override void Start()
         {
@@ -49,14 +52,21 @@ namespace CSM.Panels
 
             // Password label
             this.CreateLabel("Password (Optional):", new Vector2(10, -145));
+            // Password checkbox
+            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(10, -170));
+            _passwordBox.isChecked = false;
             // Password field
-            _passwordField = this.CreateTextField("", new Vector2(10, -170));
+            _passwordField = this.CreateTextField("", new Vector2(10, -190));
             _passwordField.isPasswordField = true;
 
             // Username label
-            this.CreateLabel("Own username:", new Vector2(10, -225));
+            this.CreateLabel("Username:", new Vector2(10, -245));
             // Username field
-            _usernameField = this.CreateTextField("", new Vector2(10, -250));
+            _usernameField = this.CreateTextField("", new Vector2(10, -270));
+            if (PlatformService.active == true)
+            {
+                _usernameField.text = PlatformService.personaName.ToString();
+            }
 
             _connectionStatus = this.CreateLabel("", new Vector2(10, -310));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
@@ -83,6 +93,19 @@ namespace CSM.Panels
             {
                 isVisible = false;
             };
+
+            _passwordBox.eventClicked += (component, param) =>
+            {
+                if (_passwordBox.isChecked == true)
+                {
+                    _passwordField.isPasswordField = false;
+                }
+                else
+                {
+                    _passwordField.isPasswordField = true;
+                }
+            };
+
         }
 
         private void RequestIPs()

@@ -25,6 +25,8 @@ namespace CSM.Panels
         private UIButton _connectButton;
         private UIButton _closeButton;
 
+        private UICheckBox _passwordBox;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -68,6 +70,9 @@ namespace CSM.Panels
             // Password label
             this.CreateLabel("Password:", new Vector2(10, -310));
 
+            // Password checkbox
+            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(120, -310));
+
             // Password field
             _passwordField = this.CreateTextField("", new Vector2(10, -340));
             _passwordField.isPasswordField = true;
@@ -87,13 +92,25 @@ namespace CSM.Panels
             _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+
+            _passwordBox.eventClicked += (component, param) =>
+            {
+                if (_passwordBox.isChecked == true)
+                {
+                    _passwordField.isPasswordField = false;
+                }
+                else
+                {
+                    _passwordField.isPasswordField = true;
+                }
+            };
         }
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
             // TEMP
             return;
-
+        }/* SAVEFROMTEMPCODE
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
             _connectionStatus.text = "Connecting...";
 
@@ -142,6 +159,6 @@ namespace CSM.Panels
                     }
                 });
             });
-        }
+        }*/
     }
 }
