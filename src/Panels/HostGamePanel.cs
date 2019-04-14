@@ -57,15 +57,16 @@ namespace CSM.Panels
             _passwordBox.isChecked = false;
             // Password field
             _passwordField = this.CreateTextField("", new Vector2(10, -190));
+            _passwordField.isPasswordField = true;
 
             // Username label
             this.CreateLabel("Username:", new Vector2(10, -245));
             // Username field
             _usernameField = this.CreateTextField("", new Vector2(10, -270));
             if (PlatformService.active == true)
-                {
+            {
                 _usernameField.text = PlatformService.personaName.ToString();
-                }
+            }
 
             _connectionStatus = this.CreateLabel("", new Vector2(10, -310));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
