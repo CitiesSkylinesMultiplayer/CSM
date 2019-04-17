@@ -63,7 +63,7 @@ namespace CSM.Panels
             this.CreateLabel("Username:", new Vector2(10, -245));
             // Username field
             _usernameField = this.CreateTextField("", new Vector2(10, -270));
-            if (PlatformService.active == true)
+            if (PlatformService.active && PlatformService.personaName != null)
             {
                 _usernameField.text = PlatformService.personaName.ToString();
             }

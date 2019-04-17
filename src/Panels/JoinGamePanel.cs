@@ -60,7 +60,7 @@ namespace CSM.Panels
 
             // Username field
             _usernameField = this.CreateTextField("", new Vector2(10, -260));
-            if (PlatformService.active == true)
+            if (PlatformService.active && PlatformService.personaName != null)
             {
                 _usernameField.text = PlatformService.personaName.ToString();
             }
