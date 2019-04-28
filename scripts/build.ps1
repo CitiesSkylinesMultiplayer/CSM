@@ -11,8 +11,9 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
+    [switch]$Unix = $false,
     [string]$OutputDirectory = "..\src\bin\Release",
-    [string]$ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CSM"
+    [string]$ModDirectory = "Default"
  )
 
 # Functions
@@ -37,9 +38,28 @@ Function Find-MsBuild([int] $MaxVersion = 2017)
     throw "Yikes - Unable to find msbuild"
 }
 
+$Sep = "\"
+If ($Unix)
+{
+    $OutputDirectory = ($OutputDirectory).Replace("\", "/")
+    $Sep = "/"
+}
+
+If ($ModDirectory -eq "Default")
+{
+    If ($Unix)
+    {
+        $ModDirectory = "~/.local/share/Colossal Order/Cities_Skylines/Addons/Mods/CSM"
+    }
+    Else
+    {
+        $ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CSM"
+    }
+}
+
 # Introduction
 Write-Host "[CSM Build Script] Welcome to the CSM build script. This script will now perform the specified actions.";
-Write-Host "[CSM Build Script] Depending on your choice of options, you will need Visual Studio 2017 (or the 'Build Tools for Visual Studio 2017'), and Cities: Skylines insalled."
+Write-Host "[CSM Build Script] Depending on your choice of options, you will need Visual Studio 2017 (or the 'Build Tools for Visual Studio 2017'), and Cities: Skylines installed."
 
 # Chosen Directories
 Write-Host "[CSM Build Script] Output Directory: $($OutputDirectory)"
@@ -57,8 +77,9 @@ If ($Update)
     $SteamDirectory = Read-Host "[CSM Update Script] Please enter your steam folder directory (not steamapps). For example, 'C:\Program Files\Steam\'" 
 
     # Full folder path
-    $AssemblyDirectory = $SteamDirectory.TrimEnd("\") + "\steamapps\common\Cities_Skylines\Cities_Data\Managed\"
+    $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
 
+    Write-Host $AssemblyDirectory
     # Test to see if the path is valid
     $PathValid = Test-Path -Path $AssemblyDirectory
     If (!$PathValid)
@@ -71,32 +92,39 @@ If ($Update)
     Write-Host "[CSM Update Script] Copying assemblies..."
 
     # Recreate the assemblies folder
-    Remove-Item "..\assemblies" -Recurse -ErrorAction Ignore
-    New-Item -ItemType directory -Path "..\assemblies" | Out-Null
+    Remove-Item "..$($Sep)assemblies" -Recurse -ErrorAction Ignore
+    New-Item -ItemType directory -Path "..$($Sep)assemblies" | Out-Null
 
-    Copy-Item -Path "$($AssemblyDirectory)Assembly-CSharp.dll"  -Destination "..\assemblies\Assembly-CSharp.dll" -Force
-    Copy-Item -Path "$($AssemblyDirectory)ColossalManaged.dll"  -Destination "..\assemblies\ColossalManaged.dll" -Force
-    Copy-Item -Path "$($AssemblyDirectory)ICities.dll"          -Destination "..\assemblies\ICities.dll" -Force
-    Copy-Item -Path "$($AssemblyDirectory)UnityEngine.dll"      -Destination "..\assemblies\UnityEngine.dll" -Force
-    Copy-Item -Path "$($AssemblyDirectory)UnityEngine.UI.dll"   -Destination "..\assemblies\UnityEngine.UI.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)Assembly-CSharp.dll"  -Destination "..$($Sep)assemblies$($Sep)Assembly-CSharp.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)ColossalManaged.dll"  -Destination "..$($Sep)assemblies$($Sep)ColossalManaged.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)ICities.dll"          -Destination "..$($Sep)assemblies$($Sep)ICities.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)UnityEngine.dll"      -Destination "..$($Sep)assemblies$($Sep)UnityEngine.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)UnityEngine.UI.dll"   -Destination "..$($Sep)assemblies$($Sep)UnityEngine.UI.dll" -Force
 
     Write-Host "[CSM Update Script] Done copying assemblies!"
 }
 
 # Build the project if the build
 # flag is specified.
-if ($Build)
+If ($Build)
 {
     Write-Host "[CSM Build Script] You have specified the -Build flag. The script will auto detect MSBuild and build the mod."
-
-    # Run MSBuild
-    $msbuild = Find-MsBuild
-    & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    If ($Unix)
+    {
+        # Run mdtool build
+        & mdtool build --project:CSM --configuration:Release "../CSM.sln"
+    }
+    Else
+    {
+        # Run MSBuild
+        $msbuild = Find-MsBuild
+        & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    }
     Write-Host "[CSM Build Script] Build Complete!"
 }
 
 # Copy files if the install flag is specified
-if ($Install)
+If ($Install)
 {
     # Clear the directory
     Write-Host "[CSM Install Script] Clearing and creating mod directory."
@@ -109,13 +137,13 @@ if ($Install)
 
     # Copy the required files
     Write-Host "[CSM Install Script] Copying required files..."
-    Copy-Item -Path "$($OutputDirectory)\LiteNetLib.dll"        -Destination "$($ModDirectory)\LiteNetLib.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\protobuf-net.dll"      -Destination "$($ModDirectory)\protobuf-net.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\CSM.dll"               -Destination "$($ModDirectory)\CSM.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\Open.Nat.dll"          -Destination "$($ModDirectory)\Open.Nat.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\System.Threading.dll"  -Destination "$($ModDirectory)\System.Threading.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\0Harmony.dll"          -Destination "$($ModDirectory)\0Harmony.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)\NLog.dll"          	-Destination "$($ModDirectory)\NLog.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)LiteNetLib.dll"        -Destination "$($ModDirectory)$($Sep)LiteNetLib.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)protobuf-net.dll"      -Destination "$($ModDirectory)$($Sep)protobuf-net.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)NLog.dll"          	  -Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
 
     # Done
     Write-Host "[CSM Install Script] Completed Copy"

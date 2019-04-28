@@ -68,7 +68,7 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\BudgetChangeCommand.cs" />
     <Compile Include="Commands\Data\BuildingCreateCommand.cs" />
-    <Compile Include="Commands\Data\BuildingIdCommand.cs" />
+    <Compile Include="Commands\Data\BuildingIDCommand.cs" />
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
     <Compile Include="Commands\Data\ParkCreateCommand.cs" />
@@ -93,7 +93,7 @@
     <Compile Include="Commands\Data\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
-    <Compile Include="Commands\Data\NodeIdCommand.cs" />
+    <Compile Include="Commands\Data\NodeIDCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
     <Compile Include="Commands\Data\SegmentCreateCommand.cs" />
     <Compile Include="Commands\Data\PlayerListCommand.cs" />
@@ -213,6 +213,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' == 'Unix' ">pwsh "$(SolutionDir)scripts/build.ps1" -Unix -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
   </PropertyGroup>
 </Project>
