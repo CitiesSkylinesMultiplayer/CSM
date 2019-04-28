@@ -145,7 +145,7 @@ namespace CSM.Panels
             if (int.Parse(_portField.text) < 1 || int.Parse(_portField.text) > 49151)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid port. Choose from a range of 1 - 49151";
+                _connectionStatus.text = "Invalid port number. (1 - 49151)";
                 return;
             }
 
@@ -161,7 +161,7 @@ namespace CSM.Panels
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Already Running Server";
+                _connectionStatus.text = "Already running server.";
                 return;
             }
 
@@ -169,7 +169,7 @@ namespace CSM.Panels
             if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text) != true)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Error: Could not start server";
+                _connectionStatus.text = "Could not start server.";
                 return;
             }
 
