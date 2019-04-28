@@ -58,12 +58,32 @@ namespace CSM.Extensions
                 if (panel != null)
                 {
                     panel.isVisible = !panel.isVisible;
+                    _multiplayerButton.Unfocus();
                 }
                 else
                 {
                     var newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
                 }
             };
+        }
+
+        public override void OnLevelUnloading()
+        {
+            base.OnLevelUnloading();
+
+            //Code below destroys any created UI from the screen.
+            UIComponent _getui = UIView.GetAView().FindUIComponent<UIComponent>("ChatLogPanel");
+
+            UIComponent[] children = _getui.GetComponentsInChildren<UIComponent>();
+
+            foreach (UIComponent child in children)
+            {
+                UIView.Destroy(child);
+            }
+
+            // Destroy duplicated multiplayer button
+            UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
+            UIView.Destroy(temp);
         }
     }
 }

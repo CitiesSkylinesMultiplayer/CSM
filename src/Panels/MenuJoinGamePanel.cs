@@ -15,9 +15,7 @@ namespace CSM.Panels
     /// </summary>
     public class MenuJoinGamePanel : UIPanel
     {
-        private UITextField _ipAddressField;
         private UITextField _portField;
-        private UITextField _nameField;
         private UITextField _passwordField;
 
         private UILabel _connectionStatus;
@@ -52,7 +50,7 @@ namespace CSM.Panels
             this.CreateLabel("IP Address:", new Vector2(10, -70));
 
             // IP Address field
-            _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
+            this.CreateTextField("localhost", new Vector2(10, -100));
 
             // Port Label
             this.CreateLabel("Port:", new Vector2(10, -150));
@@ -65,7 +63,7 @@ namespace CSM.Panels
             this.CreateLabel("Username:", new Vector2(10, -230));
 
             // Username field
-            _nameField = this.CreateTextField("", new Vector2(10, -260));
+            this.CreateTextField("", new Vector2(10, -260));
 
             // Password label
             this.CreateLabel("Password:", new Vector2(10, -310));

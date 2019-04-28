@@ -18,16 +18,18 @@ namespace CSM.Panels
     /// </summary>
     public class ChatLogPanel : UIPanel
     {
-        private UIListBox _messageBox;
+        private UILabel _messageBox;
+        private UILabel _title;
         private UITextField _chatText;
-
-        private float _initialOpacity;
-
-        // Class logger
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private UIResizeHandle _resize;
+        private UIScrollablePanel _scrollablepanel;
+        private UIScrollbar _scrollbar;
+        private UISlicedSprite _trackingsprite;
+        private UISlicedSprite _trackingthumb;
+        private UIDragHandle _draghandle;
 
         // Name of this component
-        public const string NAME = "MPChatLogPanel";
+        public const string NAME = "ChatLogPanel";
 
         private readonly List<ChatCommand> _chatCommands;
 
@@ -75,7 +77,7 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("hide-chat", "Hides the chat console. Can be displayed again by pressing the '`' key.", (command) =>
                 {
-                    opacity = 0.0f;
+                    isVisible = !isVisible;
                 }),
                 new ChatCommand("donate", "Find out how to support the mod developers", (command) =>
                 {
@@ -85,7 +87,7 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("clear", "Clear everything from the chat log.", (command) =>
                 {
-                    _messageBox.items = new string[0];
+                    _messageBox.text = "";
                 }),
                 new ChatCommand("open-log", "Opens the multiplayer log.", (command) =>
                 {
@@ -94,55 +96,28 @@ namespace CSM.Panels
             };
         }
 
-        /// <summary>
-        ///     Prints a game message to the ChatLogPanel with MessageType.NORMAL.
-        /// </summary>
-        /// <param name="msg">The message.</param>
-        public static void PrintGameMessage(string msg)
-        {
-            PrintGameMessage(MessageType.Normal, msg);
-        }
-
-        /// <summary>
-        ///     Prints a game message to the ChatLogPanel.
-        /// </summary>
-        /// <param name="type">The message type.</param>
-        /// <param name="msg">The message.</param>
-        public static void PrintGameMessage(MessageType type, string msg)
-        {
-            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
-            {
-                // Get the chat log panel
-                var panel = UIView.GetAView().FindUIComponent(ChatLogPanel.NAME) as ChatLogPanel;
-
-                // Add the chat log
-                panel?.AddGameMessage(type, msg);
-            });
-        }
-
-        /// <summary>
-        ///     Prints a chat message to the ChatLogPanel.
-        /// </summary>
-        /// <param name="username">The name of the sending user.</param>
-        /// <param name="msg">The message.</param>
-        public static void PrintChatMessage(string username, string msg)
-        {
-            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
-            {
-                // Get the chat log panel
-                var panel = UIView.GetAView().FindUIComponent(ChatLogPanel.NAME) as ChatLogPanel;
-
-                // Add the chat log
-                panel?.AddChatMessage(username, msg);
-            });
-        }
-
         public override void Update()
         {
             // Toggle the chat when the tidle key is pressed.
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                opacity = opacity == _initialOpacity ? 0.0f : _initialOpacity;
+                if (isVisible)
+                {
+                    isVisible = false;
+                }
+                else
+                {
+                    isVisible = true;
+                }
+            }
+
+            // Gain focus on chat when the tab key is pressed.
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (!_chatText.hasFocus && _chatText.isVisible)
+                {
+                    _chatText.Focus();
+                }
             }
 
             base.Update();
@@ -151,19 +126,24 @@ namespace CSM.Panels
         public override void Start()
         {
             // Generates the following UI:
-            // |---------------|
-            // |               | <-- _messageBox
-            // |               |
-            // |---------------|
-            // |               | <-- _chatText
-            // |---------------|
+            // /NAME-----------\ <-- UIDragHandle
+            // |---------------|-|
+            // |               | |<-- _messageBox, _getscrollablepanel
+            // |               | |
+            // |---------------| |
+            // |               | |<-- _chatText
+            // |---------------|-|
+            //                 |-|<-- _resize
+            //                  ^
+            //                  ¦-- _scrollbar, _trackingsprite, _trackingthumb
 
             backgroundSprite = "GenericPanel";
             name = ChatLogPanel.NAME;
             color = new Color32(22, 22, 22, 240);
 
             // Activates the dragging of the window
-            AddUIComponent(typeof(UIDragHandle));
+            _draghandle = AddUIComponent<UIDragHandle>();
+            _draghandle.name = "ChatLogPanelDragHandle";
 
             // Grab the view for calculating width and height of game
             var view = UIView.GetAView();
@@ -172,25 +152,90 @@ namespace CSM.Panels
             relativePosition = new Vector3(10.0f, view.fixedHeight - 440.0f);
 
             width = 500;
-            height = 300;
+            height = 310;
+            minimumSize = new Vector2(300, 310);
 
-            // Create the message box
-            _messageBox = (UIListBox)AddUIComponent(typeof(UIListBox));
+            // Add resize component
+            _resize = AddUIComponent<UIResizeHandle>();
+            _resize.position = new Vector2((width-20), (-height + 10));
+            _resize.width = 20f;
+            _resize.height = 20f;
+            _resize.color = new Color32(255, 255, 255, 255);
+            _resize.backgroundSprite = "GenericTabPressed";
+            _resize.name = "ChatLogPanelResize";
+
+            // Add scrollable panel component
+            _scrollablepanel = AddUIComponent<UIScrollablePanel>();
+            _scrollablepanel.width = 490;
+            _scrollablepanel.height = 240;
+            _scrollablepanel.position = new Vector2(10, -30);
+            _scrollablepanel.clipChildren = true;
+            _scrollablepanel.name = "ChatLogPanelScrollablePanel";
+
+            // Add title
+            _title = AddUIComponent<UILabel>();
+            _title.position = new Vector2(10, -5);
+            _title.text = "Multiplayer Chat";
+            _title.textScale = 0.8f;
+            _title.autoSize = true;
+            _title.name = "ChatLogPanelTitle";
+
+            // Add messagebox component
+            _messageBox = _scrollablepanel.AddUIComponent<UILabel>();
             _messageBox.isVisible = true;
             _messageBox.isEnabled = true;
-            _messageBox.width = 480;
+            _messageBox.autoSize = false;
+            _messageBox.autoHeight = true;
+            _messageBox.width = 470;
             _messageBox.height = 240;
-            _messageBox.position = new Vector2(10, -10);
-            _messageBox.multilineItems = true;
+            _messageBox.position = new Vector2(10, -30);
             _messageBox.textScale = 0.8f;
-            _messageBox.itemHeight = 20;
-            _messageBox.multilineItems = true;
+            _messageBox.wordWrap = true;
+            _messageBox.name = "ChatLogPanelMessageBox";
 
-            // Create the message text box (used for sending messages)
+            // Add scrollbar component
+            _scrollbar = AddUIComponent<UIScrollbar>();
+            _scrollbar.name = "Scrollbar";
+            _scrollbar.width = 20f;
+            _scrollbar.height = _scrollablepanel.height;
+            _scrollbar.orientation = UIOrientation.Vertical;
+            _scrollbar.pivot = UIPivotPoint.TopLeft;
+            _scrollbar.position = new Vector2(480, -30);
+            _scrollbar.minValue = 0;
+            _scrollbar.value = 0;
+            _scrollbar.incrementAmount = 50;
+            _scrollbar.name = "ChatLogPanelScrollBar";
+
+            // Add scrollbar background sprite component
+            _trackingsprite = _scrollbar.AddUIComponent<UISlicedSprite>();
+            _trackingsprite.position = new Vector2(0, 0);
+            _trackingsprite.autoSize = true;
+            _trackingsprite.size = _trackingsprite.parent.size;
+            _trackingsprite.fillDirection = UIFillDirection.Vertical;
+            _trackingsprite.spriteName = "ScrollbarTrack";
+            _trackingsprite.name = "ChatLogPanelTrack";
+            _scrollbar.trackObject = _trackingsprite;
+            _scrollbar.trackObject.height = _scrollbar.height;
+
+            // Add scrollbar thumb component
+            _trackingthumb = _scrollbar.AddUIComponent<UISlicedSprite>();
+            _trackingthumb.position = new Vector2(0, 0);
+            _trackingthumb.fillDirection = UIFillDirection.Vertical;
+            _trackingthumb.autoSize = true;
+            _trackingthumb.width = _trackingthumb.parent.width - 8;
+            _trackingthumb.spriteName = "ScrollbarThumb";
+            _trackingthumb.name = "ChatLogPanelThumb";
+
+            _scrollbar.thumbObject = _trackingthumb;
+            _scrollbar.isVisible = true;
+            _scrollbar.isEnabled = true;
+            _scrollablepanel.verticalScrollbar = _scrollbar;
+
+            // Add text field component (used for inputting)
             _chatText = (UITextField)AddUIComponent(typeof(UITextField));
             _chatText.width = width;
             _chatText.height = 30;
-            _chatText.position = new Vector2(0, -270);
+            _chatText.position = new Vector2(0, -280);
             _chatText.atlas = UiHelpers.GetAtlas("Ingame");
             _chatText.normalBgSprite = "TextFieldPanelHovered";
             _chatText.builtinKeyNavigation = true;
@@ -201,14 +246,23 @@ namespace CSM.Panels
             _chatText.textColor = new Color32(0, 0, 0, 255);
             _chatText.padding = new RectOffset(6, 6, 6, 6);
             _chatText.selectionSprite = "EmptySprite";
+            _chatText.name = "ChatLogPanelChatText";
 
-            _initialOpacity = opacity;
+            WelcomeChatMessage();
 
-            PrintGameMessage("Welcome to Cities: Skylines Multiplayer!");
-            PrintGameMessage("Press the ~ (tilde) key to show or hide the chat.");
-            PrintGameMessage("Join our discord server at: https://discord.gg/RjACPhd");
-            PrintGameMessage("Type '/help' to see a list of commands and usage.");
-            PrintGameMessage("Type '/support' to find out where to report bugs and get help.");
+            // Add resizable adjustments
+            eventSizeChanged += (component, param) =>
+            {
+                _scrollablepanel.width = (width - 30);
+                _scrollablepanel.height = (height - 70);
+                _messageBox.width = (width - 30);
+                _chatText.width = width;
+                _scrollbar.height = _scrollablepanel.height;
+                _trackingsprite.size = _trackingsprite.parent.size;
+                _chatText.position = new Vector3(0, (-height + 30));
+                _resize.position = new Vector2((width - 20), (-height + 10));
+                _scrollbar.position = new Vector2((width - 20), (-30));
+            };
 
             base.Start();
         }
@@ -243,14 +297,14 @@ namespace CSM.Panels
                 }
 
                 // If not connected to a server / hosting a server, tell the user and return
-                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
-                {
-                    PrintGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
-                    return;
-                }
+                //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
+                //{
+                //    PrintGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
+                //    return;
+                //}
 
                 // Get the player name
-                var playerName = "Player";
+                var playerName = "Local";
 
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 {
@@ -275,27 +329,87 @@ namespace CSM.Panels
             }
         }
 
-        private void AddMessage(MessageType type, string message)
+        public void WelcomeChatMessage()
         {
-            // Game console
-            var existingItems = new List<string>();
-            existingItems.AddRange(_messageBox.items);
-            existingItems.Add(message);
-
-            _messageBox.items = existingItems.ToArray();
-
-            // Scroll to the bottom
-            _messageBox.scrollPosition = (_messageBox.items.Length * 20) + 10;
+            PrintGameMessage("Welcome to Cities: Skylines Multiplayer!");
+            PrintGameMessage("Press the ~ (tilde) key to show or hide the chat.");
+            PrintGameMessage("Press the tab key to switch focus to the chat.");
+            PrintGameMessage("Join our discord server at: https://discord.gg/RjACPhd");
+            PrintGameMessage("Type '/help' to see a list of commands and usage.");
+            PrintGameMessage("Type '/support' to find out where to report bugs and get help.");
         }
 
-        private void AddChatMessage(string username, string message)
+        /// <summary>
+        ///     Prints a game message to the ChatLogPanel with MessageType.NORMAL.
+        /// </summary>
+        /// <param name="msg">The message.</param>
+        public static void PrintGameMessage(string msg)
         {
-            AddMessage(MessageType.Normal, $"<{username}> {message}");
+            PrintGameMessage(MessageType.Normal, msg);
         }
 
-        private void AddGameMessage(MessageType type, string message)
+        /// <summary>
+        ///     Prints a game message to the ChatLogPanel.
+        /// </summary>
+        /// <param name="type">The message type.</param>
+        /// <param name="msg">The message.</param>
+        public static void PrintGameMessage(MessageType type, string msg)
         {
-            AddMessage(type, $"<CSM> {message}");
+            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            {
+                var unusedtemp = type;
+                var getmessagebox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
+
+                // Check if the thumb is at the bottom of the scrollbar for autoscrolling
+                var getscrollbar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
+                var getthumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
+                bool autocanscroll = false;
+                float getsize = (getthumb.relativePosition.y + getthumb.size.y);
+
+                if (getsize == getscrollbar.height)
+                {
+                    autocanscroll = true;
+                }
+
+                getmessagebox.text += ($"<CSM> {msg}" + "\n");
+
+                if (autocanscroll)
+                {
+                    getscrollbar.minValue = getscrollbar.maxValue;
+                }
+            });
+        }
+
+        /// <summary>
+        ///     Prints a chat message to the ChatLogPanel.
+        /// </summary>
+        /// <param name="username">The name of the sending user.</param>
+        /// <param name="msg">The message.</param>
+        public static void PrintChatMessage(string username, string msg)
+        {
+            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            {
+                var getmessagebox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
+
+                // Check if the thumb is at the bottom of the scrollbar for autoscrolling
+                var getscrollbar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
+                var getthumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
+                bool autocanscroll = false;
+                float getsize = (getthumb.relativePosition.y + getthumb.size.y);
+
+                if (getsize == getscrollbar.height)
+                {
+                    autocanscroll = true;
+                }
+
+                getmessagebox.text += ($"<{username}> {msg}" + "\n");
+
+                if (autocanscroll)
+                {
+                    getscrollbar.minValue = getscrollbar.maxValue;
+                }
+
+            });
         }
     }
 }
