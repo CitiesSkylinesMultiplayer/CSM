@@ -91,7 +91,7 @@ if ($Build)
 
     # Run MSBuild
     $msbuild = Find-MsBuild
-    & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" /p:OS=Windows
     Write-Host "[CSM Build Script] Build Complete!"
 }
 
