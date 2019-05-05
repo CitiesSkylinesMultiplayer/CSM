@@ -213,7 +213,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' == 'Unix' ">pwsh "$(SolutionDir)scripts/build.ps1" -Unix -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
+    <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('windows'))">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install -OperatingSystem windows</PostBuildEvent>
+    <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('linux'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install -OperatingSystem linux</PostBuildEvent>
+    <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('osx'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install -OperatingSystem osx</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -11,7 +11,7 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
-    [switch]$Unix = $false,
+    [string]$OperatingSystem = "windows",
     [string]$OutputDirectory = "..\src\bin\Release",
     [string]$ModDirectory = "Default"
  )
@@ -39,7 +39,7 @@ Function Find-MsBuild([int] $MaxVersion = 2017)
 }
 
 $Sep = "\"
-If ($Unix)
+If (($OperatingSystem -eq 'osx') -or ($OperatingSystem -eq 'linux'))
 {
     $OutputDirectory = ($OutputDirectory).Replace("\", "/")
     $Sep = "/"
@@ -47,11 +47,15 @@ If ($Unix)
 
 If ($ModDirectory -eq "Default")
 {
-    If ($Unix)
+    If ($OperatingSystem -eq 'linux')
     {
         $ModDirectory = "~/.local/share/Colossal Order/Cities_Skylines/Addons/Mods/CSM"
     }
-    Else
+    ElseIf ($OperatingSystem -eq 'osx')
+    {
+        $ModDirectory = "~/Library/Application Support/Colossal Order/Cities_Skylines/Addons/Mods/CSM"
+    }
+    ElseIf ($OperatingSystem -eq 'windows')
     {
         $ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CSM"
     }
@@ -109,7 +113,7 @@ If ($Update)
 If ($Build)
 {
     Write-Host "[CSM Build Script] You have specified the -Build flag. The script will auto detect MSBuild and build the mod."
-    If ($Unix)
+    If ($OperatingSystem -eq 'linux')
     {
         # Run mdtool build
         & mdtool build --project:CSM --configuration:Release "../CSM.sln"
@@ -133,7 +137,9 @@ If ($Install)
     Remove-Item $ModDirectory -Recurse -ErrorAction Ignore
 
     # Make sure the game mod directory exists
-    New-Item -ItemType directory -Path $ModDirectory | Out-Null
+    if(!(Test-Path -Path $ModDirectory )){
+      New-Item -ItemType directory -Path $ModDirectory
+    }
 
     # Copy the required files
     Write-Host "[CSM Install Script] Copying required files..."
