@@ -85,8 +85,16 @@ If ($Update)
     # Get the steam directory
     $SteamDirectory = Read-Host "[CSM Update Script] Please enter your steam folder directory (not steamapps). For example, 'C:\Program Files\Steam\'" 
 
-    # Full folder path
-    $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+    If ($IsMacOS)
+    {
+        # Full folder path
+        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities.App$($Sep)Contents$($Sep)Resources$($Sep)Data$($Sep)Managed$($Sep)"
+    } 
+    Else
+    {
+        # Full folder path
+        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+    }
 
     # Test to see if the path is valid
     $PathValid = Test-Path -Path $AssemblyDirectory
