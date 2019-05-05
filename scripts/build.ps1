@@ -11,7 +11,6 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
-    [string]$OperatingSystem = "windows",
     [string]$OutputDirectory = "..\src\bin\Release",
     [string]$ModDirectory = "Default"
  )
@@ -39,7 +38,7 @@ Function Find-MsBuild([int] $MaxVersion = 2017)
 }
 
 $Sep = "\"
-If (($OperatingSystem -eq 'osx') -or ($OperatingSystem -eq 'linux'))
+If (($IsMacOS) -or ($IsLinux))
 {
     $OutputDirectory = ($OutputDirectory).Replace("\", "/")
     $Sep = "/"
@@ -47,15 +46,15 @@ If (($OperatingSystem -eq 'osx') -or ($OperatingSystem -eq 'linux'))
 
 If ($ModDirectory -eq "Default")
 {
-    If ($OperatingSystem -eq 'linux')
+    If ($IsLinux)
     {
         $ModDirectory = "~/.local/share/Colossal Order/Cities_Skylines/Addons/Mods/CSM"
     }
-    ElseIf ($OperatingSystem -eq 'osx')
+    ElseIf ($IsMacOS)
     {
         $ModDirectory = "~/Library/Application Support/Colossal Order/Cities_Skylines/Addons/Mods/CSM"
     }
-    ElseIf ($OperatingSystem -eq 'windows')
+    ElseIf ($IsWindows)
     {
         $ModDirectory = "$env:LOCALAPPDATA\Colossal Order\Cities_Skylines\Addons\Mods\CSM"
     }
@@ -83,7 +82,6 @@ If ($Update)
     # Full folder path
     $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
 
-    Write-Host $AssemblyDirectory
     # Test to see if the path is valid
     $PathValid = Test-Path -Path $AssemblyDirectory
     If (!$PathValid)
@@ -113,17 +111,13 @@ If ($Update)
 If ($Build)
 {
     Write-Host "[CSM Build Script] You have specified the -Build flag. The script will auto detect MSBuild and build the mod."
-    If ($OperatingSystem -eq 'linux')
+    # Run MSBuild
+    $msbuild = "msbuild"
+    If ($IsWindows)
     {
-        # Run mdtool build
-        & mdtool build --project:CSM --configuration:Release "../CSM.sln"
-    }
-    Else
-    {
-        # Run MSBuild
         $msbuild = Find-MsBuild
-        & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
     }
+    & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
     Write-Host "[CSM Build Script] Build Complete!"
 }
 
@@ -137,8 +131,9 @@ If ($Install)
     Remove-Item $ModDirectory -Recurse -ErrorAction Ignore
 
     # Make sure the game mod directory exists
-    if(!(Test-Path -Path $ModDirectory )){
-      New-Item -ItemType directory -Path $ModDirectory
+    If (!(Test-Path -Path $ModDirectory ))
+    {
+        New-Item -ItemType directory -Path $ModDirectory
     }
 
     # Copy the required files
