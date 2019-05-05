@@ -44,6 +44,12 @@ If (($IsMacOS) -or ($IsLinux))
     $Sep = "/"
 }
 
+# Assume windows, since PowerShell 6 is the first with official cross-platform support
+If ($PSVersionTable.PSVersion.Major -lt 6)
+{
+    $IsWindows = $true
+}
+
 If ($ModDirectory -eq "Default")
 {
     If ($IsLinux)
