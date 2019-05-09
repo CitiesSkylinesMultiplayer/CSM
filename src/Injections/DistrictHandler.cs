@@ -1,6 +1,8 @@
 ﻿using CSM.Commands;
 using Harmony;
+using NLog;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -20,6 +22,25 @@ namespace CSM.Injections
                 return;
 
             if (__result)
+            {
+                Command.SendToAll(new DistrictCreateCommand
+                {
+                    DistrictID = district
+                });
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("SetDistrictName")]
+    public class SetDistrictName
+    {
+        public static void Postfix(IEnumerator<bool> __result, byte district, string name)
+        {
+            if (DistrictHandler.IgnoreAll)
+                return;
+
+            if (__result.Current)
             {
                 Command.SendToAll(new DistrictCreateCommand
                 {
