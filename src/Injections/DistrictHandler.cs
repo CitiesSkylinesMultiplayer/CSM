@@ -42,9 +42,10 @@ namespace CSM.Injections
 
             if (__result.Current)
             {
-                Command.SendToAll(new DistrictCreateCommand
+                Command.SendToAll(new DistrictNameCommand
                 {
-                    DistrictID = district
+                    DistrictID = district,
+                    Name = name
                 });
             }
         }
