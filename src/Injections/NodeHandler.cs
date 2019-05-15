@@ -162,4 +162,21 @@ namespace CSM.Injections
             return typeof(NetManager).GetMethod("ReleaseSegmentImplementation", AccessTools.all, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, new ParameterModifier[] { });
         }
     }
+
+    [HarmonyPatch(typeof(NetManager))]
+    [HarmonyPatch("SetSegmentName")]
+    public class SetSegmentName
+    {
+        public static void Postfix(ushort segmentID, string name)
+        {
+            if (NodeHandler.IgnoreAll)
+                return;
+
+            Command.SendToAll(new SegmentNameCommand
+            {
+                SegmentID = segmentID,
+                Name = name
+            });
+        }
+    }
 }

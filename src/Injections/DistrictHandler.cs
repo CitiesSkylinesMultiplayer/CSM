@@ -40,14 +40,11 @@ namespace CSM.Injections
             if (DistrictHandler.IgnoreAll)
                 return;
 
-            if (__result.Current)
+            Command.SendToAll(new DistrictNameCommand
             {
-                Command.SendToAll(new DistrictNameCommand
-                {
-                    DistrictID = district,
-                    Name = name
-                });
-            }
+                DistrictID = district,
+                Name = name
+            });
         }
     }
 

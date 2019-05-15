@@ -7,7 +7,7 @@ namespace CSM.Commands.Handler
         public override void Handle(DistrictNameCommand command)
         {
             DistrictHandler.IgnoreAll = true;
-            DistrictManager.instance.SetDistrictName(command.DistrictID, command.Name);
+            while (DistrictManager.instance.SetDistrictName(command.DistrictID, command.Name).MoveNext()) { break; }
             DistrictHandler.IgnoreAll = false;
         }
     }
