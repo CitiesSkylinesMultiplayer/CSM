@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(BuildingRemoveCommand command)
         {
-            Extensions.BuildingExtension.lastRelease = command.BuildingId;
+            Injections.BuildingHandler.lastRelease = command.BuildingId;
             BuildingManager.instance.ReleaseBuilding((ushort) command.BuildingId);
         }
     }
