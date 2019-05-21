@@ -25,8 +25,8 @@ namespace CSM.Extensions
         public static int[] _serviceBudgetNight;
         public static int[] _serviceBudgetDay;
         public static int[] _LastTaxrate = new int[120];
-        public static int[] _LastserviceBudgetNight = new int[30];
-        public static int[] _LastserviceBudgetDay = new int[30];
+        public static int[] _LastserviceBudgetNight = new int[35];
+        public static int[] _LastserviceBudgetDay = new int[35];
 
         public override void OnCreated(IEconomy economy)
         {
