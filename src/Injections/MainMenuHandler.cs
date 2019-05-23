@@ -16,7 +16,8 @@ namespace CSM.Injections
         /// </summary>
         public static void Prefix()
         {
-            MainMenuHandler.CreateOrUpdateJoinGameButton();
+            // TODO: Enable this when ready
+            // MainMenuHandler.CreateOrUpdateJoinGameButton();
         }
     }
 
