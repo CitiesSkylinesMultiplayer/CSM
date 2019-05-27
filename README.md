@@ -26,7 +26,7 @@ This mod and its source code is licensed under the MIT license.
 The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). You can also download the latest development builds by following the instructions below.
  
 1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/gridentertainment/Tango/_build/latest?definitionId=11).
-2. Click on the `Artifacts` button (top right) and dowload the zip folder.
+2. Click on the `Artifacts` button (top right) and download the zip folder.
 3. Extract the folder and either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
 4. Open Cities: Skylines and enable the mod.
 
@@ -48,9 +48,5 @@ We would like to give a special thanks to the people backing us financialy throu
 - Kevin Prüßner
 - C Zhang
 
-
 ## Contributors
-- [Dominic Maas (DominicMaas)](https://github.com/DominicMaas)
-- [Sander Jochems (Sander0542)](https://github.com/Sander0542)
-- [Treholt (Treholt3103)](https://github.com/Treholt3103)
-- [kaenganxt](https://github.com/kaenganxt)
+A full list of contributors can be found [here](https://github.com/DominicMaas/Tango/graphs/contributors).
