@@ -22,7 +22,7 @@ Feel free to join the development Discord server [here](https://discord.gg/RjACP
 This mod and its source code is licensed under the MIT license.
 
 ## Download & Install
- 
+
 The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). You can also download the latest development builds by following the instructions below.
  
 1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/gridentertainment/Tango/_build/latest?definitionId=11).
