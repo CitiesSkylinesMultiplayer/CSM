@@ -1,6 +1,7 @@
 ﻿using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
+using CSM.Localisation;
 
 namespace CSM.Commands.Handler
 {
@@ -25,7 +26,7 @@ namespace CSM.Commands.Handler
             {
                 // Log and set that we are connected.
                 _logger.Info("Successfully connected to server.");
-                ChatLogPanel.PrintGameMessage("Successfully connected to server.");
+                ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("SuccessfullyConnected")}.");
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
                 MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
             }

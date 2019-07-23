@@ -2,6 +2,7 @@
 using CSM.Networking;
 using CSM.Panels;
 using NLog;
+using CSM.Localisation;
 
 namespace CSM.Commands.Handler
 {
@@ -15,10 +16,9 @@ namespace CSM.Commands.Handler
         public override void Handle(ClientDisconnectCommand command)
         {
             LogManager.GetCurrentClassLogger().Info($"Player {command.Username} has disconnected!");
-            ChatLogPanel.PrintGameMessage($"Player {command.Username} has disconnected!");
+            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("HasConnected")} {command.Username} {Translation.PullTranslation("HasConnected")}");
 
             MultiplayerManager.Instance.PlayerList.Remove(command.Username);
-
             TransactionHandler.ClearTransactions(command.ClientId);
             ToolSimulator.RemoveSender(command.ClientId);
         }

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<language id="ru">
+  
+  <!--Chat Panel Start-->
+  <translation id="Welcome">Добро пожаловать в многопользовательский режим Citie Skylines!</translation>
+  <translation id="Shortcut1">Нажмите клавишу ~ (тильда), чтобы показать или скрыть чат.</translation>
+  <translation id="Shortcut2">Нажмите клавишу табуляции, чтобы переключить фокус на чат.</translation>
+  <translation id="Discord">Присоединяйтесь к нашему серверу раздоров по адресу: https://discord.gg/RjACPhd.</translation>
+  <translation id="Help">Введите «/help», чтобы увидеть список команд и использования.</translation>
+  <translation id="Support">Наберите '/support', чтобы узнать, где сообщать об ошибках и получить помощь.</translation>
+  
+  <!--Chat Commands-->
+  <translation id="ChatCMDhelp">Отображает информацию о том, какие команды могут быть отображены.</translation>
+  <translation id="ChatCMDversion">Отображает информацию о версии мода и игры.</translation>
+  <translation id="ChatCMDsupport">Показать ссылки поддержки для мода.</translation>
+  <translation id="ChatCMDplayers">Отображает список игроков, подключенных к серверу.</translation>
+  <translation id="ChatCMDnonplayers">Вы не являетесь хостингом или не подключены к каким-либо серверам.</translation>
+  <translation id="ChatCMDhide-chat">Скрывает консоль чата. Можно снова отобразить, нажав клавишу ~ (тильда).</translation>
+  <translation id="ChatCMDclear">Очистить все из журнала чата.</translation>
+  <translation id="ChatCMDopen-log">Открывает многопользовательский журнал.</translation>
+  
+  <!--Multiplayer Menu-->
+  <translation id="Multiplayer">Мультиплеер</translation>
+  <translation id="MultiplayerMenu">Многопользовательское меню</translation>
+  <translation id="JoinGame">Присоединяйся к игре</translation>
+  <translation id="HostGame">Хост игра</translation>
+  <translation id="ManageServer">Управление сервером</translation>
+  <translation id="ManagePlayers">Управление игроками</translation>
+  <translation id="StopServer">Остановить сервер</translation>
+  <translation id="Disconnect">Отключить</translation>
+  <translation id="MultiplayerChat">Многопользовательский чат</translation>
+  
+  <!--Host Game Menu-->
+  <translation id="HostServer">Хост-сервер</translation>
+  <translation id="Password">Пароль (необязательно)</translation>
+  <translation id="PasswordNotOptional">пароль</translation>
+  <translation id="PasswordCB">Показать пароль</translation>
+  <translation id="Username">имя пользователя</translation>
+  <translation id="CreateServer">Создать сервер</translation>
+  <translation id="Cancel">отменить</translation>
+  <translation id="SettingUpServer">Настройка сервера...</translation>
+  <translation id="Private">Частный</translation>
+  <translation id="Public">общественного</translation>
+  
+  <!--Manage Server Menu-->
+  <translation id="CopyToClipboard">Скопировать в буфер обмена</translation>
+  <translation id="Close">близко</translation>
+  
+  <!--Join Game Menu-->
+  <translation id="ConnectToServer">Подключиться к серверу</translation>
+  <translation id="Connecting">Подключение...</translation>
+  <translation id="IPAddress">Айпи адрес</translation>
+  <translation id="Port">порт</translation>
+  <translation id="ExternalIP">Внешний IP</translation>
+  <translation id="InternalIP">Внутренний IP</translation>
+  
+  <!--Player List-->
+  <translation id="Kick">Удар</translation>
+  <translation id="Ban">запрет</translation>
+  
+  <!--Server List-->
+  <translation id="Join">Присоединиться</translation>
+  
+  <!--Information Messages-->
+  <translation id="AttemptingToStartServer">Попытка запустить сервер на порту</translation>
+  <translation id="FailedToOpenPort">Не удалось открыть порт. Требуется ручная переадресация портов</translation>
+  <translation id="ServerHasStarted">Сервер запущен</translation>
+  
+  <!--Player Defined Message-->
+  <translation id="Player">игрок</translation>
+    <subtranslation id="LostConnection">потерянное соединение!</subtranslation>
+    <subtranslation id="Disconnected">отключен!</subtranslation>
+    <subtranslation id="TimedOut">время вышло!</subtranslation>
+    <subtranslation id="HasConnected">подключил!</subtranslation>
+    <subtranslation id="HasDisconnected">отключился!</subtranslation>
+    <subtranslation id="HasBeenKicked">был выгнан с сервера</subtranslation>
+  
+  <!--Client Messages-->
+  <translation id="DisconnectedFromServer">Отключен от сервера</translation>
+  <translation id="ServerStopped">Сервер остановлен</translation>
+  <translation id="SuccessfullyConnected">Успешно подключен к серверу</translation>
+  <translation id="IDCollision">Удостоверение личности. Пожалуйста, перезапустите многопользовательскую сессию.</translation>
+  <translation id="NotValidCommand">недопустимая команда</translation>
+  
+  <!--Error Messages-->
+  <translation id="ErrorParsingCommand">Ошибка при разборе команды. Смотрите журнал.</translation>
+  <translation id="Disconnected">Отключен!</translation>
+  <translation id="DisconnectedTimeOut">Тайм-аут отключен!</translation>
+  <translation id="DisconnectedServerClosed">Отключенный сервер закрыт!</translation>
+  <translation id="DisconnectedConnectLost">Разъединенное соединение потеряно!</translation>
+  <translation id="CouldNotConnect">Не удалось подключиться к серверу, истекло время ожидания.</translation>
+  <translation id="FailedToConnect">Не удалось подключиться!</translation>
+  <translation id="ClientFailedToStart">Клиент не запустился.</translation>
+  <translation id="UnknownError">Неизвестная ошибка</translation>
+  <translation id="NotFound">Не найдено</translation>
+  <translation id="NotConnected">Нет соединения</translation>
+  <translation id="PortMustBeNumber">Порт должен быть номером.</translation>
+  <translation id="InvalidPortNumber">Неверный номер порта. (1 - 49151)</translation>
+  <translation id="InvalidUsername">Неверное имя пользователя.</translation>
+  <translation id="InvalidPort">Неверный порт.</translation>
+  <translation id="AlreadyRunningServer">Уже работает сервер.</translation>
+  <translation id="ErrorStartingServer">Не удалось запустить сервер.</translation>
+  <translation id="InvalidPortOrIP">Неверный порт или IP</translation>
+  <translation id="CannotKickYourself">Вы не можете выгнать себя с сервера.</translation>
+  <translation id="HasBeenBanned">был забанен с сервера. причина</translation>
+  
+</language>

@@ -9,10 +9,9 @@ namespace CSM.Helpers
     /// </summary>
     public static class UiHelpers
     {
-        public static UIButton CreateButton(this UIComponent uiComponent, string text, Vector2 position, int width = 340,
-            int height = 60)
+        public static UIButton CreateButton(this UIComponent uiComponent, string text, Vector2 position, int width = 340, int height = 60)
         {
-            var button = (UIButton)uiComponent.AddUIComponent(typeof(UIButton));
+            UIButton button = (UIButton)uiComponent.AddUIComponent(typeof(UIButton));
             button.position = position;
             button.width = width;
             button.height = height;
@@ -34,7 +33,7 @@ namespace CSM.Helpers
 
         public static UILabel CreateTitleLabel(this UIComponent uiComponent, string text, Vector2 position)
         {
-            var label = uiComponent.CreateLabel(text, position);
+            UILabel label = uiComponent.CreateLabel(text, position);
             label.textAlignment = UIHorizontalAlignment.Center;
             label.textScale = 1.3f;
             label.height = 60;
@@ -43,10 +42,9 @@ namespace CSM.Helpers
             return label;
         }
 
-        public static UILabel CreateLabel(this UIComponent uiComponent, string text, Vector2 position, int width = 340,
-            int height = 60)
+        public static UILabel CreateLabel(this UIComponent uiComponent, string text, Vector2 position, int width = 340, int height = 60)
         {
-            var label = (UILabel)uiComponent.AddUIComponent(typeof(UILabel));
+            UILabel label = (UILabel)uiComponent.AddUIComponent(typeof(UILabel));
             label.position = position;
             label.text = text;
             label.width = width;
@@ -56,11 +54,9 @@ namespace CSM.Helpers
             return label;
         }
 
-        public static UITextField CreateTextField(this UIComponent uiComponent, string placeholderText,
-            Vector2 position, int width = 340,
-            int height = 40)
+        public static UITextField CreateTextField(this UIComponent uiComponent, string placeholderText, Vector2 position, int width = 340, int height = 40)
         {
-            var textField = (UITextField)uiComponent.AddUIComponent(typeof(UITextField));
+            UITextField textField = (UITextField)uiComponent.AddUIComponent(typeof(UITextField));
             textField.atlas = GetAtlas("Ingame");
             textField.position = position;
             textField.textScale = 1.5f;
@@ -83,7 +79,7 @@ namespace CSM.Helpers
             return textField;
         }
 
-        public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text,Vector2 position)
+        public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text, Vector2 position)
         {
             UICheckBox checkBox = (UICheckBox)uiComponent.AddUIComponent(typeof(UICheckBox));
 
@@ -113,10 +109,66 @@ namespace CSM.Helpers
             return checkBox;
         }
 
-        // Sourced from : https://github.com/SamsamTS/CS-MoveIt/blob/master/MoveIt/UIUtils.cs
+        public static UIDropDown CreateDropDown(this UIComponent uiComponent, string[] items, Vector2 position)
+        {
+            UIDropDown dropDown = uiComponent.AddUIComponent<UIDropDown>();
+
+            dropDown.atlas = GetAtlas("Ingame");
+            dropDown.position = position;
+            dropDown.size = new Vector2(150f, 30f);
+            dropDown.listBackground = "GenericPanelLight";
+            dropDown.itemHeight = 30;
+            dropDown.itemHover = "ListItemHover";
+            dropDown.itemHighlight = "ListItemHighlight";
+            dropDown.normalBgSprite = "ButtonMenu";
+            dropDown.disabledBgSprite = "ButtonMenuDisabled";
+            dropDown.hoveredBgSprite = "ButtonMenuHovered";
+            dropDown.focusedBgSprite = "ButtonMenu";
+            dropDown.listWidth = 150;
+            dropDown.listHeight = 500;
+            dropDown.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
+            dropDown.popupColor = new Color32(45, 52, 61, 255);
+            dropDown.popupTextColor = new Color32(170, 170, 170, 255);
+            dropDown.zOrder = 1;
+            dropDown.textScale = 0.8f;
+            dropDown.verticalAlignment = UIVerticalAlignment.Middle;
+            dropDown.horizontalAlignment = UIHorizontalAlignment.Left;
+            dropDown.selectedIndex = 0;
+            dropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
+            dropDown.itemPadding = new RectOffset(14, 0, 8, 0);
+            dropDown.items = items;
+
+            UIButton button = dropDown.AddUIComponent<UIButton>();
+            dropDown.triggerButton = button;
+            button.atlas = GetAtlas("Ingame");
+            button.text = "";
+            button.size = dropDown.size;
+            button.relativePosition = new Vector3(0f, 0f);
+            button.textVerticalAlignment = UIVerticalAlignment.Middle;
+            button.textHorizontalAlignment = UIHorizontalAlignment.Left;
+            button.normalFgSprite = "IconDownArrow";
+            button.hoveredFgSprite = "IconDownArrowHovered";
+            button.pressedFgSprite = "IconDownArrowPressed";
+            button.focusedFgSprite = "IconDownArrowFocused";
+            button.disabledFgSprite = "IconDownArrowDisabled";
+            button.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+            button.horizontalAlignment = UIHorizontalAlignment.Right;
+            button.verticalAlignment = UIVerticalAlignment.Middle;
+            button.zOrder = 0;
+            button.textScale = 0.8f;
+
+            dropDown.eventSizeChanged += new PropertyChangedEventHandler<Vector2>((c, t) =>
+            {
+                button.size = t; dropDown.listWidth = (int)t.x;
+            });
+
+            return dropDown;
+        }
+
+        // Sourced from : https://github.com/SamsamTS/CS-MoveIt/blob/master/MoveIt/GUI/UIUtils.cs
         // I found his code after I started this class, the below atlas feature is quite neat!
 
-        private static Dictionary<string, UITextureAtlas> _atlases;
+        private static Dictionary<string, UITextureAtlas>_atlases;
 
         public static UITextureAtlas GetAtlas(string name)
         {

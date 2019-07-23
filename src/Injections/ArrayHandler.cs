@@ -11,13 +11,13 @@ namespace CSM.Injections
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        // All the types for Array16<T> and Array32<T> we currently need to track
+        // All the types for Array16<T>and Array32<T>we currently need to track
         // TODO: Implement building sync using this method
         private static readonly Type[] _array16Types = new Type[] { /*typeof(Building), */typeof(NetNode), typeof(NetSegment), typeof(PropInstance) };
         private static readonly Type[] _array32Types = new Type[] { typeof(TreeInstance) };
 
-        private static readonly List<ushort> _array16Collected = new List<ushort>();
-        private static readonly List<uint> _array32Collected = new List<uint>();
+        private static readonly List<ushort>_array16Collected = new List<ushort>();
+        private static readonly List<uint>_array32Collected = new List<uint>();
 
         private static int _list16Pointer, _list32Pointer;
 
@@ -67,8 +67,8 @@ namespace CSM.Injections
         /// <summary>
         /// Start to intercept id reservations and apply the given ids.
         /// </summary>
-        /// <param name="array16Ids">Ids to apply to Array16<> calls (can be null)</param>
-        /// <param name="array32Ids">Ids to apply to Array32<> calls (can be null)</param>
+        /// <param name="array16Ids">Ids to apply to Array16<>calls (can be null)</param>
+        /// <param name="array32Ids">Ids to apply to Array32<>calls (can be null)</param>
         public static void StartApplying(ushort[] array16Ids, uint[] array32Ids)
         {
             if (_collecting)
@@ -139,7 +139,7 @@ namespace CSM.Injections
                 }
             }
 
-            public static IEnumerable<MethodBase> TargetMethods()
+            public static IEnumerable<MethodBase>TargetMethods()
             {
                 foreach (Type t in _array16Types)
                 {
@@ -185,7 +185,7 @@ namespace CSM.Injections
                 }
             }
 
-            public static IEnumerable<MethodBase> TargetMethods()
+            public static IEnumerable<MethodBase>TargetMethods()
             {
                 foreach (Type t in _array16Types)
                 {
@@ -221,7 +221,7 @@ namespace CSM.Injections
                 }
             }
 
-            public static IEnumerable<MethodBase> TargetMethods()
+            public static IEnumerable<MethodBase>TargetMethods()
             {
                 foreach (Type t in _array32Types)
                 {
@@ -267,7 +267,7 @@ namespace CSM.Injections
                 }
             }
 
-            public static IEnumerable<MethodBase> TargetMethods()
+            public static IEnumerable<MethodBase>TargetMethods()
             {
                 foreach (Type t in _array32Types)
                 {

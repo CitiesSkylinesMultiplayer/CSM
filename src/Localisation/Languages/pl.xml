@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<language id="pl">
+  
+  <!--Chat Panel Start-->
+  <translation id="Welcome">Witamy w grze wieloosobowej Citie Skylines!</translation>
+  <translation id="Shortcut1">Naciśnij klawisz ~ (tylda), aby wyświetlić lub ukryć czat.</translation>
+  <translation id="Shortcut2">Naciśnij klawisz tabulatora, aby przełączyć fokus na czat.</translation>
+  <translation id="Discord">Dołącz do naszego serwera niezgody pod adresem: https://discord.gg/RjACPhd</translation>
+  <translation id="Help">Wpisz „/help”, aby wyświetlić listę poleceń i użycia.</translation>
+  <translation id="Support">Wpisz „/support”, aby dowiedzieć się, gdzie zgłaszać błędy i uzyskać pomoc.</translation>
+  
+  <!--Chat Commands-->
+  <translation id="ChatCMDhelp">Wyświetla informacje o tym, które polecenia mogą być wyświetlane.</translation>
+  <translation id="ChatCMDversion">Wyświetla informacje o wersji mod i gry.</translation>
+  <translation id="ChatCMDsupport">Wyświetl linki pomocnicze do mod.</translation>
+  <translation id="ChatCMDplayers">Wyświetla listę graczy podłączonych do serwera.</translation>
+  <translation id="ChatCMDnonplayers">Nie hostujesz ani nie łączysz się z żadnym serwerem.</translation>
+  <translation id="ChatCMDhide-chat">Ukrywa konsolę czatu. Można wyświetlić ponownie, naciskając klawisz ~ (tylda).</translation>
+  <translation id="ChatCMDclear">Usuń wszystko z dziennika czatu.</translation>
+  <translation id="ChatCMDopen-log">Otwiera dziennik dla wielu graczy.</translation>
+  
+  <!--Multiplayer Menu-->
+  <translation id="Multiplayer">Multiplayer</translation>
+  <translation id="MultiplayerMenu">Menu dla wielu graczy</translation>
+  <translation id="JoinGame">Dołącz do gry</translation>
+  <translation id="HostGame">Gra hosta</translation>
+  <translation id="ManageServer">Zarządzaj serwerem</translation>
+  <translation id="ManagePlayers">Zarządzaj graczami</translation>
+  <translation id="StopServer">Zatrzymaj serwer</translation>
+  <translation id="Disconnect">Rozłączyć się</translation>
+  <translation id="MultiplayerChat">Czat wieloosobowy</translation>
+  
+  <!--Host Game Menu-->
+  <translation id="HostServer">Serwer hosta</translation>
+  <translation id="Password">Hasło (opcjonalne)</translation>
+  <translation id="PasswordNotOptional">Hasło</translation>
+  <translation id="PasswordCB">Pokaż hasło</translation>
+  <translation id="Username">Nazwa Użytkownika</translation>
+  <translation id="CreateServer">Utwórz serwer</translation>
+  <translation id="Cancel">Anuluj</translation>
+  <translation id="SettingUpServer">Konfigurowanie serwera...</translation>
+  <translation id="Private">Prywatny</translation>
+  <translation id="Public">Publiczny</translation>
+  
+  <!--Manage Server Menu-->
+  <translation id="CopyToClipboard">Skopiuj do schowka</translation>
+  <translation id="Close">Blisko</translation>
+  
+  <!--Join Game Menu-->
+  <translation id="ConnectToServer">Połączyć się z serwerem</translation>
+  <translation id="Connecting">Złączony...</translation>
+  <translation id="IPAddress">Adres IP</translation>
+  <translation id="Port">Port</translation>
+  <translation id="ExternalIP">Zewnętrzny adres IP</translation>
+  <translation id="InternalIP">Wewnętrzny adres IP</translation>
+  
+  <!--Player List-->
+  <translation id="Kick">kopnięcie</translation>
+  <translation id="Ban">Zakaz</translation>
+  
+  <!--Server List-->
+  <translation id="Join">Przystąpić</translation>
+  
+  <!--Information Messages-->
+  <translation id="AttemptingToStartServer">Próba uruchomienia serwera na porcie</translation>
+  <translation id="FailedToOpenPort">Nie udało się otworzyć portu. Wymagane jest ręczne przekierowanie portów</translation>
+  <translation id="ServerHasStarted">Serwer został uruchomiony</translation>
+  
+  <!--Player Defined Message-->
+  <translation id="Player">Gracz</translation>
+    <subtranslation id="LostConnection">utracone połączenie!</subtranslation>
+    <subtranslation id="Disconnected">niepowiązany!</subtranslation>
+    <subtranslation id="TimedOut">przekroczono limit czasu!</subtranslation>
+    <subtranslation id="HasConnected">ma połączenie!</subtranslation>
+    <subtranslation id="HasDisconnected">Został rozłączony!</subtranslation>
+    <subtranslation id="HasBeenKicked">został wyrzucony z serwera</subtranslation>
+  
+  <!--Client Messages-->
+  <translation id="DisconnectedFromServer">Rozłączony z serwerem</translation>
+  <translation id="ServerStopped">Serwer został zatrzymany</translation>
+  <translation id="SuccessfullyConnected">Pomyślnie połączono z serwerem</translation>
+  <translation id="IDCollision">Kolizja ID. Uruchom ponownie sesję multiplayer.</translation>
+  <translation id="NotValidCommand">nie jest prawidłowym poleceniem</translation>
+  
+  <!--Error Messages-->
+  <translation id="ErrorParsingCommand">Błąd podczas komendy parsowania. Zobacz dziennik.</translation>
+  <translation id="Disconnected">Niepowiązany!</translation>
+  <translation id="DisconnectedTimeOut">Upłynął limit czasu połączenia!</translation>
+  <translation id="DisconnectedServerClosed">Odłączony serwer zamknięty!</translation>
+  <translation id="DisconnectedConnectLost">Utracono połączenie odłączone!</translation>
+  <translation id="CouldNotConnect">Nie można połączyć się z serwerem, upłynął limit czasu.</translation>
+  <translation id="FailedToConnect">Nie udało się połączyć!</translation>
+  <translation id="ClientFailedToStart">Nie udało się uruchomić klienta.</translation>
+  <translation id="UnknownError">Nieznany błąd</translation>
+  <translation id="NotFound">Nie znaleziono</translation>
+  <translation id="NotConnected">Nie połączony</translation>
+  <translation id="PortMustBeNumber">Port musi być liczbą.</translation>
+  <translation id="InvalidPortNumber">Nieprawidłowy numer portu. (1 - 49151)</translation>
+  <translation id="InvalidUsername">Zła nazwa użytkownika.</translation>
+  <translation id="InvalidPort">Nieprawidłowy port.</translation>
+  <translation id="AlreadyRunningServer">Już działa serwer.</translation>
+  <translation id="ErrorStartingServer">Nie można uruchomić serwera.</translation>
+  <translation id="InvalidPortOrIP">Nieprawidłowy port lub adres IP</translation>
+  <translation id="CannotKickYourself">Nie możesz wykopać się z serwera.</translation>
+  <translation id="HasBeenBanned">został zablokowany na serwerze. Powód</translation>
+
+</language>

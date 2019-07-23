@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<language id="en">
+
+  <!--Chat Panel Start-->
+  <translation id="Welcome">Welcome to Citie Skylines Multiplayer!</translation>
+  <translation id="Shortcut1">Press the ~ (tilde) key to show or hide the chat.</translation>
+  <translation id="Shortcut2">Press the tab key to switch focus to the chat.</translation>
+  <translation id="Discord">Join our discord server at: https://discord.gg/RjACPhd</translation>
+  <translation id="Help">Type '/help' to see a list of commands and usage.</translation>
+  <translation id="Support">Type '/support' to find out where to report bugs and get help.</translation>
+
+  <!--Chat Commands-->
+  <translation id="ChatCMDhelp">Displays information about which commands can be displayed.</translation>
+  <translation id="ChatCMDversion">Displays version information about the mod and game.</translation>
+  <translation id="ChatCMDsupport">Display support links for the mod.</translation>
+  <translation id="ChatCMDplayers">Displays a list of players connected to the server.</translation>
+  <translation id="ChatCMDnonplayers">You are not hosting or connected to any servers.</translation>
+  <translation id="ChatCMDhide-chat">Hides the chat console. Can be displayed again by pressing the ~ (tilde) key.</translation>
+  <translation id="ChatCMDclear">Clear everything from the chat log.</translation>
+  <translation id="ChatCMDopen-log">Opens the multiplayer log.</translation>
+
+  <!--Multiplayer Menu-->
+  <translation id="Multiplayer">Multiplayer</translation>
+  <translation id="MultiplayerMenu">Multiplayer Menu</translation>
+  <translation id="JoinGame">Join Game</translation>
+  <translation id="HostGame">Host Game</translation>
+  <translation id="ManageServer">Manage Server</translation>
+  <translation id="ManagePlayers">Manage Players</translation>
+  <translation id="StopServer">Stop Server</translation>
+  <translation id="Disconnect">Disconnect</translation>
+  <translation id="MultiplayerChat">Multiplayer Chat</translation>
+  
+  <!--Host Game Menu-->
+  <translation id="HostServer">Host Server</translation>
+  <translation id="Password">Password (Optional)</translation>
+  <translation id="PasswordNotOptional">Password</translation>
+  <translation id="PasswordCB">Show Password</translation>
+  <translation id="Username">Username</translation>
+  <translation id="CreateServer">Create Server</translation>
+  <translation id="Cancel">Cancel</translation>
+  <translation id="SettingUpServer">Setting up server...</translation>
+  <translation id="Private">Private</translation>
+  <translation id="Public">Public</translation>
+  
+  <!--Manage Server Menu-->
+  <translation id="CopyToClipboard">Copy to clipboard</translation>
+  <translation id="Close">Close</translation>
+
+  <!--Join Game Menu-->
+  <translation id="ConnectToServer">Connect to Server</translation>
+  <translation id="Connecting">Connecting...</translation>
+  <translation id="IPAddress">IP Address</translation>
+  <translation id="Port">Port</translation>
+  <translation id="ExternalIP">External IP</translation>
+  <translation id="InternalIP">Internal IP</translation>
+  
+  <!--Player List-->
+  <translation id="Kick">Kick</translation>
+  <translation id="Ban">Ban</translation>
+
+  <!--Server List-->
+  <translation id="Join">Join</translation>
+
+  <!--Information Messages-->
+  <translation id="AttemptingToStartServer">Attempting to start server on port</translation>
+  <translation id="FailedToOpenPort">Failed to open port. Manual port forwarding is required</translation>
+  <translation id="ServerHasStarted">The server has started</translation>
+  
+  <!--Player Defined Message-->
+  <translation id="Player">Player</translation>
+    <subtranslation id="LostConnection">lost connection!</subtranslation>
+    <subtranslation id="Disconnected">disconnected!</subtranslation>
+    <subtranslation id="TimedOut">timed out!</subtranslation>
+    <subtranslation id="HasConnected">has connected!</subtranslation>
+    <subtranslation id="HasDisconnected">has disconnected!</subtranslation>
+    <subtranslation id="HasBeenKicked">has been kicked from the server</subtranslation>
+  
+  <!--Client Messages-->
+  <translation id="DisconnectedFromServer">Disconnected from server</translation>
+  <translation id="ServerStopped">Server stopped</translation>
+  <translation id="SuccessfullyConnected">Successfully connected to server</translation>
+  <translation id="IDCollision">ID collision. Please restart the multiplayer session.</translation>
+  <translation id="NotValidCommand">is not a valid command</translation>
+
+  <!--Error Messages-->
+  <translation id="ErrorParsingCommand">Error while parsing command. See log.</translation>
+  <translation id="Disconnected">Disconnected!</translation>
+  <translation id="DisconnectedTimeOut">Disconnected timed out!</translation>
+  <translation id="DisconnectedServerClosed">Disconnected server closed!</translation>
+  <translation id="DisconnectedConnectLost">Disconnected connection lost!</translation>
+  <translation id="CouldNotConnect">Could not connect to server, timed out.</translation>
+  <translation id="FailedToConnect">Failed to connect!</translation>
+  <translation id="ClientFailedToStart">The client failed to start.</translation>
+  <translation id="UnknownError">Unknown error</translation>
+  <translation id="NotFound">Not found</translation>
+  <translation id="NotConnected">Not connected</translation>
+  <translation id="PortMustBeNumber">Port must be a number.</translation>
+  <translation id="InvalidPortNumber">Invalid port number. (1 - 49151)</translation>
+  <translation id="InvalidUsername">Invalid username.</translation>
+  <translation id="InvalidPort">Invalid port.</translation>
+  <translation id="AlreadyRunningServer">Already running server.</translation>
+  <translation id="ErrorStartingServer">Could not start server.</translation>
+  <translation id="InvalidPortOrIP">Invalid Port or IP</translation>
+  <translation id="CannotKickYourself">You cannot kick yourself from the server.</translation>
+  <translation id="HasBeenBanned">has been banned from the server. Reason</translation>
+
+</language>

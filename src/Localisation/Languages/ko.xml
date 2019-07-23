@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<language id="ko">
+  
+  <!--Chat Panel Start-->
+  <translation id="Welcome">Citie Skylines Multiplayer에 오신 것을 환영합니다!</translation>
+  <translation id="Shortcut1">채팅을 표시하거나 숨기려면 ~ (물결 표시) 키를 누릅니다.</translation>
+  <translation id="Shortcut2">채팅으로 초점을 전환하려면 Tab 키를 누르십시오.</translation>
+  <translation id="Discord">우리의 불화 서버에 가입하십시오 : https://discord.gg/RjACPhd</translation>
+  <translation id="Help">'/help'를 입력하면 명령어 목록과 사용법을 볼 수 있습니다.</translation>
+  <translation id="Support">'/support'를 입력하여 버그를보고하고 도움을 얻을 수있는 곳을 찾으십시오.</translation>
+  
+  <!--Chat Commands-->
+  <translation id="ChatCMDhelp">표시 할 수있는 명령에 대한 정보를 표시합니다.</translation>
+  <translation id="ChatCMDversion">모드 및 게임에 대한 버전 정보를 표시합니다.</translation>
+  <translation id="ChatCMDsupport">해당 모드에 대한 지원 링크를 표시하십시오.</translation>
+  <translation id="ChatCMDplayers">서버에 연결된 플레이어 목록을 표시합니다.</translation>
+  <translation id="ChatCMDnonplayers">호스팅하지 않거나 서버에 연결되어 있지 않습니다.</translation>
+  <translation id="ChatCMDhide-chat">채팅 콘솔을 숨 깁니다. ~ (물결표) 키를 눌러 다시 표시 할 수 있습니다.</translation>
+  <translation id="ChatCMDclear">채팅 로그에서 모든 것을 지 웁니다.</translation>
+  <translation id="ChatCMDopen-log">멀티 플레이어 로그를 엽니 다.</translation>
+  
+  <!--Multiplayer Menu-->
+  <translation id="Multiplayer">멀티 플레이어</translation>
+  <translation id="MultiplayerMenu">멀티 플레이어 메뉴</translation>
+  <translation id="JoinGame">게임 가입</translation>
+  <translation id="HostGame">호스트 게임</translation>
+  <translation id="ManageServer">서버 관리</translation>
+  <translation id="ManagePlayers">플레이어 관리</translation>
+  <translation id="StopServer">서버 중지</translation>
+  <translation id="Disconnect">연결 끊기</translation>
+  <translation id="MultiplayerChat">멀티 플레이어 채팅</translation>
+  
+  <!--Host Game Menu-->
+  <translation id="HostServer">호스트 서버</translation>
+  <translation id="Password">비밀번호 (선택 사항)</translation>
+  <translation id="PasswordNotOptional">암호</translation>
+  <translation id="PasswordCB">암호 표시</translation>
+  <translation id="Username">사용자 이름</translation>
+  <translation id="CreateServer">서버 만들기</translation>
+  <translation id="Cancel">취소</translation>
+  <translation id="SettingUpServer">서버 설정 중...</translation>
+  <translation id="Private">은밀한</translation>
+  <translation id="Public">공공의</translation>
+  
+  <!--Manage Server Menu-->
+  <translation id="CopyToClipboard">클립 보드에 복사</translation>
+  <translation id="Close">닫기</translation>
+  
+  <!--Join Game Menu-->
+  <translation id="ConnectToServer">서버에 연결</translation>
+  <translation id="Connecting">연결 중...</translation>
+  <translation id="IPAddress">IP 주소</translation>
+  <translation id="Port">포트</translation>
+  <translation id="ExternalIP">외부 IP</translation>
+  <translation id="InternalIP">내부 IP</translation>
+  
+  <!--Player List-->
+  <translation id="Kick">발 차기</translation>
+  <translation id="Ban">반</translation>
+  
+  <!--Server List-->
+  <translation id="Join">어울리다</translation>
+  
+  <!--Information Messages-->
+  <translation id="AttemptingToStartServer">포트에서 서버를 시작하려고합니다.</translation>
+  <translation id="FailedToOpenPort">포트를 열지 못했습니다. 수동 포트 포워딩이 필요합니다.</translation>
+  <translation id="ServerHasStarted">서버가 시작되었습니다.</translation>
+  
+  <!--Player Defined Message-->
+  <translation id="Player">플레이어</translation>
+    <subtranslation id="LostConnection">연결이 끊어졌습니다!</subtranslation>
+    <subtranslation id="Disconnected">연결이 끊어졌습니다!</subtranslation>
+    <subtranslation id="TimedOut">시간 초과!</subtranslation>
+    <subtranslation id="HasConnected">연결되었습니다!</subtranslation>
+    <subtranslation id="HasDisconnected">연결이 끊어졌습니다.</subtranslation>
+    <subtranslation id="HasBeenKicked">서버에서 쫓겨났다.</subtranslation>
+  
+  <!--Client Messages-->
+  <translation id="DisconnectedFromServer">서버와의 연결이 끊어져</translation>
+  <translation id="ServerStopped">서버가 중지됨</translation>
+  <translation id="SuccessfullyConnected">서버에 연결되었습니다.</translation>
+  <translation id="IDCollision">ID 충돌. 멀티 플레이어 세션을 다시 시작하십시오.</translation>
+  <translation id="NotValidCommand">유효한 명령이 아닙니다.</translation>
+  
+  <!--Error Messages-->
+  <translation id="ErrorParsingCommand">명령을 구문 분석하는 중 오류가 발생했습니다. 로그를보십시오.</translation>
+  <translation id="Disconnected">연결이 끊어졌습니다.</translation>
+  <translation id="DisconnectedTimeOut">연결이 끊겼습니다.</translation>
+  <translation id="DisconnectedServerClosed">연결이 끊긴 서버가 닫혔습니다!</translation>
+  <translation id="DisconnectedConnectLost">연결이 끊어진 연결이 끊어졌습니다.</translation>
+  <translation id="CouldNotConnect">서버에 연결할 수 없습니다. 시간이 초과되었습니다.</translation>
+  <translation id="FailedToConnect">연결하지 못했습니다!</translation>
+  <translation id="ClientFailedToStart">클라이언트를 시작하지 못했습니다.</translation>
+  <translation id="UnknownError">알수없는 오류</translation>
+  <translation id="NotFound">찾을 수 없음</translation>
+  <translation id="NotConnected">연결되지 않은</translation>
+  <translation id="PortMustBeNumber">포트는 숫자 여야합니다.</translation>
+  <translation id="InvalidPortNumber">포트 번호가 잘못되었습니다. (1 - 49151)</translation>
+  <translation id="InvalidUsername">잘못된 사용자 이름.</translation>
+  <translation id="InvalidPort">포트가 잘못되었습니다.</translation>
+  <translation id="AlreadyRunningServer">이미 서버를 실행 중입니다.</translation>
+  <translation id="ErrorStartingServer">서버를 시작할 수 없습니다.</translation>
+  <translation id="InvalidPortOrIP">잘못된 포트 또는 IP</translation>
+  <translation id="CannotKickYourself">서버에서 자신을 쫓아 낼 수 없습니다.</translation>
+  <translation id="HasBeenBanned">서버에서 금지되었습니다. 이유</translation>
+  
+</language>

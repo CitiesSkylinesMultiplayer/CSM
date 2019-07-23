@@ -3,6 +3,7 @@ using CSM.Panels;
 using Harmony;
 using NLog;
 using UnityEngine;
+using CSM.Localisation;
 
 namespace CSM.Injections
 {
@@ -16,6 +17,7 @@ namespace CSM.Injections
         /// </summary>
         public static void Prefix()
         {
+            Translation.GetXMLTranslation();
             // TODO: Enable this when ready
             // MainMenuHandler.CreateOrUpdateJoinGameButton();
         }

@@ -34,8 +34,10 @@ namespace CSM.Panels
             name = "MPMenuJoinGamePanel";
             color = new Color32(110, 110, 110, 255);
 
+            ChatLogPanel.ActiveWindows.Add(name);
+
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);

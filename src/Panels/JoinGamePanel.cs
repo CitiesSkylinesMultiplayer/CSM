@@ -4,6 +4,7 @@ using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
+using CSM.Localisation;
 
 namespace CSM.Panels
 {
@@ -30,8 +31,10 @@ namespace CSM.Panels
             name = "MPJoinGamePanel";
             color = new Color32(110, 110, 110, 255);
 
+            ChatLogPanel.ActiveWindows.Add(name);
+
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
@@ -40,23 +43,23 @@ namespace CSM.Panels
             height = 560;
 
             // Title Label
-            this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
+            this.CreateTitleLabel(Translation.PullTranslation("ConnectToServer"), new Vector2(80, -20));
 
             // IP Address Label
-            this.CreateLabel("IP Address:", new Vector2(10, -70));
+            this.CreateLabel(Translation.PullTranslation("IPAddress"), new Vector2(10, -70));
 
             // IP Address field
             _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
 
             // Port Label
-            this.CreateLabel("Port:", new Vector2(10, -150));
+            this.CreateLabel(Translation.PullTranslation("Port"), new Vector2(10, -150));
 
             // Port field
             _portField = this.CreateTextField("4230", new Vector2(10, -180));
             _portField.numericalOnly = true;
 
             // Username label
-            this.CreateLabel("Username:", new Vector2(10, -230));
+            this.CreateLabel(Translation.PullTranslation("Username")+":", new Vector2(10, -230));
 
             // Username field
             _usernameField = this.CreateTextField("", new Vector2(10, -260));
@@ -66,28 +69,28 @@ namespace CSM.Panels
             }
 
             // Password label
-            this.CreateLabel("Password:", new Vector2(10, -310));
+            this.CreateLabel(Translation.PullTranslation("PasswordNotOptional") +":", new Vector2(10, -310));
 
             // Password checkbox
-            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(120, -310));
+            _passwordBox = this.CreateCheckBox(Translation.PullTranslation("PasswordCB"), new Vector2(120, -310));
 
             // Password field
             _passwordField = this.CreateTextField("", new Vector2(10, -340));
             _passwordField.isPasswordField = true;
 
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -420));
+            _connectButton = this.CreateButton(Translation.PullTranslation("ConnectToServer"), new Vector2(10, -420));
             _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -490));
+            _closeButton = this.CreateButton(Translation.PullTranslation("Cancel"), new Vector2(10, -490));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
                 RemoveUIComponent(this);
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
+            _connectionStatus = this.CreateLabel(Translation.PullTranslation("NotConnected"), new Vector2(10, -395));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
@@ -107,33 +110,33 @@ namespace CSM.Panels
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
-            _connectionStatus.text = "Connecting...";
+            _connectionStatus.text = Translation.PullTranslation("Connecting");
 
             if (string.IsNullOrEmpty(_portField.text) || string.IsNullOrEmpty(_ipAddressField.text))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid Port or IP";
+                _connectionStatus.text = Translation.PullTranslation("InvalidPortOrIP");
                 return;
             }
 
             if (string.IsNullOrEmpty(_usernameField.text))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid Username";
+                _connectionStatus.text = Translation.PullTranslation("InvalidUsername");
                 return;
             }
 
-            if (!int.TryParse(_portField.text, out var port))
+            if (!int.TryParse(_portField.text, out int port))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid Port";
+                _connectionStatus.text = Translation.PullTranslation("InvalidPort");
                 return;
             }
 
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Already Running Server";
+                _connectionStatus.text = Translation.PullTranslation("AlreadyRunningServer");
                 return;
             }
 

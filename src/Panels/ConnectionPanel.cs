@@ -3,6 +3,7 @@ using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
 using UnityEngine;
+using CSM.Localisation;
 
 namespace CSM.Panels
 {
@@ -16,6 +17,8 @@ namespace CSM.Panels
 
         private UIButton _serverManageButton;
 
+        private UIButton _serverPlayerButton;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -25,8 +28,10 @@ namespace CSM.Panels
             name = "MPConnectionPanel";
             color = new Color32(110, 110, 110, 250);
 
+            ChatLogPanel.ActiveWindows.Add(name);
+
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 100.0f);
@@ -48,8 +53,13 @@ namespace CSM.Panels
                         Hide(_serverConnectButton);
                         Show(_disconnectButton);
                         Show(_serverManageButton);
+                        Show(_serverPlayerButton);
 
-                        _disconnectButton.text = "Stop server";
+                        _disconnectButton.text = Translation.PullTranslation("Disconnect");
+                        _disconnectButton.position = new Vector2(10, -200);
+
+                        height = 270;
+
                     }
                     else
                     {
@@ -57,6 +67,9 @@ namespace CSM.Panels
                         Show(_serverConnectButton);
                         Hide(_disconnectButton);
                         Hide(_serverManageButton);
+                        Hide(_serverPlayerButton);
+
+                        height = 200;
                     }
                 }
                 else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
@@ -66,7 +79,7 @@ namespace CSM.Panels
                     Show(_disconnectButton);
                     Hide(_serverManageButton);
 
-                    _disconnectButton.text = "Disconnect";
+                    _disconnectButton.text = Translation.PullTranslation("Disconnect");
                 }
                 else
                 {
@@ -77,27 +90,38 @@ namespace CSM.Panels
                 }
             };
 
-            this.CreateTitleLabel("Multiplayer Menu", new Vector3(80, -20, 0));
+            this.CreateTitleLabel(Translation.PullTranslation("Multiplayer"), new Vector3(80, -20, 0));
 
             // Join game button
-            _clientConnectButton = this.CreateButton("Join Game", new Vector2(10, -60));
+            _clientConnectButton = this.CreateButton(Translation.PullTranslation("JoinGame"), new Vector2(10, -60));
+            _clientConnectButton.name = "MPClientConnectButton";
 
             // Manage server button
-            _serverManageButton = this.CreateButton("Manage Server", new Vector2(10, -60));
+            _serverManageButton = this.CreateButton(Translation.PullTranslation("ManageServer"), new Vector2(10, -60));
             _serverManageButton.isEnabled = false;
             _serverManageButton.isVisible = false;
+            _serverManageButton.name = "MPServerManageButton";
+
+            // Manage player button
+            _serverPlayerButton = this.CreateButton(Translation.PullTranslation("ManagePlayers"), new Vector2(10, -130));
+            _serverPlayerButton.isEnabled = false;
+            _serverPlayerButton.isVisible = false;
+            _serverPlayerButton.name = "MPServerPlayerButton";
 
             // Host game button
-            _serverConnectButton = this.CreateButton("Host Game", new Vector2(10, -130));
+            _serverConnectButton = this.CreateButton(Translation.PullTranslation("HostGame"), new Vector2(10, -130));
+            _serverConnectButton.name = "MPServerConnectButton";
 
             // Close server button
-            _disconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
+            _disconnectButton = this.CreateButton(Translation.PullTranslation("StopServer"), new Vector2(10, -130));
             _disconnectButton.isEnabled = false;
             _disconnectButton.isVisible = false;
+            _disconnectButton.name = "MPDisconnectButton";
 
             _clientConnectButton.eventClick += (component, param) =>
             {
-                var panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
+                JoinGamePanel panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
+                //ServerListPanel panel = view.FindUIComponent<ServerListPanel>("MPServerListPanel");
 
                 if (panel != null)
                 {
@@ -106,8 +130,9 @@ namespace CSM.Panels
                 }
                 else
                 {
-                    var joinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
-                    joinGamePanel.Focus();
+                    //ServerListPanel ServerListPanel = (ServerListPanel)view.AddUIComponent(typeof(ServerListPanel));
+                    JoinGamePanel JoinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
+                    JoinGamePanel.Focus();
                 }
 
                 isVisible = false;
@@ -116,7 +141,7 @@ namespace CSM.Panels
             // Host a game panel
             _serverConnectButton.eventClick += (component, param) =>
             {
-                var panel = view.FindUIComponent<HostGamePanel>("MPHostGamePanel");
+                HostGamePanel panel = view.FindUIComponent<HostGamePanel>("MPHostGamePanel");
 
                 if (panel != null)
                 {
@@ -125,7 +150,7 @@ namespace CSM.Panels
                 }
                 else
                 {
-                    var hostGamePanel = (HostGamePanel)view.AddUIComponent(typeof(HostGamePanel));
+                    HostGamePanel hostGamePanel = (HostGamePanel)view.AddUIComponent(typeof(HostGamePanel));
                     hostGamePanel.Focus();
                 }
 
@@ -141,7 +166,7 @@ namespace CSM.Panels
 
             _serverManageButton.eventClick += (component, param) =>
             {
-                var panel = view.FindUIComponent<ManageGamePanel>("MPManageGamePanel");
+                ManageGamePanel panel = view.FindUIComponent<ManageGamePanel>("MPManageGamePanel");
 
                 if (panel != null)
                 {
@@ -157,7 +182,25 @@ namespace CSM.Panels
                 isVisible = false;
             };
 
-            base.Start();
+            _serverPlayerButton.eventClick += (component, param) =>
+            {
+                /*
+                PlayerListPanel panel = view.FindUIComponent<PlayerListPanel>("MPPlayerListPanel");
+
+                if (panel != null)
+                {
+                    panel.isVisible = true;
+                }
+                else
+                {
+                    panel = (PlayerListPanel)view.AddUIComponent(typeof(PlayerListPanel));
+                }
+
+                panel.Focus();
+
+                isVisible = false;
+                */
+            };
         }
 
         private void Show(UIButton button)

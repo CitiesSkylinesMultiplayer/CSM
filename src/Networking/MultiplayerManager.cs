@@ -3,6 +3,7 @@ using CSM.Panels;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using CSM.Localisation;
 
 namespace CSM.Networking
 {
@@ -11,7 +12,7 @@ namespace CSM.Networking
         /// <summary>
         /// The current player list as server or client.
         /// </summary>
-        public HashSet<string> PlayerList { get; } = new HashSet<string>();
+        public HashSet<string>PlayerList { get; } = new HashSet<string>();
 
         /// <summary>
         /// The current role of the game.
@@ -58,7 +59,7 @@ namespace CSM.Networking
         /// <param name="password">The password to use.</param>
         /// <param name="requestWorld">The client wants to load the world.</param>
         /// <param name="callback">This callback returns if the connection was successful.</param>
-        public void ConnectToServer(string ipAddress, int port, string username, string password, bool requestWorld, Action<bool> callback)
+        public void ConnectToServer(string ipAddress, int port, string username, string password, bool requestWorld, Action<bool>callback)
         {
             if (CurrentRole == MultiplayerRole.Server)
             {
@@ -109,19 +110,19 @@ namespace CSM.Networking
             {
                 case MultiplayerRole.Client:
                     CurrentClient.Disconnect();
-                    ChatLogPanel.PrintGameMessage("Disconnected from server.");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("DisconnectedFromServer")}.");
                     break;
 
                 case MultiplayerRole.Server:
                     CurrentServer.StopServer();
-                    ChatLogPanel.PrintGameMessage("Server stopped.");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("ServerStopped")}.");
                     break;
             }
             CurrentRole = MultiplayerRole.None;
         }
 
         private static MultiplayerManager _multiplayerInstance;
-        public static MultiplayerManager Instance => _multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());
+        public static MultiplayerManager Instance =>_multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());
     }
 
     /// <summary>

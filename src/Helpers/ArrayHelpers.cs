@@ -12,7 +12,7 @@ namespace CSM.Helpers
         /// <returns>a new byte array</returns>
         public static byte[] PrependByte(byte newByte, byte[] values)
         {
-            var newValues = new byte[values.Length + 1];
+            byte[] newValues = new byte[values.Length + 1];
             newValues[0] = newByte;
 
             Array.Copy(values, 0, newValues, 1, values.Length);

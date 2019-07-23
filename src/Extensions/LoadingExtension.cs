@@ -1,8 +1,10 @@
 ﻿using ColossalFramework.UI;
+using ColossalFramework.Globalization;
 using CSM.Networking;
 using CSM.Panels;
 using ICities;
 using UnityEngine;
+using CSM.Localisation;
 
 namespace CSM.Extensions
 {
@@ -29,7 +31,7 @@ namespace CSM.Extensions
 
             _multiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
 
-            _multiplayerButton.text = "Multiplayer";
+            _multiplayerButton.text = Translation.PullTranslation("Multiplayer");
             _multiplayerButton.width = 150;
             _multiplayerButton.height = 40;
 
@@ -48,11 +50,21 @@ namespace CSM.Extensions
             _multiplayerButton.playAudioEvents = true;
 
             // Place the button.
-            _multiplayerButton.transformPosition = new Vector3(-1.45f, 0.97f);
+            _multiplayerButton.relativePosition = new Vector3(uiView.fixedWidth / 2.0f - 780.0f, 12.0f);
 
             // Respond to button click.
             _multiplayerButton.eventClick += (component, param) =>
             {
+                if (Translation.TranslationName != LocaleManager.cultureInfo.Name.Substring(0, 2))
+                {
+                    Translation.GetXMLTranslation();
+                    _multiplayerButton.text = Translation.PullTranslation("Multiplayer");
+
+                    ChatLogPanel.DestroyAllUIComponents();
+
+                    UIView.GetAView().AddUIComponent(typeof(ChatLogPanel));
+                }
+
                 var panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
 
                 if (panel != null)

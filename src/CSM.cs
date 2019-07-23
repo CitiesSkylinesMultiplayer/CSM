@@ -46,13 +46,13 @@ namespace CSM
         /// </summary>
         private void SetupLogging()
         {
-            var config = new LoggingConfiguration();
+            LoggingConfiguration config = new LoggingConfiguration();
 
             // The layout of the log
-            var layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString() + "] [${level}] ${message} ${exception:format=tostring}";
+            string layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString() + "] [${level}] ${message} ${exception:format=tostring}";
 
             // Target for file logging
-            var logfile = new FileTarget("logfile")
+            FileTarget logfile = new FileTarget("logfile")
             {
                 FileName = "multiplayer-logs/log-current.txt",
                 ArchiveFileName = "multiplayer-logs/log-${shortdate}.txt",
@@ -63,7 +63,7 @@ namespace CSM
             };
 
             // Target for console logging
-            var logconsole = new ConsoleTarget("logconsole") { Layout = layout };
+            ConsoleTarget logconsole = new ConsoleTarget("logconsole") { Layout = layout };
 
             // While in development set both levels to start at debug, later on we
             // want to set an option to do this.
@@ -86,5 +86,6 @@ namespace CSM
         {
             _logger.Info(message);
         }
+
     }
 }

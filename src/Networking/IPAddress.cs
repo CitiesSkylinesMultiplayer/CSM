@@ -7,7 +7,7 @@ namespace CSM.Networking
     public class IPAddress
     {
         private static string _localIp = null;
-        private static string _externalIp = null;
+        public static string _externalIp = null;
 
         public static string GetLocalIPAddress()
         {
@@ -47,7 +47,8 @@ namespace CSM.Networking
             try
             {
                 //Get the External IP (IPv4) Address from internet
-                _externalIp = new WebClient().DownloadString("http://api.ipify.org"); // HTTPS doesn't work
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                _externalIp = new WebClient().DownloadString("https://api.ipify.org");
                 return _externalIp;
             }
             catch (Exception)

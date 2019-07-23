@@ -4,6 +4,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CSM.Localisation;
 
 namespace CSM.Helpers
 {
@@ -54,7 +55,7 @@ namespace CSM.Helpers
                 {
                     // The arrays are no longer in sync
                     LogManager.GetCurrentClassLogger().Error($"{type}: Received id {id} already in use. Please restart the multiplayer session!");
-                    ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "ID collision. Please restart the multiplayer session.");
+                    ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"{Translation.PullTranslation("IDCollision")}");
                     return;
                 }
             }

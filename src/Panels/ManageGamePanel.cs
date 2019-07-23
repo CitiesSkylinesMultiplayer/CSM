@@ -1,7 +1,9 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
+using CSM.Localisation;
 
 namespace CSM.Panels
 {
@@ -12,6 +14,7 @@ namespace CSM.Panels
         private UITextField _externalIpField;
 
         private UIButton _closeButton;
+        private UIButton _extIP_PortButton;
 
         private string _portVal, _localIpVal, _externalIpVal;
 
@@ -24,8 +27,10 @@ namespace CSM.Panels
             name = "MPManageGamePanel";
             color = new Color32(110, 110, 110, 250);
 
+            ChatLogPanel.ActiveWindows.Add(name);
+
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 240.0f);
@@ -34,10 +39,10 @@ namespace CSM.Panels
             height = 445;
 
             // Title Label
-            UILabel title = this.CreateTitleLabel("Manage Server", new Vector2(100, -20));
+            UILabel title = this.CreateTitleLabel(Translation.PullTranslation("ManageServer"), new Vector2(100, -20));
 
             // Port label
-            this.CreateLabel("Port:", new Vector2(10, -75));
+            this.CreateLabel(Translation.PullTranslation("Port"), new Vector2(10, -75));
 
             // Port field
             _portVal = MultiplayerManager.Instance.CurrentServer.Config.Port.ToString();
@@ -49,7 +54,7 @@ namespace CSM.Panels
             };
 
             // Local IP label
-            this.CreateLabel("Local IP:", new Vector2(10, -150));
+            this.CreateLabel(Translation.PullTranslation("InternalIP"), new Vector2(10, -150));
 
             // Local IP field
             _localIpVal = IPAddress.GetLocalIPAddress();
@@ -61,7 +66,7 @@ namespace CSM.Panels
             };
 
             // External IP label
-            this.CreateLabel("External IP:", new Vector2(10, -225));
+            this.CreateLabel(Translation.PullTranslation("ExternalIP"), new Vector2(10, -225));
 
             // External IP field
             _externalIpVal = IPAddress.GetExternalIPAddress();
@@ -72,8 +77,16 @@ namespace CSM.Panels
                 _externalIpField.text = _externalIpVal;
             };
 
+            // Create Clipboard Button
+            _extIP_PortButton = this.CreateButton("", new Vector2(10, -300));
+            _extIP_PortButton.text = Translation.PullTranslation("CopyToClipboard");
+            _extIP_PortButton.eventClick += (component, param) =>
+            {
+                Clipboard.text = $"{Translation.PullTranslation("ExternalIP")}: {_externalIpField.text} / {Translation.PullTranslation("Port")}: {_portField.text}";
+            };
+
             // Close this dialog
-            _closeButton = this.CreateButton("Close", new Vector2(10, -375));
+            _closeButton = this.CreateButton(Translation.PullTranslation("Close"), new Vector2(10, -375));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;

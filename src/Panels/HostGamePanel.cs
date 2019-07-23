@@ -5,6 +5,8 @@ using CSM.Networking;
 using System.Threading;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
+using CSM.Localisation;
+using System.Net;
 
 namespace CSM.Panels
 {
@@ -23,6 +25,8 @@ namespace CSM.Panels
 
         private UICheckBox _passwordBox;
 
+        private UIDropDown _dropdown;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -32,8 +36,10 @@ namespace CSM.Panels
             name = "MPHostGamePanel";
             color = new Color32(110, 110, 110, 250);
 
+            ChatLogPanel.ActiveWindows.Add(name);
+
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
@@ -42,25 +48,29 @@ namespace CSM.Panels
             height = 530;
 
             // Title Label
-            this.CreateTitleLabel("Host Server", new Vector2(120, -20));
+            this.CreateTitleLabel(Translation.PullTranslation("HostServer"), new Vector2(120, -20));
+
+            string[] _dropdownitems = new string[] { Translation.PullTranslation("Private"), Translation.PullTranslation("Public") };
+            _dropdown = this.CreateDropDown(_dropdownitems, new Vector2(200, -50));
+            _dropdown.itemHighlight = Translation.PullTranslation("Private");
 
             // Port Label
-            this.CreateLabel("Port:", new Vector2(10, -65));
+            this.CreateLabel(Translation.PullTranslation("Port"), new Vector2(10, -65));
             // Port field
             _portField = this.CreateTextField("4230", new Vector2(10, -90));
             _portField.numericalOnly = true;
 
             // Password label
-            this.CreateLabel("Password (Optional):", new Vector2(10, -145));
+            this.CreateLabel(Translation.PullTranslation("Password")+":", new Vector2(10, -145));
             // Password checkbox
-            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(10, -170));
+            _passwordBox = this.CreateCheckBox(Translation.PullTranslation("PasswordCB"), new Vector2(10, -170));
             _passwordBox.isChecked = false;
             // Password field
             _passwordField = this.CreateTextField("", new Vector2(10, -190));
             _passwordField.isPasswordField = true;
 
             // Username label
-            this.CreateLabel("Username:", new Vector2(10, -245));
+            this.CreateLabel(Translation.PullTranslation("HostServer")+":", new Vector2(10, -245));
             // Username field
             _usernameField = this.CreateTextField("", new Vector2(10, -270));
             if (PlatformService.active && PlatformService.personaName != null)
@@ -84,11 +94,11 @@ namespace CSM.Panels
             _externalIP.textAlignment = UIHorizontalAlignment.Center;
 
             // Create Server Button
-            _createButton = this.CreateButton("Create Server", new Vector2(10, -390));
+            _createButton = this.CreateButton(Translation.PullTranslation("CreateServer"), new Vector2(10, -390));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -460));
+            _closeButton = this.CreateButton(Translation.PullTranslation("Cancel"), new Vector2(10, -460));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -105,23 +115,22 @@ namespace CSM.Panels
                     _passwordField.isPasswordField = true;
                 }
             };
-
         }
 
         private void RequestIPs()
         {
             // Request ips
-            string sLocalIP = IPAddress.GetLocalIPAddress();
-            string sExternalIP = IPAddress.GetExternalIPAddress();
+            string sLocalIP = Networking.IPAddress.GetLocalIPAddress();
+            string sExternalIP = Networking.IPAddress.GetExternalIPAddress();
 
             // Change gui attributes in main thread
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                _localIP.textColor = sLocalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
-                _localIP.text = string.Format("Local IP: {0}", sLocalIP);
+                _localIP.textColor = sLocalIP.Equals(Translation.PullTranslation("NotFound")) ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+                _localIP.text = string.Format(Translation.PullTranslation("InternalIP")+": {0}", sLocalIP);
 
-                _externalIP.textColor = sExternalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
-                _externalIP.text = string.Format("External IP: {0}", sExternalIP);
+                _externalIP.textColor = sExternalIP.Equals(Translation.PullTranslation("NotFound")) ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+                _externalIP.text = string.Format(Translation.PullTranslation("ExternalIP") + ": {0}", sExternalIP);
             });
         }
 
@@ -131,13 +140,13 @@ namespace CSM.Panels
         private void OnCreateServerClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
-            _connectionStatus.text = "Setting up server...";
+            _connectionStatus.text = Translation.PullTranslation("SettingUpServer");
 
             // Port must be filled in and be a number
-            if (string.IsNullOrEmpty(_portField.text) || !int.TryParse(_portField.text, out var port))
+            if (string.IsNullOrEmpty(_portField.text) || !int.TryParse(_portField.text, out int port))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Port must be a number";
+                _connectionStatus.text = Translation.PullTranslation("PortMustBeNumber");
                 return;
             }
 
@@ -145,7 +154,7 @@ namespace CSM.Panels
             if (int.Parse(_portField.text) < 1 || int.Parse(_portField.text) > 49151)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid port number. (1 - 49151)";
+                _connectionStatus.text = Translation.PullTranslation("InvalidPortNumber");
                 return;
             }
 
@@ -153,7 +162,7 @@ namespace CSM.Panels
             if (string.IsNullOrEmpty(_usernameField.text))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Invalid username.";
+                _connectionStatus.text = Translation.PullTranslation("InvalidUsername");
                 return;
             }
 
@@ -161,7 +170,7 @@ namespace CSM.Panels
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Already running server.";
+                _connectionStatus.text = Translation.PullTranslation("AlreadyRunningServer");
                 return;
             }
 
@@ -169,13 +178,20 @@ namespace CSM.Panels
             if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text) != true)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Could not start server.";
+                _connectionStatus.text = Translation.PullTranslation("ErrorStartingServer");
                 return;
             }
 
             // Clear warnings/errors and hide panel
             _connectionStatus.text = "";
             isVisible = false;
+
+            /*if (_dropdown.itemHighlight == Translation.PullTranslation("Public"))
+            {
+                string sExternalIP = Networking.IPAddress.GetExternalIPAddress();
+                WebClient webClient = new WebClient();
+                webClient.OpenRead($@"http://csm.blockheadgames.net/postserver.php?username=""{_usernameField.text}""&extip=""{sExternalIP}""&port=""{_portField.text}""&password=""{_passwordField.text}""");
+            }*/
         }
     }
 }

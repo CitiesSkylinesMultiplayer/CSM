@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<language id="zh">
+  
+  <!--Chat Panel Start-->
+  <translation id="Welcome">欢迎来到Citie Skylines多人游戏！</translation>
+  <translation id="Shortcut1">按〜（代字号）键可显示或隐藏聊天。</translation>
+  <translation id="Shortcut2">按Tab键将焦点切换到聊天。</translation>
+  <translation id="Discord">加入我们的不和谐服务器：https：//discord.gg/RjACPhd</translation>
+  <translation id="Help">键入“/help”以查看命令和用法列表。</translation>
+  <translation id="Support">输入“/support”以找出报告错误的位置并获取帮助。</translation>
+  
+  <!--Chat Commands-->
+  <translation id="ChatCMDhelp">显示有关可以显示哪些命令的信息。</translation>
+  <translation id="ChatCMDversion">显示有关mod和游戏的版本信息。</translation>
+  <translation id="ChatCMDsupport">显示mod的支持链接。</translation>
+  <translation id="ChatCMDplayers">显示连接到服务器的播放器列表。</translation>
+  <translation id="ChatCMDnonplayers">您没有托管或连接到任何服务器。</translation>
+  <translation id="ChatCMDhide-chat">隐藏聊天控制台。  按〜（代字号）键可以再次显示。</translation>
+  <translation id="ChatCMDclear">从聊天记录中清除所有内容。</translation>
+  <translation id="ChatCMDopen-log">打开多人游戏日志。</translation>
+  
+  <!--Multiplayer Menu-->
+  <translation id="Multiplayer">多人</translation>
+  <translation id="MultiplayerMenu">多人游戏菜单</translation>
+  <translation id="JoinGame">加入游戏</translation>
+  <translation id="HostGame">主机游戏</translation>
+  <translation id="ManageServer">管理服务器</translation>
+  <translation id="ManagePlayers">管理玩家</translation>
+  <translation id="StopServer">停止服务器</translation>
+  <translation id="Disconnect">断开</translation>
+  <translation id="MultiplayerChat">多人聊天</translation>
+  
+  <!--Host Game Menu-->
+  <translation id="HostServer">主机服务器</translation>
+  <translation id="Password">密码（可选）</translation>
+  <translation id="PasswordNotOptional">密码</translation>
+  <translation id="PasswordCB">显示密码</translation>
+  <translation id="Username">用户名</translation>
+  <translation id="CreateServer">创建服务器</translation>
+  <translation id="Cancel">取消</translation>
+  <translation id="SettingUpServer">设置服务器......</translation>
+  <translation id="Private">私人的</translation>
+  <translation id="Public">上市</translation>
+  
+  <!--Manage Server Menu-->
+  <translation id="CopyToClipboard">复制到剪贴板</translation>
+  <translation id="Close">关</translation>
+  
+  <!--Join Game Menu-->
+  <translation id="ConnectToServer">连接到服务器</translation>
+  <translation id="Connecting">连接...</translation>
+  <translation id="IPAddress">IP地址</translation>
+  <translation id="Port">港口</translation>
+  <translation id="ExternalIP">外部IP</translation>
+  <translation id="InternalIP">内部IP</translation>
+  
+  <!--Player List-->
+  <translation id="Kick">踢</translation>
+  <translation id="Ban">禁止</translation>
+  
+  <!--Server List-->
+  <translation id="Join">加入</translation>
+  
+  <!--Information Messages-->
+  <translation id="AttemptingToStartServer">试图在端口上启动服务器</translation>
+  <translation id="FailedToOpenPort">无法打开端口。  需要手动端口转发</translation>
+  <translation id="ServerHasStarted">服务器已启动</translation>
+  
+  <!--Player Defined Message-->
+  <translation id="Player">播放机</translation>
+    <subtranslation id="LostConnection">失去了连接！</subtranslation>
+    <subtranslation id="Disconnected">断开！</subtranslation>
+    <subtranslation id="TimedOut">时间到！</subtranslation>
+    <subtranslation id="HasConnected">有联系！</subtranslation>
+    <subtranslation id="HasDisconnected">断开连接！</subtranslation>
+    <subtranslation id="HasBeenKicked">已经从服务器踢了</subtranslation>
+  
+  <!--Client Messages-->
+  <translation id="DisconnectedFromServer">与服务器断开连接</translation>
+  <translation id="ServerStopped">服务器已停止</translation>
+  <translation id="SuccessfullyConnected">已成功连接到服务器</translation>
+  <translation id="IDCollision">ID冲突。  请重新启动多人游戏会话。</translation>
+  <translation id="NotValidCommand">不是有效的命令</translation>
+  
+  <!--Error Messages-->
+  <translation id="ErrorParsingCommand">解析命令时出错。  见日志。</translation>
+  <translation id="Disconnected">断开！</translation>
+  <translation id="DisconnectedTimeOut">断开连接超时！</translation>
+  <translation id="DisconnectedServerClosed">断开连接的服务器已关闭！</translation>
+  <translation id="DisconnectedConnectLost">断开的连接丢失了！</translation>
+  <translation id="CouldNotConnect">无法连接到服务器，超时。</translation>
+  <translation id="FailedToConnect">连接失败！</translation>
+  <translation id="ClientFailedToStart">客户端无法启动。</translation>
+  <translation id="UnknownError">未知错误</translation>
+  <translation id="NotFound">未找到</translation>
+  <translation id="NotConnected">未连接</translation>
+  <translation id="PortMustBeNumber">端口必须是数字。</translation>
+  <translation id="InvalidPortNumber">无效的端口号。 （1  -  49151）</translation>
+  <translation id="InvalidUsername">无效的用户名。</translation>
+  <translation id="InvalidPort">无效的端口。</translation>
+  <translation id="AlreadyRunningServer">已经在运行服务器。</translation>
+  <translation id="ErrorStartingServer">无法启动服务器。</translation>
+  <translation id="InvalidPortOrIP">无效的端口或IP</translation>
+  <translation id="CannotKickYourself">你不能从服务器踢自己。</translation>
+  <translation id="HasBeenBanned">已被禁止从服务器。  原因</translation>
+  
+</language>

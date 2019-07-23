@@ -2,6 +2,7 @@
 using CSM.Commands.Handler;
 using CSM.Common;
 using CSM.Helpers;
+using CSM.Networking;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using CSM.Localisation;
 
 namespace CSM.Networking
 {
@@ -28,7 +30,7 @@ namespace CSM.Networking
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Connected clients
-        public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
+        public Dictionary<int, Player>ConnectedPlayers { get; } = new Dictionary<int, Player>();
 
         // The player instance for the host player
         private Player _hostPlayer;
@@ -44,7 +46,7 @@ namespace CSM.Networking
         public Server()
         {
             // Set up network items
-            var listener = new EventBasedNetListener();
+            EventBasedNetListener listener = new EventBasedNetListener();
             _netServer = new LiteNetLib.NetManager(listener);
 
             // Listen to events
@@ -71,11 +73,12 @@ namespace CSM.Networking
 
             // Let the user know that we are trying to start the server
             _logger.Info($"Attempting to start server on port {Config.Port}...");
+            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("AttemptingToStartServer")} {Config.Port}...");
 
 
             // Attempt to start the server
             _netServer.DiscoveryEnabled = true;
-            var result = _netServer.Start(Config.Port);
+            bool result = _netServer.Start(Config.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
@@ -88,17 +91,19 @@ namespace CSM.Networking
             try
             {
                 // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
-                var nat = new NatDiscoverer();
-                var cts = new CancellationTokenSource();
+                NatDiscoverer nat = new NatDiscoverer();
+                CancellationTokenSource cts = new CancellationTokenSource();
                 cts.CancelAfter(5000);
 
-                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task =>task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
                     Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
             }
             catch (Exception e)
             {
-                _logger.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
+                _logger.Error($"Failed to open port. Manual Port Forwarding is required: {e.Message}");
+                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"{Translation.PullTranslation("FailedToOpenPort")}: {e.Message}");
+                StopServer();
+                return false;
             }
 
             // Update the status
@@ -110,7 +115,13 @@ namespace CSM.Networking
 
             // Update the console to let the user know the server is running
             _logger.Info("The server has started.");
-            ChatLogPanel.PrintGameMessage("The server has started.");
+            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("ServerHasStarted")}.");
+
+            if (SimulationManager.instance.SimulationPaused == false)
+            {
+                SimulationManager.instance.SimulationPaused = true;
+            }
+
             return true;
         }
 
@@ -185,8 +196,8 @@ namespace CSM.Networking
                     Array.Copy(reader.RawData, reader.UserDataOffset, data, 0, reader.UserDataSize);
 
                     // Send this message to all other clients
-                    var peers = _netServer.ConnectedPeerList;
-                    foreach (var client in peers)
+                    List<NetPeer>peers = _netServer.ConnectedPeerList;
+                    foreach (NetPeer client in peers)
                     {
                         // Don't send the message back to the client that sent it.
                         if (client.Id == peer.Id)
@@ -199,7 +210,7 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Error while parsing command. See log.");
+                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"{Translation.PullTranslation("ErrorParsingCommand")}");
                 _logger.Error(ex, $"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:");
             }
         }
@@ -222,15 +233,15 @@ namespace CSM.Networking
             switch (disconnectInfo.Reason)
             {
                 case DisconnectReason.RemoteConnectionClose:
-                    ChatLogPanel.PrintGameMessage($"Player {player.Username} disconnected!");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("Disconnected",true)}");
                     break;
 
                 case DisconnectReason.Timeout:
-                    ChatLogPanel.PrintGameMessage($"Player {player.Username} timed out!");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("TimedOut", true)}");
                     break;
 
                 default:
-                    ChatLogPanel.PrintGameMessage($"Player {player.Username} lost connection!");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("LostConnection", true)}");
                     break;
             }
 
@@ -245,12 +256,21 @@ namespace CSM.Networking
         public void HandlePlayerConnect(Player player)
         {
             _logger.Info($"Player {player.Username} has connected!");
-            ChatLogPanel.PrintGameMessage($"Player {player.Username} has connected!");
+            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("HasConnected", true)}");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
             Command.HandleClientConnect(player);
         }
 
         public void HandlePlayerDisconnect(Player player)
+        {
+            MultiplayerManager.Instance.PlayerList.Remove(player.Username);
+            this.ConnectedPlayers.Remove(player.NetPeer.Id);
+            Command.HandleClientDisconnect(player);
+            TransactionHandler.ClearTransactions(player.NetPeer.Id);
+            ToolSimulator.RemoveSender(player.NetPeer.Id);
+        }
+
+        public void HandlePlayerKick(Player player)
         {
             MultiplayerManager.Instance.PlayerList.Remove(player.Username);
             this.ConnectedPlayers.Remove(player.NetPeer.Id);
