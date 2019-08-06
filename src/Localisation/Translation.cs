@@ -17,17 +17,13 @@ namespace CSM.Localisation
             XMLTranslationContents = PullXMLFile(TranslationName+".xml");
         }
 
-        public static string PullTranslation(string getlanguageidname, bool subtranslation = false)
+        public static string PullTranslation(string getlanguageidname)
         {
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(XMLTranslationContents);
 
             string result = "ERROR TRANSLATION";
             XmlNode xn = xml.SelectSingleNode($"/language/translation[@id='{getlanguageidname}']");
-            if (subtranslation == true)
-            {
-                xn = xml.SelectSingleNode($"/language/translation/subtranslation[@id='{getlanguageidname}']");
-            }
 
             if (xn != null)
             {

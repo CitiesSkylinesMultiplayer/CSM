@@ -75,7 +75,6 @@
     <Compile Include="Commands\Data\DistrictCityPolicyCommand.cs" />
     <Compile Include="Commands\Data\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\Data\ClientConnectCommand.cs" />
-    <Compile Include="Commands\Data\ClientKickCommand.cs" />
     <Compile Include="Commands\Data\CommandBase.cs" />
     <Compile Include="Commands\Data\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\Data\ConnectionResultCommand.cs" />
@@ -133,7 +132,6 @@
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\ClientDisconnectHandler.cs" />
     <Compile Include="Commands\Handler\ClientConnectHandler.cs" />
-    <Compile Include="Commands\Handler\ClientKickHandler.cs" />
     <Compile Include="Commands\Handler\ConnectionRequestHandler.cs" />
     <Compile Include="Commands\Handler\BuildingCreateHandler.cs" />
     <Compile Include="Commands\Handler\CommandHandler.cs" />
@@ -187,16 +185,14 @@
     <Compile Include="Networking\Status\ServerStatus.cs" />
     <Compile Include="Commands\TransactionHandler.cs" />
     <Compile Include="Panels\ChatLogPanel.cs" />
-    <Compile Include="Panels\ServerListPanel.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\ManageGamePanel.cs" />
     <Compile Include="Panels\HostGamePanel.cs" />
     <Compile Include="Panels\JoinGamePanel.cs" />
-    <Compile Include="Panels\PlayerListPanel.cs" />
     <Compile Include="CSM.cs" />
     <Compile Include="Panels\MenuJoinGamePanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Localisation\CSMLocalisation.cs" />
+    <Compile Include="Localisation\Translation.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">

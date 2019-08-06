@@ -25,7 +25,7 @@ namespace CSM.Panels
 
         private UICheckBox _passwordBox;
 
-        private UIDropDown _dropdown;
+        //private UIDropDown _dropdown;
 
         public override void Start()
         {
@@ -50,9 +50,10 @@ namespace CSM.Panels
             // Title Label
             this.CreateTitleLabel(Translation.PullTranslation("HostServer"), new Vector2(120, -20));
 
-            string[] _dropdownitems = new string[] { Translation.PullTranslation("Private"), Translation.PullTranslation("Public") };
-            _dropdown = this.CreateDropDown(_dropdownitems, new Vector2(200, -50));
-            _dropdown.itemHighlight = Translation.PullTranslation("Private");
+            //Awaiting implementation of save transferable over the network.
+            //string[] _dropdownitems = new string[] { Translation.PullTranslation("Private"), Translation.PullTranslation("Public") };
+            //_dropdown = this.CreateDropDown(_dropdownitems, new Vector2(200, -50));
+            //_dropdown.itemHighlight = Translation.PullTranslation("Private");
 
             // Port Label
             this.CreateLabel(Translation.PullTranslation("Port"), new Vector2(10, -65));
@@ -186,6 +187,7 @@ namespace CSM.Panels
             _connectionStatus.text = "";
             isVisible = false;
 
+            //Awaiting implementation of save transferable over the network.
             /*if (_dropdown.itemHighlight == Translation.PullTranslation("Public"))
             {
                 string sExternalIP = Networking.IPAddress.GetExternalIPAddress();

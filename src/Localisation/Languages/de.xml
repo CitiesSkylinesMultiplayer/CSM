@@ -68,12 +68,11 @@
 
   <!--Player Defined Message-->
   <translation id="Player">Spieler</translation>
-    <subtranslation id="LostConnection">hat die Verbindung verloren!</subtranslation>
-    <subtranslation id="Disconnected">hat das Spiel verlassen!</subtranslation>
-    <subtranslation id="TimedOut">: Zeitüberschreitung!</subtranslation>
-    <subtranslation id="HasConnected">ist beigetreten!</subtranslation>
-    <subtranslation id="HasDisconnected">hat das Spiel verlassen!</subtranslation>
-    <subtranslation id="HasBeenKicked">wurde vom Server gekickt!</subtranslation>
+  <translation id="LostConnection">hat die Verbindung verloren!</translation>
+  <translation id="TimedOut">: Zeitüberschreitung!</translation>
+  <translation id="HasConnected">ist beigetreten!</translation>
+  <translation id="HasDisconnected">hat das Spiel verlassen!</translation>
+  <translation id="HasBeenKicked">wurde vom Server gekickt!</translation>
 
   <!--Client Messages-->
   <translation id="DisconnectedFromServer">Vom Server getrennt</translation>

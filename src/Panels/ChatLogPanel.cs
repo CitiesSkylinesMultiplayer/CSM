@@ -405,7 +405,7 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Destroy all ui components made beyond this point. This is needed for the mod language to change since all translation is gathered on Start().
+        ///     Destroy all ui components made beyond this point. This is needed for the language to change since all translation is gathered on Start().
         /// </summary>
         public static void DestroyAllUIComponents()
         {

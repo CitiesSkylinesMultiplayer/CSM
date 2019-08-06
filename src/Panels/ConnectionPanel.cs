@@ -90,7 +90,7 @@ namespace CSM.Panels
                 }
             };
 
-            this.CreateTitleLabel(Translation.PullTranslation("Multiplayer"), new Vector3(80, -20, 0));
+            this.CreateTitleLabel(Translation.PullTranslation("MultiplayerMenu"), new Vector3(80, -20, 0));
 
             // Join game button
             _clientConnectButton = this.CreateButton(Translation.PullTranslation("JoinGame"), new Vector2(10, -60));

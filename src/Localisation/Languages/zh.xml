@@ -68,12 +68,11 @@
   
   <!--Player Defined Message-->
   <translation id="Player">播放机</translation>
-    <subtranslation id="LostConnection">失去了连接！</subtranslation>
-    <subtranslation id="Disconnected">断开！</subtranslation>
-    <subtranslation id="TimedOut">时间到！</subtranslation>
-    <subtranslation id="HasConnected">有联系！</subtranslation>
-    <subtranslation id="HasDisconnected">断开连接！</subtranslation>
-    <subtranslation id="HasBeenKicked">已经从服务器踢了</subtranslation>
+  <translation id="LostConnection">失去了连接！</translation>
+  <translation id="TimedOut">时间到！</translation>
+  <translation id="HasConnected">有联系！</translation>
+  <translation id="HasDisconnected">断开连接！</translation>
+  <translation id="HasBeenKicked">已经从服务器踢了</translation>
   
   <!--Client Messages-->
   <translation id="DisconnectedFromServer">与服务器断开连接</translation>

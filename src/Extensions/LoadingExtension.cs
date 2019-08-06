@@ -62,19 +62,24 @@ namespace CSM.Extensions
 
                     ChatLogPanel.DestroyAllUIComponents();
 
-                    UIView.GetAView().AddUIComponent(typeof(ChatLogPanel));
+                    ConnectionPanel newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
+
+                    ChatLogPanel newChatLogPanel = (ChatLogPanel)uiView.AddUIComponent(typeof(ChatLogPanel));
                 }
 
-                var panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
-
-                if (panel != null)
-                {
-                    panel.isVisible = !panel.isVisible;
-                    _multiplayerButton.Unfocus();
-                }
                 else
                 {
-                    var newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
+                    ConnectionPanel panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
+
+                    if (panel != null)
+                    {
+                        panel.isVisible = !panel.isVisible;
+                        _multiplayerButton.Unfocus();
+                    }
+                    else
+                    {
+                        ConnectionPanel newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
+                    }
                 }
             };
         }

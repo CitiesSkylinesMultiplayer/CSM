@@ -68,12 +68,11 @@
   
   <!--Player Defined Message-->
   <translation id="Player">플레이어</translation>
-    <subtranslation id="LostConnection">연결이 끊어졌습니다!</subtranslation>
-    <subtranslation id="Disconnected">연결이 끊어졌습니다!</subtranslation>
-    <subtranslation id="TimedOut">시간 초과!</subtranslation>
-    <subtranslation id="HasConnected">연결되었습니다!</subtranslation>
-    <subtranslation id="HasDisconnected">연결이 끊어졌습니다.</subtranslation>
-    <subtranslation id="HasBeenKicked">서버에서 쫓겨났다.</subtranslation>
+  <translation id="LostConnection">연결이 끊어졌습니다!</translation>
+  <translation id="TimedOut">시간 초과!</translation>
+  <translation id="HasConnected">연결되었습니다!</translation>
+  <translation id="HasDisconnected">연결이 끊어졌습니다.</translation>
+  <translation id="HasBeenKicked">서버에서 쫓겨났다.</translation>
   
   <!--Client Messages-->
   <translation id="DisconnectedFromServer">서버와의 연결이 끊어져</translation>

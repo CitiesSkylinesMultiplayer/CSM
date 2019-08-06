@@ -102,8 +102,6 @@ namespace CSM.Networking
             {
                 _logger.Error($"Failed to open port. Manual Port Forwarding is required: {e.Message}");
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"{Translation.PullTranslation("FailedToOpenPort")}: {e.Message}");
-                StopServer();
-                return false;
             }
 
             // Update the status
@@ -233,15 +231,15 @@ namespace CSM.Networking
             switch (disconnectInfo.Reason)
             {
                 case DisconnectReason.RemoteConnectionClose:
-                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("Disconnected",true)}");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("Disconnected")}");
                     break;
 
                 case DisconnectReason.Timeout:
-                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("TimedOut", true)}");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("TimedOut")}");
                     break;
 
                 default:
-                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("LostConnection", true)}");
+                    ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("LostConnection")}");
                     break;
             }
 
@@ -256,7 +254,7 @@ namespace CSM.Networking
         public void HandlePlayerConnect(Player player)
         {
             _logger.Info($"Player {player.Username} has connected!");
-            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("HasConnected", true)}");
+            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {player.Username} {Translation.PullTranslation("HasConnected")}");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
             Command.HandleClientConnect(player);
         }
