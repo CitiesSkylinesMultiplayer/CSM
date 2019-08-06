@@ -30,7 +30,7 @@ namespace CSM.Networking
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Connected clients
-        public Dictionary<int, Player>ConnectedPlayers { get; } = new Dictionary<int, Player>();
+        public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
 
         // The player instance for the host player
         private Player _hostPlayer;
@@ -95,7 +95,7 @@ namespace CSM.Networking
                 CancellationTokenSource cts = new CancellationTokenSource();
                 cts.CancelAfter(5000);
 
-                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task =>task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
                     Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
             }
             catch (Exception e)
