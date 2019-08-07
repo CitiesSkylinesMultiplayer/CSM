@@ -166,16 +166,23 @@ namespace CSM.Panels
             }
 
             // Start server and check for errors
-            if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text) != true)
+            MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text, (success) =>
             {
-                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = "Could not start server.";
-                return;
-            }
-
-            // Clear warnings/errors and hide panel
-            _connectionStatus.text = "";
-            isVisible = false;
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
+                    if (!success)
+                    {
+                        _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                        _connectionStatus.text = "Could not start server.";
+                    }
+                    else
+                    {
+                        // Clear warnings/errors and hide panel
+                        _connectionStatus.text = "";
+                        isVisible = false;
+                    }
+                });
+            });
         }
     }
 }
