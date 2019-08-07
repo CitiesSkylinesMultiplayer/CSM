@@ -86,19 +86,25 @@ namespace CSM.Networking
         /// <param name="port">The port to start the server on.</param>
         /// <param name="password">The password to use.</param>
         /// <param name="hostUsername">The username of the host player.</param>
-        /// <returns>If the server was started successfully.</returns>
-        public bool StartGameServer(int port, string password, string hostUsername)
+        /// <param name="callback">This callback returns if the server was started successfully.</param>
+        public void StartGameServer(int port, string password, string hostUsername, Action<bool> callback)
         {
             if (CurrentRole == MultiplayerRole.Client)
-                return false;
+            {
+                callback.Invoke(false);
+                return;
+            }
 
-            // Create the server and start it
-            var isConnected = CurrentServer.StartServer(new ServerConfig(port, hostUsername, password));
+            new Thread(() =>
+            {
+                // Create the server and start it
+                var isConnected = CurrentServer.StartServer(new ServerConfig(port, hostUsername, password));
 
-            // Set the current role
-            CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
+                // Set the current role
+                CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
 
-            return isConnected;
+                callback.Invoke(isConnected);
+            }).Start();
         }
 
         /// <summary>

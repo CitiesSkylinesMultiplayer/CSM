@@ -176,24 +176,31 @@ namespace CSM.Panels
             }
 
             // Start server and check for errors
-            if (MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text) != true)
+            MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text, (success) =>
             {
-                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                _connectionStatus.text = Translation.PullTranslation("ErrorStartingServer");
-                return;
-            }
-
-            // Clear warnings/errors and hide panel
-            _connectionStatus.text = "";
-            isVisible = false;
-
-            //Awaiting implementation of save transferable over the network.
-            /*if (_dropdown.itemHighlight == Translation.PullTranslation("Public"))
-            {
-                string sExternalIP = Networking.IPAddress.GetExternalIPAddress();
-                WebClient webClient = new WebClient();
-                webClient.OpenRead($@"http://csm.blockheadgames.net/postserver.php?username=""{_usernameField.text}""&extip=""{sExternalIP}""&port=""{_portField.text}""&password=""{_passwordField.text}""");
-            }*/
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
+                    if (!success)
+                    {
+                        _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                        _connectionStatus.text = Translation.PullTranslation("ErrorStartingServer");
+                    }
+                    else
+                    {
+                        // Clear warnings/errors and hide panel
+                        _connectionStatus.text = "";
+                        isVisible = false;
+                        
+                        //Awaiting implementation of save transferable over the network.
+                        /*if (_dropdown.itemHighlight == Translation.PullTranslation("Public"))
+                        {
+                            string sExternalIP = Networking.IPAddress.GetExternalIPAddress();
+                            WebClient webClient = new WebClient();
+                            webClient.OpenRead($@"http://csm.blockheadgames.net/postserver.php?username=""{_usernameField.text}""&extip=""{sExternalIP}""&port=""{_portField.text}""&password=""{_passwordField.text}""");
+                        }*/
+                    }
+                });
+            });
         }
     }
 }
