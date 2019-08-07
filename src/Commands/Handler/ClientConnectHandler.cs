@@ -15,7 +15,7 @@ namespace CSM.Commands.Handler
         public override void Handle(ClientConnectCommand command)
         {
             LogManager.GetCurrentClassLogger().Info($"Player {command.Username} has connected!");
-            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {command.Username} {Translation.PullTranslation("HasConnected", true)}");
+            ChatLogPanel.PrintGameMessage($"{Translation.PullTranslation("Player")} {command.Username} {Translation.PullTranslation("HasConnected")}");
 
             MultiplayerManager.Instance.PlayerList.Add(command.Username);
         }
