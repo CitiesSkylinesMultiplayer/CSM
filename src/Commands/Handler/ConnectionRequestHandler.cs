@@ -6,6 +6,8 @@ using CSM.Networking;
 using LiteNetLib;
 using System.IO;
 using System.Reflection;
+using CSM.Helpers;
+using CSM.Panels;
 
 namespace CSM.Commands.Handler
 {
@@ -72,6 +74,18 @@ namespace CSM.Commands.Handler
                     });
                     return;
                 }
+            }
+            
+            // Check both client have the same DLCs enabled
+            if (!command.DLCBitMask.Equals(DLCHelper.GetOwnedDLCs()))
+            {
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "DLCs don't match",
+                    DLCBitMask = DLCHelper.GetOwnedDLCs()
+                });
+                return;
             }
 
             // Add the new player as a connected player

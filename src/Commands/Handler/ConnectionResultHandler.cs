@@ -1,4 +1,5 @@
-﻿using CSM.Networking;
+﻿using CSM.Helpers;
+using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
 
@@ -34,6 +35,19 @@ namespace CSM.Commands.Handler
                 _logger.Info($"Could not connect: {command.Reason}");
                 MultiplayerManager.Instance.CurrentClient.ConnectionMessage = command.Reason;
                 MultiplayerManager.Instance.CurrentClient.Disconnect();
+                if (command.DLCBitMask != SteamHelper.DLC_BitMask.None)
+                {
+                    DLCHelper.DLCComparison compare = DLCHelper.Compare(command.DLCBitMask, DLCHelper.GetOwnedDLCs());
+                    if (compare.ClientMissing != SteamHelper.DLC_BitMask.None)
+                    {
+                        ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"You are missing the following DLCs: {compare.ClientMissing}");
+                    }
+                    if (compare.ServerMissing != SteamHelper.DLC_BitMask.None)
+                    {
+                        ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"The server doesn't have the following DLCs: {compare.ServerMissing}");
+                    }
+                    ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Normal, "DLCs can be disabled via checkbox in Steam");
+                }
             }
         }
     }
