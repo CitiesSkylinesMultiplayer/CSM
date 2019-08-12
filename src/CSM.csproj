@@ -161,6 +161,7 @@
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Helpers\ArrayXExtension.cs" />
     <Compile Include="Helpers\ArrayHelpers.cs" />
+    <Compile Include="Helpers\DLCHelper.cs" />
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />

@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using CSM.Helpers;
 
 namespace CSM.Networking
 {
@@ -233,6 +234,7 @@ namespace CSM.Networking
                 Password = Config.Password,
                 Username = Config.Username,
                 RequestWorld = Config.RequestWorld,
+                DLCBitMask = DLCHelper.GetOwnedDLCs()
             };
 
             _logger.Info("Sending connection request to server...");

@@ -51,5 +51,11 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(6)]
         public bool RequestWorld { get; set; }
+
+        /// <summary>
+        ///     BitMask containing the installed DLCs of the client
+        /// </summary>
+        [ProtoMember(7)]
+        public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
     }
 }
