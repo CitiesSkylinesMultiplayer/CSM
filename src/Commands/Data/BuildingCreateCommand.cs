@@ -10,7 +10,7 @@ namespace CSM.Commands
     public class BuildingCreateCommand : CommandBase
     {
         [ProtoMember(1)]
-        public ushort BuildingID { get; set; }
+        public ushort BuildingId { get; set; }
 
         /// <summary>
         ///     The position to create the building
@@ -19,7 +19,7 @@ namespace CSM.Commands
         public Vector3 Position { get; set; }
 
         [ProtoMember(3)]
-        public ushort Infoindex { get; set; }
+        public ushort InfoIndex { get; set; }
 
         /// <summary>
         ///     The angle of the building (degrees?, radians?)

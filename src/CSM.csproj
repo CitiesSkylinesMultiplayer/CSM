@@ -69,7 +69,6 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\BudgetChangeCommand.cs" />
     <Compile Include="Commands\Data\BuildingCreateCommand.cs" />
-    <Compile Include="Commands\Data\BuildingIDCommand.cs" />
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
     <Compile Include="Commands\Data\ChangeNameCommand.cs" />
@@ -158,7 +157,6 @@
     <Compile Include="Common\ToolSimulator.cs" />
     <Compile Include="Common\WorldManager.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
-    <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\TerrainExtension.cs" />
@@ -167,6 +165,7 @@
     <Compile Include="Helpers\DLCHelper.cs" />
     <Compile Include="Helpers\Tuple.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
+    <Compile Include="Injections\BuildingHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\MainMenuHandler.cs" />
     <Compile Include="Injections\EconomyHandler.cs" />

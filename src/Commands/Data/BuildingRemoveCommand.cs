@@ -12,6 +12,6 @@ namespace CSM.Commands
         ///     The id of the building to be removed
         /// </summary>
         [ProtoMember(1)]
-        public uint BuildingId { get; set; }
+        public ushort BuildingId { get; set; }
     }
 }

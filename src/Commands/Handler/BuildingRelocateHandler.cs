@@ -1,4 +1,4 @@
-﻿using ColossalFramework;
+﻿using CSM.Injections;
 
 namespace CSM.Commands.Handler
 {
@@ -6,7 +6,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(BuildingRelocateCommand command)
         {
-            Singleton<BuildingManager>.instance.RelocateBuilding((ushort) command.BuidlingId, command.NewPosition, command.Angle);
+            BuildingHandler.IgnoreAll = true;
+            BuildingManager.instance.RelocateBuilding(command.BuildingId, command.NewPosition, command.Angle);
+            BuildingHandler.IgnoreAll = false;
         }
     }
 }
