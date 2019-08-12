@@ -12,8 +12,7 @@ namespace CSM.Injections
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // All the types for Array16<T> and Array32<T> we currently need to track
-        // TODO: Implement building sync using this method
-        private static readonly Type[] _array16Types = new Type[] { /*typeof(Building), */typeof(NetNode), typeof(NetSegment), typeof(PropInstance) };
+        private static readonly Type[] _array16Types = new Type[] { typeof(Building), typeof(NetNode), typeof(NetSegment), typeof(PropInstance) };
         private static readonly Type[] _array32Types = new Type[] { typeof(TreeInstance) };
 
         private static readonly List<ushort> _array16Collected = new List<ushort>();
