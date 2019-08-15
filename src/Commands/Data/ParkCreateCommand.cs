@@ -14,5 +14,8 @@ namespace CSM.Commands
 
         [ProtoMember(3)]
         public DistrictPark.ParkLevel ParkLevel { get; set; }
+        
+        [ProtoMember(4)]
+        public ulong Seed { get; set; }
     }
 }
