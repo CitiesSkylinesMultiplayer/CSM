@@ -34,12 +34,12 @@ namespace CSM.Common
 
         public static object Call(object obj, string name, params object[] param)
         {
-            return obj.GetType().GetMethod(name, AllAccessFlags, null, param.Select(p => p.GetType()).ToArray(), null).Invoke(obj, param);
+            return obj.GetType().GetMethod(name, AllAccessFlags, null, param.Select(p => p.GetType()).ToArray(), null)?.Invoke(obj, param);
         }
 
         public static void SetAttr(object obj, string attribute, object value)
         {
-            obj.GetType().GetField(attribute, AllAccessFlags).SetValue(obj, value);
+            obj.GetType().GetField(attribute, AllAccessFlags)?.SetValue(obj, value);
         }
 
         public static T GetAttr<T>(object obj, string attribute)
@@ -49,7 +49,13 @@ namespace CSM.Common
 
         public static object GetAttr(object obj, string attribute)
         {
-            return obj.GetType().GetField(attribute, AllAccessFlags).GetValue(obj);
+            return obj.GetType().GetField(attribute, AllAccessFlags)?.GetValue(obj);
+        }
+
+        public static MethodBase GetIteratorTargetMethod(Type container, string itName, out Type iteratorType)
+        {
+            iteratorType = container.GetNestedType(itName, AllAccessFlags);
+            return iteratorType.GetMethod("MoveNext", AllAccessFlags);
         }
     }
 }

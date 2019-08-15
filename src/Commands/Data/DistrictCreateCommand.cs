@@ -8,5 +8,8 @@ namespace CSM.Commands
     {
         [ProtoMember(1)]
         public byte DistrictID { get; set; }
+
+        [ProtoMember(2)]
+        public ulong Seed { get; set; }
     }
 }
