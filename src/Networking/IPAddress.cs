@@ -4,12 +4,12 @@ using System.Net.Sockets;
 
 namespace CSM.Networking
 {
-    public class IPAddress
+    public static class IpAddress
     {
-        private static string _localIp = null;
-        private static string _externalIp = null;
+        private static string _localIp;
+        private static string _externalIp;
 
-        public static string GetLocalIPAddress()
+        public static string GetLocalIpAddress()
         {
             if (_localIp != null)
             {
@@ -37,7 +37,7 @@ namespace CSM.Networking
             }
         }
 
-        public static string GetExternalIPAddress()
+        public static string GetExternalIpAddress()
         {
             if (_externalIp != null)
             {

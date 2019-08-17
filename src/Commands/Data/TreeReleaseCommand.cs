@@ -6,6 +6,6 @@ namespace CSM.Commands
     public class TreeReleaseCommand : CommandBase
     {
         [ProtoMember(1)]
-        public uint TreeID { get; set; }
+        public uint TreeId { get; set; }
     }
 }

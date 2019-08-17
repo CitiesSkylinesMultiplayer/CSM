@@ -1,6 +1,5 @@
 ﻿using ProtoBuf;
 using UnityEngine;
-using static TerrainTool;
 
 namespace CSM.Commands
 {
@@ -26,7 +25,7 @@ namespace CSM.Commands
         public Vector3 EndPosition;
 
         [ProtoMember(7)]
-        public Mode Mode;
+        public TerrainTool.Mode Mode;
 
         [ProtoMember(8)]
         public bool MouseRightDown;

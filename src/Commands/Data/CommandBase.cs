@@ -1,5 +1,4 @@
-﻿using CSM.Networking;
-using ProtoBuf;
+﻿using ProtoBuf;
 using System.IO;
 
 namespace CSM.Commands
@@ -29,7 +28,7 @@ namespace CSM.Commands
         {
             byte[] result;
 
-            using (var stream = new MemoryStream())
+            using (MemoryStream stream = new MemoryStream())
             {
                 Command.Model.Serialize(stream, this);
                 result = stream.ToArray();

@@ -6,8 +6,8 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(TaxRateChangeCommand command)
         {
-            command.Taxrate.CopyTo(EconomyExtension._LastTaxrate, 0);
-            command.Taxrate.CopyTo(EconomyExtension._Taxrate, 0);
+            command.TaxRate.CopyTo(EconomyExtension._LastTaxrate, 0);
+            command.TaxRate.CopyTo(EconomyExtension._Taxrate, 0);
         }
     }
 }

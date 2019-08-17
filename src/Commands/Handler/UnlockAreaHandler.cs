@@ -5,7 +5,7 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(UnlockAreaCommand command)
         {
-            var area = (command.Z * 5) + command.X; //calculate the index
+            int area = (command.Z * 5) + command.X; //calculate the index
             GameAreaManager.instance.UnlockArea(area);
         }
     }

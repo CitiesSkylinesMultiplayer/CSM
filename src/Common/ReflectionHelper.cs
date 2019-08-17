@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CSM.Common
 {
-    public class ReflectionHelper
+    public static class ReflectionHelper
     {
         public static BindingFlags AllAccessFlags = 
               BindingFlags.Public

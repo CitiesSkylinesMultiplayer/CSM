@@ -3,11 +3,10 @@ using CSM.Commands;
 using CSM.Common;
 using Harmony;
 using UnityEngine;
-using static ToolBase;
 
 namespace CSM.Injections
 {
-    public class TerrainHandler
+    public static class TerrainHandler
     {
         public static bool IgnoreAll = false;
     }
@@ -19,7 +18,7 @@ namespace CSM.Injections
         public static void Prefix()
         {
             TerrainTool tool = ToolsModifierControl.GetTool<TerrainTool>();
-            if (!TerrainHandler.IgnoreAll && ReflectionHelper.GetAttr<ToolErrors>(tool, "m_toolErrors") == ToolErrors.None)
+            if (!TerrainHandler.IgnoreAll && ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_toolErrors") == ToolBase.ToolErrors.None)
             {
                 Command.SendToAll(new TerrainModificationCommand
                 {

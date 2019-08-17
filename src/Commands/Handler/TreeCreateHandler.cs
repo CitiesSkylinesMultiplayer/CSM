@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler
             TreeInfo info = PrefabCollection<TreeInfo>.GetPrefab(command.InfoIndex);
 
             TreeHandler.IgnoreAll = true;
-            ArrayHandler.StartApplying(null, new uint[] { command.TreeID });
+            ArrayHandler.StartApplying(null, new uint[] { command.TreeId });
 
             TreeManager.instance.CreateTree(out uint _, ref SimulationManager.instance.m_randomizer, info, command.Position, command.Single);
             ArrayHandler.StopApplying();

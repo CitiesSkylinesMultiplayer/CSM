@@ -69,7 +69,7 @@ namespace CSM.Networking
             new Thread(() =>
             {
                 // Try connect
-                var isConnected = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password, requestWorld));
+                bool isConnected = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password, requestWorld));
 
                 // Set the current role
                 CurrentRole = isConnected ? MultiplayerRole.Client : MultiplayerRole.None;
@@ -97,7 +97,7 @@ namespace CSM.Networking
             new Thread(() =>
             {
                 // Create the server and start it
-                var isConnected = CurrentServer.StartServer(new ServerConfig(port, hostUsername, password));
+                bool isConnected = CurrentServer.StartServer(new ServerConfig(port, hostUsername, password));
 
                 // Set the current role
                 CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
@@ -151,7 +151,7 @@ namespace CSM.Networking
 
         /// <summary>
         ///     The game is acting as a server, it will send out updates to all connected
-        ///     clients and recieve information about the game from the clients.
+        ///     clients and receive information about the game from the clients.
         /// </summary>
         Server
     }

@@ -7,7 +7,7 @@ namespace CSM.Commands
     public class TreeCreateCommand : CommandBase
     {
         [ProtoMember(1)]
-        public uint TreeID { get; set; }
+        public uint TreeId { get; set; }
 
         [ProtoMember(2)]
         public Vector3 Position { get; set; }

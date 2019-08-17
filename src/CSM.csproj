@@ -94,7 +94,6 @@
     <Compile Include="Commands\Data\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
-    <Compile Include="Commands\Data\NodeIDCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
     <Compile Include="Commands\Data\SegmentCreateCommand.cs" />
     <Compile Include="Commands\Data\PlayerListCommand.cs" />
@@ -159,7 +158,6 @@
     <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
-    <Compile Include="Extensions\TerrainExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="Helpers\ArrayXExtension.cs" />
     <Compile Include="Helpers\DLCHelper.cs" />

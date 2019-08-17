@@ -7,13 +7,13 @@ using System.Reflection;
 
 namespace CSM.Injections
 {
-    public class ArrayHandler
+    public static class ArrayHandler
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // All the types for Array16<T> and Array32<T> we currently need to track
-        private static readonly Type[] _array16Types = new Type[] { typeof(Building), typeof(NetNode), typeof(NetSegment), typeof(PropInstance) };
-        private static readonly Type[] _array32Types = new Type[] { typeof(TreeInstance) };
+        private static readonly Type[] _array16Types = { typeof(Building), typeof(NetNode), typeof(NetSegment), typeof(PropInstance) };
+        private static readonly Type[] _array32Types = { typeof(TreeInstance) };
 
         private static readonly List<ushort> _array16Collected = new List<ushort>();
         private static readonly List<uint> _array32Collected = new List<uint>();
@@ -66,8 +66,8 @@ namespace CSM.Injections
         /// <summary>
         /// Start to intercept id reservations and apply the given ids.
         /// </summary>
-        /// <param name="array16Ids">Ids to apply to Array16<> calls (can be null)</param>
-        /// <param name="array32Ids">Ids to apply to Array32<> calls (can be null)</param>
+        /// <param name="array16Ids">Ids to apply to Array16 calls (can be null)</param>
+        /// <param name="array32Ids">Ids to apply to Array32 calls (can be null)</param>
         public static void StartApplying(ushort[] array16Ids, uint[] array32Ids)
         {
             if (_collecting)

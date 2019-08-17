@@ -9,7 +9,7 @@ namespace CSM.Commands
         public ushort[] Segments { get; set; }
 
         [ProtoMember(2)]
-        public ushort NodeID { get; set; }
+        public ushort NodeId { get; set; }
 
         [ProtoMember(3)]
         public NetNode.Flags Flags { get; set; }

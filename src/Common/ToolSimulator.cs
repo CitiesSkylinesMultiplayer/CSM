@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CSM.Common
 {
-    public class ToolSimulator
+    public static class ToolSimulator
     {
         private static Dictionary<int, ToolBase> _currentTools = new Dictionary<int, ToolBase>();
 

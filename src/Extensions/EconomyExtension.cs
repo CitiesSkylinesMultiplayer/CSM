@@ -61,7 +61,7 @@ namespace CSM.Extensions
                     {
                         Command.SendToServer(new TaxRateChangeCommand
                         {
-                            Taxrate = _Taxrate,
+                            TaxRate = _Taxrate,
                         });
 
                         _Taxrate.CopyTo(_LastTaxrate, 0);
@@ -94,7 +94,7 @@ namespace CSM.Extensions
                     {
                         Command.SendToClients(new TaxRateChangeCommand
                         {
-                            Taxrate = _Taxrate,
+                            TaxRate = _Taxrate,
                         });
 
                         _Taxrate.CopyTo(_LastTaxrate, 0);

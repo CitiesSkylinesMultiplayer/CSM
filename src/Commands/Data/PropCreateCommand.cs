@@ -7,21 +7,18 @@ namespace CSM.Commands
     public class PropCreateCommand : CommandBase
     {
         [ProtoMember(1)]
-        public ushort PropID;
+        public ushort PropId;
 
         [ProtoMember(2)]
-        public Vector3 position;
+        public Vector3 Position;
 
         [ProtoMember(3)]
-        public float angle;
+        public float Angle;
 
         [ProtoMember(4)]
-        public bool single;
+        public bool Single;
 
         [ProtoMember(5)]
-        public ushort infoindex;
-
-
-
+        public ushort InfoIndex;
     }
 }

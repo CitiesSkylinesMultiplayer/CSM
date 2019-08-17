@@ -31,7 +31,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 255);
 
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
@@ -62,7 +62,7 @@ namespace CSM.Panels
             _usernameField = this.CreateTextField("", new Vector2(10, -260));
             if (PlatformService.active && PlatformService.personaName != null)
             {
-                _usernameField.text = PlatformService.personaName.ToString();
+                _usernameField.text = PlatformService.personaName;
             }
 
             // Password label
@@ -93,14 +93,7 @@ namespace CSM.Panels
 
             _passwordBox.eventClicked += (component, param) =>
             {
-                if (_passwordBox.isChecked == true)
-                {
-                    _passwordField.isPasswordField = false;
-                }
-                else
-                {
-                    _passwordField.isPasswordField = true;
-                }
+                _passwordField.isPasswordField = !_passwordBox.isChecked;
             };
         }
 
@@ -123,7 +116,7 @@ namespace CSM.Panels
                 return;
             }
 
-            if (!int.TryParse(_portField.text, out var port))
+            if (!int.TryParse(_portField.text, out int port))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Port";
