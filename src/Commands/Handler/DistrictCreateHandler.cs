@@ -11,9 +11,9 @@ namespace CSM.Commands.Handler
             DistrictHandler.IgnoreAll = true;
             DistrictManager.instance.CreateDistrict(out byte district);
 
-            if (district != command.DistrictID)
+            if (district != command.DistrictId)
             {
-                LogManager.GetCurrentClassLogger().Log(LogLevel.Error, $"District array no longer in sync! Generated {district} instead of {command.DistrictID}");
+                LogManager.GetCurrentClassLogger().Log(LogLevel.Error, $"District array no longer in sync! Generated {district} instead of {command.DistrictId}");
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "District array no longer in sync! Please restart the multiplayer session!");
             }
 

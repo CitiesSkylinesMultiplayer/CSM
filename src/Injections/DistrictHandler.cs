@@ -1,9 +1,6 @@
 ﻿using CSM.Commands;
 using Harmony;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using CSM.Common;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -28,7 +25,7 @@ namespace CSM.Injections
                 
                 Command.SendToAll(new DistrictCreateCommand
                 {
-                    DistrictID = district,
+                    DistrictId = district,
                     Seed = seed
                 });
             }
@@ -67,7 +64,7 @@ namespace CSM.Injections
             {
                 Command.SendToAll(new DistrictReleaseCommand
                 {
-                    DistrictID = district,
+                    DistrictId = district,
                 });
             }            
         }
@@ -84,7 +81,7 @@ namespace CSM.Injections
                 Command.SendToAll(new DistrictPolicyCommand
                 {
                     Policy = policy,
-                    DistrictID = district
+                    DistrictId = district
                 });
             }
         }
@@ -117,7 +114,7 @@ namespace CSM.Injections
                 Command.SendToAll(new DistrictPolicyUnsetCommand
                 {
                     Policy = policy,
-                    DistrictID = district
+                    DistrictId = district
                 });
             }
         }
@@ -151,7 +148,7 @@ namespace CSM.Injections
                 
                 Command.SendToAll(new ParkCreateCommand
                 {
-                    ParkID = park,
+                    ParkId = park,
                     ParkType = type,
                     ParkLevel = level,
                     Seed = seed
@@ -170,7 +167,7 @@ namespace CSM.Injections
             {
                 Command.SendToAll(new ParkReleaseCommand
                 {
-                    ParkID = park
+                    ParkId = park
                 });
             }
         }

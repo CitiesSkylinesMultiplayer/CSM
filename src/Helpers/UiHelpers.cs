@@ -12,7 +12,7 @@ namespace CSM.Helpers
         public static UIButton CreateButton(this UIComponent uiComponent, string text, Vector2 position, int width = 340,
             int height = 60)
         {
-            var button = (UIButton)uiComponent.AddUIComponent(typeof(UIButton));
+            UIButton button = (UIButton)uiComponent.AddUIComponent(typeof(UIButton));
             button.position = position;
             button.width = width;
             button.height = height;
@@ -34,7 +34,7 @@ namespace CSM.Helpers
 
         public static UILabel CreateTitleLabel(this UIComponent uiComponent, string text, Vector2 position)
         {
-            var label = uiComponent.CreateLabel(text, position);
+            UILabel label = uiComponent.CreateLabel(text, position);
             label.textAlignment = UIHorizontalAlignment.Center;
             label.textScale = 1.3f;
             label.height = 60;
@@ -46,7 +46,7 @@ namespace CSM.Helpers
         public static UILabel CreateLabel(this UIComponent uiComponent, string text, Vector2 position, int width = 340,
             int height = 60)
         {
-            var label = (UILabel)uiComponent.AddUIComponent(typeof(UILabel));
+            UILabel label = (UILabel)uiComponent.AddUIComponent(typeof(UILabel));
             label.position = position;
             label.text = text;
             label.width = width;
@@ -60,7 +60,7 @@ namespace CSM.Helpers
             Vector2 position, int width = 340,
             int height = 40)
         {
-            var textField = (UITextField)uiComponent.AddUIComponent(typeof(UITextField));
+            UITextField textField = (UITextField)uiComponent.AddUIComponent(typeof(UITextField));
             textField.atlas = GetAtlas("Ingame");
             textField.position = position;
             textField.textScale = 1.5f;
@@ -125,10 +125,10 @@ namespace CSM.Helpers
                 _atlases = new Dictionary<string, UITextureAtlas>();
 
                 UITextureAtlas[] atlases = Resources.FindObjectsOfTypeAll(typeof(UITextureAtlas)) as UITextureAtlas[];
-                for (int i = 0; i < atlases.Length; i++)
+                foreach (UITextureAtlas atlas in atlases)
                 {
-                    if (!_atlases.ContainsKey(atlases[i].name))
-                        _atlases.Add(atlases[i].name, atlases[i]);
+                    if (!_atlases.ContainsKey(atlas.name))
+                        _atlases.Add(atlas.name, atlas);
                 }
             }
 

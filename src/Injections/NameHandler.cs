@@ -1,11 +1,9 @@
 ﻿using CSM.Commands;
 using Harmony;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using CSM.Commands.Handler;
 using CSM.Common;
-using UnityEngine;
 
 namespace CSM.Injections
 {
@@ -351,7 +349,7 @@ namespace CSM.Injections
         // so we save it at the beginning
         public static void Postfix(InfoPanel __instance)
         {
-            ChangeCityNameHandler.panel = __instance;
+            ChangeCityNameHandler.Panel = __instance;
         }
     }
 }

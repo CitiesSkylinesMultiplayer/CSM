@@ -1,6 +1,5 @@
 ﻿using ProtoBuf;
 using UnityEngine;
-using static DistrictTool;
 
 namespace CSM.Commands
 {
@@ -8,7 +7,7 @@ namespace CSM.Commands
     public class DistrictAreaModifyCommand : CommandBase
     {
         [ProtoMember(1)]
-        public Layer Layer { get; set; }   
+        public DistrictTool.Layer Layer { get; set; }   
 
         [ProtoMember(2)]
         public byte District { get; set; }
@@ -21,6 +20,5 @@ namespace CSM.Commands
 
         [ProtoMember(5)]
         public Vector3 EndPosition { get; set; }
-
     }
 }

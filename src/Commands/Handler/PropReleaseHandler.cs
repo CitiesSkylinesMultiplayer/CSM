@@ -7,7 +7,7 @@ namespace CSM.Commands.Handler
         public override void Handle(PropReleaseCommand command)
         {
             PropHandler.IgnoreAll = true;
-            PropManager.instance.ReleaseProp(command.PropID);
+            PropManager.instance.ReleaseProp(command.PropId);
             PropHandler.IgnoreAll = false;
         }
     }

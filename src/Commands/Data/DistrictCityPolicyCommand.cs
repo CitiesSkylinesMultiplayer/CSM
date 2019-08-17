@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {
@@ -8,6 +7,5 @@ namespace CSM.Commands
     {
         [ProtoMember(1)]
         public DistrictPolicies.Policies Policy { get; set; }
-
     }
 }

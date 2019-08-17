@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {
@@ -7,6 +6,6 @@ namespace CSM.Commands
     public class DistrictReleaseCommand : CommandBase
     {
         [ProtoMember(1)]
-        public byte DistrictID { get; set; }
+        public byte DistrictId { get; set; }
     }
 }

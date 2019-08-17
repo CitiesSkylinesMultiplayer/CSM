@@ -1,5 +1,4 @@
-﻿using System;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Common;
 using CSM.Injections;
 
@@ -7,7 +6,7 @@ namespace CSM.Commands.Handler
 {
     public class ChangeCityNameHandler : CommandHandler<ChangeCityNameCommand>
     {
-        public static InfoPanel panel;
+        public static InfoPanel Panel;
         
         public override void Handle(ChangeCityNameCommand command)
         {
@@ -20,8 +19,8 @@ namespace CSM.Commands.Handler
             ReflectionHelper.GetAttr<UITextField>(CityInfoPanel.instance, "m_CityName").text = command.Name;
             
             // Update name in bottom bar
-            if (panel != null)
-                ReflectionHelper.Call(panel, "SetName");
+            if (Panel != null)
+                ReflectionHelper.Call(Panel, "SetName");
 
             NameHandler.IgnoreAll = false;
         }

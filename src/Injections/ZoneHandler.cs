@@ -3,7 +3,7 @@ using Harmony;
 
 namespace CSM.Injections
 {
-    public class ZoneHandler
+    public static class ZoneHandler
     {
         public static bool IgnoreAll { get; set; } = false;
     }

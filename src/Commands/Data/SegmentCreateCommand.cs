@@ -25,7 +25,7 @@ namespace CSM.Commands
         public ushort InfoIndex { get; set; }
 
         [ProtoMember(7)]
-        public ushort SegmentID { get; set; }
+        public ushort SegmentId { get; set; }
 
         [ProtoMember(8)]
         public bool Invert { get; set; }

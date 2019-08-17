@@ -1,7 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.IO;
 using ColossalFramework.Packaging;
-using System;
 using System.IO;
 
 namespace CSM.Common
@@ -55,9 +54,9 @@ namespace CSM.Common
 
         public static void LoadWorld(byte[] worldBuffer, byte[] simulationBuffer)
         {
-            using (var ms = new MemoryStream(simulationBuffer))
+            using (MemoryStream ms = new MemoryStream(simulationBuffer))
             {
-                var simulationData = DataSerializer.Deserialize<SimulationMetaData>(ms, DataSerializer.Mode.Memory);
+                SimulationMetaData simulationData = DataSerializer.Deserialize<SimulationMetaData>(ms, DataSerializer.Mode.Memory);
 
                 Package.Asset game = new Package.Asset("multiplayer-game", worldBuffer, Package.AssetType.Unknown, false);
 

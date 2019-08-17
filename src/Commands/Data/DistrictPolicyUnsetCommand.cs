@@ -9,9 +9,6 @@ namespace CSM.Commands
         public DistrictPolicies.Policies Policy { get; set; }
 
         [ProtoMember(2)]
-        public byte DistrictID { get; set; }
+        public byte DistrictId { get; set; }
     }
 }
-
-
-

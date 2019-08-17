@@ -1,12 +1,9 @@
 ﻿using CSM.Commands;
-using CSM.Commands.Handler;
 using CSM.Common;
-using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
 using LiteNetLib;
-using LiteNetLib.Utils;
 using Open.Nat;
 using System;
 using System.Collections.Generic;
@@ -44,7 +41,7 @@ namespace CSM.Networking
         public Server()
         {
             // Set up network items
-            var listener = new EventBasedNetListener();
+            EventBasedNetListener listener = new EventBasedNetListener();
             _netServer = new LiteNetLib.NetManager(listener);
 
             // Listen to events
@@ -75,7 +72,7 @@ namespace CSM.Networking
 
             // Attempt to start the server
             _netServer.DiscoveryEnabled = true;
-            var result = _netServer.Start(Config.Port);
+            bool result = _netServer.Start(Config.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
@@ -88,8 +85,8 @@ namespace CSM.Networking
             try
             {
                 // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
-                var nat = new NatDiscoverer();
-                var cts = new CancellationTokenSource();
+                NatDiscoverer nat = new NatDiscoverer();
+                CancellationTokenSource cts = new CancellationTokenSource();
                 cts.CancelAfter(5000);
 
                 nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
@@ -133,7 +130,6 @@ namespace CSM.Networking
         /// <summary>
         ///     Send a message to all connected clients.
         /// </summary>
-        /// <param name="messageId">Message type/id</param>
         /// <param name="message">The actual message</param>
         public void SendToClients(CommandBase message)
         {
@@ -185,8 +181,8 @@ namespace CSM.Networking
                     Array.Copy(reader.RawData, reader.UserDataOffset, data, 0, reader.UserDataSize);
 
                     // Send this message to all other clients
-                    var peers = _netServer.ConnectedPeerList;
-                    foreach (var client in peers)
+                    List<NetPeer> peers = _netServer.ConnectedPeerList;
+                    foreach (NetPeer client in peers)
                     {
                         // Don't send the message back to the client that sent it.
                         if (client.Id == peer.Id)
@@ -263,9 +259,9 @@ namespace CSM.Networking
         ///     Called whenever an error happens, we
         ///     write it to the log file.
         /// </summary>
-        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerror)
+        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
-            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerror}");
+            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using System;
+using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Common;
 using CSM.Helpers;
@@ -28,9 +29,6 @@ namespace CSM.Panels
         private UISlicedSprite _trackingthumb;
         private UIDragHandle _draghandle;
 
-        // Name of this component
-        public const string NAME = "ChatLogPanel";
-
         private readonly List<ChatCommand> _chatCommands;
 
         public enum MessageType
@@ -46,14 +44,14 @@ namespace CSM.Panels
             {
                 new ChatCommand("help", "Displays information about which commands can be displayed.", (command) =>
                 {
-                    foreach (var c in _chatCommands)
+                    foreach (ChatCommand c in _chatCommands)
                     {
                         PrintGameMessage($"/{c.Command} : {c.Description}");
-                    };
+                    }
                 }),
                 new ChatCommand("version", "Displays version information about the mod and game.", (command) =>
                 {
-                    PrintGameMessage("Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString());
+                    PrintGameMessage("Mod Version  : " + Assembly.GetAssembly(typeof(CSM)).GetName().Version);
                     PrintGameMessage("Game Version : " + BuildConfig.applicationVersion);
                 }),
                 new ChatCommand("support", "Display support links for the mod.", (command) =>
@@ -70,7 +68,7 @@ namespace CSM.Panels
                         return;
                     }
 
-                    foreach (var player in MultiplayerManager.Instance.PlayerList)
+                    foreach (string player in MultiplayerManager.Instance.PlayerList)
                     {
                         PrintGameMessage(player);
                     }
@@ -101,14 +99,7 @@ namespace CSM.Panels
             // Toggle the chat when the tidle key is pressed.
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                if (isVisible)
-                {
-                    isVisible = false;
-                }
-                else
-                {
-                    isVisible = true;
-                }
+                isVisible = !isVisible;
             }
 
             // Gain focus on chat when the tab key is pressed.
@@ -138,7 +129,7 @@ namespace CSM.Panels
             //                  ¦-- _scrollbar, _trackingsprite, _trackingthumb
 
             backgroundSprite = "GenericPanel";
-            name = ChatLogPanel.NAME;
+            name = "ChatLogPanel";
             color = new Color32(22, 22, 22, 240);
 
             // Activates the dragging of the window
@@ -146,7 +137,7 @@ namespace CSM.Panels
             _draghandle.name = "ChatLogPanelDragHandle";
 
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(10.0f, view.fixedHeight - 440.0f);
@@ -277,13 +268,13 @@ namespace CSM.Panels
             if (eventParam.keycode == KeyCode.Return || eventParam.keycode == KeyCode.KeypadEnter)
             {
                 // Get and clear the text
-                var text = _chatText.text;
+                string text = _chatText.text;
                 _chatText.text = string.Empty;
 
                 // If a command, parse it
                 if (text.StartsWith("/"))
                 {
-                    var command = _chatCommands.Find(x => x.Command == text.TrimStart('/'));
+                    ChatCommand command = _chatCommands.Find(x => x.Command == text.TrimStart('/'));
                     if (command == null)
                     {
                         PrintGameMessage(MessageType.Warning, $"'{text.TrimStart('/')}' is not a valid command.");
@@ -304,7 +295,7 @@ namespace CSM.Panels
                 //}
 
                 // Get the player name
-                var playerName = "Local";
+                string playerName = "Local";
 
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 {
@@ -316,7 +307,7 @@ namespace CSM.Panels
                 }
 
                 // Build and send this message
-                var message = new ChatMessageCommand
+                ChatMessageCommand message = new ChatMessageCommand
                 {
                     Username = playerName,
                     Message = text
@@ -355,29 +346,7 @@ namespace CSM.Panels
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(MessageType type, string msg)
         {
-            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
-            {
-                var unusedtemp = type;
-                var getmessagebox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
-
-                // Check if the thumb is at the bottom of the scrollbar for autoscrolling
-                var getscrollbar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
-                var getthumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
-                bool autocanscroll = false;
-                float getsize = (getthumb.relativePosition.y + getthumb.size.y);
-
-                if (getsize == getscrollbar.height)
-                {
-                    autocanscroll = true;
-                }
-
-                getmessagebox.text += ($"<CSM> {msg}" + "\n");
-
-                if (autocanscroll)
-                {
-                    getscrollbar.minValue = getscrollbar.maxValue;
-                }
-            });
+            PrintMessage($"<CSM> {msg}");
         }
 
         /// <summary>
@@ -387,28 +356,27 @@ namespace CSM.Panels
         /// <param name="msg">The message.</param>
         public static void PrintChatMessage(string username, string msg)
         {
+            PrintMessage($"<{username}> {msg}");
+        }
+
+        private static void PrintMessage(string msg)
+        {
             SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                var getmessagebox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
+                UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
 
                 // Check if the thumb is at the bottom of the scrollbar for autoscrolling
-                var getscrollbar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
-                var getthumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
-                bool autocanscroll = false;
-                float getsize = (getthumb.relativePosition.y + getthumb.size.y);
+                UIScrollbar scrollBar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
+                UISlicedSprite thumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
+                float size = (thumb.relativePosition.y + thumb.size.y);
+                bool autoScroll = Math.Abs(size - scrollBar.height) < 0.2f;
 
-                if (getsize == getscrollbar.height)
+                messageBox.text += ($"{msg}\n");
+
+                if (autoScroll)
                 {
-                    autocanscroll = true;
+                    scrollBar.minValue = scrollBar.maxValue;
                 }
-
-                getmessagebox.text += ($"<{username}> {msg}" + "\n");
-
-                if (autocanscroll)
-                {
-                    getscrollbar.minValue = getscrollbar.maxValue;
-                }
-
             });
         }
     }

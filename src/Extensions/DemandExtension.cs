@@ -35,9 +35,9 @@ namespace CSM.Extensions
 
                 case MultiplayerRole.Server: //Sends the UI data of the different types of Demand
                     {
-                        var ResidentialDemand = Singleton<ZoneManager>.instance.m_residentialDemand;
-                        var CommercialDemand = Singleton<ZoneManager>.instance.m_commercialDemand;
-                        var WorkplaceDemant = Singleton<ZoneManager>.instance.m_workplaceDemand;
+                        int ResidentialDemand = Singleton<ZoneManager>.instance.m_residentialDemand;
+                        int CommercialDemand = Singleton<ZoneManager>.instance.m_commercialDemand;
+                        int WorkplaceDemant = Singleton<ZoneManager>.instance.m_workplaceDemand;
 
                         Command.SendToClients(new DemandDisplayedCommand
                         {

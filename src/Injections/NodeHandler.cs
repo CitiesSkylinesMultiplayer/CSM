@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace CSM.Injections
 {
-    public class NodeHandler
+    public static class NodeHandler
     {
         public static bool IgnoreAll { get; set; } = false;
     }
@@ -94,7 +94,7 @@ namespace CSM.Injections
             Command.SendToAll(new NodeUpdateCommand
             {
                 Segments = segments,
-                NodeID = node,
+                NodeId = node,
                 Flags = netNode.m_flags
             });
         }
@@ -119,7 +119,7 @@ namespace CSM.Injections
                 NetSegment seg = Singleton<NetManager>.instance.m_segments.m_buffer[segment];
                 Command.SendToAll(new SegmentCreateCommand
                 {
-                    SegmentID = segment,
+                    SegmentId = segment,
                     StartNode = seg.m_startNode,
                     EndNode = seg.m_endNode,
                     StartDirection = seg.m_startDirection,

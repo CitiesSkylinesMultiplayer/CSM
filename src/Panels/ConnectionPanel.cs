@@ -26,7 +26,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 100.0f);
@@ -97,7 +97,7 @@ namespace CSM.Panels
 
             _clientConnectButton.eventClick += (component, param) =>
             {
-                var panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
+                JoinGamePanel panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
 
                 if (panel != null)
                 {
@@ -106,7 +106,7 @@ namespace CSM.Panels
                 }
                 else
                 {
-                    var joinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
+                    JoinGamePanel joinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
                     joinGamePanel.Focus();
                 }
 
@@ -116,7 +116,7 @@ namespace CSM.Panels
             // Host a game panel
             _serverConnectButton.eventClick += (component, param) =>
             {
-                var panel = view.FindUIComponent<HostGamePanel>("MPHostGamePanel");
+                HostGamePanel panel = view.FindUIComponent<HostGamePanel>("MPHostGamePanel");
 
                 if (panel != null)
                 {
@@ -125,7 +125,7 @@ namespace CSM.Panels
                 }
                 else
                 {
-                    var hostGamePanel = (HostGamePanel)view.AddUIComponent(typeof(HostGamePanel));
+                    HostGamePanel hostGamePanel = (HostGamePanel)view.AddUIComponent(typeof(HostGamePanel));
                     hostGamePanel.Focus();
                 }
 
@@ -141,7 +141,7 @@ namespace CSM.Panels
 
             _serverManageButton.eventClick += (component, param) =>
             {
-                var panel = view.FindUIComponent<ManageGamePanel>("MPManageGamePanel");
+                ManageGamePanel panel = view.FindUIComponent<ManageGamePanel>("MPManageGamePanel");
 
                 if (panel != null)
                 {

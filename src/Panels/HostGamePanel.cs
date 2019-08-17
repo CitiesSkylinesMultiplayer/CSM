@@ -15,8 +15,8 @@ namespace CSM.Panels
         private UITextField _usernameField;
 
         private UILabel _connectionStatus;
-        private UILabel _localIP;
-        private UILabel _externalIP;
+        private UILabel _localIp;
+        private UILabel _externalIp;
 
         private UIButton _createButton;
         private UIButton _closeButton;
@@ -33,7 +33,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
@@ -65,23 +65,23 @@ namespace CSM.Panels
             _usernameField = this.CreateTextField("", new Vector2(10, -270));
             if (PlatformService.active && PlatformService.personaName != null)
             {
-                _usernameField.text = PlatformService.personaName.ToString();
+                _usernameField.text = PlatformService.personaName;
             }
 
             _connectionStatus = this.CreateLabel("", new Vector2(10, -310));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
-            // Request IP adresses async
+            // Request IP addresses async
             new Thread(RequestIPs).Start();
 
             // Create Local IP Label
-            _localIP = this.CreateLabel("", new Vector2(10, -330));
-            _localIP.textAlignment = UIHorizontalAlignment.Center;
+            _localIp = this.CreateLabel("", new Vector2(10, -330));
+            _localIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create External IP Label
-            _externalIP = this.CreateLabel("", new Vector2(10, -350));
-            _externalIP.textAlignment = UIHorizontalAlignment.Center;
+            _externalIp = this.CreateLabel("", new Vector2(10, -350));
+            _externalIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create Server Button
             _createButton = this.CreateButton("Create Server", new Vector2(10, -390));
@@ -96,14 +96,7 @@ namespace CSM.Panels
 
             _passwordBox.eventClicked += (component, param) =>
             {
-                if (_passwordBox.isChecked == true)
-                {
-                    _passwordField.isPasswordField = false;
-                }
-                else
-                {
-                    _passwordField.isPasswordField = true;
-                }
+                _passwordField.isPasswordField = !_passwordBox.isChecked;
             };
 
         }
@@ -111,17 +104,17 @@ namespace CSM.Panels
         private void RequestIPs()
         {
             // Request ips
-            string sLocalIP = IPAddress.GetLocalIPAddress();
-            string sExternalIP = IPAddress.GetExternalIPAddress();
+            string sLocalIp = IpAddress.GetLocalIpAddress();
+            string sExternalIp = IpAddress.GetExternalIpAddress();
 
             // Change gui attributes in main thread
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                _localIP.textColor = sLocalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
-                _localIP.text = string.Format("Local IP: {0}", sLocalIP);
+                _localIp.textColor = sLocalIp.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+                _localIp.text = $"Local IP: {sLocalIp}";
 
-                _externalIP.textColor = sExternalIP.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
-                _externalIP.text = string.Format("External IP: {0}", sExternalIP);
+                _externalIp.textColor = sExternalIp.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
+                _externalIp.text = $"External IP: {sExternalIp}";
             });
         }
 
@@ -134,7 +127,7 @@ namespace CSM.Panels
             _connectionStatus.text = "Setting up server...";
 
             // Port must be filled in and be a number
-            if (string.IsNullOrEmpty(_portField.text) || !int.TryParse(_portField.text, out var port))
+            if (string.IsNullOrEmpty(_portField.text) || !int.TryParse(_portField.text, out int _))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Port must be a number";
