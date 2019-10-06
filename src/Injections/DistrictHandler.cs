@@ -1,6 +1,6 @@
 ﻿using CSM.Commands;
-using Harmony;
 using System;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections

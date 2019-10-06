@@ -1,5 +1,5 @@
 ﻿using CSM.Commands;
-using Harmony;
+using HarmonyLib;
 
 namespace CSM.Injections
 {

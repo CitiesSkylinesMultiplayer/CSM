@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\assemblies\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\assemblies\Assembly-CSharp.dll</HintPath>
@@ -64,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandReceiver.cs" />
+    <Compile Include="Commands\Data\BuildingToolCreateCommand.cs" />
     <Compile Include="Commands\Data\ChangeCityNameCommand.cs" />
     <Compile Include="Commands\Data\ChatMessageCommand.cs" />
     <Compile Include="Commands\Command.cs" />
@@ -95,19 +99,18 @@
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
     <Compile Include="Commands\Data\NodeReleaseCommand.cs" />
-    <Compile Include="Commands\Data\SegmentCreateCommand.cs" />
     <Compile Include="Commands\Data\PlayerListCommand.cs" />
     <Compile Include="Commands\Data\MoneyCommand.cs" />
     <Compile Include="Commands\Data\PauseCommand.cs" />
     <Compile Include="Commands\Data\SegmentReleaseCommand.cs" />
     <Compile Include="Commands\Data\SpeedCommand.cs" />
     <Compile Include="Commands\Data\TaxRateChangeCommand.cs" />
-    <Compile Include="Commands\Data\NodeUpdateCommand.cs" />
     <Compile Include="Commands\Data\TreeCreateCommand.cs" />
     <Compile Include="Commands\Data\TreeReleaseCommand.cs" />
     <Compile Include="Commands\Data\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\WorldInfoCommand.cs" />
     <Compile Include="Commands\Data\ZoneUpdateCommand.cs" />
+    <Compile Include="Commands\Handler\BuildingToolCreateHandler.cs" />
     <Compile Include="Commands\Handler\BudgetChangeHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRelocateHandler.cs" />
     <Compile Include="Commands\Handler\BuildingRemoveHandler.cs" />
@@ -130,7 +133,6 @@
     <Compile Include="Commands\Handler\PropCreateHandler.cs" />
     <Compile Include="Commands\Handler\PropMoveHandler.cs" />
     <Compile Include="Commands\Handler\PropReleaseHandler.cs" />
-    <Compile Include="Commands\Handler\SegmentCreateHandler.cs" />
     <Compile Include="Commands\Handler\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\ClientDisonnectHandler.cs" />
     <Compile Include="Commands\Handler\ClientConnectHandler.cs" />
@@ -143,7 +145,6 @@
     <Compile Include="Commands\Handler\SegmentReleaseHandler.cs" />
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />
-    <Compile Include="Commands\Handler\NodeUpdateHandler.cs" />
     <Compile Include="Commands\Handler\TerrainModificationHandler.cs" />
     <Compile Include="Commands\Handler\TreeCreateHandler.cs" />
     <Compile Include="Commands\Handler\TreeMoveHandler.cs" />
@@ -168,7 +169,7 @@
     <Compile Include="Injections\MainMenuHandler.cs" />
     <Compile Include="Injections\EconomyHandler.cs" />
     <Compile Include="Injections\NameHandler.cs" />
-    <Compile Include="Injections\NodeHandler.cs" />
+    <Compile Include="Injections\NetHandler.cs" />
     <Compile Include="Injections\PropHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TreeHandler.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Models\QuaternionSurrogate.cs" />
+    <Compile Include="Models\ControlPointSurrogate.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
@@ -197,9 +199,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony">
-      <Version>1.2.0.1</Version>
-    </PackageReference>
     <PackageReference Include="LiteNetLib">
       <Version>0.8.2-beta</Version>
     </PackageReference>
