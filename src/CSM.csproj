@@ -95,6 +95,9 @@
     <Compile Include="Commands\Data\PropMoveCommand.cs" />
     <Compile Include="Commands\Data\PropReleaseCommand.cs" />
     <Compile Include="Commands\Data\ParkReleaseCommand.cs" />
+    <Compile Include="Commands\Data\RoadSetPriorityCommand.cs" />
+    <Compile Include="Commands\Data\RoadSettingsCommand.cs" />
+    <Compile Include="Commands\Data\SegmentSeedUpdateCommand.cs" />
     <Compile Include="Commands\Data\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\NodeCreateCommand.cs" />
@@ -142,7 +145,10 @@
     <Compile Include="Commands\Handler\ConnectionResultHandler.cs" />
     <Compile Include="Commands\Handler\DemandDisplayedHandler.cs" />
     <Compile Include="Commands\Handler\PauseHandler.cs" />
+    <Compile Include="Commands\Handler\RoadSetPriorityHandler.cs" />
+    <Compile Include="Commands\Handler\RoadSettingsHandler.cs" />
     <Compile Include="Commands\Handler\SegmentReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\SegmentSeedUpdateHandler.cs" />
     <Compile Include="Commands\Handler\SpeedHandler.cs" />
     <Compile Include="Commands\Handler\TaxRateChangeHandler.cs" />
     <Compile Include="Commands\Handler\TerrainModificationHandler.cs" />
@@ -171,6 +177,7 @@
     <Compile Include="Injections\NameHandler.cs" />
     <Compile Include="Injections\NetHandler.cs" />
     <Compile Include="Injections\PropHandler.cs" />
+    <Compile Include="Injections\RoadHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TreeHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
