@@ -20,6 +20,9 @@ namespace CSM.Panels
         private UIButton _closeButton;
 
         private UICheckBox _passwordBox;
+        private UICheckBox _playerPointers;
+
+        public bool showPlayerPointers = false;
 
         public override void Start()
         {

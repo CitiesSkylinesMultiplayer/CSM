@@ -72,6 +72,7 @@
     <Compile Include="Commands\Data\BuildingRelocateCommand.cs" />
     <Compile Include="Commands\Data\BuildingRemoveCommand.cs" />
     <Compile Include="Commands\Data\ChangeNameCommand.cs" />
+    <Compile Include="Commands\Data\PlayerLocationCommand.cs" />
     <Compile Include="Commands\Data\ParkCreateCommand.cs" />
     <Compile Include="Commands\Data\DistrictCityPolicyCommand.cs" />
     <Compile Include="Commands\Data\ClientDisconnectCommand.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Commands\Handler\DistrictPolicyUnsetHandler.cs" />
     <Compile Include="Commands\Handler\DistrictReleaseHandler.cs" />
     <Compile Include="Commands\Handler\FinishTransactionHandler.cs" />
+    <Compile Include="Commands\Handler\PlayerLocationHandler.cs" />
     <Compile Include="Commands\Handler\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\NodeCreateHandler.cs" />
     <Compile Include="Commands\Handler\NodeReleaseHandler.cs" />
@@ -165,6 +167,7 @@
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
+    <Compile Include="Injections\ICameraHandler.cs" />
     <Compile Include="Injections\MainMenuHandler.cs" />
     <Compile Include="Injections\EconomyHandler.cs" />
     <Compile Include="Injections\NameHandler.cs" />

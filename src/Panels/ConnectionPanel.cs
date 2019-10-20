@@ -16,6 +16,8 @@ namespace CSM.Panels
 
         private UIButton _serverManageButton;
 
+        private UICheckBox _playerPointers;
+        public static bool showPlayerPointers = false;
         public override void Start()
         {
             // Activates the dragging of the window
@@ -32,7 +34,7 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 100.0f);
 
             width = 360;
-            height = 200;
+            height = 240;
 
             // Handle visible change events
             eventVisibilityChanged += (component, visible) =>
@@ -48,6 +50,8 @@ namespace CSM.Panels
                         Hide(_serverConnectButton);
                         Show(_disconnectButton);
                         Show(_serverManageButton);
+                        _playerPointers.isVisible = true;
+                        _playerPointers.isEnabled = true;
 
                         _disconnectButton.text = "Stop server";
                     }
@@ -57,6 +61,9 @@ namespace CSM.Panels
                         Show(_serverConnectButton);
                         Hide(_disconnectButton);
                         Hide(_serverManageButton);
+
+                        _playerPointers.isVisible = false;
+                        _playerPointers.isEnabled = false;
                     }
                 }
                 else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
@@ -66,6 +73,9 @@ namespace CSM.Panels
                     Show(_disconnectButton);
                     Hide(_serverManageButton);
 
+                    _playerPointers.isVisible = true;
+                    _playerPointers.isEnabled = true;
+
                     _disconnectButton.text = "Disconnect";
                 }
                 else
@@ -74,6 +84,9 @@ namespace CSM.Panels
                     Show(_serverConnectButton);
                     Hide(_disconnectButton);
                     Hide(_serverManageButton);
+
+                    _playerPointers.isVisible = false;
+                    _playerPointers.isEnabled = false; 
                 }
             };
 
@@ -94,6 +107,17 @@ namespace CSM.Panels
             _disconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
             _disconnectButton.isEnabled = false;
             _disconnectButton.isVisible = false;
+
+
+            // Show Player Pointers 
+            _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, -210));
+            _playerPointers.isVisible = false;
+            _playerPointers.isEnabled = false;
+            _playerPointers.eventClicked += (component, param) =>
+            {
+                showPlayerPointers = _playerPointers.isChecked;
+            };
+
 
             _clientConnectButton.eventClick += (component, param) =>
             {
