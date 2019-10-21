@@ -1,11 +1,5 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Helpers;
-using CSM.Networking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -35,7 +29,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 255);
 
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
@@ -93,14 +87,7 @@ namespace CSM.Panels
 
             _passwordBox.eventClicked += (component, param) =>
             {
-                if (_passwordBox.isChecked == true)
-                {
-                    _passwordField.isPasswordField = false;
-                }
-                else
-                {
-                    _passwordField.isPasswordField = true;
-                }
+                _passwordField.isPasswordField = !_passwordBox.isChecked;
             };
         }
 

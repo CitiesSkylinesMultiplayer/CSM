@@ -1,6 +1,6 @@
 ﻿using ColossalFramework.UI;
 using CSM.Panels;
-using Harmony;
+using HarmonyLib;
 using NLog;
 using UnityEngine;
 
@@ -29,12 +29,12 @@ namespace CSM.Injections
         {
             _logger.Info("Creating join game button...");
 
-            var uiView = UIView.GetAView().FindUIComponent("Menu") as UIPanel;
+            UIPanel uiView = UIView.GetAView().FindUIComponent("Menu") as UIPanel;
 
             if (uiView == null)
                 return;
 
-            var joinGameButton = UIView.GetAView().FindUIComponent("JoinGame") as UIButton;
+            UIButton joinGameButton = UIView.GetAView().FindUIComponent("JoinGame") as UIButton;
 
             // Create the button if it does not exist and assign
             // the click event.
@@ -43,7 +43,7 @@ namespace CSM.Injections
                 joinGameButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
                 joinGameButton.eventClick += (s, e) =>
                 {
-                    var panel = UIView.GetAView().FindUIComponent<MenuJoinGamePanel>("MPMenuJoinGamePanel");
+                    MenuJoinGamePanel panel = UIView.GetAView().FindUIComponent<MenuJoinGamePanel>("MPMenuJoinGamePanel");
 
                     if (panel != null)
                     {
@@ -52,7 +52,7 @@ namespace CSM.Injections
                     }
                     else
                     {
-                        var joinGamePanel = (MenuJoinGamePanel)UIView.GetAView().AddUIComponent(typeof(MenuJoinGamePanel));
+                        MenuJoinGamePanel joinGamePanel = (MenuJoinGamePanel)UIView.GetAView().AddUIComponent(typeof(MenuJoinGamePanel));
                         joinGamePanel.Focus();
                     }
                 };

@@ -1,11 +1,9 @@
-﻿using ColossalFramework;
-using ColossalFramework.IO;
-using ColossalFramework.Packaging;
+﻿using System;
 using CSM.Common;
 using CSM.Networking;
 using LiteNetLib;
-using System.IO;
 using System.Reflection;
+using CSM.Helpers;
 
 namespace CSM.Commands.Handler
 {
@@ -35,8 +33,8 @@ namespace CSM.Commands.Handler
             }
 
             // Check to see if the mod version matches
-            var version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
-            var versionString = $"{version.Major}.{version.Minor}";
+            Version version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
+            string versionString = $"{version.Major}.{version.Minor}";
 
             if (command.ModVersion != versionString)
             {
@@ -49,7 +47,7 @@ namespace CSM.Commands.Handler
             }
 
             // Check the client username to see if anyone on the server already have a username
-            var hasExistingPlayer = MultiplayerManager.Instance.PlayerList.Contains(command.Username);
+            bool hasExistingPlayer = MultiplayerManager.Instance.PlayerList.Contains(command.Username);
             if (hasExistingPlayer)
             {
                 Command.SendToClient(peer, new ConnectionResultCommand
@@ -73,16 +71,28 @@ namespace CSM.Commands.Handler
                     return;
                 }
             }
+            
+            // Check both client have the same DLCs enabled
+            if (!command.DLCBitMask.Equals(DLCHelper.GetOwnedDLCs()))
+            {
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "DLCs don't match",
+                    DLCBitMask = DLCHelper.GetOwnedDLCs()
+                });
+                return;
+            }
 
             // Add the new player as a connected player
-            var newPlayer = new Player(peer, command.Username);
+            Player newPlayer = new Player(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
             // Get a serialized version of the server world to send to the player.
             if (command.RequestWorld)
             {
                 // Get the world
-                var world = WorldManager.GetWorld();
+                byte[] world = WorldManager.GetWorld();
 
                 // Send the result command
                 Command.SendToClient(peer, new ConnectionResultCommand

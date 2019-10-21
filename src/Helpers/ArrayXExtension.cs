@@ -1,9 +1,9 @@
 ﻿using CSM.Panels;
-using Harmony;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CSM.Common;
 
 namespace CSM.Helpers
 {
@@ -31,8 +31,8 @@ namespace CSM.Helpers
 
         private static void RemoveUnused<N>(object arr, N id, string type) where N: IConvertible
         {
-            N[] unusedItems = (N[]) arr.GetType().GetField("m_unusedItems", AccessTools.all).GetValue(arr);
-            FieldInfo unusedCountField = arr.GetType().GetField("m_unusedCount", AccessTools.all);
+            N[] unusedItems = (N[]) arr.GetType().GetField("m_unusedItems", ReflectionHelper.AllAccessFlags).GetValue(arr);
+            FieldInfo unusedCountField = arr.GetType().GetField("m_unusedCount", ReflectionHelper.AllAccessFlags);
             uint unusedCount = (uint) unusedCountField.GetValue(arr);
 
             uint expectedPos = Convert.ToUInt32(id) - 1;

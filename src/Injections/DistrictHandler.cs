@@ -1,11 +1,11 @@
 ﻿using CSM.Commands;
-using Harmony;
 using System;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public class DistrictHandler
+    public static class DistrictHandler
     {
         public static bool IgnoreAll { get; set; } = false;
     }
@@ -21,9 +21,12 @@ namespace CSM.Injections
 
             if (__result)
             {
+                ulong seed = DistrictManager.instance.m_districts.m_buffer[district].m_randomSeed;
+                
                 Command.SendToAll(new DistrictCreateCommand
                 {
-                    DistrictID = district
+                    DistrictId = district,
+                    Seed = seed
                 });
             }
         }
@@ -61,7 +64,7 @@ namespace CSM.Injections
             {
                 Command.SendToAll(new DistrictReleaseCommand
                 {
-                    DistrictID = district,
+                    DistrictId = district,
                 });
             }            
         }
@@ -78,7 +81,7 @@ namespace CSM.Injections
                 Command.SendToAll(new DistrictPolicyCommand
                 {
                     Policy = policy,
-                    DistrictID = district
+                    DistrictId = district
                 });
             }
         }
@@ -111,7 +114,7 @@ namespace CSM.Injections
                 Command.SendToAll(new DistrictPolicyUnsetCommand
                 {
                     Policy = policy,
-                    DistrictID = district
+                    DistrictId = district
                 });
             }
         }
@@ -131,7 +134,6 @@ namespace CSM.Injections
                 });
             }
         }
-        
     }
 
     [HarmonyPatch(typeof(DistrictManager))]
@@ -142,11 +144,14 @@ namespace CSM.Injections
         {
             if (__result && !DistrictHandler.IgnoreAll)
             {
+                ulong seed = DistrictManager.instance.m_parks.m_buffer[park].m_randomSeed;
+                
                 Command.SendToAll(new ParkCreateCommand
                 {
-                    ParkID = park,
+                    ParkId = park,
                     ParkType = type,
                     ParkLevel = level,
+                    Seed = seed
                 });
             }
         }
@@ -162,7 +167,7 @@ namespace CSM.Injections
             {
                 Command.SendToAll(new ParkReleaseCommand
                 {
-                    ParkID = park
+                    ParkId = park
                 });
             }
         }

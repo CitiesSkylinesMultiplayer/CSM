@@ -7,9 +7,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(SegmentReleaseCommand command)
         {
-            NodeHandler.IgnoreAll = true;
-            Singleton<NetManager>.instance.ReleaseSegment(command.SegmentId, command.KeepNodes);
-            NodeHandler.IgnoreAll = false;
+            NetHandler.IgnoreAll = true;
+            NetManager.instance.ReleaseSegment(command.SegmentId, command.KeepNodes);
+            NetHandler.IgnoreAll = false;
         }
     }
 }

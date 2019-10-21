@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -9,9 +9,9 @@ namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
-        private readonly HarmonyInstance _harmony;
+        private readonly Harmony _harmony;
 
-        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CSM()
         {
@@ -21,7 +21,7 @@ namespace CSM
             try
             {
                 _logger.Info("Attempting to patch Cities: Skylines using Harmony...");
-                _harmony = HarmonyInstance.Create("net.gridentertainment.csm");
+                _harmony = new Harmony("net.gridentertainment.csm");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _logger.Info("Successfully patched Cities: Skylines!");
             }
@@ -46,13 +46,13 @@ namespace CSM
         /// </summary>
         private void SetupLogging()
         {
-            var config = new LoggingConfiguration();
+            LoggingConfiguration config = new LoggingConfiguration();
 
             // The layout of the log
-            var layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version.ToString() + "] [${level}] ${message} ${exception:format=tostring}";
+            string layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version + "] [${level}] ${message} ${exception:format=tostring}";
 
             // Target for file logging
-            var logfile = new FileTarget("logfile")
+            FileTarget logfile = new FileTarget("logfile")
             {
                 FileName = "multiplayer-logs/log-current.txt",
                 ArchiveFileName = "multiplayer-logs/log-${shortdate}.txt",
@@ -63,11 +63,11 @@ namespace CSM
             };
 
             // Target for console logging
-            var logconsole = new ConsoleTarget("logconsole") { Layout = layout };
+            ConsoleTarget logConsole = new ConsoleTarget("logconsole") { Layout = layout };
 
             // While in development set both levels to start at debug, later on we
             // want to set an option to do this.
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logconsole);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logConsole);
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
 
             LogManager.Configuration = config;

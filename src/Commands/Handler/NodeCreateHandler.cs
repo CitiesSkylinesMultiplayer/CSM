@@ -6,15 +6,27 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(NodeCreateCommand command)
         {
-            NetInfo info = PrefabCollection<NetInfo>.GetPrefab(command.InfoIndex);
+            NetHandler.IgnoreAll = true;
+            TreeHandler.IgnoreAll = true;
+            PropHandler.IgnoreAll = true;
+            BuildingHandler.IgnoreAll = true;
 
-            NodeHandler.IgnoreAll = true;
-            ArrayHandler.StartApplying(new ushort[] { command.NodeId }, null);
+            ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
-            NetManager.instance.CreateNode(out ushort _, ref SimulationManager.instance.m_randomizer, info, command.Position, SimulationManager.instance.m_currentBuildIndex++);
+            NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(command.Prefab);
+            
+            FastList<NetTool.NodePosition> nodeBuffer = new FastList<NetTool.NodePosition>();
+
+            NetTool.CreateNode(prefab, command.StartPoint, command.MiddlePoint, command.EndPoint, nodeBuffer,
+                command.MaxSegments, false, command.TestEnds, false, command.AutoFix, false,
+                command.Invert, command.SwitchDir, command.RelocateBuildingId, out ushort _,
+                out ushort _, out ushort _, out int _, out int _);
 
             ArrayHandler.StopApplying();
-            NodeHandler.IgnoreAll = false;
+            BuildingHandler.IgnoreAll = false;
+            PropHandler.IgnoreAll = false;
+            TreeHandler.IgnoreAll = false;
+            NetHandler.IgnoreAll = false;
         }
     }
 }

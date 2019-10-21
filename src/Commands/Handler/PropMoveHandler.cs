@@ -7,7 +7,7 @@ namespace CSM.Commands.Handler
         public override void Handle(PropMoveCommand command)
         {
             PropHandler.IgnoreAll = true;
-            PropManager.instance.MoveProp(command.PropID, command.Position);
+            PropManager.instance.MoveProp(command.PropId, command.Position);
             PropHandler.IgnoreAll = false;
         }
     }

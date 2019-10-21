@@ -6,6 +6,6 @@ namespace CSM.Commands
     public class TaxRateChangeCommand : CommandBase
     {
         [ProtoMember(1)]
-        public int[] Taxrate { get; set; }
+        public int[] TaxRate { get; set; }
     }
 }

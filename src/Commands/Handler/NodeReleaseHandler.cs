@@ -7,9 +7,9 @@ namespace CSM.Commands.Handler
     {
         public override void Handle(NodeReleaseCommand command)
         {
-            NodeHandler.IgnoreAll = true;
+            NetHandler.IgnoreAll = true;
             Singleton<NetManager>.instance.ReleaseNode(command.NodeId);
-            NodeHandler.IgnoreAll = false;
+            NetHandler.IgnoreAll = false;
         }
     }
 }

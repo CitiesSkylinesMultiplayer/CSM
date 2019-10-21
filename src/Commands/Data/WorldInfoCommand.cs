@@ -21,11 +21,5 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(2)]
         public DateTime CurrentGameTime { get; set; }
-
-        /// <summary>
-        ///     The name of the city.
-        /// </summary>
-        [ProtoMember(3)]
-        public string CityName { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {
@@ -7,6 +6,9 @@ namespace CSM.Commands
     public class DistrictCreateCommand : CommandBase
     {
         [ProtoMember(1)]
-        public byte DistrictID { get; set; }
+        public byte DistrictId { get; set; }
+
+        [ProtoMember(2)]
+        public ulong Seed { get; set; }
     }
 }

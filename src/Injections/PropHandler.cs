@@ -1,11 +1,11 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public class PropHandler
+    public static class PropHandler
     {
         public static bool IgnoreAll { get; set; } = false;
     }
@@ -25,11 +25,11 @@ namespace CSM.Injections
 
                 Command.SendToAll(new PropCreateCommand
                 {
-                    position = position,
-                    PropID = prop,
-                    single = single,
-                    angle = angle,
-                    infoindex = propInstance.m_infoIndex 
+                    Position = position,
+                    PropId = prop,
+                    Single = single,
+                    Angle = angle,
+                    InfoIndex = propInstance.m_infoIndex 
                 });
             }
         }
@@ -45,7 +45,7 @@ namespace CSM.Injections
 
             Command.SendToAll(new PropMoveCommand
             {
-                PropID = prop,
+                PropId = prop,
                 Position = position
             });
         }
@@ -62,7 +62,7 @@ namespace CSM.Injections
 
             Command.SendToAll(new PropReleaseCommand
             {
-                PropID = prop
+                PropId = prop
             });
         }
     }

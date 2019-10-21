@@ -7,7 +7,7 @@ namespace CSM.Commands
     public class PropMoveCommand : CommandBase
     {
         [ProtoMember(1)]
-        public ushort PropID { get; set; }
+        public ushort PropId { get; set; }
 
         [ProtoMember(2)]
         public Vector3 Position { get; set; }

@@ -1,12 +1,11 @@
 ﻿using CSM.Commands.Data;
 using CSM.Commands.Handler;
 using CSM.Helpers;
-using CSM.Networking;
 using System.Collections.Generic;
 
 namespace CSM.Commands
 {
-    public class TransactionHandler
+    public static class TransactionHandler
     {
         private static bool _sendStarted = false;
         private static readonly List<Tuple<CommandHandler, CommandBase, int>> _receivedTransactions = new List<Tuple<CommandHandler, CommandBase, int>>();
@@ -87,7 +86,7 @@ namespace CSM.Commands
         /// <param name="clientId">The sender's client id.</param>
         public static void ClearTransactions(int clientId)
         {
-            _receivedTransactions.RemoveAll((Tuple<CommandHandler, CommandBase, int> tuple) => { return tuple.Var3 == clientId; });
+            _receivedTransactions.RemoveAll(tuple => tuple.Var3 == clientId);
         }
 
         /// <summary>

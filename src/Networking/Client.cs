@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using CSM.Helpers;
 
 namespace CSM.Networking
 {
@@ -49,7 +50,7 @@ namespace CSM.Networking
         public Client()
         {
             // Set up network items
-            var listener = new EventBasedNetListener();
+            EventBasedNetListener listener = new EventBasedNetListener();
             _netClient = new LiteNetLib.NetManager(listener);
 
             // Listen to events
@@ -90,7 +91,7 @@ namespace CSM.Networking
 
             // Start the client, if client setup fails, return out and
             // tell the user
-            var result = _netClient.Start();
+            bool result = _netClient.Start();
             if (!result)
             {
                 _logger.Error("The client failed to start.");
@@ -123,7 +124,7 @@ namespace CSM.Networking
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
             // while we wait for a successful connection (Status = Connected) or a
             // failed connection (Status = Disconnected).
-            var waitWatch = new Stopwatch();
+            Stopwatch waitWatch = new Stopwatch();
             waitWatch.Start();
 
             // Try connect for 30 seconds
@@ -181,7 +182,7 @@ namespace CSM.Networking
                 return;
             }
 
-            var server = _netClient.ConnectedPeerList[0];
+            NetPeer server = _netClient.ConnectedPeerList[0];
 
             _logger.Debug($"Sending {message.GetType().Name} to server");
 
@@ -221,11 +222,11 @@ namespace CSM.Networking
         private void ListenerOnPeerConnectedEvent(NetPeer peer)
         {
             // Get the major.minor version
-            var version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
-            var versionString = $"{version.Major}.{version.Minor}";
+            Version version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
+            string versionString = $"{version.Major}.{version.Minor}";
 
             // Build the connection request
-            var connectionRequest = new ConnectionRequestCommand
+            ConnectionRequestCommand connectionRequest = new ConnectionRequestCommand
             {
                 GameVersion = BuildConfig.applicationVersion,
                 ModCount = PluginManager.instance.modCount,
@@ -233,6 +234,7 @@ namespace CSM.Networking
                 Password = Config.Password,
                 Username = Config.Username,
                 RequestWorld = Config.RequestWorld,
+                DLCBitMask = DLCHelper.GetOwnedDLCs()
             };
 
             _logger.Info("Sending connection request to server...");
@@ -243,7 +245,7 @@ namespace CSM.Networking
         private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
         {
             if (Status == ClientStatus.Connecting)
-                ConnectionMessage = $"Failed to connect!";
+                ConnectionMessage = "Failed to connect!";
 
             // Log the error message
             _logger.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");
@@ -283,9 +285,9 @@ namespace CSM.Networking
         ///     Called whenever an error happens, we
         ///     write it to the log file.
         /// </summary>
-        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketerror)
+        private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
-            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketerror}");
+            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
         }
     }
 }

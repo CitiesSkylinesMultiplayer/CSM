@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {
@@ -7,6 +6,6 @@ namespace CSM.Commands
     public class PropReleaseCommand : CommandBase
     {
         [ProtoMember(1)]
-        public ushort PropID { get; set; }
+        public ushort PropId { get; set; }
     }
 }

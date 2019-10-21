@@ -1,4 +1,6 @@
 ﻿using CSM.Injections;
+using CSM.Panels;
+using NLog;
 
 namespace CSM.Commands.Handler
 {
@@ -7,7 +9,15 @@ namespace CSM.Commands.Handler
         public override void Handle(ParkCreateCommand command)
         {
             DistrictHandler.IgnoreAll = true;
-            DistrictManager.instance.CreatePark(out byte Park, command.ParkType, command.ParkLevel);
+            DistrictManager.instance.CreatePark(out byte park, command.ParkType, command.ParkLevel);
+            
+            if (park != command.ParkId)
+            {
+                LogManager.GetCurrentClassLogger().Log(LogLevel.Error, $"Park array no longer in sync! Generated {park} instead of {command.ParkId}");
+                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Park array no longer in sync! Please restart the multiplayer session!");
+            }
+
+            DistrictManager.instance.m_parks.m_buffer[park].m_randomSeed = command.Seed;
             DistrictHandler.IgnoreAll = false;
         }
     }

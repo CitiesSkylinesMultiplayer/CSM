@@ -7,7 +7,7 @@ namespace CSM.Commands.Handler
         public override void Handle(TreeMoveCommand command)
         {
             TreeHandler.IgnoreAll = true;
-            TreeManager.instance.MoveTree(command.TreeID, command.Position);
+            TreeManager.instance.MoveTree(command.TreeId, command.Position);
             TreeHandler.IgnoreAll = false;
         }
     }

@@ -1,11 +1,11 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public class TreeHandler
+    public static class TreeHandler
     {
         public static bool IgnoreAll { get; set; } = false;
     }
@@ -26,7 +26,7 @@ namespace CSM.Injections
                 Command.SendToAll(new TreeCreateCommand
                 {
                     Position = position,
-                    TreeID = tree,
+                    TreeId = tree,
                     Single = single,
                     InfoIndex = treeInstance.m_infoIndex
                 });
@@ -45,7 +45,7 @@ namespace CSM.Injections
 
             Command.SendToAll(new TreeMoveCommand
             {
-                TreeID = tree,
+                TreeId = tree,
                 Position = position
             });
         }
@@ -62,7 +62,7 @@ namespace CSM.Injections
 
             Command.SendToAll(new TreeReleaseCommand
             {
-                TreeID = tree
+                TreeId = tree
             });
         }
     }

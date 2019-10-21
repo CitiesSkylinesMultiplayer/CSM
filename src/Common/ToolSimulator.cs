@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CSM.Common
 {
-    public class ToolSimulator
+    public static class ToolSimulator
     {
-        private static Dictionary<int, ToolBase> _currentTools = new Dictionary<int, ToolBase>();
+        private static readonly Dictionary<int, ToolBase> _currentTools = new Dictionary<int, ToolBase>();
 
         public static T GetTool<T>(int sender) where T: ToolBase
         {
@@ -20,6 +20,7 @@ namespace CSM.Common
             }
 
             tool = (ToolBase) Activator.CreateInstance(typeof(T));
+
             ToolController controller = new ToolController();
             ReflectionHelper.SetAttr(tool, "m_toolController", controller);
 

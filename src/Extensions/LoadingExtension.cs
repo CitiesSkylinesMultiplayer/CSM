@@ -22,7 +22,7 @@ namespace CSM.Extensions
         {
             base.OnLevelLoaded(mode);
 
-            var uiView = UIView.GetAView();
+            UIView uiView = UIView.GetAView();
 
             // Add the chat log
             uiView.AddUIComponent(typeof(ChatLogPanel));
@@ -53,7 +53,7 @@ namespace CSM.Extensions
             // Respond to button click.
             _multiplayerButton.eventClick += (component, param) =>
             {
-                var panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
+                ConnectionPanel panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
 
                 if (panel != null)
                 {
@@ -62,7 +62,7 @@ namespace CSM.Extensions
                 }
                 else
                 {
-                    var newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
+                    ConnectionPanel newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
                 }
             };
         }
@@ -78,12 +78,12 @@ namespace CSM.Extensions
 
             foreach (UIComponent child in children)
             {
-                UIView.Destroy(child);
+                Object.Destroy(child);
             }
 
             // Destroy duplicated multiplayer button
             UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
-            UIView.Destroy(temp);
+            Object.Destroy(temp);
         }
     }
 }

@@ -34,6 +34,13 @@ namespace CSM.Commands
         /// <summary>
         ///     The world in a serialized byte array.
         /// </summary>
+        [ProtoMember(4)]
         public byte[] World { get; set; }
+
+        /// <summary>
+        ///     Contains the DLCs of the server for comparison, when DLCs of the client and server don't match
+        /// </summary>
+        [ProtoMember(5)]
+        public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
     }
 }

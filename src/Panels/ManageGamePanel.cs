@@ -25,7 +25,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             // Grab the view for calculating width and height of game
-            var view = UIView.GetAView();
+            UIView view = UIView.GetAView();
 
             // Center this window in the game
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 240.0f);
@@ -43,7 +43,7 @@ namespace CSM.Panels
             _portVal = MultiplayerManager.Instance.CurrentServer.Config.Port.ToString();
             _portField = this.CreateTextField(_portVal, new Vector2(10, -100));
             _portField.selectOnFocus = true;
-            _portField.eventTextChanged += (UIComponent ui, string val) =>
+            _portField.eventTextChanged += (ui, value) =>
             {
                 _portField.text = _portVal;
             };
@@ -52,10 +52,10 @@ namespace CSM.Panels
             this.CreateLabel("Local IP:", new Vector2(10, -150));
 
             // Local IP field
-            _localIpVal = IPAddress.GetLocalIPAddress();
+            _localIpVal = IpAddress.GetLocalIpAddress();
             _localIpField = this.CreateTextField(_localIpVal, new Vector2(10, -175));
             _localIpField.selectOnFocus = true;
-            _localIpField.eventTextChanged += (UIComponent ui, string val) =>
+            _localIpField.eventTextChanged += (ui, value) =>
             {
                 _localIpField.text = _localIpVal;
             };
@@ -64,10 +64,10 @@ namespace CSM.Panels
             this.CreateLabel("External IP:", new Vector2(10, -225));
 
             // External IP field
-            _externalIpVal = IPAddress.GetExternalIPAddress();
+            _externalIpVal = IpAddress.GetExternalIpAddress();
             _externalIpField = this.CreateTextField(_externalIpVal, new Vector2(10, -250));
             _externalIpField.selectOnFocus = true;
-            _externalIpField.eventTextChanged += (UIComponent ui, string val) =>
+            _externalIpField.eventTextChanged += (ui, value) =>
             {
                 _externalIpField.text = _externalIpVal;
             };
