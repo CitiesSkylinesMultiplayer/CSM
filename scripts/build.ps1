@@ -16,20 +16,32 @@ param (
  )
 
 # Functions
-Function Find-MsBuild([int] $MaxVersion = 2017)
+Function Find-MsBuild([int] $MaxVersion = 2019)
 {
-    $agentPath = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
-    $devPath = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
-    $proPath = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\msbuild.exe"
-    $communityPath = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
+    $agent2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
+    $ent2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+    $pro2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe"
+    $community2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\msbuild.exe"
+
+    $agent2017Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
+    $ent2017Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
+    $pro2017Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\msbuild.exe"
+    $community2017Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
+    
     $fallback2015Path = "${Env:ProgramFiles(x86)}\MSBuild\14.0\Bin\MSBuild.exe"
     $fallback2013Path = "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
     $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319"
 		
-    If ((2017 -le $MaxVersion) -And (Test-Path $agentPath)) { return $agentPath } 
-    If ((2017 -le $MaxVersion) -And (Test-Path $devPath)) { return $devPath } 
-    If ((2017 -le $MaxVersion) -And (Test-Path $proPath)) { return $proPath } 
-    If ((2017 -le $MaxVersion) -And (Test-Path $communityPath)) { return $communityPath } 
+    If ((2019 -le $MaxVersion) -And (Test-Path $agent2019Path)) { return $agent2019Path } 
+    If ((2019 -le $MaxVersion) -And (Test-Path $ent2019Path)) { return $ent2019Path } 
+    If ((2019 -le $MaxVersion) -And (Test-Path $pro2019Path)) { return $pro2019Path } 
+    If ((2019 -le $MaxVersion) -And (Test-Path $community2019Path)) { return $community2019Path }  
+
+    If ((2017 -le $MaxVersion) -And (Test-Path $agent2017Path)) { return $agent2017Path } 
+    If ((2017 -le $MaxVersion) -And (Test-Path $ent2017Path)) { return $ent2017Path } 
+    If ((2017 -le $MaxVersion) -And (Test-Path $pro2017Path)) { return $pro2017Path } 
+    If ((2017 -le $MaxVersion) -And (Test-Path $community2017Path)) { return $community2017Path } 
+
     If ((2015 -le $MaxVersion) -And (Test-Path $fallback2015Path)) { return $fallback2015Path } 
     If ((2013 -le $MaxVersion) -And (Test-Path $fallback2013Path)) { return $fallback2013Path } 
     If (Test-Path $fallbackPath) { return $fallbackPath } 
@@ -68,7 +80,7 @@ If ($ModDirectory -eq "Default")
 
 # Introduction
 Write-Host "[CSM Build Script] Welcome to the CSM build script. This script will now perform the specified actions.";
-Write-Host "[CSM Build Script] Depending on your choice of options, you will need Visual Studio 2017 (or the 'Build Tools for Visual Studio 2017'), and Cities: Skylines installed."
+Write-Host "[CSM Build Script] Depending on your choice of options, you will need Visual Studio 2017/2019 (or the 'Build Tools for Visual Studio 2017/2019'), and Cities: Skylines installed."
 
 # Chosen Directories
 Write-Host "[CSM Build Script] Output Directory: $($OutputDirectory)"
@@ -130,7 +142,9 @@ If ($Build)
     If ($IsWindows)
     {
         $msbuild = Find-MsBuild
+        Write-Host "Using MSBuild at: $msbuild"
     }
+
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
     Write-Host "[CSM Build Script] Build Complete!"
 }
