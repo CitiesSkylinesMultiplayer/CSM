@@ -187,6 +187,9 @@ namespace CSM.Commands
                 // Add Quaternion Surrogate
                 model[typeof(Quaternion)].SetSurrogate(typeof(QuaternionSurrogate));
 
+                // Add Color Surrogate
+                model[typeof(Color)].SetSurrogate(typeof(ColorSurrogate));
+
                 // Add base command to the protobuf model with all attributes
                 model.Add(typeof(CommandBase), true);
                 MetaType baseCmd = model[typeof(CommandBase)];

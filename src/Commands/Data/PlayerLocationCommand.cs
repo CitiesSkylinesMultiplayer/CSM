@@ -23,6 +23,9 @@ namespace CSM.Commands
 
         [ProtoMember(5)]
         public float playerCameraHeight { get; set; }
+
+        [ProtoMember(6)]
+        public Color playerColor { get; set; }
         
     }
 }

@@ -2,6 +2,7 @@
 using UnityEngine;
 using CSM.Networking;
 using CSM.Commands;
+using CSM.Panels;
 
 namespace CSM.Injections
 {
@@ -32,7 +33,8 @@ namespace CSM.Injections
                     playerName = MultiplayerManager.Instance.CurrentClient.Config.Username,
                     playerCameraPosition = _position,
                     playerCameraRotation = _rotation,
-                    playerCameraHeight = __instance.m_currentHeight
+                    playerCameraHeight = __instance.m_currentHeight,
+                    playerColor = JoinGamePanel.playerColor
                 });
             }
         }

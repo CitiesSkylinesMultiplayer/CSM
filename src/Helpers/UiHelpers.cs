@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.UI;
 using System.Collections.Generic;
 using UnityEngine;
+using static ColossalFramework.UI.UIColorPicker;
 
 namespace CSM.Helpers
 {
@@ -83,6 +84,25 @@ namespace CSM.Helpers
             return textField;
         }
 
+        public static UIColorField CreateColorField(this UIComponent parent, string text, Vector2 position)
+        {
+            UIComponent template = UITemplateManager.Get("LineTemplate");
+            if (template == null) return null;
+
+            UIColorField colorFIeldTemplate = template.Find<UIColorField>("LineColor");
+            if (colorFIeldTemplate == null) return null;
+
+            UIColorField colorField = Object.Instantiate(colorFIeldTemplate.gameObject).GetComponent<UIColorField>();
+            parent.AttachUIComponent(colorField.gameObject);
+            colorField.name = "PainterColorField";
+            colorField.AlignTo(parent, UIAlignAnchor.TopRight);
+            colorField.position = position;
+            colorField.size = new Vector2(40f, 40f);
+            colorField.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
+            return colorField;
+        }
+
+
         public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text,Vector2 position)
         {
             UICheckBox checkBox = (UICheckBox)uiComponent.AddUIComponent(typeof(UICheckBox));
@@ -134,5 +154,6 @@ namespace CSM.Helpers
 
             return _atlases[name];
         }
+
     }
 }

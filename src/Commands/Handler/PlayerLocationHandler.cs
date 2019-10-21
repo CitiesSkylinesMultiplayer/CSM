@@ -28,7 +28,7 @@ namespace CSM.Commands.Handler
 
             // Setup LineRenderer 
             lineRenderer.material = new Material(Shader.Find("Custom/Particles/Alpha Blended"));
-            lineRenderer.SetColors(Color.red, Color.blue);
+            lineRenderer.SetColors(command.playerColor, command.playerColor);
 
             if (!ConnectionPanel.showPlayerPointers)
             {

@@ -178,6 +178,7 @@
     <Compile Include="Injections\ZoneHandler.cs" />
     <Compile Include="Helpers\UiHelpers.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
+    <Compile Include="Models\ColorSurrogate.cs" />
     <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
