@@ -25,7 +25,7 @@ This mod and its source code is licensed under the MIT license.
 
 The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). You can also download the latest development builds by following the instructions below.
  
-1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build?definitionId=4).
+1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build/latest?definitionId=4).
 2. Click on the `Artifacts` button (top right) and download the zip folder.
 3. Extract the folder and either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
 4. Open Cities: Skylines and enable the mod.
