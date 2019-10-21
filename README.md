@@ -1,7 +1,7 @@
 # CSM - Cities: Skylines Multiplayer
 
 [![Discord](https://img.shields.io/discord/508902220943851522.svg)](https://discord.gg/RjACPhd)
-[![Build Status](https://dev.azure.com/gridentertainment/Tango/_apis/build/status/Tango%20-%20Continuous%20Integration)](https://dev.azure.com/gridentertainment/Tango/_build?definitionId=11)
+[![Build status](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_apis/build/status/CSM%20-%20Build%20Process)](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build/latest?definitionId=4)
 [![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
 ## Quick Links
@@ -25,7 +25,7 @@ This mod and its source code is licensed under the MIT license.
 
 The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). You can also download the latest development builds by following the instructions below.
  
-1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/gridentertainment/Tango/_build/latest?definitionId=11).
+1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build?definitionId=4).
 2. Click on the `Artifacts` button (top right) and download the zip folder.
 3. Extract the folder and either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
 4. Open Cities: Skylines and enable the mod.
