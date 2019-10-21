@@ -14,7 +14,7 @@ namespace CSM.Commands.Handler
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
             NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(command.Prefab);
-            
+
             FastList<NetTool.NodePosition> nodeBuffer = new FastList<NetTool.NodePosition>();
 
             NetTool.CreateNode(prefab, command.StartPoint, command.MiddlePoint, command.EndPoint, nodeBuffer,

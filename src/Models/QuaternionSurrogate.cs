@@ -18,7 +18,6 @@ namespace CSM.Models
         [ProtoMember(4)]
         public float W { get; set; }
 
-
         public static implicit operator QuaternionSurrogate(Quaternion value)
         {
             return new QuaternionSurrogate

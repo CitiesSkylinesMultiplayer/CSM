@@ -7,7 +7,7 @@ namespace CSM.Commands
     {
         [ProtoMember(1)]
         public ushort SegmentId { get; set; }
-        
+
         [ProtoMember(2)]
         public ushort NameSeed { get; set; }
     }

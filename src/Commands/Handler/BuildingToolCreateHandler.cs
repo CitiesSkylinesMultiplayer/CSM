@@ -9,13 +9,13 @@ namespace CSM.Commands.Handler
         public override void Handle(BuildingToolCreateCommand command)
         {
             BuildingTool tool = ToolSimulator.GetTool<BuildingTool>(command.SenderId);
-            
+
             NetHandler.IgnoreAll = true;
             TreeHandler.IgnoreAll = true;
             PropHandler.IgnoreAll = true;
             BuildingHandler.IgnoreAll = true;
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
-            
+
             BuildingInfo prefab = null;
             if (command.Relocate == 0)
                 prefab = PrefabCollection<BuildingInfo>.GetPrefab(command.Prefab);
@@ -33,7 +33,7 @@ namespace CSM.Commands.Handler
             ReflectionHelper.SetAttr(controller, "m_collidingSegments1", command.CollidingSegments);
             ReflectionHelper.SetAttr(controller, "m_collidingBuildings1", command.CollidingBuildings);
             ReflectionHelper.SetAttr(controller, "m_collidingDepth", 1);
-            
+
             ReflectionHelper.Call<IEnumerator>(tool, "CreateBuilding")?.MoveNext();
 
             ArrayHandler.StopApplying();

@@ -1,12 +1,11 @@
 ﻿using ColossalFramework.UI;
 using System.Collections.Generic;
 using UnityEngine;
-using static ColossalFramework.UI.UIColorPicker;
 
 namespace CSM.Helpers
 {
     /// <summary>
-    /// Working with UI is a pain. This class aims to make life easy!
+    ///     Working with UI is a pain. This class aims to make life easy!
     /// </summary>
     public static class UiHelpers
     {
@@ -102,8 +101,7 @@ namespace CSM.Helpers
             return colorField;
         }
 
-
-        public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text,Vector2 position)
+        public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text, Vector2 position)
         {
             UICheckBox checkBox = (UICheckBox)uiComponent.AddUIComponent(typeof(UICheckBox));
 
@@ -154,6 +152,5 @@ namespace CSM.Helpers
 
             return _atlases[name];
         }
-
     }
 }

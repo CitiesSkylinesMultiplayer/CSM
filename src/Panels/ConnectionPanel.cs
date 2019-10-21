@@ -18,6 +18,7 @@ namespace CSM.Panels
 
         private UICheckBox _playerPointers;
         public static bool showPlayerPointers = false;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -86,7 +87,7 @@ namespace CSM.Panels
                     Hide(_serverManageButton);
 
                     _playerPointers.isVisible = false;
-                    _playerPointers.isEnabled = false; 
+                    _playerPointers.isEnabled = false;
                 }
             };
 
@@ -108,8 +109,7 @@ namespace CSM.Panels
             _disconnectButton.isEnabled = false;
             _disconnectButton.isVisible = false;
 
-
-            // Show Player Pointers 
+            // Show Player Pointers
             _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, -210));
             _playerPointers.isVisible = false;
             _playerPointers.isEnabled = false;
@@ -117,7 +117,6 @@ namespace CSM.Panels
             {
                 showPlayerPointers = _playerPointers.isChecked;
             };
-
 
             _clientConnectButton.eventClick += (component, param) =>
             {

@@ -15,11 +15,11 @@ namespace CSM.Injections
     [HarmonyPatch(typeof(RoadBaseAI))]
     [HarmonyPatch("ClickNodeButton")]
     public class ClickNodeButton
-    { 
+    {
         public static void Prefix(ref NetNode data, int index, out int __state)
         {
             __state = -1;
-            
+
             if (RoadHandler.IgnoreAll)
                 return;
 
@@ -36,7 +36,7 @@ namespace CSM.Injections
             {
                 Command.SendToAll(new RoadSettingsCommand()
                 {
-                    NodeID = nodeID,
+                    NodeId = nodeID,
                     Index = index
                 });
             }
@@ -46,21 +46,21 @@ namespace CSM.Injections
         {
             if (index == -1) // Node modified (traffic lights)
             {
-                return (int) data.m_flags;
+                return (int)data.m_flags;
             }
             else // Segment modified (stop sign)
             {
                 ushort segment = data.GetSegment(index - 1);
                 if (segment != 0)
                 {
-                    return (int) NetManager.instance.m_segments.m_buffer[segment].m_flags;
+                    return (int)NetManager.instance.m_segments.m_buffer[segment].m_flags;
                 }
             }
-            
+
             return -1;
         }
     }
-    
+
     [HarmonyPatch]
     public class SetPriorityRoad
     {
@@ -69,7 +69,7 @@ namespace CSM.Injections
             int counter = ReflectionHelper.GetAttr<int>(__instance, "$PC");
             __state = counter == 0;
         }
-        
+
         public static void Postfix(IEnumerator<bool> __instance, ref bool __state, ushort ___segmentID, bool ___priority)
         {
             if (RoadHandler.IgnoreAll || !__state)

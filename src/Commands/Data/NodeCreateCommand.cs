@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using UnityEngine;
 
 namespace CSM.Commands
 {
@@ -8,7 +7,7 @@ namespace CSM.Commands
     {
         [ProtoMember(1)]
         public ushort[] Array16Ids { get; set; }
-        
+
         [ProtoMember(2)]
         public uint[] Array32Ids { get; set; }
 
@@ -17,10 +16,10 @@ namespace CSM.Commands
 
         [ProtoMember(4)]
         public NetTool.ControlPoint StartPoint { get; set; }
-        
+
         [ProtoMember(5)]
         public NetTool.ControlPoint MiddlePoint { get; set; }
-        
+
         [ProtoMember(6)]
         public NetTool.ControlPoint EndPoint { get; set; }
 
@@ -29,16 +28,16 @@ namespace CSM.Commands
 
         [ProtoMember(8)]
         public bool TestEnds { get; set; }
-        
+
         [ProtoMember(9)]
         public bool AutoFix { get; set; }
-        
+
         [ProtoMember(10)]
         public bool Invert { get; set; }
-        
+
         [ProtoMember(11)]
         public bool SwitchDir { get; set; }
-        
+
         [ProtoMember(12)]
         public ushort RelocateBuildingId { get; set; }
     }

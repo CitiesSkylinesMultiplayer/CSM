@@ -14,13 +14,13 @@ namespace CSM.Models
 
         [ProtoMember(3)]
         public ushort node { get; set; }
-        
+
         [ProtoMember(4)]
         public ushort segment { get; set; }
-        
+
         [ProtoMember(5)]
         public float elevation { get; set; }
-        
+
         [ProtoMember(6)]
         public bool outside { get; set; }
 

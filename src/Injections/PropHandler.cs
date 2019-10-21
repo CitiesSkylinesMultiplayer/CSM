@@ -29,11 +29,12 @@ namespace CSM.Injections
                     PropId = prop,
                     Single = single,
                     Angle = angle,
-                    InfoIndex = propInstance.m_infoIndex 
+                    InfoIndex = propInstance.m_infoIndex
                 });
             }
         }
     }
+
     [HarmonyPatch(typeof(PropManager))]
     [HarmonyPatch("MoveProp")]
     public class MoveProp

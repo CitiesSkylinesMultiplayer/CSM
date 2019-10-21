@@ -12,37 +12,37 @@ namespace CSM.Commands.Handler
 
         public override void Handle(PlayerLocationCommand command)
         {
-            GameObject _playerLocation = GameObject.Find("/PlayerLocation_" + command.playerName); 
+            GameObject _playerLocation = GameObject.Find("/PlayerLocation_" + command.PlayerName);
             LineRenderer lineRenderer;
             if (_playerLocation == null)
             {
-                _playerLocation = new GameObject("PlayerLocation_" + command.playerName);
+                _playerLocation = new GameObject("PlayerLocation_" + command.PlayerName);
                 lineRenderer = _playerLocation.AddComponent<LineRenderer>();
-            } else {
+            }
+            else
+            {
                 lineRenderer = _playerLocation.GetComponent<LineRenderer>();
             }
 
-
-            // Add Tags for each of the playerMarkers 
+            // Add Tags for each of the playerMarkers
             _playerLocation.tag = "PlayerPointerObject";
 
-            // Setup LineRenderer 
+            // Setup LineRenderer
             lineRenderer.material = new Material(Shader.Find("Custom/Particles/Alpha Blended"));
-            lineRenderer.SetColors(command.playerColor, command.playerColor);
+            lineRenderer.SetColors(command.PlayerColor, command.PlayerColor);
 
             if (!ConnectionPanel.showPlayerPointers)
             {
-                lineRenderer.SetWidth(0,0);
+                lineRenderer.SetWidth(0, 0);
             }
             else
             {
                 lineRenderer.SetWidth(1, 1);
             }
-            
 
-            // Set cube rotation to match the camera 
-            _playerLocation.transform.position = command.playerCameraPosition;
-            _playerLocation.transform.rotation = command.playerCameraRotation;
+            // Set cube rotation to match the camera
+            _playerLocation.transform.position = command.PlayerCameraPosition;
+            _playerLocation.transform.rotation = command.PlayerCameraRotation;
 
             // Make the LineRendered shoot forward (in the direction of the cube)
             lineRenderer.SetPosition(0, _playerLocation.transform.position);

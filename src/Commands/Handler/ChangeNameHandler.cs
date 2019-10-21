@@ -10,37 +10,47 @@ namespace CSM.Commands.Handler
             switch (command.Type)
             {
                 case InstanceType.Building:
-                    BuildingManager.instance.SetBuildingName((ushort) command.Id, command.Name).MoveNext();
+                    BuildingManager.instance.SetBuildingName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.Citizen:
-                    CitizenManager.instance.SetCitizenName((uint) command.Id, command.Name).MoveNext();
+                    CitizenManager.instance.SetCitizenName((uint)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.CitizenInstance:
-                    CitizenManager.instance.SetInstanceName((ushort) command.Id, command.Name).MoveNext();
+                    CitizenManager.instance.SetInstanceName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.Disaster:
-                    DisasterManager.instance.SetDisasterName((ushort) command.Id, command.Name).MoveNext();
+                    DisasterManager.instance.SetDisasterName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.District:
                     DistrictManager.instance.SetDistrictName(command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.Park:
                     DistrictManager.instance.SetParkName(command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.Event:
-                    EventManager.instance.SetEventName((ushort) command.Id, command.Name).MoveNext();
+                    EventManager.instance.SetEventName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.NetSegment:
-                    NetManager.instance.SetSegmentName((ushort) command.Id, command.Name).MoveNext();
+                    NetManager.instance.SetSegmentName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.TransportLine:
-                    TransportManager.instance.SetLineName((ushort) command.Id, command.Name).MoveNext();
+                    TransportManager.instance.SetLineName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.Vehicle:
-                    VehicleManager.instance.SetVehicleName((ushort) command.Id, command.Name).MoveNext();
+                    VehicleManager.instance.SetVehicleName((ushort)command.Id, command.Name).MoveNext();
                     break;
+
                 case InstanceType.ParkedVehicle:
-                    VehicleManager.instance.SetParkedVehicleName((ushort) command.Id, command.Name).MoveNext();
+                    VehicleManager.instance.SetParkedVehicleName((ushort)command.Id, command.Name).MoveNext();
                     break;
             }
             NameHandler.IgnoreAll = false;

@@ -69,7 +69,6 @@ namespace CSM.Networking
             // Let the user know that we are trying to start the server
             _logger.Info($"Attempting to start server on port {Config.Port}...");
 
-
             // Attempt to start the server
             _netServer.DiscoveryEnabled = true;
             bool result = _netServer.Start(Config.Port);

@@ -13,11 +13,11 @@ namespace CSM.Helpers
         {
             if (arr.GetType().Name.StartsWith("Array8"))
             {
-                RemoveUnused(arr, (byte) id, "Array8");
+                RemoveUnused(arr, (byte)id, "Array8");
             }
             else if (arr.GetType().Name.StartsWith("Array16"))
             {
-                RemoveUnused(arr, (ushort) id, "Array16");
+                RemoveUnused(arr, (ushort)id, "Array16");
             }
             else if (arr.GetType().Name.StartsWith("Array32"))
             {
@@ -29,11 +29,11 @@ namespace CSM.Helpers
             }
         }
 
-        private static void RemoveUnused<N>(object arr, N id, string type) where N: IConvertible
+        private static void RemoveUnused<N>(object arr, N id, string type) where N : IConvertible
         {
-            N[] unusedItems = (N[]) arr.GetType().GetField("m_unusedItems", ReflectionHelper.AllAccessFlags).GetValue(arr);
+            N[] unusedItems = (N[])arr.GetType().GetField("m_unusedItems", ReflectionHelper.AllAccessFlags).GetValue(arr);
             FieldInfo unusedCountField = arr.GetType().GetField("m_unusedCount", ReflectionHelper.AllAccessFlags);
-            uint unusedCount = (uint) unusedCountField.GetValue(arr);
+            uint unusedCount = (uint)unusedCountField.GetValue(arr);
 
             uint expectedPos = Convert.ToUInt32(id) - 1;
             // Special case, when array was modified (search for the id)

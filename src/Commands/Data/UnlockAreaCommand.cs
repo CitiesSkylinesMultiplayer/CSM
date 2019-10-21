@@ -3,7 +3,7 @@
 namespace CSM.Commands
 {
     [ProtoContract]
-    public class UnlockAreaCommand: CommandBase
+    public class UnlockAreaCommand : CommandBase
     {
         [ProtoMember(1)]
         public int X { get; set; }

@@ -13,7 +13,6 @@ namespace CSM.Commands
     [ProtoContract]
     public abstract class CommandBase
     {
-
         /// <summary>
         ///     The id of the sending player. -1 for the server.
         /// </summary>

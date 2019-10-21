@@ -14,6 +14,7 @@ namespace CSM.Commands
 
         [ProtoMember(2)]
         public uint[] Array32Ids { get; set; }
+
         /// <summary>
         ///     The position to create the building
         /// </summary>
