@@ -29,12 +29,12 @@ namespace CSM.Injections
                 // Send info to all clients
                 Command.SendToAll(new PlayerLocationCommand
                 {
-                    playerId = MultiplayerManager.Instance.CurrentClient.ClientId,
-                    playerName = MultiplayerManager.Instance.CurrentClient.Config.Username,
-                    playerCameraPosition = _position,
-                    playerCameraRotation = _rotation,
-                    playerCameraHeight = __instance.m_currentHeight,
-                    playerColor = JoinGamePanel.playerColor
+                    PlayerId = MultiplayerManager.Instance.CurrentClient.ClientId,
+                    PlayerName = MultiplayerManager.Instance.CurrentClient.Config.Username,
+                    PlayerCameraPosition = _position,
+                    PlayerCameraRotation = _rotation,
+                    PlayerCameraHeight = __instance.m_currentHeight,
+                    PlayerColor = JoinGamePanel.playerColor
                 });
             }
         }

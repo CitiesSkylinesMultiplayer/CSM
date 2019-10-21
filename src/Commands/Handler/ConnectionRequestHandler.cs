@@ -71,7 +71,7 @@ namespace CSM.Commands.Handler
                     return;
                 }
             }
-            
+
             // Check both client have the same DLCs enabled
             if (!command.DLCBitMask.Equals(DLCHelper.GetOwnedDLCs()))
             {

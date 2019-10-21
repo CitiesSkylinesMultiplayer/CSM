@@ -1,5 +1,4 @@
-﻿
-namespace CSM.Commands.Handler
+﻿namespace CSM.Commands.Handler
 {
     public class UnlockAreaHandler : CommandHandler<UnlockAreaCommand>
     {

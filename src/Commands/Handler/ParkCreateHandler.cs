@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler
         {
             DistrictHandler.IgnoreAll = true;
             DistrictManager.instance.CreatePark(out byte park, command.ParkType, command.ParkLevel);
-            
+
             if (park != command.ParkId)
             {
                 LogManager.GetCurrentClassLogger().Log(LogLevel.Error, $"Park array no longer in sync! Generated {park} instead of {command.ParkId}");
