@@ -36,7 +36,7 @@ namespace CSM.Injections
             {
                 Command.SendToAll(new RoadSettingsCommand()
                 {
-                    NodeID = nodeID,
+                    NodeId = nodeID,
                     Index = index
                 });
             }

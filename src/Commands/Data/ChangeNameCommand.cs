@@ -7,7 +7,7 @@ namespace CSM.Commands
     {
         [ProtoMember(1)]
         public InstanceType Type { get; set; }
-        
+
         [ProtoMember(2)]
         public int Id { get; set; }
 

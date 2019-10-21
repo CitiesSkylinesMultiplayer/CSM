@@ -7,7 +7,7 @@ namespace CSM.Commands
     public class DistrictAreaModifyCommand : CommandBase
     {
         [ProtoMember(1)]
-        public DistrictTool.Layer Layer { get; set; }   
+        public DistrictTool.Layer Layer { get; set; }
 
         [ProtoMember(2)]
         public byte District { get; set; }

@@ -17,7 +17,7 @@ namespace CSM.Commands.Handler
 
             // Apply node button click
             NetNode[] nodes= NetManager.instance.m_nodes.m_buffer;
-            nodes[command.NodeID].Info.m_netAI.ClickNodeButton(command.NodeID, ref nodes[command.NodeID], command.Index);
+            nodes[command.NodeId].Info.m_netAI.ClickNodeButton(command.NodeId, ref nodes[command.NodeId], command.Index);
             
             // Reset info manager mode
             ReflectionHelper.SetAttr(InfoManager.instance, "m_actualMode", oldMode);
