@@ -7,7 +7,7 @@ namespace CSM.Injections
     {
         public static bool IgnoreAll { get; set; } = false;
     }
-    
+
     /*
      * Notes:
      * - ZoneBlocks are created/destroyed by node segments, so we don't need to sync that
@@ -19,8 +19,8 @@ namespace CSM.Injections
     public class RefreshZoning
     {
         /// <summary>
-        /// This method is executed after ZoneBlock::RefreshZoning is called.
-        /// RefreshZoning is called after the player changed any of the zones in the block.
+        ///     This method is executed after ZoneBlock::RefreshZoning is called.
+        ///     RefreshZoning is called after the player changed any of the zones in the block.
         /// </summary>
         /// <param name="blockID">The id of the modified block.</param>
         /// <param name="___m_zone1">Zone storage attribute 1 (three underscores to access an attribute of the class)</param>

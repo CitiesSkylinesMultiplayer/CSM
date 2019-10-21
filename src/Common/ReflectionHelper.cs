@@ -6,7 +6,7 @@ namespace CSM.Common
 {
     public static class ReflectionHelper
     {
-        public static BindingFlags AllAccessFlags = 
+        public static BindingFlags AllAccessFlags =
               BindingFlags.Public
             | BindingFlags.NonPublic
             | BindingFlags.Instance
@@ -19,7 +19,7 @@ namespace CSM.Common
             {
                 if (name.Equals(value))
                 {
-                    return (int) Enum.GetValues(enumType).GetValue(i);
+                    return (int)Enum.GetValues(enumType).GetValue(i);
                 }
                 i++;
             }
@@ -29,7 +29,7 @@ namespace CSM.Common
 
         public static T Call<T>(Type type, string name, params object[] param)
         {
-            return (T) Call(type, name, param);
+            return (T)Call(type, name, param);
         }
 
         public static object Call(Type type, string name, params object[] param)
@@ -39,7 +39,7 @@ namespace CSM.Common
 
         public static T Call<T>(object obj, string name, params object[] param)
         {
-            return (T) Call(obj, name, param);
+            return (T)Call(obj, name, param);
         }
 
         public static object Call(object obj, string name, params object[] param)
@@ -54,7 +54,7 @@ namespace CSM.Common
 
         public static T GetAttr<T>(object obj, string attribute)
         {
-            return (T) GetAttr(obj, attribute);
+            return (T)GetAttr(obj, attribute);
         }
 
         public static object GetAttr(object obj, string attribute)

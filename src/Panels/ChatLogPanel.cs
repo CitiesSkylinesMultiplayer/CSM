@@ -148,7 +148,7 @@ namespace CSM.Panels
 
             // Add resize component
             _resize = AddUIComponent<UIResizeHandle>();
-            _resize.position = new Vector2((width-20), (-height + 10));
+            _resize.position = new Vector2((width - 20), (-height + 10));
             _resize.width = 20f;
             _resize.height = 20f;
             _resize.color = new Color32(255, 255, 255, 255);

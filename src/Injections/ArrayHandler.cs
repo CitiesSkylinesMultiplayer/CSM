@@ -13,6 +13,7 @@ namespace CSM.Injections
 
         // All the types for Array16<T> and Array32<T> we currently need to track
         private static readonly Type[] _array16Types = { typeof(Building), typeof(NetNode), typeof(NetSegment), typeof(PropInstance) };
+
         private static readonly Type[] _array32Types = { typeof(TreeInstance) };
 
         private static readonly List<ushort> _array16Collected = new List<ushort>();
@@ -120,7 +121,7 @@ namespace CSM.Injections
                 if (_applying)
                 {
                     CreateItem16.Prefix(ref item, __instance, ref __result);
-                    
+
                     // Skip this randomizer value
                     r.Int32(1);
 
@@ -147,7 +148,7 @@ namespace CSM.Injections
                 }
             }
         }
-        
+
         [HarmonyPatch]
         public class CreateItem16
         {
@@ -193,7 +194,7 @@ namespace CSM.Injections
                 }
             }
         }
-        
+
         [HarmonyPatch]
         public class CreateItemRand32
         {

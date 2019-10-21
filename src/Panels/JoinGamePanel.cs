@@ -20,7 +20,6 @@ namespace CSM.Panels
         private UIButton _closeButton;
 
         private UICheckBox _passwordBox;
-        private UICheckBox _playerPointers;
 
         private UIColorField _playerColorField;
 
@@ -71,13 +70,15 @@ namespace CSM.Panels
                 _usernameField.text = PlatformService.personaName;
             }
 
-            // Add color picker to username field 
+            // Add color picker to username field
             _playerColorField = this.CreateColorField("Player Color", new Vector2(_usernameField.width + 15, -260));
-            _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) => {
+            _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
+            {
                 this._usernameField.textColor = value;
                 playerColor = value;
             };
-            _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) => {
+            _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
+            {
                 colorPicker.component.height += 30f;
             };
 

@@ -42,19 +42,19 @@ namespace CSM.Injections
             ArrayHandler.StartCollecting();
         }
 
-        public static void Postfix(NetInfo info, int maxSegments, bool testEnds, 
+        public static void Postfix(NetInfo info, int maxSegments, bool testEnds,
             bool autoFix, bool invert, bool switchDir, ushort relocateBuildingID, ref CallState __state)
         {
             if (!__state.valid)
                 return;
-            
+
             ArrayHandler.StopCollecting();
             BuildingHandler.IgnoreAll = false;
             PropHandler.IgnoreAll = false;
             TreeHandler.IgnoreAll = false;
             NetHandler.IgnoreAll = false;
 
-            ushort prefab = (ushort) Mathf.Clamp(info.m_prefabDataIndex, 0, 65535);
+            ushort prefab = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535);
 
             Command.SendToAll(new NodeCreateCommand()
             {
@@ -85,7 +85,7 @@ namespace CSM.Injections
                 typeof(ushort).MakeByRefType(), typeof(int).MakeByRefType(), typeof(int).MakeByRefType()
             });
         }
-        
+
         public class CallState
         {
             public bool valid;
@@ -118,6 +118,7 @@ namespace CSM.Injections
      * Update building creates buildings like for example power poles, this should not be synced as it happens
      * on both sides equally! (Otherwise we would have double buildings)
      */
+
     [HarmonyPatch(typeof(NetNode))]
     [HarmonyPatch("UpdateBuilding")]
     public class UpdateBuilding

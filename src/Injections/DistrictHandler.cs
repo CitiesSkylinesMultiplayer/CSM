@@ -22,7 +22,7 @@ namespace CSM.Injections
             if (__result)
             {
                 ulong seed = DistrictManager.instance.m_districts.m_buffer[district].m_randomSeed;
-                
+
                 Command.SendToAll(new DistrictCreateCommand
                 {
                     DistrictId = district,
@@ -34,7 +34,7 @@ namespace CSM.Injections
 
     [HarmonyPatch(typeof(DistrictTool))]
     [HarmonyPatch("ApplyBrush")]
-    [HarmonyPatch(new Type[] { typeof(DistrictTool.Layer), typeof(byte), typeof(float), typeof (Vector3), typeof(Vector3) })]
+    [HarmonyPatch(new Type[] { typeof(DistrictTool.Layer), typeof(byte), typeof(float), typeof(Vector3), typeof(Vector3) })]
     public class ApplyBrush
     {
         public static void Postfix(DistrictTool.Layer layer, byte district, float brushRadius, Vector3 startPosition, Vector3 endPosition)
@@ -49,7 +49,6 @@ namespace CSM.Injections
                     StartPosition = startPosition,
                     EndPosition = endPosition
                 });
-                
             }
         }
     }
@@ -66,7 +65,7 @@ namespace CSM.Injections
                 {
                     DistrictId = district,
                 });
-            }            
+            }
         }
     }
 
@@ -91,7 +90,7 @@ namespace CSM.Injections
     [HarmonyPatch("SetCityPolicy")]
     public class SetCityPolicy
     {
-        public static void Postfix (DistrictPolicies.Policies policy)
+        public static void Postfix(DistrictPolicies.Policies policy)
         {
             if (!DistrictHandler.IgnoreAll)
             {
@@ -107,7 +106,7 @@ namespace CSM.Injections
     [HarmonyPatch("UnsetDistrictPolicy")]
     public class UnsetDistrictPolicy
     {
-        public static void Postfix (DistrictPolicies.Policies policy, byte district)
+        public static void Postfix(DistrictPolicies.Policies policy, byte district)
         {
             if (!DistrictHandler.IgnoreAll)
             {
@@ -145,7 +144,7 @@ namespace CSM.Injections
             if (__result && !DistrictHandler.IgnoreAll)
             {
                 ulong seed = DistrictManager.instance.m_parks.m_buffer[park].m_randomSeed;
-                
+
                 Command.SendToAll(new ParkCreateCommand
                 {
                     ParkId = park,

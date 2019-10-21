@@ -98,7 +98,6 @@ namespace CSM.Panels
             {
                 _passwordField.isPasswordField = !_passwordBox.isChecked;
             };
-
         }
 
         private void RequestIPs()

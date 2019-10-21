@@ -28,7 +28,7 @@ namespace CSM.Injections
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
             int counter = ReflectionHelper.GetAttr<int>(__instance, "$PC");
             ToolBase.ToolErrors ___m_placementErrors = ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_placementErrors");
-            
+
             if (counter != 0 || ___m_placementErrors != ToolBase.ToolErrors.None)
             {
                 __state.run = false;
@@ -55,13 +55,13 @@ namespace CSM.Injections
             PropHandler.IgnoreAll = false;
             TreeHandler.IgnoreAll = false;
             NetHandler.IgnoreAll = false;
-            
+
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
             ToolController controller = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
 
             ushort prefab = 0;
             if (__state.relocate == 0)
-                prefab = (ushort) Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
+                prefab = (ushort)Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
 
             Vector3 mousePosition = ReflectionHelper.GetAttr<Vector3>(tool, "m_mousePosition");
             float mouseAngle = ReflectionHelper.GetAttr<float>(tool, "m_mouseAngle");
@@ -69,7 +69,7 @@ namespace CSM.Injections
 
             ulong[] collidingSegments = ReflectionHelper.GetAttr<ulong[]>(controller, "m_collidingSegments1");
             ulong[] collidingBuildings = ReflectionHelper.GetAttr<ulong[]>(controller, "m_collidingBuildings1");
-            
+
             Command.SendToAll(new BuildingToolCreateCommand()
             {
                 Array16Ids = ArrayHandler.Collected16,
@@ -83,7 +83,7 @@ namespace CSM.Injections
                 Elevation = elevation
             });
         }
-        
+
         public static MethodBase TargetMethod()
         {
             return ReflectionHelper.GetIteratorTargetMethod(typeof(BuildingTool), "<CreateBuilding>c__Iterator0", out Type _);
@@ -116,7 +116,7 @@ namespace CSM.Injections
             BuildingHandler.IgnoreAll = true;
             ArrayHandler.StartCollecting();
         }
-        
+
         public static void Postfix(bool __result, ref ushort building, ref bool __state)
         {
             if (!__state)
@@ -127,7 +127,7 @@ namespace CSM.Injections
             TreeHandler.IgnoreAll = false;
             NetHandler.IgnoreAll = false;
             ArrayHandler.StopCollecting();
-            
+
             if (__result)
             {
                 Building b = BuildingManager.instance.m_buildings.m_buffer[building];
@@ -177,7 +177,7 @@ namespace CSM.Injections
 
             BuildingHandler.IgnoreAll = true;
         }
-        
+
         public static void Postfix(ushort building, ref bool __state)
         {
             if (!__state)
