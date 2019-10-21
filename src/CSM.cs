@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -9,7 +9,7 @@ namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
-        private readonly HarmonyInstance _harmony;
+        private readonly Harmony _harmony;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -21,7 +21,7 @@ namespace CSM
             try
             {
                 _logger.Info("Attempting to patch Cities: Skylines using Harmony...");
-                _harmony = HarmonyInstance.Create("net.gridentertainment.csm");
+                _harmony = new Harmony("net.gridentertainment.csm");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _logger.Info("Successfully patched Cities: Skylines!");
             }

@@ -1,18 +1,13 @@
 ﻿using CSM.Commands;
-using Harmony;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using CSM.Commands.Handler;
 using CSM.Common;
+using HarmonyLib;
 
 namespace CSM.Injections
 {
-    /*
-     * TODO: Initially sync road name seeds
-     * The seed is set after CreateSegment is called (in NetTool)
-     * To solve this, we can either sync all NetTool calls instead of the NetManager
-     * or send another command at the end of the tick after a segment has been created
-     */
     public static class NameHandler
     {
         public static bool IgnoreAll { get; set; } = false;
@@ -25,18 +20,42 @@ namespace CSM.Injections
             return ReflectionHelper.GetAttr<bool>(instance, "$current");
         }
 
-        public static void CheckCounter(object instance, ref bool state)
+        public static void CheckCounter(object instance, out bool state)
         {
             int counter = ReflectionHelper.GetAttr<int>(instance, "$PC");
             state = counter == 0;
         }
     }
+
+    [HarmonyPatch(typeof(NetSegment))]
+    [HarmonyPatch("UpdateNameSeed")]
+    public class UpdateSegmentSeed
+    {
+        public static void Prefix(out ushort __state, ushort ___m_nameSeed)
+        {
+            __state = ___m_nameSeed; // Seed before method
+        }
+        
+        public static void Postfix(ref ushort __state, ushort ___m_nameSeed, ushort segmentID)
+        {
+            // Check if seed was changed
+            if (__state != ___m_nameSeed)
+            {
+                Command.SendToAll(new SegmentSeedUpdateCommand()
+                {
+                    SegmentId = segmentID,
+                    NameSeed = ___m_nameSeed
+                });
+            }
+        }
+    }
+    
     [HarmonyPatch]
     public class SetBuildingName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(ushort ___building, string ___name, ref bool __state, object __instance)
@@ -61,9 +80,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetCitizenName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(uint ___citizenID, string ___name, ref bool __state, object __instance)
@@ -88,9 +107,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetInstanceName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(ushort ___instanceID, string ___name, ref bool __state, object __instance)
@@ -115,9 +134,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetDisasterName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(ushort ___disasterID, string ___name, ref bool __state, object __instance)
@@ -142,9 +161,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetDistrictName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(int ___district, string ___name, ref bool __state, object __instance)
@@ -169,9 +188,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetParkName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(int ___park, string ___name, ref bool __state, object __instance)
@@ -214,33 +233,39 @@ namespace CSM.Injections
         }
     }
     
-    [HarmonyPatch(typeof(NetManager))]
-    [HarmonyPatch("SetSegmentNameImpl")]
+    [HarmonyPatch]
     public class SetSegmentName
     {
-        public static void Postfix(ushort segmentID, string name, bool __result)
+        public static void Prefix(object __instance, out bool __state)
         {
-            if (NameHandler.IgnoreAll)
-                return;
-
-            if (!__result)
+            NameHandler.CheckCounter(__instance, out __state);
+        }
+        
+        public static void Postfix(IEnumerator<bool> __instance, ref bool __state, ushort ___segmentID, string ___name)
+        {
+            if (!NameHandler.CanRun(__instance, __state))
                 return;
 
             Command.SendToAll(new ChangeNameCommand
             {
                 Type = InstanceType.NetSegment,
-                Id = segmentID,
-                Name = name
+                Id = ___segmentID,
+                Name = ___name
             });
+        }
+        
+        public static MethodBase TargetMethod()
+        {
+            return ReflectionHelper.GetIteratorTargetMethod(typeof(NetManager), "<SetSegmentName>c__Iterator2", out Type _);
         }
     }
     
     [HarmonyPatch]
     public class SetLineName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(ushort ___lineID, string ___name, ref bool __state, object __instance)
@@ -265,9 +290,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetVehicleName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(ushort ___vehicleID, string ___name, ref bool __state, object __instance)
@@ -292,9 +317,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetParkedVehicleName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(ushort ___parkedID, string ___name, ref bool __state, object __instance)
@@ -319,9 +344,9 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetCityName
     {
-        public static void Prefix(object __instance, ref bool __state)
+        public static void Prefix(object __instance, out bool __state)
         {
-            NameHandler.CheckCounter(__instance, ref __state);
+            NameHandler.CheckCounter(__instance, out __state);
         }
         
         public static void Postfix(string ___name, ref bool __state)
