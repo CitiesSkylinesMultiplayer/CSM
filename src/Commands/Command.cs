@@ -183,6 +183,7 @@ namespace CSM.Commands
 
                 // Set type surrogates
                 model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
+                model[typeof(NetTool.ControlPoint)].SetSurrogate(typeof(ControlPointSurrogate));
 
                 // Add Quaternion Surrogate
                 model[typeof(Quaternion)].SetSurrogate(typeof(QuaternionSurrogate));

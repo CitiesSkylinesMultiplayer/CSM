@@ -12,19 +12,29 @@ namespace CSM.Common
             | BindingFlags.Instance
             | BindingFlags.Static;
 
-        public static object GetEnumValue(Type enumType, string value)
+        public static int GetEnumValue(Type enumType, string value)
         {
             int i = 0;
             foreach (string name in Enum.GetNames(enumType))
             {
                 if (name.Equals(value))
                 {
-                    return Enum.GetValues(enumType).GetValue(i);
+                    return (int) Enum.GetValues(enumType).GetValue(i);
                 }
                 i++;
             }
 
-            return null;
+            return 0;
+        }
+
+        public static T Call<T>(Type type, string name, params object[] param)
+        {
+            return (T) Call(type, name, param);
+        }
+
+        public static object Call(Type type, string name, params object[] param)
+        {
+            return type.GetMethod(name, AllAccessFlags, null, param.Select(p => p.GetType()).ToArray(), null)?.Invoke(null, param);
         }
 
         public static T Call<T>(object obj, string name, params object[] param)
