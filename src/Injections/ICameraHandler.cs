@@ -1,8 +1,8 @@
-﻿using Harmony;
-using UnityEngine;
+﻿using UnityEngine;
 using CSM.Networking;
 using CSM.Commands;
 using CSM.Panels;
+using HarmonyLib;
 
 namespace CSM.Injections
 {
