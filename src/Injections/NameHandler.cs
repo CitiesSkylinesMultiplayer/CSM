@@ -2,19 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CSM.Commands.Data.Names;
+using CSM.Commands.Data.Net;
 using CSM.Commands.Handler;
-using CSM.Common;
+using CSM.Commands.Handler.Names;
+using CSM.Helpers;
 using HarmonyLib;
 
 namespace CSM.Injections
 {
     public static class NameHandler
     {
-        public static bool IgnoreAll { get; set; } = false;
-
         public static bool CanRun(object instance, bool state)
         {
-            if (IgnoreAll || !state)
+            if (IgnoreHelper.IsIgnored() || !state)
                 return false;
 
             return ReflectionHelper.GetAttr<bool>(instance, "$current");
@@ -218,7 +219,7 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort eventID, string name, bool __result)
         {
-            if (NameHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (!__result)
@@ -351,7 +352,7 @@ namespace CSM.Injections
 
         public static void Postfix(string ___name, ref bool __state)
         {
-            if (NameHandler.IgnoreAll || !__state)
+            if (IgnoreHelper.IsIgnored() || !__state)
                 return;
 
             Command.SendToAll(new ChangeCityNameCommand

@@ -4,6 +4,7 @@ using CSM.Networking;
 using ICities;
 using System.Linq;
 using System.Reflection;
+using CSM.Commands.Data.Money;
 
 namespace CSM.Extensions
 {

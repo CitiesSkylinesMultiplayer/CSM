@@ -30,7 +30,7 @@ namespace CSM.Commands.Handler
 
     public abstract class CommandHandler<C> : CommandHandler where C : CommandBase
     {
-        public abstract void Handle(C command);
+        protected abstract void Handle(C command);
 
         public override Type GetDataType()
         {

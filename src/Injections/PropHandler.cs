@@ -1,22 +1,19 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
+using CSM.Commands.Data.Props;
+using CSM.Helpers;
 using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public static class PropHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-
     [HarmonyPatch(typeof(PropManager))]
     [HarmonyPatch("CreateProp")]
     public class CreateProp
     {
         public static void Postfix(bool __result, ref ushort prop, Vector3 position, float angle, bool single)
         {
-            if (PropHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (__result)
@@ -41,7 +38,7 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort prop, Vector3 position)
         {
-            if (PropHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new PropMoveCommand
@@ -58,7 +55,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort prop)
         {
-            if (PropHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new PropReleaseCommand

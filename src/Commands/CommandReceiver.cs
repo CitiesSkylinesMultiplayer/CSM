@@ -2,6 +2,8 @@
 using CSM.Networking;
 using LiteNetLib;
 using System.IO;
+using CSM.Commands.Data.Internal;
+using CSM.Commands.Handler.Internal;
 
 namespace CSM.Commands
 {
@@ -60,7 +62,7 @@ namespace CSM.Commands
         {
             cmd = Deserialize(reader.GetRemainingBytes());
 
-            _logger.Info($"Received {cmd.GetType().Name}");
+            _logger.Debug($"Received {cmd.GetType().Name}");
 
             handler = Command.GetCommandHandler(cmd.GetType());
             if (handler == null)

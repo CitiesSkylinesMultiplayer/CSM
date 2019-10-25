@@ -1,5 +1,4 @@
 ﻿using CSM.Commands;
-using CSM.Common;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using CSM.Helpers;
 
 namespace CSM.Networking
 {
