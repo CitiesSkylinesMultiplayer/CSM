@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
@@ -11,7 +12,7 @@ namespace CSM.Commands.Handler.Internal
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        
+
         public ConnectionRequestHandler()
         {
             TransactionCmd = false;
@@ -70,7 +71,7 @@ namespace CSM.Commands.Handler.Internal
             {
                 if (command.Password != MultiplayerManager.Instance.CurrentServer.Config.Password)
                 {
-                    _logger.Warn("Connection rejected: Invalid password provided!"); 
+                    _logger.Warn("Connection rejected: Invalid password provided!");
                     Command.SendToClient(peer, new ConnectionResultCommand
                     {
                         Success = false,
@@ -101,16 +102,28 @@ namespace CSM.Commands.Handler.Internal
             // Get a serialized version of the server world to send to the player.
             if (command.RequestWorld)
             {
-                // Get the world
-                byte[] world = WorldManager.GetWorld();
-
                 // Send the result command
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = true,
                     ClientId = peer.Id,
-                    World = world
+                    WaitForWorld = true
                 });
+
+                SaveHelpers.SaveLevel();
+
+                new Thread(() =>
+                {
+                    while (SaveHelpers.IsSaving())
+                    {
+                        Thread.Sleep(100);
+                    }
+
+                    Command.SendToClient(peer, new WorldTransferCommand
+                    {
+                        World = SaveHelpers.GetWorldFile()
+                    });
+                }).Start();
             }
             else
             {

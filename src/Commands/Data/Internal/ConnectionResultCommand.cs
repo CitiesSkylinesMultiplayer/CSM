@@ -35,7 +35,7 @@ namespace CSM.Commands.Data.Internal
         ///     The world in a serialized byte array.
         /// </summary>
         [ProtoMember(4)]
-        public byte[] World { get; set; }
+        public bool WaitForWorld { get; set; }
 
         /// <summary>
         ///     Contains the DLC bit mask of the server for comparison,

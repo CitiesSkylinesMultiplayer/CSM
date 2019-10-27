@@ -91,6 +91,7 @@
     <Compile Include="Commands\Data\Internal\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\Internal\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerListCommand.cs" />
+    <Compile Include="Commands\Data\Internal\WorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Money\BudgetChangeCommand.cs" />
     <Compile Include="Commands\Data\Money\MoneyCommand.cs" />
     <Compile Include="Commands\Data\Money\TaxRateChangeCommand.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Commands\Handler\Internal\FinishTransactionHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerLocationHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\WorldTransferHandler.cs" />
     <Compile Include="Commands\Handler\Money\BudgetChangeHandler.cs" />
     <Compile Include="Commands\Handler\Money\MoneyHandler.cs" />
     <Compile Include="Commands\Handler\Money\TaxRateChangeHandler.cs" />
@@ -173,7 +175,6 @@
     <Compile Include="Helpers\IgnoreHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Helpers\ToolSimulator.cs" />
-    <Compile Include="Helpers\WorldManager.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
