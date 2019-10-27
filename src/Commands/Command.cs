@@ -173,7 +173,8 @@ namespace CSM.Commands
             {
                 // Get all CommandHandler subclasses in the CSM.Commands.Handler namespace
                 Type[] handlers = typeof(Command).Assembly.GetTypes()
-                  .Where(t => String.Equals(t.Namespace, "CSM.Commands.Handler", StringComparison.Ordinal))
+                  .Where(t => t.Namespace != null)
+                  .Where(t => t.Namespace.StartsWith("CSM.Commands.Handler", StringComparison.Ordinal))
                   .Where(t => t.IsSubclassOf(typeof(CommandHandler)))
                   .Where(t => !t.IsAbstract)
                   .ToArray();

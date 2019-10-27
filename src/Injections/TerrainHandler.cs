@@ -1,16 +1,12 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
-using CSM.Common;
+using CSM.Commands.Data.Terrain;
+using CSM.Helpers;
 using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public static class TerrainHandler
-    {
-        public static bool IgnoreAll = false;
-    }
-
     [HarmonyPatch(typeof(TerrainTool))]
     [HarmonyPatch("ApplyBrush")]
     public class ApplyTerrainBrush
@@ -18,7 +14,7 @@ namespace CSM.Injections
         public static void Prefix()
         {
             TerrainTool tool = ToolsModifierControl.GetTool<TerrainTool>();
-            if (!TerrainHandler.IgnoreAll && ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_toolErrors") == ToolBase.ToolErrors.None)
+            if (!IgnoreHelper.IsIgnored() && ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_toolErrors") == ToolBase.ToolErrors.None)
             {
                 Command.SendToAll(new TerrainModificationCommand
                 {

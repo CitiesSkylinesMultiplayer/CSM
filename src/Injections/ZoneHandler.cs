@@ -1,13 +1,10 @@
 ﻿using CSM.Commands;
+using CSM.Commands.Data.Zones;
+using CSM.Helpers;
 using HarmonyLib;
 
 namespace CSM.Injections
 {
-    public static class ZoneHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-
     /*
      * Notes:
      * - ZoneBlocks are created/destroyed by node segments, so we don't need to sync that
@@ -27,7 +24,7 @@ namespace CSM.Injections
         /// <param name="___m_zone2">Zone storage attribute 2</param>
         public static void Postfix(ushort blockID, ulong ___m_zone1, ulong ___m_zone2)
         {
-            if (ZoneHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new ZoneUpdateCommand

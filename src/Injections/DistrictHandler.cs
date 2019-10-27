@@ -1,22 +1,20 @@
 ﻿using CSM.Commands;
 using System;
+using CSM.Commands.Data.Districts;
+using CSM.Commands.Data.Parks;
+using CSM.Helpers;
 using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public static class DistrictHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-
     [HarmonyPatch(typeof(DistrictManager))]
     [HarmonyPatch("CreateDistrict")]
     public class CreateDistrict
     {
         public static void Postfix(bool __result, ref byte district)
         {
-            if (DistrictHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (__result)
@@ -39,7 +37,7 @@ namespace CSM.Injections
     {
         public static void Postfix(DistrictTool.Layer layer, byte district, float brushRadius, Vector3 startPosition, Vector3 endPosition)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new DistrictAreaModifyCommand
                 {
@@ -59,7 +57,7 @@ namespace CSM.Injections
     {
         public static void Postfix(byte district)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new DistrictReleaseCommand
                 {
@@ -75,7 +73,7 @@ namespace CSM.Injections
     {
         public static void Postfix(DistrictPolicies.Policies policy, byte district)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new DistrictPolicyCommand
                 {
@@ -92,7 +90,7 @@ namespace CSM.Injections
     {
         public static void Postfix(DistrictPolicies.Policies policy)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new DistrictCityPolicyCommand
                 {
@@ -108,7 +106,7 @@ namespace CSM.Injections
     {
         public static void Postfix(DistrictPolicies.Policies policy, byte district)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new DistrictPolicyUnsetCommand
                 {
@@ -125,7 +123,7 @@ namespace CSM.Injections
     {
         public static void Postfix(DistrictPolicies.Policies policy)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new DistrictCityPolicyUnsetCommand
                 {
@@ -141,7 +139,7 @@ namespace CSM.Injections
     {
         public static void Postfix(bool __result, ref byte park, DistrictPark.ParkType type, DistrictPark.ParkLevel level)
         {
-            if (__result && !DistrictHandler.IgnoreAll)
+            if (__result && !IgnoreHelper.IsIgnored())
             {
                 ulong seed = DistrictManager.instance.m_parks.m_buffer[park].m_randomSeed;
 
@@ -162,7 +160,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ref byte park)
         {
-            if (!DistrictHandler.IgnoreAll)
+            if (!IgnoreHelper.IsIgnored())
             {
                 Command.SendToAll(new ParkReleaseCommand
                 {

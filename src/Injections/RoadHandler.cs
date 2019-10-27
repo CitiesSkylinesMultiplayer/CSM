@@ -2,16 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CSM.Commands;
-using CSM.Common;
+using CSM.Commands.Data.Roads;
+using CSM.Helpers;
 using HarmonyLib;
 
 namespace CSM.Injections
 {
-    public static class RoadHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-
     [HarmonyPatch(typeof(RoadBaseAI))]
     [HarmonyPatch("ClickNodeButton")]
     public class ClickNodeButton
@@ -19,8 +15,8 @@ namespace CSM.Injections
         public static void Prefix(ref NetNode data, int index, out int __state)
         {
             __state = -1;
-
-            if (RoadHandler.IgnoreAll)
+            
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             __state = GetFlags(data, index);
@@ -72,7 +68,7 @@ namespace CSM.Injections
 
         public static void Postfix(IEnumerator<bool> __instance, ref bool __state, ushort ___segmentID, bool ___priority)
         {
-            if (RoadHandler.IgnoreAll || !__state)
+            if (IgnoreHelper.IsIgnored() || !__state)
                 return;
 
             if (!ReflectionHelper.GetAttr<bool>(__instance, "$current"))
