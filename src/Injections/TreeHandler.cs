@@ -1,22 +1,19 @@
 ﻿using ColossalFramework;
 using CSM.Commands;
+using CSM.Commands.Data.Trees;
+using CSM.Helpers;
 using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public static class TreeHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-
     [HarmonyPatch(typeof(TreeManager))]
     [HarmonyPatch("CreateTree")]
     public class CreateTree
     {
         public static void Postfix(bool __result, ref uint tree, Vector3 position, bool single)
         {
-            if (TreeHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (__result)
@@ -40,7 +37,7 @@ namespace CSM.Injections
     {
         public static void Postfix(uint tree, Vector3 position)
         {
-            if (TreeHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new TreeMoveCommand
@@ -57,7 +54,7 @@ namespace CSM.Injections
     {
         public static void Prefix(uint tree)
         {
-            if (TreeHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new TreeReleaseCommand

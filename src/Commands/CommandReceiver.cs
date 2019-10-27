@@ -2,6 +2,8 @@
 using CSM.Networking;
 using LiteNetLib;
 using System.IO;
+using CSM.Commands.Data.Internal;
+using CSM.Commands.Handler.Internal;
 
 namespace CSM.Commands
 {
@@ -10,8 +12,8 @@ namespace CSM.Commands
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// This method is used to parse an incoming message on the client
-        /// and execute the appropriate actions.
+        ///     This method is used to parse an incoming message on the client
+        ///     and execute the appropriate actions.
         /// </summary>
         /// <param name="reader">The incoming packet including the command type byte.</param>
         /// <param name="peer">The peer object of the sending client.</param>
@@ -28,7 +30,7 @@ namespace CSM.Commands
             // Handle connection request as special case
             if (cmd.GetType() == typeof(ConnectionRequestCommand))
             {
-                ((ConnectionRequestHandler) handler).HandleOnServer((ConnectionRequestCommand) cmd, peer);
+                ((ConnectionRequestHandler)handler).HandleOnServer((ConnectionRequestCommand)cmd, peer);
                 return false;
             }
 
@@ -50,8 +52,8 @@ namespace CSM.Commands
         }
 
         /// <summary>
-        /// This method is used to extract the command type from an incoming message
-        /// and return the matching handler object.
+        ///     This method is used to extract the command type from an incoming message
+        ///     and return the matching handler object.
         /// </summary>
         /// <param name="reader">The incoming packet including the command type byte.</param>
         /// <param name="handler">This returns the command handler object. May be null if the command was not found.</param>
@@ -60,7 +62,7 @@ namespace CSM.Commands
         {
             cmd = Deserialize(reader.GetRemainingBytes());
 
-            _logger.Info($"Received {cmd.GetType().Name}");
+            _logger.Debug($"Received {cmd.GetType().Name}");
 
             handler = Command.GetCommandHandler(cmd.GetType());
             if (handler == null)
@@ -81,7 +83,7 @@ namespace CSM.Commands
 
             using (MemoryStream stream = new MemoryStream(message))
             {
-                result = (CommandBase) Command.Model.Deserialize(stream, null, typeof(CommandBase));
+                result = (CommandBase)Command.Model.Deserialize(stream, null, typeof(CommandBase));
             }
 
             return result;

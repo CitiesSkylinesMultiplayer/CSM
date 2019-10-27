@@ -21,6 +21,10 @@ namespace CSM.Panels
 
         private UICheckBox _passwordBox;
 
+        private UIColorField _playerColorField;
+
+        public static Color playerColor = Color.red;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -60,10 +64,23 @@ namespace CSM.Panels
 
             // Username field
             _usernameField = this.CreateTextField("", new Vector2(10, -260));
+            _usernameField.width -= 40;
             if (PlatformService.active && PlatformService.personaName != null)
             {
                 _usernameField.text = PlatformService.personaName;
             }
+
+            // Add color picker to username field
+            _playerColorField = this.CreateColorField("Player Color", new Vector2(_usernameField.width + 15, -260));
+            _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
+            {
+                this._usernameField.textColor = value;
+                playerColor = value;
+            };
+            _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
+            {
+                colorPicker.component.height += 30f;
+            };
 
             // Password label
             this.CreateLabel("Password:", new Vector2(10, -310));

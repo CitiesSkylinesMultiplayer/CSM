@@ -1,17 +1,13 @@
 using System;
 using System.Reflection;
 using CSM.Commands;
-using CSM.Common;
+using CSM.Commands.Data.Buildings;
+using CSM.Helpers;
 using HarmonyLib;
 using UnityEngine;
 
 namespace CSM.Injections
 {
-    public static class BuildingHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-
     [HarmonyPatch]
     public class ToolCreateBuilding
     {
@@ -19,7 +15,7 @@ namespace CSM.Injections
         {
             __state = new CallState();
 
-            if (BuildingHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
             {
                 __state.run = false;
                 return;
@@ -28,7 +24,7 @@ namespace CSM.Injections
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
             int counter = ReflectionHelper.GetAttr<int>(__instance, "$PC");
             ToolBase.ToolErrors ___m_placementErrors = ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_placementErrors");
-            
+
             if (counter != 0 || ___m_placementErrors != ToolBase.ToolErrors.None)
             {
                 __state.run = false;
@@ -38,10 +34,7 @@ namespace CSM.Injections
             __state.run = true;
             __state.relocate = tool.m_relocate; // Save relocate state as it will be cleared at the end of the method
 
-            NetHandler.IgnoreAll = true;
-            TreeHandler.IgnoreAll = true;
-            PropHandler.IgnoreAll = true;
-            BuildingHandler.IgnoreAll = true;
+            IgnoreHelper.StartIgnore();
             ArrayHandler.StartCollecting();
         }
 
@@ -51,17 +44,14 @@ namespace CSM.Injections
                 return;
 
             ArrayHandler.StopCollecting();
-            BuildingHandler.IgnoreAll = false;
-            PropHandler.IgnoreAll = false;
-            TreeHandler.IgnoreAll = false;
-            NetHandler.IgnoreAll = false;
+            IgnoreHelper.EndIgnore();
             
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
             ToolController controller = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
 
             ushort prefab = 0;
             if (__state.relocate == 0)
-                prefab = (ushort) Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
+                prefab = (ushort)Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
 
             Vector3 mousePosition = ReflectionHelper.GetAttr<Vector3>(tool, "m_mousePosition");
             float mouseAngle = ReflectionHelper.GetAttr<float>(tool, "m_mouseAngle");
@@ -69,7 +59,7 @@ namespace CSM.Injections
 
             ulong[] collidingSegments = ReflectionHelper.GetAttr<ulong[]>(controller, "m_collidingSegments1");
             ulong[] collidingBuildings = ReflectionHelper.GetAttr<ulong[]>(controller, "m_collidingBuildings1");
-            
+
             Command.SendToAll(new BuildingToolCreateCommand()
             {
                 Array16Ids = ArrayHandler.Collected16,
@@ -83,7 +73,7 @@ namespace CSM.Injections
                 Elevation = elevation
             });
         }
-        
+
         public static MethodBase TargetMethod()
         {
             return ReflectionHelper.GetIteratorTargetMethod(typeof(BuildingTool), "<CreateBuilding>c__Iterator0", out Type _);
@@ -102,7 +92,7 @@ namespace CSM.Injections
     {
         public static void Prefix(out bool __state)
         {
-            if (BuildingHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
             {
                 __state = false;
                 return;
@@ -110,24 +100,18 @@ namespace CSM.Injections
 
             __state = true;
 
-            NetHandler.IgnoreAll = true;
-            TreeHandler.IgnoreAll = true;
-            PropHandler.IgnoreAll = true;
-            BuildingHandler.IgnoreAll = true;
+            IgnoreHelper.StartIgnore();
             ArrayHandler.StartCollecting();
         }
-        
+
         public static void Postfix(bool __result, ref ushort building, ref bool __state)
         {
             if (!__state)
                 return;
 
-            BuildingHandler.IgnoreAll = false;
-            PropHandler.IgnoreAll = false;
-            TreeHandler.IgnoreAll = false;
-            NetHandler.IgnoreAll = false;
+            IgnoreHelper.EndIgnore();
             ArrayHandler.StopCollecting();
-            
+
             if (__result)
             {
                 Building b = BuildingManager.instance.m_buildings.m_buffer[building];
@@ -151,7 +135,7 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort building)
         {
-            if (BuildingHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new BuildingRemoveCommand
@@ -167,7 +151,7 @@ namespace CSM.Injections
     {
         public static void Prefix(out bool __state)
         {
-            if (BuildingHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
             {
                 __state = false;
                 return;
@@ -175,15 +159,15 @@ namespace CSM.Injections
 
             __state = true;
 
-            BuildingHandler.IgnoreAll = true;
+            IgnoreHelper.StartIgnore();
         }
-        
+
         public static void Postfix(ushort building, ref bool __state)
         {
             if (!__state)
                 return;
 
-            BuildingHandler.IgnoreAll = false;
+            IgnoreHelper.EndIgnore();
 
             Building b = BuildingManager.instance.m_buildings.m_buffer[building];
 

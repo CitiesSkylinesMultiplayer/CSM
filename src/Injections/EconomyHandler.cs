@@ -1,18 +1,12 @@
 ﻿using CSM.Commands;
 using System;
+using CSM.Commands.Data.Money;
 using CSM.Networking;
 using HarmonyLib;
 using static EconomyManager;
 
 namespace CSM.Injections
 {
-    /// <summary>
-    /// This removes 
-    /// </summary>
-    class EconomyHandler
-    {
-    }
-
     [HarmonyPatch(typeof(EconomyManager))]
     [HarmonyPatch("AddResource")]
     [HarmonyPatch(new Type[] { typeof(Resource), typeof(int), typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(ItemClass.Level), typeof(DistrictPolicies.Taxation) })]
@@ -44,7 +38,7 @@ namespace CSM.Injections
                             break;
                         }
                 }
-            }           
+            }
             return true;
         }
     }
@@ -59,11 +53,9 @@ namespace CSM.Injections
 
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
-                
                 return false;
             }
             return true;
-
         }
     }
 
@@ -72,7 +64,7 @@ namespace CSM.Injections
     [HarmonyPatch(new Type[] { typeof(Resource), typeof(int), typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(ItemClass.Level) })]
     public class FetchResource
     {
-        public static bool Prefix(Resource resource, ref int amount, ref int __result )
+        public static bool Prefix(Resource resource, ref int amount, ref int __result)
         {
             {
                 __result = amount;
@@ -100,8 +92,6 @@ namespace CSM.Injections
                 }
                 return true;
             }
-          
         }
     }
-
 }

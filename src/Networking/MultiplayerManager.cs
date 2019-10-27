@@ -9,22 +9,22 @@ namespace CSM.Networking
     public class MultiplayerManager
     {
         /// <summary>
-        /// The current player list as server or client.
+        ///     The current player list as server or client.
         /// </summary>
         public HashSet<string> PlayerList { get; } = new HashSet<string>();
 
         /// <summary>
-        /// The current role of the game.
+        ///     The current role of the game.
         /// </summary>
         public MultiplayerRole CurrentRole { get; private set; }
 
         /// <summary>
-        /// The current game server (Use only when this game acts as server!)
+        ///     The current game server (Use only when this game acts as server!)
         /// </summary>
         public Server CurrentServer { get; } = new Server();
 
         /// <summary>
-        /// The current client (Use only when this game acts as client!)
+        ///     The current client (Use only when this game acts as client!)
         /// </summary>
         public Client CurrentClient { get; } = new Client();
 
@@ -50,7 +50,7 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        /// Starts the client and tries to connect to the given server.
+        ///     Starts the client and tries to connect to the given server.
         /// </summary>
         /// <param name="ipAddress">The server ip address.</param>
         /// <param name="port">The server port.</param>
@@ -80,7 +80,7 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        /// Starts the game server on the given port.
+        ///     Starts the game server on the given port.
         /// </summary>
         /// <param name="port">The port to start the server on.</param>
         /// <param name="password">The password to use.</param>
@@ -107,7 +107,7 @@ namespace CSM.Networking
         }
 
         /// <summary>
-        /// Stops the client or server, depending on the current role
+        ///     Stops the client or server, depending on the current role
         /// </summary>
         public void StopEverything()
         {
@@ -131,7 +131,7 @@ namespace CSM.Networking
     }
 
     /// <summary>
-    /// What state our game is in.
+    ///     What state our game is in.
     /// </summary>
     public enum MultiplayerRole
     {

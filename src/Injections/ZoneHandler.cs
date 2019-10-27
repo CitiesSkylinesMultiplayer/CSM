@@ -1,13 +1,10 @@
 ﻿using CSM.Commands;
+using CSM.Commands.Data.Zones;
+using CSM.Helpers;
 using HarmonyLib;
 
 namespace CSM.Injections
 {
-    public static class ZoneHandler
-    {
-        public static bool IgnoreAll { get; set; } = false;
-    }
-    
     /*
      * Notes:
      * - ZoneBlocks are created/destroyed by node segments, so we don't need to sync that
@@ -19,15 +16,15 @@ namespace CSM.Injections
     public class RefreshZoning
     {
         /// <summary>
-        /// This method is executed after ZoneBlock::RefreshZoning is called.
-        /// RefreshZoning is called after the player changed any of the zones in the block.
+        ///     This method is executed after ZoneBlock::RefreshZoning is called.
+        ///     RefreshZoning is called after the player changed any of the zones in the block.
         /// </summary>
         /// <param name="blockID">The id of the modified block.</param>
         /// <param name="___m_zone1">Zone storage attribute 1 (three underscores to access an attribute of the class)</param>
         /// <param name="___m_zone2">Zone storage attribute 2</param>
         public static void Postfix(ushort blockID, ulong ___m_zone1, ulong ___m_zone2)
         {
-            if (ZoneHandler.IgnoreAll)
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new ZoneUpdateCommand

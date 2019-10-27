@@ -1,13 +1,14 @@
 ﻿using System;
 using ColossalFramework.UI;
 using CSM.Commands;
-using CSM.Common;
 using CSM.Helpers;
 using CSM.Networking;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using CSM.Commands.Data.Internal;
+using CSM.Container;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -148,7 +149,7 @@ namespace CSM.Panels
 
             // Add resize component
             _resize = AddUIComponent<UIResizeHandle>();
-            _resize.position = new Vector2((width-20), (-height + 10));
+            _resize.position = new Vector2((width - 20), (-height + 10));
             _resize.width = 20f;
             _resize.height = 20f;
             _resize.color = new Color32(255, 255, 255, 255);

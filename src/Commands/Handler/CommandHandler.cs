@@ -6,12 +6,12 @@ namespace CSM.Commands.Handler
     public abstract class CommandHandler
     {
         /// <summary>
-        /// If this is true, client -> server packets are relayed to all other clients.
+        ///     If this is true, client -> server packets are relayed to all other clients.
         /// </summary>
         public bool RelayOnServer { get; protected set; } = true;
 
         /// <summary>
-        /// If this is true, this command is only executed after the FinishTransactionCommand is received.
+        ///     If this is true, this command is only executed after the FinishTransactionCommand is received.
         /// </summary>
         public bool TransactionCmd { get; protected set; } = true;
 
@@ -30,7 +30,7 @@ namespace CSM.Commands.Handler
 
     public abstract class CommandHandler<C> : CommandHandler where C : CommandBase
     {
-        public abstract void Handle(C command);
+        protected abstract void Handle(C command);
 
         public override Type GetDataType()
         {
@@ -39,7 +39,7 @@ namespace CSM.Commands.Handler
 
         public override void Parse(CommandBase command)
         {
-            Handle((C) command);
+            Handle((C)command);
         }
     }
 }
