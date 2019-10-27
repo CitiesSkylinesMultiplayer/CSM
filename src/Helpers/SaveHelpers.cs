@@ -11,14 +11,54 @@ namespace CSM.Helpers
     /// </summary>
     public static class SaveHelpers
     {
+        public static string SYNC_SAVE_NAME = "CSM_SyncSave";
+
         /// <summary>
-        ///     Save a level to the temp folder where it can then be sent to all clients.
+        ///     Save a level to the local save folder where it can then be sent to all clients.
         /// </summary>
         /// <returns></returns>
-        public static Guid SaveLevel()
+        public static void SaveLevel()
         {
-            // TODO: All of this
-            return Guid.NewGuid();
+            SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
+            if (sp != null)
+            {
+                sp.SaveGame(SYNC_SAVE_NAME);
+            }
+        }
+
+        public static bool IsSaving()
+        {
+            return SavePanel.isSaving;
+        }
+
+        public static string GetSavePath()
+        {
+            SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
+            if (sp != null)
+            {
+                return ReflectionHelper.Call<string>(sp, "GetSavePathName", SYNC_SAVE_NAME, false);
+            }
+            return null;
+        }
+
+        public static byte[] GetWorldFile()
+        {
+            string path = GetSavePath();
+            if (path != null)
+            {
+                return File.ReadAllBytes(path);
+            }
+            return null;
+        }
+
+        public static void SaveWorldFile(byte[] world) 
+        {
+            string path = GetSavePath();
+            if (path != null) 
+            {
+                File.WriteAllBytes(path, world);
+            }
+            // TODO: Print Error Message
         }
 
         /// <summary>
