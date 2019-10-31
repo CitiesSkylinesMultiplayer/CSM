@@ -1,7 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Packaging;
 using ColossalFramework.UI;
-using System;
 using System.IO;
 
 namespace CSM.Helpers
