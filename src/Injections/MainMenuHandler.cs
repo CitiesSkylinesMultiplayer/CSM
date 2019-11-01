@@ -42,7 +42,7 @@ namespace CSM.Injections
                 joinGameButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
                 joinGameButton.eventClick += (s, e) =>
                 {
-                    JoinGamePanel panel = UIView.GetAView().FindUIComponent<JoinGamePanel>("MPMenuJoinGamePanel");
+                    JoinGamePanel panel = UIView.GetAView().FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
 
                     if (panel != null)
                     {
