@@ -73,16 +73,20 @@ namespace CSM.Panels
             }
 
             // Add color picker to username field
+            // TODO: Figure out why this is null on main menu
             _playerColorField = this.CreateColorField("Player Color", new Vector2(_usernameField.width + 15, -260));
-            _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
+            if (_playerColorField != null)
             {
-                this._usernameField.textColor = value;
-                playerColor = value;
-            };
-            _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
-            {
-                colorPicker.component.height += 30f;
-            };
+                _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
+                {
+                    this._usernameField.textColor = value;
+                    playerColor = value;
+                };
+                _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
+                {
+                    colorPicker.component.height += 30f;
+                };
+            }
 
             // Password label
             this.CreateLabel("Password:", new Vector2(10, -310));
