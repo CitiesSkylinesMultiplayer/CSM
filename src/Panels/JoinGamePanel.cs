@@ -25,6 +25,8 @@ namespace CSM.Panels
 
         public static Color playerColor = Color.red;
 
+        public bool RequestWorld = false;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -148,7 +150,7 @@ namespace CSM.Panels
             }
 
             // Try connect and get the result
-            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, true, (success) =>
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, RequestWorld, (success) =>
             {
                 Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
@@ -161,7 +163,13 @@ namespace CSM.Panels
                     {
                         _connectionStatus.text = "";
                         isVisible = false;
-                    }
+
+                        // Load in the world
+                        if (RequestWorld)
+                        {
+                            SaveHelpers.LoadLevel();
+                        }
+                    }  
                 });
             });
         }

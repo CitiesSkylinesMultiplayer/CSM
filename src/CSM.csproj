@@ -191,7 +191,6 @@
     <Compile Include="Container\ChatCommand.cs" />
     <Compile Include="Container\Tuple.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
-    <Compile Include="Extensions\BuildingExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
     <Compile Include="Extensions\EconomyExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
@@ -237,7 +236,6 @@
     <Compile Include="Panels\HostGamePanel.cs" />
     <Compile Include="Panels\JoinGamePanel.cs" />
     <Compile Include="CSM.cs" />
-    <Compile Include="Panels\MenuJoinGamePanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

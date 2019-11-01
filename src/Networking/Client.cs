@@ -133,8 +133,16 @@ namespace CSM.Networking
                 // If we connect, exit the loop and return true
                 if (Status == ClientStatus.Connected)
                 {
-                    _logger.Info("Client has connected.");
-                    return true;
+                    if (Config.RequestWorld)
+                    {
+                        // The client has requested the world to load, 
+                        return WaitForWorld();
+                    }
+                    else
+                    {
+                        _logger.Info("Client has connected.");
+                        return true;
+                    }     
                 }
 
                 // The client cannot connect for some reason, the ConnectionMessage
@@ -156,6 +164,13 @@ namespace CSM.Networking
 
             // Did not connect
             Disconnect(); // make sure we are fully disconnected
+            return false;
+        }
+
+        private bool WaitForWorld()
+        {
+            ConnectionMessage = "Could not connect to server, wait for world is not implemented.";
+            _logger.Warn("Wait for world not implemented!");
             return false;
         }
 

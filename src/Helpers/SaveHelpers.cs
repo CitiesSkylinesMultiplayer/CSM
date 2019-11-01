@@ -61,32 +61,28 @@ namespace CSM.Helpers
             // TODO: Print Error Message
         }
 
-        /// <summary>
-        ///     Load a downloaded level from the server.
-        /// </summary>
-        /// <param name="id">The ID of the world that was sent over</param>
-        public static void LoadLevel(Guid id)
+        public static void LoadLevel()
         {
             // Build the path where this file is saved
-            var path = $"csm-client/{id}";
+            string path = GetSavePath();
 
             // First ensure that the downloaded file exists
             if (!File.Exists(path))
                 throw new FileNotFoundException(path);
 
             // Load the package
-            var package = new Package(Path.GetFileNameWithoutExtension(path), path);
+            Package package = new Package(Path.GetFileNameWithoutExtension(path), path);
 
             // Ensure that the LoadingManager is ready.
             // Don't know if thats really necessary but doesn't hurt either. - root#0042
             Singleton<LoadingManager>.Ensure();
 
             // Get the meta data
-            var asset = package.Find(package.packageMainAsset);
-            var metaData = asset.Instantiate<SaveGameMetaData>();
+            Package.Asset asset = package.Find(package.packageMainAsset);
+            SaveGameMetaData metaData = asset.Instantiate<SaveGameMetaData>();
 
             // Build the simulation
-            var simulation = new SimulationMetaData()
+            SimulationMetaData simulation = new SimulationMetaData()
             {
                 m_CityName = metaData.cityName,
                 m_updateMode = SimulationManager.UpdateMode.LoadGame,

@@ -16,8 +16,7 @@ namespace CSM.Injections
         /// </summary>
         public static void Prefix()
         {
-            // TODO: Enable this when ready
-            // MainMenuHandler.CreateOrUpdateJoinGameButton();
+            MainMenuHandler.CreateOrUpdateJoinGameButton();
         }
     }
 
@@ -43,7 +42,7 @@ namespace CSM.Injections
                 joinGameButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
                 joinGameButton.eventClick += (s, e) =>
                 {
-                    MenuJoinGamePanel panel = UIView.GetAView().FindUIComponent<MenuJoinGamePanel>("MPMenuJoinGamePanel");
+                    JoinGamePanel panel = UIView.GetAView().FindUIComponent<JoinGamePanel>("MPMenuJoinGamePanel");
 
                     if (panel != null)
                     {
@@ -52,7 +51,8 @@ namespace CSM.Injections
                     }
                     else
                     {
-                        MenuJoinGamePanel joinGamePanel = (MenuJoinGamePanel)UIView.GetAView().AddUIComponent(typeof(MenuJoinGamePanel));
+                        JoinGamePanel joinGamePanel = (JoinGamePanel)UIView.GetAView().AddUIComponent(typeof(JoinGamePanel));
+                        joinGamePanel.RequestWorld = true;
                         joinGamePanel.Focus();
                     }
                 };
