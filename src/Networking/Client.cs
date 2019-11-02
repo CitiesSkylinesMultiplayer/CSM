@@ -140,7 +140,7 @@ namespace CSM.Networking
                 // The client is now downloading the world
                 if (Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
                 {
-                    _logger.Info("Client is waiting for / download a world from the server.");
+                    _logger.Info("Client is waiting for / downloading a world from the server.");
                     return WaitForWorld();
                 }
 
@@ -155,7 +155,7 @@ namespace CSM.Networking
 
                 // The threading extension is not yet loaded when at the main menu, so
                 // process the events and go on
-                MultiplayerManager.Instance.ProcessEvents();
+                ProcessEvents();
 
                 // Wait 500ms
                 Thread.Sleep(500);
@@ -186,13 +186,17 @@ namespace CSM.Networking
                     return true;
                 }
 
+                // The threading extension is not yet loaded when at the main menu, so
+                // process the events and go on
+                ProcessEvents();
+
                 // Wait 500ms
                 Thread.Sleep(500);
             }
 
             // If for some reason the world is never sent over
-            ConnectionMessage = "Could not connect to server, the server accepted our connection, but did not send the world.";
-            _logger.Warn("The server never sent the world!");
+            ConnectionMessage = "The server did not send a world";
+            _logger.Warn("Could not connect to server, the server accepted our connection, but did not send the world.");
             
             Disconnect(); // make sure we are fully disconnected
             return false;

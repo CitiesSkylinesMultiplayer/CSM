@@ -12,7 +12,7 @@ namespace CSM.Helpers
     public static class SaveHelpers
     {
         public static string SERVER_SAVE_NAME = "CSM_SyncSave";
-        public static string CLIENT_SAVE_LOCATION = "csm-data/world-save";
+        public static string CLIENT_SAVE_LOCATION = "multiplayer-data/sync-save.bin";
 
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -56,10 +56,17 @@ namespace CSM.Helpers
 
         public static void SaveWorldFile(byte[] world) 
         {
-            _logger.Info($"Saving world (of size {world.Length}) from the server to {CLIENT_SAVE_LOCATION}");
-            File.WriteAllBytes(CLIENT_SAVE_LOCATION, world);
-            _logger.Info($"Successfully saved file to {CLIENT_SAVE_LOCATION}");
-            // TODO: Print Error Message
+            try
+            {
+                _logger.Info($"Saving world (of size {world.Length}) from the server to {CLIENT_SAVE_LOCATION}");
+                Directory.CreateDirectory(Path.GetDirectoryName(CLIENT_SAVE_LOCATION));
+                File.WriteAllBytes(CLIENT_SAVE_LOCATION, world);
+                _logger.Info($"Successfully saved file to {CLIENT_SAVE_LOCATION}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Could not save world from server");
+            }
         }
 
         /// <summary>
