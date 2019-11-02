@@ -32,12 +32,18 @@ The easiest way to install this mod is from the [Steam Workshop](https://steamco
 
 If you want to build the mod yourself, follow the developer instructions in the wiki located [here](https://github.com/DominicMaas/Tango/wiki/Developer-Resources).
 
-## Usage
+## Usage (Server)
 
-1. Create a new game / open an existing game. If you open an existing game, make sure both client and server load the exact same world.
-2. Click the `Show Multiplayer Menu` button in the top-left of your screen.
-3. To host a game click on `Host Game`.
-4. To join a game click on `Join Game` and enter the required information.
+1. Create a new game or open an existing game (if using an existing game, make a backup!)
+2. Click the `Multiplayer` button on the top-left of your screen.
+3. Click `Host Game`.
+4. Update any of the fields to your liking, click `Create Server`.
+
+## Usage (Clients)
+
+1. Click `Join Game` on the main menu.
+2. Enter the server and your information.
+3. Click `Connect to Server` and wait up to 60 seconds.
 
 ## Patreons
 We would like to give a special thanks to the people backing us financialy through [Patreon](https://www.patreon.com/CSM_MultiplayerMod)
