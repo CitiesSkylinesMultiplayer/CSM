@@ -48,8 +48,7 @@ namespace CSM.Commands.Data.Internal
         public string GameVersion { get; set; }
 
         /// <summary>
-        ///     The client is requesting the server world, this is called when the client
-        ///     connects from the main menu.
+        ///     If true client should wait for a WorldTransferCommand
         /// </summary>
         [ProtoMember(6)]
         public bool RequestWorld { get; set; }

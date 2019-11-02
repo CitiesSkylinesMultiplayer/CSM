@@ -1,5 +1,7 @@
 ﻿using CSM.Commands.Data.Internal;
 using CSM.Helpers;
+using CSM.Networking;
+using CSM.Networking.Status;
 using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
@@ -16,6 +18,7 @@ namespace CSM.Commands.Handler.Internal
             new Thread(() =>
             {
                 SaveHelpers.SaveWorldFile(command.World);
+                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
             }).Start();
         }
     }

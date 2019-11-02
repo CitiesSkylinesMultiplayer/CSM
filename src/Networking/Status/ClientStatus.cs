@@ -18,6 +18,18 @@
         Connecting,
 
         /// <summary>
+        ///     The client is connected and downloading the save game from 
+        ///     the server
+        /// </summary>
+        Downloading,
+
+        /// <summary>
+        ///     The client is connected, has downloaded the save game from 
+        ///     the server and now loads the level
+        /// </summary>
+        Loading,
+
+        /// <summary>
         ///     The client is connected to the server and is
         ///     transmitting information.
         /// </summary>

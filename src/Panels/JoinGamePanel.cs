@@ -4,6 +4,7 @@ using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
+using CSM.Networking.Status;
 
 namespace CSM.Panels
 {
@@ -172,6 +173,7 @@ namespace CSM.Panels
                         if (RequestWorld)
                         {
                             SaveHelpers.LoadLevel();
+                            MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected; // TODO, I'm not super happy about this call here
                         }
                     }  
                 });

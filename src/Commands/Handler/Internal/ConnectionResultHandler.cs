@@ -28,7 +28,14 @@ namespace CSM.Commands.Handler.Internal
                 // Log and set that we are connected.
                 _logger.Info("Successfully connected to server.");
                 ChatLogPanel.PrintGameMessage("Successfully connected to server.");
-                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
+                if (command.WaitForWorld)
+                {
+                    MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Downloading;
+                }
+                else
+                {
+                    MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
+                }
                 MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
             }
             else

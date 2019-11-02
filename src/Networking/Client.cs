@@ -133,16 +133,15 @@ namespace CSM.Networking
                 // If we connect, exit the loop and return true
                 if (Status == ClientStatus.Connected)
                 {
-                    if (Config.RequestWorld)
-                    {
-                        // The client has requested the world to load, 
-                        return WaitForWorld();
-                    }
-                    else
-                    {
-                        _logger.Info("Client has connected.");
-                        return true;
-                    }     
+                    _logger.Info("Client has connected.");
+                    return true;
+                }
+
+                // The client is now downloading the world
+                if (Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
+                {
+                    _logger.Info("Client is waiting for / download a world from the server.");
+                    return WaitForWorld();
                 }
 
                 // The client cannot connect for some reason, the ConnectionMessage
@@ -169,8 +168,29 @@ namespace CSM.Networking
 
         private bool WaitForWorld()
         {
-            ConnectionMessage = "Could not connect to server, wait for world is not implemented.";
-            _logger.Warn("Wait for world not implemented!");
+            // Wait in another loop for 30 seconds (500ms gaps) while 
+            // the world is transfered over. 
+            Stopwatch waitWatch = new Stopwatch();
+            waitWatch.Start();
+
+            // Simple wait for WorldTransferred to equal true
+            while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
+            {
+                if (Status == ClientStatus.Loading)
+                {
+                    _logger.Info("World has been received, preparing to load world.");
+                    return true;
+                }
+
+                // Wait 500ms
+                Thread.Sleep(500);
+            }
+
+            // If for some reason the world is never sent over
+            ConnectionMessage = "Could not connect to server, the server accepted our connection, but did not send the world.";
+            _logger.Warn("The server never sent the world!");
+            
+            Disconnect(); // make sure we are fully disconnected
             return false;
         }
 

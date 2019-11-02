@@ -61,6 +61,9 @@ namespace CSM.Helpers
             // TODO: Print Error Message
         }
 
+        /// <summary>
+        ///     Load the downloaded level from the server.
+        /// </summary>
         public static void LoadLevel()
         {
             // Build the path where this file is saved
