@@ -11,8 +11,7 @@ namespace CSM.Helpers
     /// </summary>
     public static class SaveHelpers
     {
-        public static string SERVER_SAVE_NAME = "CSM_SyncSave";
-        public static string CLIENT_SAVE_LOCATION = "multiplayer-data/sync-save.bin";
+        public static string SYNC_NAME = "CSM_SyncSave";
 
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -25,7 +24,7 @@ namespace CSM.Helpers
             SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
             if (sp != null)
             {
-                sp.SaveGame(SERVER_SAVE_NAME);
+                sp.SaveGame(SYNC_NAME);
             }
         }
 
@@ -39,7 +38,7 @@ namespace CSM.Helpers
             SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
             if (sp != null)
             {
-                return ReflectionHelper.Call<string>(sp, "GetSavePathName", SERVER_SAVE_NAME, false);
+                return ReflectionHelper.Call<string>(sp, "GetSavePathName", SYNC_NAME, false);
             }
             return null;
         }
@@ -54,41 +53,15 @@ namespace CSM.Helpers
             return null;
         }
 
-        public static void SaveWorldFile(byte[] world) 
-        {
-            try
-            {
-                _logger.Info($"Saving world (of size {world.Length}) from the server to {CLIENT_SAVE_LOCATION}");
-                Directory.CreateDirectory(Path.GetDirectoryName(CLIENT_SAVE_LOCATION));
-                File.WriteAllBytes(CLIENT_SAVE_LOCATION, world);
-                _logger.Info($"Successfully saved file to {CLIENT_SAVE_LOCATION}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Could not save world from server");
-            }
-        }
-
         /// <summary>
-        ///     Load the downloaded level from the server.
+        ///     Load the world byte array sent by the server
         /// </summary>
-        public static void LoadLevel()
+        public static void LoadLevel(byte[] world)
         {
-            _logger.Info("Preparing to load level...");
-
-            // Build the path where this file is saved
-            string path = CLIENT_SAVE_LOCATION;
-            _logger.Info("Level located at: " + path);
-
-            // First ensure that the downloaded file exists
-            if (!File.Exists(path))
-            {
-                _logger.Error("Could not find level!");
-                throw new FileNotFoundException(path);
-            }
+            _logger.Info($"Preparing to load world (of size {world.Length})...");
 
             // Load the package
-            Package package = new Package(Path.GetFileNameWithoutExtension(path), path);
+            Package package = new Package(SYNC_NAME, world);
 
             // Ensure that the LoadingManager is ready.
             // Don't know if thats really necessary but doesn't hurt either. - root#0042

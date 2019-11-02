@@ -166,15 +166,9 @@ namespace CSM.Panels
                 }
                 else
                 {
+                    // See WorldTransferHandler for actual loading
                     _connectionStatus.text = "";
                     isVisible = false;
-
-                    // Load in the world
-                    if (RequestWorld)
-                    {
-                        SaveHelpers.LoadLevel();
-                        MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected; // TODO, I'm not super happy about this call here
-                    }
                 }  
             });
         }

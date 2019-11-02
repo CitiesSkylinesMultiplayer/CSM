@@ -137,11 +137,11 @@ namespace CSM.Networking
                     return true;
                 }
 
-                // The client is now downloading the world
-                if (Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
+                // The client is now loading the world
+                if (Status == ClientStatus.Loading)
                 {
-                    _logger.Info("Client is waiting for / downloading a world from the server.");
-                    return WaitForWorld();
+                    _logger.Info("Client is now loading the world.");
+                    return true;
                 }
 
                 // The client cannot connect for some reason, the ConnectionMessage
@@ -166,38 +166,6 @@ namespace CSM.Networking
             _logger.Warn("Connection timeout!");
 
             // Did not connect
-            Disconnect(); // make sure we are fully disconnected
-            return false;
-        }
-
-        private bool WaitForWorld()
-        {
-            // Wait in another loop for 30 seconds (500ms gaps) while 
-            // the world is transfered over. 
-            Stopwatch waitWatch = new Stopwatch();
-            waitWatch.Start();
-
-            // Simple wait for WorldTransferred to equal true
-            while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
-            {
-                if (Status == ClientStatus.Loading)
-                {
-                    _logger.Info("World has been received, preparing to load world.");
-                    return true;
-                }
-
-                // The threading extension is not yet loaded when at the main menu, so
-                // process the events and go on
-                ProcessEvents();
-
-                // Wait 500ms
-                Thread.Sleep(500);
-            }
-
-            // If for some reason the world is never sent over
-            ConnectionMessage = "The server did not send a world";
-            _logger.Warn("Could not connect to server, the server accepted our connection, but did not send the world.");
-            
             Disconnect(); // make sure we are fully disconnected
             return false;
         }
