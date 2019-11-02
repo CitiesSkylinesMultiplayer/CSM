@@ -110,7 +110,7 @@ namespace CSM.Commands.Handler.Internal
                     WaitForWorld = true
                 });
 
-                SaveHelpers.SaveLevel();
+                SaveHelpers.SaveServerLevel();
 
                 new Thread(() =>
                 {

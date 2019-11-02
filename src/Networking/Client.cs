@@ -153,6 +153,10 @@ namespace CSM.Networking
                     return false;
                 }
 
+                // The threading extension is not yet loaded when at the main menu, so
+                // process the events and go on
+                MultiplayerManager.Instance.ProcessEvents();
+
                 // Wait 500ms
                 Thread.Sleep(500);
             }

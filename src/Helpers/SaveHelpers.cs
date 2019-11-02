@@ -11,18 +11,21 @@ namespace CSM.Helpers
     /// </summary>
     public static class SaveHelpers
     {
-        public static string SYNC_SAVE_NAME = "CSM_SyncSave";
+        public static string SERVER_SAVE_NAME = "CSM_SyncSave";
+        public static string CLIENT_SAVE_LOCATION = "csm-data/world-save";
+
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Save a level to the local save folder where it can then be sent to all clients.
         /// </summary>
         /// <returns></returns>
-        public static void SaveLevel()
+        public static void SaveServerLevel()
         {
             SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
             if (sp != null)
             {
-                sp.SaveGame(SYNC_SAVE_NAME);
+                sp.SaveGame(SERVER_SAVE_NAME);
             }
         }
 
@@ -36,7 +39,7 @@ namespace CSM.Helpers
             SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
             if (sp != null)
             {
-                return ReflectionHelper.Call<string>(sp, "GetSavePathName", SYNC_SAVE_NAME, false);
+                return ReflectionHelper.Call<string>(sp, "GetSavePathName", SERVER_SAVE_NAME, false);
             }
             return null;
         }
@@ -53,11 +56,9 @@ namespace CSM.Helpers
 
         public static void SaveWorldFile(byte[] world) 
         {
-            string path = GetSavePath();
-            if (path != null) 
-            {
-                File.WriteAllBytes(path, world);
-            }
+            _logger.Info($"Saving world (of size {world.Length}) from the server to {CLIENT_SAVE_LOCATION}");
+            File.WriteAllBytes(CLIENT_SAVE_LOCATION, world);
+            _logger.Info($"Successfully saved file to {CLIENT_SAVE_LOCATION}");
             // TODO: Print Error Message
         }
 
@@ -66,12 +67,18 @@ namespace CSM.Helpers
         /// </summary>
         public static void LoadLevel()
         {
+            _logger.Info("Preparing to load level...");
+
             // Build the path where this file is saved
-            string path = GetSavePath();
+            string path = CLIENT_SAVE_LOCATION;
+            _logger.Info("Level located at: " + path);
 
             // First ensure that the downloaded file exists
             if (!File.Exists(path))
+            {
+                _logger.Error("Could not find level!");
                 throw new FileNotFoundException(path);
+            }
 
             // Load the package
             Package package = new Package(Path.GetFileNameWithoutExtension(path), path);
@@ -93,6 +100,7 @@ namespace CSM.Helpers
             };
 
             // Load the level
+            _logger.Info("Telling the loading manager to load the level");
             Singleton<LoadingManager>.instance.LoadLevel(metaData.assetRef, "Game", "InGame", simulation, false);
         }
     }

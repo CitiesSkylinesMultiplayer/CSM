@@ -157,26 +157,25 @@ namespace CSM.Panels
             // Try connect and get the result
             MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, RequestWorld, (success) =>
             {
-                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                //Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                // ^ Why was this code required? Seemed to break the logic below
+                if (!success)
                 {
-                    if (!success)
-                    {
-                        _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                        _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
-                    }
-                    else
-                    {
-                        _connectionStatus.text = "";
-                        isVisible = false;
+                    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                    _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
+                }
+                else
+                {
+                    _connectionStatus.text = "";
+                    isVisible = false;
 
-                        // Load in the world
-                        if (RequestWorld)
-                        {
-                            SaveHelpers.LoadLevel();
-                            MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected; // TODO, I'm not super happy about this call here
-                        }
-                    }  
-                });
+                    // Load in the world
+                    if (RequestWorld)
+                    {
+                        SaveHelpers.LoadLevel();
+                        MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected; // TODO, I'm not super happy about this call here
+                    }
+                }  
             });
         }
     }
