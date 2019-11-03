@@ -52,7 +52,6 @@ namespace CSM.Injections
                     else
                     {
                         JoinGamePanel joinGamePanel = (JoinGamePanel)UIView.GetAView().AddUIComponent(typeof(JoinGamePanel));
-                        joinGamePanel.RequestWorld = true;
                         joinGamePanel.Focus();
                     }
                 };

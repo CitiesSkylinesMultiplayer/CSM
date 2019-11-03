@@ -244,7 +244,6 @@ namespace CSM.Networking
                 ModVersion = versionString,
                 Password = Config.Password,
                 Username = Config.Username,
-                RequestWorld = Config.RequestWorld,
                 DLCBitMask = DLCHelper.GetOwnedDLCs()
             };
 

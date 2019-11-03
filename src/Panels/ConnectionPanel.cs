@@ -8,7 +8,6 @@ namespace CSM.Panels
 {
     public class ConnectionPanel : UIPanel
     {
-        private UIButton _clientConnectButton;
         private UIButton _serverConnectButton;
 
         // These buttons are displayed when the server is running
@@ -47,7 +46,6 @@ namespace CSM.Panels
                 {
                     if (MultiplayerManager.Instance.CurrentServer.Status == ServerStatus.Running)
                     {
-                        Hide(_clientConnectButton);
                         Hide(_serverConnectButton);
                         Show(_disconnectButton);
                         Show(_serverManageButton);
@@ -58,7 +56,6 @@ namespace CSM.Panels
                     }
                     else
                     {
-                        Show(_clientConnectButton);
                         Show(_serverConnectButton);
                         Hide(_disconnectButton);
                         Hide(_serverManageButton);
@@ -69,7 +66,6 @@ namespace CSM.Panels
                 }
                 else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 {
-                    Hide(_clientConnectButton);
                     Hide(_serverConnectButton);
                     Show(_disconnectButton);
                     Hide(_serverManageButton);
@@ -81,7 +77,6 @@ namespace CSM.Panels
                 }
                 else
                 {
-                    Show(_clientConnectButton);
                     Show(_serverConnectButton);
                     Hide(_disconnectButton);
                     Hide(_serverManageButton);
@@ -92,9 +87,6 @@ namespace CSM.Panels
             };
 
             this.CreateTitleLabel("Multiplayer Menu", new Vector3(80, -20, 0));
-
-            // Join game button
-            _clientConnectButton = this.CreateButton("Join Game", new Vector2(10, -60));
 
             // Manage server button
             _serverManageButton = this.CreateButton("Manage Server", new Vector2(10, -60));
@@ -116,24 +108,6 @@ namespace CSM.Panels
             _playerPointers.eventClicked += (component, param) =>
             {
                 showPlayerPointers = _playerPointers.isChecked;
-            };
-
-            _clientConnectButton.eventClick += (component, param) =>
-            {
-                JoinGamePanel panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
-
-                if (panel != null)
-                {
-                    panel.isVisible = true;
-                    panel.Focus();
-                }
-                else
-                {
-                    JoinGamePanel joinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
-                    joinGamePanel.Focus();
-                }
-
-                isVisible = false;
             };
 
             // Host a game panel

@@ -99,41 +99,28 @@ namespace CSM.Commands.Handler.Internal
             Player newPlayer = new Player(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
+            // Send the result command
+            Command.SendToClient(peer, new ConnectionResultCommand
+            {
+                Success = true,
+                ClientId = peer.Id
+            });
+
             // Get a serialized version of the server world to send to the player.
-            if (command.RequestWorld)
+            SaveHelpers.SaveServerLevel();
+
+            new Thread(() =>
             {
-                // Send the result command
-                Command.SendToClient(peer, new ConnectionResultCommand
+                while (SaveHelpers.IsSaving())
                 {
-                    Success = true,
-                    ClientId = peer.Id,
-                    WaitForWorld = true
+                    Thread.Sleep(100);
+                }
+
+                Command.SendToClient(peer, new WorldTransferCommand
+                {
+                    World = SaveHelpers.GetWorldFile()
                 });
-
-                SaveHelpers.SaveServerLevel();
-
-                new Thread(() =>
-                {
-                    while (SaveHelpers.IsSaving())
-                    {
-                        Thread.Sleep(100);
-                    }
-
-                    Command.SendToClient(peer, new WorldTransferCommand
-                    {
-                        World = SaveHelpers.GetWorldFile()
-                    });
-                }).Start();
-            }
-            else
-            {
-                // Send the result command
-                Command.SendToClient(peer, new ConnectionResultCommand
-                {
-                    Success = true,
-                    ClientId = peer.Id
-                });
-            }
+            }).Start();
 
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
         }

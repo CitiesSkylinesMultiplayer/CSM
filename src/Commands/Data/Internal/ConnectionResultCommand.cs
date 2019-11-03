@@ -32,16 +32,10 @@ namespace CSM.Commands.Data.Internal
         public int ClientId { get; set; }
 
         /// <summary>
-        ///     The world in a serialized byte array.
-        /// </summary>
-        [ProtoMember(4)]
-        public bool WaitForWorld { get; set; }
-
-        /// <summary>
         ///     Contains the DLC bit mask of the server for comparison,
         ///     when DLCs of the client and server don't match.
         /// </summary>
-        [ProtoMember(5)]
+        [ProtoMember(4)]
         public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
     }
 }

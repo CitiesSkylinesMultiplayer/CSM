@@ -48,15 +48,9 @@ namespace CSM.Commands.Data.Internal
         public string GameVersion { get; set; }
 
         /// <summary>
-        ///     If true client should wait for a WorldTransferCommand
-        /// </summary>
-        [ProtoMember(6)]
-        public bool RequestWorld { get; set; }
-
-        /// <summary>
         ///     BitMask containing the installed DLCs of the client
         /// </summary>
-        [ProtoMember(7)]
+        [ProtoMember(6)]
         public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
     }
 }
