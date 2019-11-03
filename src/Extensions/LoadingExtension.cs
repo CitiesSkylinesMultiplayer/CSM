@@ -58,12 +58,14 @@ namespace CSM.Extensions
                 if (panel != null)
                 {
                     panel.isVisible = !panel.isVisible;
-                    _multiplayerButton.Unfocus();
                 }
                 else
                 {
                     ConnectionPanel newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
+                    newConnectionPanel.RefreshState();
                 }
+
+                _multiplayerButton.Unfocus();
             };
         }
 
