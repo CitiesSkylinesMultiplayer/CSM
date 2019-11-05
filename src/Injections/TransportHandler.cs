@@ -1,5 +1,6 @@
 ﻿using CSM.Commands;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using CSM.Commands.Data.TransportLines;
 using CSM.Helpers;
@@ -650,6 +651,153 @@ namespace CSM.Injections
         public static MethodBase TargetMethod()
         {
             return typeof(TransportLine).GetMethod("MoveStop", AccessTools.all, null, new Type[] { typeof(ushort), typeof(int), typeof(Vector3), typeof(bool), typeof(Vector3).MakeByRefType() }, new ParameterModifier[] { });
+        }
+    }
+
+    [HarmonyPatch(typeof(PublicTransportWorldInfoPanel))]
+    [HarmonyPatch("OnVehicleCountModifierChanged")]
+    public class ChangeVehicleCount
+    {
+        public static void Prefix(float value, PublicTransportWorldInfoPanel __instance)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+            
+            ushort lineId = ReflectionHelper.Call<ushort>(__instance, "GetLineID");
+
+            if ((ushort) value == TransportManager.instance.m_lines.m_buffer[lineId].m_budget)
+                return;
+
+            Command.SendToAll(new TransportLineChangeSliderCommand()
+            {
+                LineId = lineId,
+                Value = value,
+                IsTicketPrice = false
+            });
+        }
+    }
+    
+    [HarmonyPatch(typeof(PublicTransportWorldInfoPanel))]
+    [HarmonyPatch("OnTicketPriceChanged")]
+    public class ChangeTicketPrice
+    {
+        public static void Prefix(float value, PublicTransportWorldInfoPanel __instance)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            ushort lineId = ReflectionHelper.Call<ushort>(__instance, "GetLineID");
+            
+            if ((ushort) value == TransportManager.instance.m_lines.m_buffer[lineId].m_ticketPrice)
+                return;
+            
+            Command.SendToAll(new TransportLineChangeSliderCommand()
+            {
+                LineId = lineId,
+                Value = value,
+                IsTicketPrice = true
+            });
+        }
+    }
+    
+    [HarmonyPatch(typeof(TransportManager))]
+    [HarmonyPatch("SetLineColor")]
+    public class SetLineColor
+    {
+        public static void Prefix(ushort lineID, Color color)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            Command.SendToAll(new TransportLineChangeColorCommand()
+            {
+                LineId = lineID,
+                Color = color
+            });
+        }
+    }
+
+    [HarmonyPatch]
+    public class SetActiveParent
+    {
+        public static void Prefix(ushort id)
+        {
+            SetActive.trackingLineId = id;
+        }
+
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            foreach (Type t in new Type[] {typeof(PublicTransportLineInfo), typeof(PublicTransportWorldInfoPanel)})
+            {
+                foreach (string method in new string[] {"SetDayOnly", "SetNightOnly", "SetAllDay"})
+                {
+                    yield return t.GetMethod(method, ReflectionHelper.AllAccessFlags, null, new Type[] {typeof(ushort)}, null);
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("SetActive")]
+    public class SetActive
+    {
+        public static ushort trackingLineId = 0;
+
+        public static void Prefix(bool day, bool night)
+        {
+            if (IgnoreHelper.IsIgnored() || trackingLineId == 0)
+                return;
+
+            Command.SendToAll(new TransportLineChangeActiveCommand()
+            {
+                LineId = trackingLineId,
+                Day = day,
+                Night = night
+            });
+
+            trackingLineId = 0;
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("ReplaceVehicles")]
+    public class ReplaceVehicles
+    {
+        public static VehicleInfo randomGen = null;
+        
+        public static void Prefix()
+        {
+            randomGen = null;
+        }
+        
+        public static void Postfix(ushort lineID, VehicleInfo info)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            if (info == null)
+            {
+                if (randomGen == null)
+                    return;
+
+                info = randomGen;
+            }
+
+            Command.SendToAll(new TransportLineChangeVehicleCommand()
+            {
+                LineId = lineID,
+                Vehicle = (uint) info.m_prefabDataIndex
+            });
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("GetRandomVehicleInfo")]
+    public class GetRandomVehicleInfo
+    {
+        public static void Postfix(VehicleInfo __result)
+        {
+            ReplaceVehicles.randomGen = __result;
         }
     }
 }
