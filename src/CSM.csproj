@@ -112,6 +112,10 @@
     <Compile Include="Commands\Data\TransportLines\TransportLineAddStopCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineCancelMoveStopCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineCancelPrevStopCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeActiveCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeColorCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeVehicleCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeSliderCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineCreateCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineInitCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineMoveStopCommand.cs" />
@@ -171,6 +175,10 @@
     <Compile Include="Commands\Handler\TransportLines\TransportLineAddStopHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineCancelMoveStopHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineCancelPrevStopHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeActiveHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeColorHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeSliderHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeVehicleHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineCreateHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineInitHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineMoveStopHandler.cs" />
