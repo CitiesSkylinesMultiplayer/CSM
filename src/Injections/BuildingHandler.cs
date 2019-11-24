@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using CSM.Commands;
 using CSM.Commands.Data.Buildings;
@@ -176,6 +177,224 @@ namespace CSM.Injections
                 BuildingId = building,
                 NewPosition = b.m_position,
                 Angle = b.m_angle
+            });
+        }
+    }
+
+    [HarmonyPatch]
+    public class SetProductionRate
+    {
+        public static void Prefix(ushort buildingID, byte rate, ref Building data)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            if (rate == data.m_productionRate)
+                return;
+
+            Command.SendToAll(new BuildingChangeProductionRateCommand()
+            {
+                Building = buildingID,
+                Rate = rate
+            });
+        }
+
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return typeof(PlayerBuildingAI).GetMethod("SetProductionRate");
+            yield return typeof(ShelterAI).GetMethod("SetProductionRate");
+        }
+    }
+
+    [HarmonyPatch]
+    public class SetEmptying
+    {
+        public static void Prefix(ushort buildingID, ref Building data, bool emptying)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+            
+            bool isEmptying = (data.m_flags & Building.Flags.Downgrading) != Building.Flags.None;
+            if (isEmptying == emptying)
+                return;
+
+            Command.SendToAll(new BuildingSetEmptyingFillingCommand()
+            {
+                Building = buildingID,
+                Value = emptying,
+                SetEmptying = true
+            });
+        }
+
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            foreach (Type t in new Type[] {typeof(CemeteryAI), typeof(LandfillSiteAI), typeof(ShelterAI), typeof(SnowDumpAI), typeof(WarehouseAI), typeof(TransportStationAI)})
+            {
+                yield return t.GetMethod("SetEmptying");
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(WarehouseAI))]
+    [HarmonyPatch("SetFilling")]
+    public class SetFilling
+    {
+        public static void Prefix(ushort buildingID, ref Building data, bool filling)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+            
+            bool isFilling = (data.m_flags & Building.Flags.Filling) != Building.Flags.None;
+            if (isFilling == filling)
+                return;
+
+            Command.SendToAll(new BuildingSetEmptyingFillingCommand()
+            {
+                Building = buildingID,
+                Value = filling,
+                SetEmptying = false
+            });
+        }
+    }
+
+    [HarmonyPatch(typeof(TollBoothAI))]
+    [HarmonyPatch("SetTollPrice")]
+    public class SetToolPrice
+    {
+        public static void Prefix(ushort buildingID, ref Building data, int price, TollBoothAI __instance)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            if (__instance.GetTollPrice(buildingID, ref data) == price)
+                return;
+
+            Command.SendToAll(new BuildingSetTollPriceCommand()
+            {
+                Building = buildingID,
+                Price = price
+            });
+        }
+    }
+
+    [HarmonyPatch]
+    public class OnRebuildClicked
+    {
+        public static void Prefix(out bool __state)
+        {
+            if (IgnoreHelper.IsIgnored())
+            {
+                __state = false;
+                return;
+            }
+
+            __state = true;
+            ArrayHandler.StartCollecting();
+            IgnoreHelper.StartIgnore();
+        }
+        
+        public static void Postfix(object __instance, ref bool __state)
+        {
+            if (!__state)
+                return;
+
+            IgnoreHelper.EndIgnore();
+            ArrayHandler.StopCollecting();
+
+            ushort building = ReflectionHelper.GetAttr<ushort>(__instance, "buildingID");
+            
+            Command.SendToAll(new BuildingRebuildCommand()
+            {
+                Building = building,
+                Array16Ids = ArrayHandler.Collected16
+            });
+        }
+
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            foreach (Type t in new Type[] {typeof (CityServiceWorldInfoPanel), typeof(EventBuildingWorldInfoPanel),
+                typeof(UniqueFactoryWorldInfoPanel), typeof(WarehouseWorldInfoPanel)})
+            {
+                // See decompiled code with compiler generated classes
+                int anonStoreId = (t == typeof(CityServiceWorldInfoPanel)) ? 4 : 2;
+                Type delegateHandler = t.GetNestedType("<OnRebuildClicked>c__AnonStorey" + anonStoreId, ReflectionHelper.AllAccessFlags);
+                yield return delegateHandler.GetMethod("<>m__0", ReflectionHelper.AllAccessFlags);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(BuildingManager))]
+    [HarmonyPatch("UpgradeBuilding")]
+    [HarmonyPatch(new Type[] { typeof(ushort), typeof(bool) })]
+    public class UpgradeBuilding
+    {
+        public static void Prefix(out bool __state)
+        {
+            if (IgnoreHelper.IsIgnored())
+            {
+                __state = false;
+                return;
+            }
+
+            __state = true;
+            ArrayHandler.StartCollecting();
+            IgnoreHelper.StartIgnore();
+        }
+        
+        public static void Postfix(ushort buildingID, ref bool __state)
+        {
+            if (!__state)
+                return;
+
+            IgnoreHelper.EndIgnore();
+            ArrayHandler.StopCollecting();
+            
+            Command.SendToAll(new BuildingUpgradeCommand()
+            {
+                Array16Ids = ArrayHandler.Collected16,
+                Array32Ids = ArrayHandler.Collected32,
+                Building = buildingID
+            });
+        }
+    }
+
+    [HarmonyPatch(typeof(WarehouseAI))]
+    [HarmonyPatch("SetTransferReason")]
+    public class SetTransferReason
+    {
+        public static void Prefix(ushort buildingID, ref Building data, TransferManager.TransferReason material, WarehouseAI __instance)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            if (__instance.m_storageType != TransferManager.TransferReason.None || 
+                __instance.GetTransferReason(buildingID, ref data) == material)
+                return;
+            
+            Command.SendToAll(new BuildingSetTransferReasonCommand()
+            {
+                Building = buildingID,
+                Material = material
+            });
+        }
+    }
+
+    [HarmonyPatch(typeof(PrivateBuildingAI))]
+    [HarmonyPatch("SetHistorical")]
+    public class SetHistorical
+    {
+        public static void Prefix(ushort buildingID, ref Building data, bool historical, BuildingAI __instance)
+        {
+            if (IgnoreHelper.IsIgnored())
+                return;
+
+            if (__instance.IsHistorical(buildingID, ref data, out bool _) == historical)
+                return;
+
+            Command.SendToAll(new BuildingSetHistoricalCommand()
+            {
+                Building = buildingID,
+                Historical = historical
             });
         }
     }
