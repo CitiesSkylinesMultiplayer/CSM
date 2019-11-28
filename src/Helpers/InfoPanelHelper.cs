@@ -8,7 +8,7 @@ namespace CSM.Helpers
     {
         private static FieldInfo _instanceIdField = null;
         
-        private static InstanceID GetInstanceID(Type panelType, out WorldInfoPanel panel)
+        public static InstanceID GetInstanceID(Type panelType, out WorldInfoPanel panel)
         {
             panel = UIView.library.Get<WorldInfoPanel>(panelType.Name);
             if (panel == null)

@@ -54,9 +54,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetBuildingName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___building, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && BuildingManager.instance.GetBuildingName(___building, InstanceID.Empty) == ___name)
+                __state = false;
         }
 
         public static void Postfix(ushort ___building, string ___name, ref bool __state, object __instance)
@@ -81,9 +83,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetCitizenName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(uint ___citizenID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && CitizenManager.instance.GetCitizenName(___citizenID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(uint ___citizenID, string ___name, ref bool __state, object __instance)
@@ -108,9 +112,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetInstanceName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___instanceID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && CitizenManager.instance.GetInstanceName(___instanceID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(ushort ___instanceID, string ___name, ref bool __state, object __instance)
@@ -135,9 +141,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetDisasterName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___disasterID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && DisasterManager.instance.GetDisasterName(___disasterID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(ushort ___disasterID, string ___name, ref bool __state, object __instance)
@@ -162,9 +170,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetDistrictName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(int ___district, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && DistrictManager.instance.GetDistrictName(___district) == ___name)
+                __state = false;
         }
 
         public static void Postfix(int ___district, string ___name, ref bool __state, object __instance)
@@ -189,9 +199,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetParkName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(int ___park, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && DistrictManager.instance.GetParkName(___park) == ___name)
+                __state = false;
         }
 
         public static void Postfix(int ___park, string ___name, ref bool __state, object __instance)
@@ -217,9 +229,14 @@ namespace CSM.Injections
     [HarmonyPatch("SetEventNameImpl")]
     public class SetEventName
     {
-        public static void Postfix(ushort eventID, string name, bool __result)
+        public static void Prefix(ushort eventID, string name, out bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            __state = EventManager.instance.GetEventName(eventID) != name;
+        }
+        
+        public static void Postfix(ushort eventID, string name, bool __result, ref bool __state)
+        {
+            if (IgnoreHelper.IsIgnored() || !__state)
                 return;
 
             if (!__result)
@@ -237,9 +254,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetSegmentName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___segmentID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && NetManager.instance.GetSegmentName(___segmentID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(IEnumerator<bool> __instance, ref bool __state, ushort ___segmentID, string ___name)
@@ -264,9 +283,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetLineName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___lineID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && TransportManager.instance.GetLineName(___lineID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(ushort ___lineID, string ___name, ref bool __state, object __instance)
@@ -291,9 +312,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetVehicleName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___vehicleID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && VehicleManager.instance.GetVehicleName(___vehicleID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(ushort ___vehicleID, string ___name, ref bool __state, object __instance)
@@ -318,9 +341,11 @@ namespace CSM.Injections
     [HarmonyPatch]
     public class SetParkedVehicleName
     {
-        public static void Prefix(object __instance, out bool __state)
+        public static void Prefix(ushort ___parkedID, string ___name, object __instance, out bool __state)
         {
             NameHandler.CheckCounter(__instance, out __state);
+            if (__state && VehicleManager.instance.GetParkedVehicleName(___parkedID) == ___name)
+                __state = false;
         }
 
         public static void Postfix(ushort ___parkedID, string ___name, ref bool __state, object __instance)
