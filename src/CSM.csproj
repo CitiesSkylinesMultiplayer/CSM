@@ -94,7 +94,6 @@
     <Compile Include="Commands\Data\Districts\DistrictReleaseCommand.cs" />
     <Compile Include="Commands\Data\Game\PauseCommand.cs" />
     <Compile Include="Commands\Data\Game\SpeedCommand.cs" />
-    <Compile Include="Commands\Data\Game\WorldInfoCommand.cs" />
     <Compile Include="Commands\Data\Internal\ChatMessageCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientConnectCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientDisconnectCommand.cs" />
@@ -169,7 +168,6 @@
     <Compile Include="Commands\Handler\Events\EventSetTicketPriceHandler.cs" />
     <Compile Include="Commands\Handler\Game\PauseHandler.cs" />
     <Compile Include="Commands\Handler\Game\SpeedHandler.cs" />
-    <Compile Include="Commands\Handler\Game\WorldInfoHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ChatMessageHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ClientConnectHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ClientDisonnectHandler.cs" />
