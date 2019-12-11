@@ -140,6 +140,7 @@
     <Compile Include="Commands\Data\Trees\TreeCreateCommand.cs" />
     <Compile Include="Commands\Data\Trees\TreeMoveCommand.cs" />
     <Compile Include="Commands\Data\Trees\TreeReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Weather\WeatherCommand.cs" />
     <Compile Include="Commands\Data\Zones\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\Data\Zones\ZoneUpdateCommand.cs" />
     <Compile Include="Commands\Handler\Areas\UnlockAreaHandler.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="Commands\Handler\Trees\TreeCreateHandler.cs" />
     <Compile Include="Commands\Handler\Trees\TreeMoveHandler.cs" />
     <Compile Include="Commands\Handler\Trees\TreeReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Weather\WeatherHandler.cs" />
     <Compile Include="Commands\Handler\Zones\DemandDisplayedHandler.cs" />
     <Compile Include="Commands\Handler\Zones\ZoneUpdateHandler.cs" />
     <Compile Include="Container\ChatCommand.cs" />
@@ -243,6 +245,7 @@
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TransportHandler.cs" />
     <Compile Include="Injections\TreeHandler.cs" />
+    <Compile Include="Injections\WeatherHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
     <Compile Include="Helpers\UiHelper.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
