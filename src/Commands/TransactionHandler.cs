@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data;
+﻿using System;
+using CSM.Commands.Data;
 using CSM.Commands.Handler;
 using CSM.Helpers;
 using System.Collections.Generic;
@@ -76,7 +77,14 @@ namespace CSM.Commands
                     continue;
                 }
 
-                transaction.Var1.Parse(transaction.Var2);
+                try
+                {
+                    transaction.Var1.Parse(transaction.Var2);
+                }
+                catch (Exception ex)
+                {
+                    NLog.LogManager.GetCurrentClassLogger().Error(ex, $"Exception while parsing {transaction.Var2.GetType().Name}");
+                }
             }
 
             ClearTransactions(sender);
