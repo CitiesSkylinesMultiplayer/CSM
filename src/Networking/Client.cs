@@ -47,6 +47,8 @@ namespace CSM.Networking
         /// </summary>
         public string ConnectionMessage { get; set; } = "Unknown error";
 
+        private bool MainMenuEventProcessing = false;
+
         public Client()
         {
             // Set up network items
@@ -137,6 +139,13 @@ namespace CSM.Networking
                     return true;
                 }
 
+                // The client is now downloading the world
+                if (Status == ClientStatus.Downloading)
+                {
+                    _logger.Info("Client is now downloading the world.");
+                    return true;
+                }
+
                 // The client is now loading the world
                 if (Status == ClientStatus.Loading)
                 {
@@ -157,8 +166,8 @@ namespace CSM.Networking
                 // process the events and go on
                 ProcessEvents();
 
-                // Wait 500ms
-                Thread.Sleep(500);
+                // Wait 250ms
+                Thread.Sleep(250);
             }
 
             // We have timed out
@@ -298,6 +307,28 @@ namespace CSM.Networking
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
             _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+        }
+
+        public void StartMainMenuEventProcessor()
+        {
+            if (MainMenuEventProcessing) return;
+            new Thread(() =>
+            {
+                MainMenuEventProcessing = true;
+                while (MainMenuEventProcessing)
+                {
+                    // The threading extension is not yet loaded when at the main menu, so
+                    // process the events and go on
+                    ProcessEvents();
+
+                    Thread.Sleep(100);
+                }
+            }).Start();
+        }
+
+        public void StopMainMenuEventProcessor()
+        {
+            MainMenuEventProcessing = false;
         }
     }
 }

@@ -15,6 +15,11 @@ namespace CSM.Extensions
 
         public override void OnBeforeSimulationTick()
         {
+            if (_lastSimulationPausedState != SimulationManager.instance.SimulationPaused
+                && MultiplayerManager.Instance.GameBlocked)
+            {
+                SimulationManager.instance.SimulationPaused = true;
+            }
             base.OnBeforeSimulationTick();
             MultiplayerManager.Instance.ProcessEvents();
         }

@@ -26,14 +26,11 @@ namespace CSM.Commands.Handler.Internal
 
                     MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
 
+                    MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
+
                     SaveHelpers.LoadLevel(command.World);
 
-                    MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
-
-                    // TODO, send packet that tells the server that we are now loaded, server
-                    // should then set the client status to ready, (and maybe send over all packets
-                    // that is missed, that we don't have to pause the game for everyone on client
-                    // connect).
+                    // See LoadingExtension for events after level loaded
                 }
             }).Start();
         }

@@ -20,7 +20,7 @@ namespace CSM.Panels
         {
             backgroundSprite = "GenericPanel";
             name = "MPSyncPanel";
-            color = new Color32(110, 110, 110, 255);
+            color = new Color32(110, 110, 110, 220);
 
             // Grab the view for calculating width and height of game
             UIView view = UIView.GetAView();
@@ -44,7 +44,7 @@ namespace CSM.Panels
                 ClientStatus CurrentStatus = MultiplayerManager.Instance.CurrentClient.Status;
                 while (CurrentStatus == ClientStatus.Downloading || CurrentStatus == ClientStatus.Loading)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                     if (_lastStatus != CurrentStatus) 
                     {
                         _lastStatus = CurrentStatus;
@@ -74,6 +74,7 @@ namespace CSM.Panels
         {
             isVisible = false;
             MultiplayerManager.Instance.CurrentClient.Disconnect();
+            MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
         }
 
         private string GetStatusMessage()

@@ -84,6 +84,8 @@
     <Compile Include="Commands\Data\Events\EventColorChangedCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetSecurityBudgetCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetTicketPriceCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientLevelLoadedCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerLocationCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictAreaModifyCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictCityPolicyCommand.cs" />
@@ -171,6 +173,8 @@
     <Compile Include="Commands\Handler\Internal\ChatMessageHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ClientConnectHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ClientDisonnectHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ClientJoiningHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ClientLevelLoadedHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ConnectionRequestHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ConnectionResultHandler.cs" />
     <Compile Include="Commands\Handler\Internal\FinishTransactionHandler.cs" />
@@ -264,6 +268,7 @@
     <Compile Include="Networking\Status\ServerStatus.cs" />
     <Compile Include="Commands\TransactionHandler.cs" />
     <Compile Include="Panels\ChatLogPanel.cs" />
+    <Compile Include="Panels\ClientJoinPanel.cs" />
     <Compile Include="Panels\SyncPanel.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\ManageGamePanel.cs" />

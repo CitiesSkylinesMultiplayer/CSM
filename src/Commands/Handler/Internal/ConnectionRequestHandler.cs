@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading;
+using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
+using CSM.Networking.Status;
+using CSM.Panels;
 using LiteNetLib;
 using NLog;
 
@@ -95,9 +99,53 @@ namespace CSM.Commands.Handler.Internal
                 return;
             }
 
+            // Check that no other player is currently connecting
+            bool clientJoining = false;
+            foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
+            {
+                if (p.Status != ClientStatus.Connected) {
+                    clientJoining = true;
+                }
+            }
+            if (clientJoining)
+            {
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "A client is already joining",
+                    DLCBitMask = dlcMask
+                });
+                return;
+            }
+
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);
+            newPlayer.Status = ClientStatus.Downloading;
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
+
+            // Open status window
+            ThreadHelper.dispatcher.Dispatch(() =>
+            {
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                if (clientJoinPanel != null)
+                {
+                    clientJoinPanel.isVisible = true;
+                    clientJoinPanel.StartCheck();
+                }
+                else
+                {
+                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
+                }
+                clientJoinPanel.Focus();
+            });
+
+            // Inform other clients about the joining client
+            Command.SendToOtherClients(new ClientJoiningCommand
+            {
+                JoiningFinished = false
+            }, newPlayer);
+            MultiplayerManager.Instance.GameBlocked = true;
+            SimulationManager.instance.SimulationPaused = true;
 
             // Send the result command
             Command.SendToClient(peer, new ConnectionResultCommand
@@ -120,6 +168,8 @@ namespace CSM.Commands.Handler.Internal
                 {
                     World = SaveHelpers.GetWorldFile()
                 });
+
+                newPlayer.Status = ClientStatus.Loading;
             }).Start();
 
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
