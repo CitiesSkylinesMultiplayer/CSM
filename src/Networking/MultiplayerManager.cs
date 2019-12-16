@@ -28,6 +28,8 @@ namespace CSM.Networking
         /// </summary>
         public Client CurrentClient { get; } = new Client();
 
+        public bool GameBlocked { get; set; } = false;
+
         public void ProcessEvents()
         {
             switch (CurrentRole)

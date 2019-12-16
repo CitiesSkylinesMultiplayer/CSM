@@ -102,6 +102,7 @@ namespace CSM.Networking
 
             // Initialize host player
             _hostPlayer = new Player(Config.Username);
+            _hostPlayer.Status = ClientStatus.Connected;
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
             // Update the console to let the user know the server is running
