@@ -5,6 +5,7 @@ using CSM.Networking;
 using System.Threading;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
+using ColossalFramework.Threading;
 
 namespace CSM.Panels
 {
@@ -158,9 +159,9 @@ namespace CSM.Panels
             }
 
             // Start server and check for errors
-            MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text, (success) =>
+            MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text, 5, (success) =>
             {
-                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                ThreadHelper.dispatcher.Dispatch(() =>
                 {
                     if (!success)
                     {

@@ -8,11 +8,11 @@
         /// <summary>
         ///      Creates a new configuration for the game server.
         /// </summary>
-        /// <param name="port">The port to run this server on (defaults to 4230).</param>
-        /// <param name="username">The user name for the hosting player (defaults to "Tango Player")</param>
+        /// <param name="port">The port to run this server on.</param>
+        /// <param name="username">The user name for the hosting player.</param>
         /// <param name="password">The optional password for this server.</param>
-        /// <param name="maxPlayers">The maximum amount of players that can connect to the server (defaults to 5).</param>
-        public ServerConfig(int port = 4230, string username = "Tango Player", string password = "", int maxPlayers = 5)
+        /// <param name="maxPlayers">The maximum amount of players that can connect to the server.</param>
+        public ServerConfig(int port, string username, string password, int maxPlayers)
         {
             Port = port;
             Username = username;

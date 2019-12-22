@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
@@ -8,7 +9,6 @@ namespace CSM.Panels
 {
     public class ConnectionPanel : UIPanel
     {
-        private UIButton _clientConnectButton;
         private UIButton _serverConnectButton;
 
         // These buttons are displayed when the server is running
@@ -43,58 +43,10 @@ namespace CSM.Panels
                 if (!visible)
                     return;
 
-                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-                {
-                    if (MultiplayerManager.Instance.CurrentServer.Status == ServerStatus.Running)
-                    {
-                        Hide(_clientConnectButton);
-                        Hide(_serverConnectButton);
-                        Show(_disconnectButton);
-                        Show(_serverManageButton);
-                        _playerPointers.isVisible = true;
-                        _playerPointers.isEnabled = true;
-
-                        _disconnectButton.text = "Stop server";
-                    }
-                    else
-                    {
-                        Show(_clientConnectButton);
-                        Show(_serverConnectButton);
-                        Hide(_disconnectButton);
-                        Hide(_serverManageButton);
-
-                        _playerPointers.isVisible = false;
-                        _playerPointers.isEnabled = false;
-                    }
-                }
-                else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
-                {
-                    Hide(_clientConnectButton);
-                    Hide(_serverConnectButton);
-                    Show(_disconnectButton);
-                    Hide(_serverManageButton);
-
-                    _playerPointers.isVisible = true;
-                    _playerPointers.isEnabled = true;
-
-                    _disconnectButton.text = "Disconnect";
-                }
-                else
-                {
-                    Show(_clientConnectButton);
-                    Show(_serverConnectButton);
-                    Hide(_disconnectButton);
-                    Hide(_serverManageButton);
-
-                    _playerPointers.isVisible = false;
-                    _playerPointers.isEnabled = false;
-                }
+                RefreshState();
             };
 
             this.CreateTitleLabel("Multiplayer Menu", new Vector3(80, -20, 0));
-
-            // Join game button
-            _clientConnectButton = this.CreateButton("Join Game", new Vector2(10, -60));
 
             // Manage server button
             _serverManageButton = this.CreateButton("Manage Server", new Vector2(10, -60));
@@ -102,7 +54,7 @@ namespace CSM.Panels
             _serverManageButton.isVisible = false;
 
             // Host game button
-            _serverConnectButton = this.CreateButton("Host Game", new Vector2(10, -130));
+            _serverConnectButton = this.CreateButton("Host Game", new Vector2(10, -60));
 
             // Close server button
             _disconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
@@ -116,24 +68,6 @@ namespace CSM.Panels
             _playerPointers.eventClicked += (component, param) =>
             {
                 showPlayerPointers = _playerPointers.isChecked;
-            };
-
-            _clientConnectButton.eventClick += (component, param) =>
-            {
-                JoinGamePanel panel = view.FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
-
-                if (panel != null)
-                {
-                    panel.isVisible = true;
-                    panel.Focus();
-                }
-                else
-                {
-                    JoinGamePanel joinGamePanel = (JoinGamePanel)view.AddUIComponent(typeof(JoinGamePanel));
-                    joinGamePanel.Focus();
-                }
-
-                isVisible = false;
             };
 
             // Host a game panel
@@ -158,7 +92,6 @@ namespace CSM.Panels
             _disconnectButton.eventClick += (component, param) =>
             {
                 isVisible = false;
-
                 MultiplayerManager.Instance.StopEverything();
             };
 
@@ -181,6 +114,57 @@ namespace CSM.Panels
             };
 
             base.Start();
+
+            RefreshState();
+        }
+
+        /// <summary>
+        ///     Refresh which buttons should be displayed on the user interface
+        /// </summary>
+        public void RefreshState()
+        {
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            {
+                if (MultiplayerManager.Instance.CurrentServer.Status == ServerStatus.Running)
+                {
+                    Hide(_serverConnectButton);
+                    Show(_disconnectButton);
+                    Show(_serverManageButton);
+                    _playerPointers.isVisible = true;
+                    _playerPointers.isEnabled = true;
+
+                    _disconnectButton.text = "Stop server";
+                }
+                else
+                {
+                    Show(_serverConnectButton);
+                    Hide(_disconnectButton);
+                    Hide(_serverManageButton);
+
+                    _playerPointers.isVisible = false;
+                    _playerPointers.isEnabled = false;
+                }
+            }
+            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            {
+                Hide(_serverConnectButton);
+                Show(_disconnectButton);
+                Hide(_serverManageButton);
+
+                _playerPointers.isVisible = true;
+                _playerPointers.isEnabled = true;
+
+                _disconnectButton.text = "Disconnect";
+            }
+            else
+            {
+                Show(_serverConnectButton);
+                Hide(_disconnectButton);
+                Hide(_serverManageButton);
+
+                _playerPointers.isVisible = false;
+                _playerPointers.isEnabled = false;
+            }
         }
 
         private void Show(UIButton button)

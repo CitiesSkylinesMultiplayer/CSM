@@ -4,6 +4,8 @@ using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
+using CSM.Networking.Status;
+using ColossalFramework.Threading;
 
 namespace CSM.Panels
 {
@@ -71,16 +73,20 @@ namespace CSM.Panels
             }
 
             // Add color picker to username field
+            // TODO: Figure out why this is null on main menu
             _playerColorField = this.CreateColorField("Player Color", new Vector2(_usernameField.width + 15, -260));
-            _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
+            if (_playerColorField != null)
             {
-                this._usernameField.textColor = value;
-                playerColor = value;
-            };
-            _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
-            {
-                colorPicker.component.height += 30f;
-            };
+                _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
+                {
+                    this._usernameField.textColor = value;
+                    playerColor = value;
+                };
+                _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
+                {
+                    colorPicker.component.height += 30f;
+                };
+            }
 
             // Password label
             this.CreateLabel("Password:", new Vector2(10, -310));
@@ -102,6 +108,7 @@ namespace CSM.Panels
             {
                 isVisible = false;
                 RemoveUIComponent(this);
+                MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
             };
 
             _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
@@ -116,6 +123,8 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
+            MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
+
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
             _connectionStatus.text = "Connecting...";
 
@@ -148,9 +157,9 @@ namespace CSM.Panels
             }
 
             // Try connect and get the result
-            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, false, (success) =>
+            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, (success) =>
             {
-                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                ThreadHelper.dispatcher.Dispatch(() =>
                 {
                     if (!success)
                     {
@@ -159,8 +168,11 @@ namespace CSM.Panels
                     }
                     else
                     {
+                        // See WorldTransferHandler for actual loading
                         _connectionStatus.text = "";
                         isVisible = false;
+                        SyncPanel syncPanel = (SyncPanel)UIView.GetAView().AddUIComponent(typeof(SyncPanel));
+                        syncPanel.Focus();
                     }
                 });
             });

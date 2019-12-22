@@ -131,8 +131,8 @@ namespace CSM.Helpers
             return checkBox;
         }
 
-        // Sourced from : https://github.com/SamsamTS/CS-MoveIt/blob/master/MoveIt/UIUtils.cs
-        // I found his code after I started this class, the below atlas feature is quite neat!
+        // Sourced from : https://github.com/SamsamTS/CS-MoveIt/blob/master/MoveIt/GUI/UIUtils.cs
+        // I found their code after I started this class, the below atlas feature is quite neat!
 
         private static Dictionary<string, UITextureAtlas> _atlases;
 

@@ -362,23 +362,32 @@ namespace CSM.Panels
 
         private static void PrintMessage(string msg)
         {
-            SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            try
             {
-                UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
-
-                // Check if the thumb is at the bottom of the scrollbar for autoscrolling
-                UIScrollbar scrollBar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
-                UISlicedSprite thumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
-                float size = (thumb.relativePosition.y + thumb.size.y);
-                bool autoScroll = Math.Abs(size - scrollBar.height) < 0.2f;
-
-                messageBox.text += ($"{msg}\n");
-
-                if (autoScroll)
+                SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
-                    scrollBar.minValue = scrollBar.maxValue;
-                }
-            });
+                    UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
+                    if (messageBox != null)
+                    {
+                        // Check if the thumb is at the bottom of the scrollbar for autoscrolling
+                        UIScrollbar scrollBar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
+                        UISlicedSprite thumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
+                        float size = (thumb.relativePosition.y + thumb.size.y);
+                        bool autoScroll = Math.Abs(size - scrollBar.height) < 0.2f;
+
+                        messageBox.text += ($"{msg}\n");
+
+                        if (autoScroll)
+                        {
+                            scrollBar.minValue = scrollBar.maxValue;
+                        }
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                // IGNORE
+            }
         }
     }
 }

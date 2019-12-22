@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
+using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
+using CSM.Networking.Status;
+using CSM.Panels;
 using LiteNetLib;
 using NLog;
 
@@ -10,8 +15,8 @@ namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
-        
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public ConnectionRequestHandler()
         {
             TransactionCmd = false;
@@ -70,7 +75,7 @@ namespace CSM.Commands.Handler.Internal
             {
                 if (command.Password != MultiplayerManager.Instance.CurrentServer.Config.Password)
                 {
-                    _logger.Warn("Connection rejected: Invalid password provided!"); 
+                    _logger.Warn("Connection rejected: Invalid password provided!");
                     Command.SendToClient(peer, new ConnectionResultCommand
                     {
                         Success = false,
@@ -94,33 +99,78 @@ namespace CSM.Commands.Handler.Internal
                 return;
             }
 
+            // Check that no other player is currently connecting
+            bool clientJoining = false;
+            foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
+            {
+                if (p.Status != ClientStatus.Connected) {
+                    clientJoining = true;
+                }
+            }
+            if (clientJoining)
+            {
+                Command.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "A client is already joining",
+                    DLCBitMask = dlcMask
+                });
+                return;
+            }
+
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);
+            newPlayer.Status = ClientStatus.Downloading;
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
-            // Get a serialized version of the server world to send to the player.
-            if (command.RequestWorld)
+            // Open status window
+            ThreadHelper.dispatcher.Dispatch(() =>
             {
-                // Get the world
-                byte[] world = WorldManager.GetWorld();
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                if (clientJoinPanel != null)
+                {
+                    clientJoinPanel.isVisible = true;
+                    clientJoinPanel.StartCheck();
+                }
+                else
+                {
+                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
+                }
+                clientJoinPanel.Focus();
+            });
 
-                // Send the result command
-                Command.SendToClient(peer, new ConnectionResultCommand
-                {
-                    Success = true,
-                    ClientId = peer.Id,
-                    World = world
-                });
-            }
-            else
+            // Inform other clients about the joining client
+            Command.SendToOtherClients(new ClientJoiningCommand
             {
-                // Send the result command
-                Command.SendToClient(peer, new ConnectionResultCommand
+                JoiningFinished = false
+            }, newPlayer);
+            MultiplayerManager.Instance.GameBlocked = true;
+            SimulationManager.instance.SimulationPaused = true;
+
+            // Send the result command
+            Command.SendToClient(peer, new ConnectionResultCommand
+            {
+                Success = true,
+                ClientId = peer.Id
+            });
+
+            // Get a serialized version of the server world to send to the player.
+            SaveHelpers.SaveServerLevel();
+
+            new Thread(() =>
+            {
+                while (SaveHelpers.IsSaving())
                 {
-                    Success = true,
-                    ClientId = peer.Id
+                    Thread.Sleep(100);
+                }
+
+                Command.SendToClient(peer, new WorldTransferCommand
+                {
+                    World = SaveHelpers.GetWorldFile()
                 });
-            }
+
+                newPlayer.Status = ClientStatus.Loading;
+            }).Start();
 
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
         }

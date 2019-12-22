@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using ColossalFramework;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 
@@ -46,6 +47,8 @@ namespace CSM.Networking
         ///     the reason why.
         /// </summary>
         public string ConnectionMessage { get; set; } = "Unknown error";
+
+        private bool MainMenuEventProcessing = false;
 
         public Client()
         {
@@ -131,7 +134,7 @@ namespace CSM.Networking
             while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
             {
                 // If we connect, exit the loop and return true
-                if (Status == ClientStatus.Connected)
+                if (Status == ClientStatus.Connected || Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
                 {
                     _logger.Info("Client has connected.");
                     return true;
@@ -146,8 +149,8 @@ namespace CSM.Networking
                     return false;
                 }
 
-                // Wait 500ms
-                Thread.Sleep(500);
+                // Wait 250ms
+                Thread.Sleep(250);
             }
 
             // We have timed out
@@ -164,12 +167,20 @@ namespace CSM.Networking
         /// </summary>
         public void Disconnect()
         {
+            bool needsUnload = (Status == ClientStatus.Connected);
+
             // Update status and stop client
             Status = ClientStatus.Disconnected;
             _netClient.Stop();
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
             ToolSimulator.Clear();
+
+            if (needsUnload)
+            {
+                // Go back to the main menu after disconnecting
+                Singleton<LoadingManager>.instance.UnloadLevel();
+            }
 
             _logger.Info("Disconnected from server");
         }
@@ -233,7 +244,6 @@ namespace CSM.Networking
                 ModVersion = versionString,
                 Password = Config.Password,
                 Username = Config.Username,
-                RequestWorld = Config.RequestWorld,
                 DLCBitMask = DLCHelper.GetOwnedDLCs()
             };
 
@@ -288,6 +298,28 @@ namespace CSM.Networking
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
             _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+        }
+
+        public void StartMainMenuEventProcessor()
+        {
+            if (MainMenuEventProcessing) return;
+            new Thread(() =>
+            {
+                MainMenuEventProcessing = true;
+                while (MainMenuEventProcessing)
+                {
+                    // The threading extension is not yet loaded when at the main menu, so
+                    // process the events and go on
+                    ProcessEvents();
+
+                    Thread.Sleep(100);
+                }
+            }).Start();
+        }
+
+        public void StopMainMenuEventProcessor()
+        {
+            MainMenuEventProcessing = false;
         }
     }
 }

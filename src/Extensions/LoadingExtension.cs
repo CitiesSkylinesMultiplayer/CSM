@@ -1,5 +1,8 @@
 ﻿using ColossalFramework.UI;
+using CSM.Commands;
+using CSM.Commands.Data.Internal;
 using CSM.Networking;
+using CSM.Networking.Status;
 using CSM.Panels;
 using ICities;
 using UnityEngine;
@@ -21,6 +24,12 @@ namespace CSM.Extensions
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
+
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client) 
+            {
+                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
+                Command.SendToServer(new ClientLevelLoadedCommand());
+            }
 
             UIView uiView = UIView.GetAView();
 
@@ -58,12 +67,13 @@ namespace CSM.Extensions
                 if (panel != null)
                 {
                     panel.isVisible = !panel.isVisible;
-                    _multiplayerButton.Unfocus();
                 }
                 else
                 {
-                    ConnectionPanel newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
+                    uiView.AddUIComponent(typeof(ConnectionPanel));
                 }
+
+                _multiplayerButton.Unfocus();
             };
         }
 
