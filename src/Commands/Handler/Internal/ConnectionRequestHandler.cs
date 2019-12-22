@@ -15,7 +15,7 @@ namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ConnectionRequestHandler()
         {

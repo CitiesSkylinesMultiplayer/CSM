@@ -5,6 +5,7 @@ using CSM.Networking;
 using System.Threading;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
+using ColossalFramework.Threading;
 
 namespace CSM.Panels
 {
@@ -160,20 +161,20 @@ namespace CSM.Panels
             // Start server and check for errors
             MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text, 5, (success) =>
             {
-                // Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
-                // ^ Not explicitly tested, but may also be causing issues like the client version
-
-                if (!success)
+                ThreadHelper.dispatcher.Dispatch(() =>
                 {
-                    _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-                    _connectionStatus.text = "Could not start server.";
-                }
-                else
-                {
-                    // Clear warnings/errors and hide panel
-                    _connectionStatus.text = "";
-                    isVisible = false;
-                }       
+                    if (!success)
+                    {
+                        _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                        _connectionStatus.text = "Could not start server.";
+                    }
+                    else
+                    {
+                        // Clear warnings/errors and hide panel
+                        _connectionStatus.text = "";
+                        isVisible = false;
+                    }
+                });
             });
         }
     }

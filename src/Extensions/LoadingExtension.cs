@@ -70,8 +70,7 @@ namespace CSM.Extensions
                 }
                 else
                 {
-                    ConnectionPanel newConnectionPanel = (ConnectionPanel)uiView.AddUIComponent(typeof(ConnectionPanel));
-                    newConnectionPanel.RefreshState();
+                    uiView.AddUIComponent(typeof(ConnectionPanel));
                 }
 
                 _multiplayerButton.Unfocus();

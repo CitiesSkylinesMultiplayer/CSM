@@ -55,9 +55,6 @@ namespace CSM.Panels
                     return "Client is downloading save game...";
                 case ClientStatus.Loading:
                     return "Client is loading save game...";
-                case ClientStatus.Connected:
-                case ClientStatus.Connecting:
-                case ClientStatus.Disconnected:
                 default:
                     return "Invalid status";
             }

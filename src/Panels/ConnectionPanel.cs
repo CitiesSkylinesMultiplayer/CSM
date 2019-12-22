@@ -92,17 +92,7 @@ namespace CSM.Panels
             _disconnectButton.eventClick += (component, param) =>
             {
                 isVisible = false;
-
-                // If this is the client, they need to go back to the main menu
-                // after disconnecting
-                bool isClient = MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client;
-
                 MultiplayerManager.Instance.StopEverything();
-
-                if (isClient)
-                {
-                    Singleton<LoadingManager>.instance.UnloadLevel();
-                }
             };
 
             _serverManageButton.eventClick += (component, param) =>
@@ -124,6 +114,8 @@ namespace CSM.Panels
             };
 
             base.Start();
+
+            RefreshState();
         }
 
         /// <summary>

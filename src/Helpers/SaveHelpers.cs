@@ -10,14 +10,13 @@ namespace CSM.Helpers
     /// </summary>
     public static class SaveHelpers
     {
-        public static string SYNC_NAME = "CSM_SyncSave";
+        private const string SYNC_NAME = "CSM_SyncSave";
 
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Save a level to the local save folder where it can then be sent to all clients.
         /// </summary>
-        /// <returns></returns>
         public static void SaveServerLevel()
         {
             SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");

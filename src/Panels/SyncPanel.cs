@@ -48,10 +48,7 @@ namespace CSM.Panels
                     if (_lastStatus != CurrentStatus) 
                     {
                         _lastStatus = CurrentStatus;
-                        Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
-                        {
-                            UpdateStatus();
-                        });
+                        Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(UpdateStatus);
                     }
                     CurrentStatus = MultiplayerManager.Instance.CurrentClient.Status;
                 }
@@ -84,9 +81,6 @@ namespace CSM.Panels
                     return "Downloading save game...";
                 case ClientStatus.Loading:
                     return "Loading save game...";
-                case ClientStatus.Connected:
-                case ClientStatus.Connecting:
-                case ClientStatus.Disconnected:
                 default:
                     return "Invalid status";
             }

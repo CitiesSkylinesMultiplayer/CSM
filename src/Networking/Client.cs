@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using ColossalFramework;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 
@@ -133,23 +134,9 @@ namespace CSM.Networking
             while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
             {
                 // If we connect, exit the loop and return true
-                if (Status == ClientStatus.Connected)
+                if (Status == ClientStatus.Connected || Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
                 {
                     _logger.Info("Client has connected.");
-                    return true;
-                }
-
-                // The client is now downloading the world
-                if (Status == ClientStatus.Downloading)
-                {
-                    _logger.Info("Client is now downloading the world.");
-                    return true;
-                }
-
-                // The client is now loading the world
-                if (Status == ClientStatus.Loading)
-                {
-                    _logger.Info("Client is now loading the world.");
                     return true;
                 }
 
@@ -161,10 +148,6 @@ namespace CSM.Networking
                     Disconnect(); // make sure we are fully disconnected
                     return false;
                 }
-
-                // The threading extension is not yet loaded when at the main menu, so
-                // process the events and go on
-                ProcessEvents();
 
                 // Wait 250ms
                 Thread.Sleep(250);
@@ -184,12 +167,20 @@ namespace CSM.Networking
         /// </summary>
         public void Disconnect()
         {
+            bool needsUnload = (Status == ClientStatus.Connected);
+
             // Update status and stop client
             Status = ClientStatus.Disconnected;
             _netClient.Stop();
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
             ToolSimulator.Clear();
+
+            if (needsUnload)
+            {
+                // Go back to the main menu after disconnecting
+                Singleton<LoadingManager>.instance.UnloadLevel();
+            }
 
             _logger.Info("Disconnected from server");
         }
