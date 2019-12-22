@@ -28,7 +28,7 @@ namespace CSM.Injections
         {
             _logger.Info("Creating join game button...");
 
-            UIPanel uiView = UIView.GetAView().FindUIComponent("Menu") as UIPanel;
+            UIPanel uiView = UIView.GetAView()?.FindUIComponent("Menu") as UIPanel;
 
             if (uiView == null)
                 return;

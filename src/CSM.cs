@@ -4,12 +4,13 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Reflection;
+using CSM.Injections;
 
 namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
-        private readonly Harmony _harmony;
+        private Harmony _harmony;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -17,7 +18,10 @@ namespace CSM
         {
             // Setup the correct logging configuration
             SetupLogging();
+        }
 
+        public void OnEnabled()
+        {
             try
             {
                 _logger.Info("Attempting to patch Cities: Skylines using Harmony...");
@@ -30,10 +34,12 @@ namespace CSM
                 _logger.Error(ex, "Patching failed");
             }
 
+            MainMenuHandler.CreateOrUpdateJoinGameButton();
+
             _logger.Info("Construction Complete!");
         }
 
-        ~CSM()
+        public void OnDisabled()
         {
             _logger.Info("Unpatching Harmony...");
             _harmony.UnpatchAll();
