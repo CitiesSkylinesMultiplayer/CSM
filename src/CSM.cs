@@ -5,6 +5,8 @@ using NLog.Targets;
 using System;
 using System.Reflection;
 using CSM.Injections;
+using CSM.Panels;
+using ICities;
 
 namespace CSM
 {
@@ -14,9 +16,12 @@ namespace CSM
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
+        private readonly Settings _settings;
+
         public CSM()
         {
             // Setup the correct logging configuration
+            _settings = new Settings();
             SetupLogging();
         }
 
@@ -46,6 +51,8 @@ namespace CSM
             _logger.Info("Destruction complete!");
         }
 
+        public void OnSettingsUI(UIHelperBase helper) => SettingsPanel.Build(helper, _settings);
+
         /// <summary>
         ///     This code sets up the different
         ///     logging levels for the mod.
@@ -71,10 +78,17 @@ namespace CSM
             // Target for console logging
             ConsoleTarget logConsole = new ConsoleTarget("logconsole") { Layout = layout };
 
-            // While in development set both levels to start at debug, later on we
-            // want to set an option to do this.
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logConsole);
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+            // If debug logging is enabled
+            if (_settings.DebugLogging.value)
+            {
+                config.AddRule(LogLevel.Debug, LogLevel.Fatal, logConsole);
+                config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+            }
+            else
+            {
+                config.AddRule(LogLevel.Info, LogLevel.Fatal, logConsole);
+                config.AddRule(LogLevel.Info, LogLevel.Fatal, logfile);
+            }
 
             LogManager.Configuration = config;
         }
