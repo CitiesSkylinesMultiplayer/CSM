@@ -263,3 +263,5 @@ __pycache__/
 
 .vscode/
 assemblies/
+!assemblies/0Harmony.dll
+!assemblies/Steamworks.NET.dll

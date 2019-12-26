@@ -47,6 +47,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\assemblies\ICities.dll</HintPath>
     </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\assemblies\Steamworks.NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -293,6 +296,7 @@
       <Version>2.4.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('windows'))">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>

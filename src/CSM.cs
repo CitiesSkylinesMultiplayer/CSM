@@ -7,6 +7,7 @@ using System.Reflection;
 using CSM.Injections;
 using CSM.Panels;
 using ICities;
+using Steamworks;
 
 namespace CSM
 {
@@ -40,6 +41,12 @@ namespace CSM
             }
 
             MainMenuHandler.CreateOrUpdateJoinGameButton();
+
+            // Log if we are running in a steam context
+            if (SteamAPI.IsSteamRunning())
+            {
+                _logger.Info("Mod is running in a steam context. Steam features will be enabled.");
+            }
 
             _logger.Info("Construction Complete!");
         }
