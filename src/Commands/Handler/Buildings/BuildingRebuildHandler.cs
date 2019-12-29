@@ -27,8 +27,11 @@ namespace CSM.Commands.Handler.Buildings
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
 
-            // TODO: Prevent money from being removed twice!
+            FetchResource.DontFetchResource = true;
+            
             delegateType.GetMethod("<>m__0", ReflectionHelper.AllAccessFlags)?.Invoke(rebuildClickedDelegate, null);
+            
+            FetchResource.DontFetchResource = false;
 
             ArrayHandler.StopApplying();
 
