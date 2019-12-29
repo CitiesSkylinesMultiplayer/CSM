@@ -11,7 +11,7 @@ namespace CSM.Commands.Handler.Buildings
             IgnoreHelper.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
-            BuildingManager.instance.UpgradeBuilding(command.Building);
+            BuildingManager.instance.UpgradeBuilding(command.Building, false);
 
             ArrayHandler.StopApplying();
             IgnoreHelper.EndIgnore();
