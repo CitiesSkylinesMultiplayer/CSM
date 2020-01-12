@@ -110,6 +110,7 @@
     <Compile Include="Commands\Data\Internal\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\Internal\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerListCommand.cs" />
+    <Compile Include="Commands\Data\Internal\RequestWorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Internal\WorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeCityNameCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeNameCommand.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="Commands\Handler\Internal\FinishTransactionHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerLocationHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\RequestWorldTransferHandler.cs" />
     <Compile Include="Commands\Handler\Internal\WorldTransferHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeCityNameHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeNameHandler.cs" />
