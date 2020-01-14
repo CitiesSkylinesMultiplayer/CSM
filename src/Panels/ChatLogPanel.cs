@@ -98,6 +98,9 @@ namespace CSM.Panels
                          PrintGameMessage("Requesting the save game from the server");
                          Command.SendToServer(new RequestWorldTransferCommand());
                         }
+                     else {
+                         PrintGameMessage("You are the server");
+                        }
                     }
                 )
             };
