@@ -95,8 +95,9 @@ namespace CSM.Panels
                 new ChatCommand("sync", "Redownloads the entire save", (command) => {
                     if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                         {
-                         PrintGameMessage("Requesting the save game from the server");
-                         Command.SendToServer(new RequestWorldTransferCommand());
+                             MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
+                             PrintGameMessage("Requesting the save game from the server");
+                             Command.SendToServer(new RequestWorldTransferCommand());
                         }
                      else {
                          PrintGameMessage("You are the server");

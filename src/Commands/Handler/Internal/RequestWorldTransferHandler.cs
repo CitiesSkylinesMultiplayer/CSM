@@ -1,6 +1,8 @@
 ﻿using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
+using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,27 @@ namespace CSM.Commands.Handler.Internal
     {
         protected override void Handle(RequestWorldTransferCommand command)
         {
-            ///send the world to the client
-            Command.SendToClient(MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId], new WorldTransferCommand
+            //pause game
+            MultiplayerManager.Instance.GameBlocked = true;
+            SimulationManager.instance.SimulationPaused = true;
+            //saving world
+            SaveHelpers.SaveServerLevel();
+
+            new Thread(() =>
             {
-                World = SaveHelpers.GetWorldFile()
-            });
+                while (SaveHelpers.IsSaving())
+                {
+                    Thread.Sleep(100);
+                }
+                //send the world to the client
+                Command.SendToClient(MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId], new WorldTransferCommand
+                {
+                    World = SaveHelpers.GetWorldFile()
+                });
+
+                newPlayer.Status = ClientStatus.Loading;
+            }).Start();
+            
         }
     }
 }
