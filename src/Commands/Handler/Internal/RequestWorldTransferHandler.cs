@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -34,7 +35,7 @@ namespace CSM.Commands.Handler.Internal
                     World = SaveHelpers.GetWorldFile()
                 });
 
-                newPlayer.Status = ClientStatus.Loading;
+                MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId].Status = ClientStatus.Loading;
             }).Start();
             
         }
