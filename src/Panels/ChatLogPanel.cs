@@ -91,7 +91,19 @@ namespace CSM.Panels
                 new ChatCommand("open-log", "Opens the multiplayer log.", (command) =>
                 {
                     Process.Start(Path.GetFullPath(".") + "/multiplayer-logs/log-current.txt");
-                })
+                }),
+                new ChatCommand("sync", "Redownloads the entire save", (command) => {
+                    if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+                        {
+                             MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
+                             PrintGameMessage("Requesting the save game from the server");
+                             Command.SendToServer(new RequestWorldTransferCommand());
+                        }
+                     else {
+                         PrintGameMessage("You are the server");
+                        }
+                    }
+                )
             };
         }
 
