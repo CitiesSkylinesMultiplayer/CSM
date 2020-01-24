@@ -120,8 +120,23 @@ namespace CSM.Commands.Handler.Internal
 
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);
-            newPlayer.Status = ClientStatus.Downloading;
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
+            
+            // Send the result command
+            Command.SendToClient(peer, new ConnectionResultCommand
+            {
+                Success = true,
+                ClientId = peer.Id
+            });
+
+            PrepareWorldLoad(newPlayer);
+
+            MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
+        }
+
+        public static void PrepareWorldLoad(Player newPlayer)
+        {
+            newPlayer.Status = ClientStatus.Downloading;
 
             // Open status window
             ThreadHelper.dispatcher.Dispatch(() =>
@@ -147,13 +162,6 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.GameBlocked = true;
             SimulationManager.instance.SimulationPaused = true;
 
-            // Send the result command
-            Command.SendToClient(peer, new ConnectionResultCommand
-            {
-                Success = true,
-                ClientId = peer.Id
-            });
-
             // Get a serialized version of the server world to send to the player.
             SaveHelpers.SaveServerLevel();
 
@@ -164,15 +172,13 @@ namespace CSM.Commands.Handler.Internal
                     Thread.Sleep(100);
                 }
 
-                Command.SendToClient(peer, new WorldTransferCommand
+                Command.SendToClient(newPlayer, new WorldTransferCommand
                 {
                     World = SaveHelpers.GetWorldFile()
                 });
 
                 newPlayer.Status = ClientStatus.Loading;
             }).Start();
-
-            MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
         }
     }
 }

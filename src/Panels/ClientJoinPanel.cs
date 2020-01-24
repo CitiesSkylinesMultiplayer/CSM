@@ -14,6 +14,8 @@ namespace CSM.Panels
 
         private UILabel _statusLabel;
 
+        public bool IsSelf { get; set; }
+
         public override void Start()
         {
             backgroundSprite = "GenericPanel";
@@ -31,12 +33,18 @@ namespace CSM.Panels
 
             // Connecting Status
             _statusLabel = this.CreateTitleLabel("", new Vector2(0, 0));
-            UpdateText("A client is joining...");
+            UpdateText();
 
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
             {
                 StartCheck();
             }
+        }
+
+        public void UpdateText()
+        {
+            if (_statusLabel)
+                UpdateText(IsSelf ? "Re-downloading save game..." : "A client is joining...");
         }
 
         private void UpdateText(string message) 
