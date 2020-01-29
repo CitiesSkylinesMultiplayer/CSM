@@ -41,6 +41,9 @@ namespace CSM.Commands.Handler.Internal
                     {
                         clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
                     }
+
+                    clientJoinPanel.IsSelf = false;
+                    clientJoinPanel.UpdateText();
                     clientJoinPanel.Focus();
                 });
                 MultiplayerManager.Instance.GameBlocked = true;

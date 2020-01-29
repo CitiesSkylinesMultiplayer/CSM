@@ -1,43 +1,20 @@
 ﻿using CSM.Commands.Data.Internal;
-using CSM.Helpers;
 using CSM.Networking;
-using ColossalFramework.Threading;
-using ColossalFramework.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler.Internal
 {
-   
     class RequestWorldTransferHandler : CommandHandler<RequestWorldTransferCommand>
     {
+        public RequestWorldTransferHandler()
+        {
+            TransactionCmd = false;
+            RelayOnServer = false;
+        }
+        
         protected override void Handle(RequestWorldTransferCommand command)
         {
-            //pause game
-            MultiplayerManager.Instance.GameBlocked = true;
-            SimulationManager.instance.SimulationPaused = true;
-            //saving world
-            SaveHelpers.SaveServerLevel();
-
-            new Thread(() =>
-            {
-                while (SaveHelpers.IsSaving())
-                {
-                    Thread.Sleep(100);
-                }
-                //send the world to the client
-                Command.SendToClient(MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId], new WorldTransferCommand
-                {
-                    World = SaveHelpers.GetWorldFile()
-                });
-
-                MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId].Status = ClientStatus.Loading;
-            }).Start();
-            
+            Player newPlayer = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId];
+            ConnectionRequestHandler.PrepareWorldLoad(newPlayer);
         }
     }
 }

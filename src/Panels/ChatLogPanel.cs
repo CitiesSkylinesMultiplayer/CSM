@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using ColossalFramework.Threading;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
 using UnityEngine;
@@ -92,18 +93,38 @@ namespace CSM.Panels
                 {
                     Process.Start(Path.GetFullPath(".") + "/multiplayer-logs/log-current.txt");
                 }),
-                new ChatCommand("sync", "Redownloads the entire save", (command) => {
+                new ChatCommand("sync", "Redownloads the entire save", (command) =>
+                {
                     if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+                    {
+                        PrintGameMessage("Requesting the save game from the server");
+
+                        // Show overlay panel
+                        ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                        if (clientJoinPanel != null)
                         {
-                             MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
-                             PrintGameMessage("Requesting the save game from the server");
-                             Command.SendToServer(new RequestWorldTransferCommand());
+                            clientJoinPanel.isVisible = true;
                         }
-                     else {
-                         PrintGameMessage("You are the server");
+                        else 
+                        {
+                            clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
                         }
+
+                        clientJoinPanel.IsSelf = true;
+                        clientJoinPanel.UpdateText();
+                        clientJoinPanel.Focus();
+
+                        MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
+                        SimulationManager.instance.SimulationPaused = true;
+                        MultiplayerManager.Instance.GameBlocked = true;
+
+                        Command.SendToServer(new RequestWorldTransferCommand());
                     }
-                )
+                    else
+                    {
+                        PrintGameMessage("You are the server");
+                    }
+                })
             };
         }
 
