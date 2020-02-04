@@ -1,6 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
+title: ''
+labels: bug
+assignees: ''
 
 ---
 
@@ -19,6 +22,17 @@ A clear and concise description of what you expected to happen.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
+
+**Active DLCs**
+Please add a list of your enabled DLCs here.
+
+**Active mods**
+Please add a list of your installed and enabled mods here.
+
+**Versions**
+Type /version into the in-game chat and paste the version numbers here:
+- Mod version: 
+- Game version: 
 
 **Additional context**
 Add any other context about the problem here.
