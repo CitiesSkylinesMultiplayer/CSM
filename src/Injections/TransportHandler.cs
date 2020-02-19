@@ -620,7 +620,7 @@ namespace CSM.Injections
         }
     }
 
-    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch]
     public class MoveStopLine
     {
         public static void Prefix()
