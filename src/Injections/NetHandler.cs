@@ -124,7 +124,7 @@ namespace CSM.Injections
         }
     }
 
-    [HarmonyPatch(typeof(NetManager))]
+    [HarmonyPatch]
     public class ReleaseNodeImpl
     {
         /// <summary>
@@ -154,7 +154,7 @@ namespace CSM.Injections
         }
     }
 
-    [HarmonyPatch(typeof(NetManager))]
+    [HarmonyPatch]
     public class ReleaseSegmentImpl
     {
         /// <summary>
