@@ -316,7 +316,7 @@ namespace CSM.Injections
                 typeof(UniqueFactoryWorldInfoPanel), typeof(WarehouseWorldInfoPanel)})
             {
                 // See decompiled code with compiler generated classes
-                int anonStoreId = (t == typeof(CityServiceWorldInfoPanel)) ? 4 : 2;
+                int anonStoreId = (t == typeof(CityServiceWorldInfoPanel)) ? 6 : 2;
                 Type delegateHandler = t.GetNestedType("<OnRebuildClicked>c__AnonStorey" + anonStoreId, ReflectionHelper.AllAccessFlags);
                 yield return delegateHandler.GetMethod("<>m__0", ReflectionHelper.AllAccessFlags);
             }
