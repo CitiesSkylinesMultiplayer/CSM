@@ -101,11 +101,17 @@ If ($Update)
     {
         # Full folder path
         $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities.App$($Sep)Contents$($Sep)Resources$($Sep)Data$($Sep)Managed$($Sep)"
-    } 
+    }
     Else
     {
         # Full folder path
         $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+
+        # Try with lowercase SteamApps (linux)
+        if (!(Test-Path -Path $AssemblyDirectory))
+        {
+            $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+        }
     }
 
     # Test to see if the path is valid
@@ -118,6 +124,9 @@ If ($Update)
 
     # Start copying the items
     Write-Host "[CSM Update Script] Copying assemblies..."
+
+    # Create assemblies folder if it doesn't exist
+    New-Item -ItemType directory -Force -Path "..$($Sep)assemblies" | Out-Null
 
     Copy-Item -Path "$($AssemblyDirectory)Assembly-CSharp.dll"  -Destination "..$($Sep)assemblies$($Sep)Assembly-CSharp.dll" -Force
     Copy-Item -Path "$($AssemblyDirectory)ColossalManaged.dll"  -Destination "..$($Sep)assemblies$($Sep)ColossalManaged.dll" -Force

@@ -1,4 +1,6 @@
-﻿using ColossalFramework.UI;
+﻿using System;
+using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Networking;
@@ -6,6 +8,7 @@ using CSM.Networking.Status;
 using CSM.Panels;
 using ICities;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CSM.Extensions
 {
@@ -25,10 +28,18 @@ namespace CSM.Extensions
         {
             base.OnLevelLoaded(mode);
 
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client) 
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
                 Command.SendToServer(new ClientLevelLoadedCommand());
+
+                // Hide join panel (from resyncing)
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                if (clientJoinPanel != null)
+                {
+                    clientJoinPanel.isVisible = false;
+                }
+                MultiplayerManager.Instance.GameBlocked = false;
             }
 
             UIView uiView = UIView.GetAView();
@@ -82,18 +93,25 @@ namespace CSM.Extensions
             base.OnLevelUnloading();
 
             //Code below destroys any created UI from the screen.
-            UIComponent _getui = UIView.GetAView().FindUIComponent<UIComponent>("ChatLogPanel");
-
-            UIComponent[] children = _getui.GetComponentsInChildren<UIComponent>();
-
-            foreach (UIComponent child in children)
+            try
             {
-                Object.Destroy(child);
-            }
+                UIComponent _getui = UIView.GetAView().FindUIComponent<UIComponent>("ChatLogPanel");
+                UIComponent[] children = _getui.GetComponentsInChildren<UIComponent>();
 
-            // Destroy duplicated multiplayer button
-            UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
-            Object.Destroy(temp);
+                foreach (UIComponent child in children)
+                {
+                    Object.Destroy(child);
+                }
+
+                // Destroy duplicated multiplayer button
+                UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
+                Object.Destroy(temp);
+            }
+            catch (NullReferenceException)
+            {
+                // Ignore, because it sometimes throws them... (Not caused by us)
+                // TODO: Rework this to be more stable
+            }
         }
     }
 }
