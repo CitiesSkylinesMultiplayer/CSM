@@ -4,10 +4,10 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Reflection;
+using CSM.Helpers;
 using CSM.Injections;
 using CSM.Panels;
 using ICities;
-using Steamworks;
 
 namespace CSM
 {
@@ -18,6 +18,8 @@ namespace CSM
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly Settings _settings;
+
+        public static bool IsSteamPresent { get; private set; }
 
         public CSM()
         {
@@ -42,10 +44,22 @@ namespace CSM
 
             MainMenuHandler.CreateOrUpdateJoinGameButton();
 
-            // Log if we are running in a steam context
-            if (SteamAPI.IsSteamRunning())
+            try
             {
-                _logger.Info("Mod is running in a steam context. Steam features will be enabled.");
+                IsSteamPresent = SteamHelpers.Init();
+                if (IsSteamPresent)
+                {
+                    _logger.Info("Mod is running in a steam context. Steam features will be enabled.");
+                }
+                else
+                {
+                    _logger.Error("Steam API init returned false! Steam features will not be enabled.");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error running Steam API init: " + e.ToString());
+                IsSteamPresent = false;
             }
 
             _logger.Info("Construction Complete!");

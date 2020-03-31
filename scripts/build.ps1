@@ -178,7 +178,6 @@ If ($Install)
     Copy-Item -Path "$($OutputDirectory)$($Sep)System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)NLog.dll"          	  -Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)Steamworks.NET.dll"    -Destination "$($ModDirectory)$($Sep)Steamworks.NET.dll" -Force
 
     # Done
     Write-Host "[CSM Install Script] Completed Copy"

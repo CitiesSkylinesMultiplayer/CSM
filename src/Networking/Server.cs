@@ -105,9 +105,17 @@ namespace CSM.Networking
             _hostPlayer.Status = ClientStatus.Connected;
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
+            // Set the steam presence 'connect' key. This allows users to click "Join Game" within the steam overlay.
+            if (CSM.IsSteamPresent)
+            {
+                ChatLogPanel.PrintGameMessage("Setting up Steam support...");
+                SteamHelpers.SetRichPresence("connect", "csm_connect=true");
+            }
+
             // Update the console to let the user know the server is running
             _logger.Info("The server has started.");
             ChatLogPanel.PrintGameMessage("The server has started.");
+
             return true;
         }
 
@@ -123,6 +131,12 @@ namespace CSM.Networking
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
             ToolSimulator.Clear();
+
+            // Set the steam presence 'connect' to null/empty. This prevents users from clicking "Join Game".
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.SetRichPresence("connect", null);
+            }
 
             _logger.Info("Server stopped.");
         }
