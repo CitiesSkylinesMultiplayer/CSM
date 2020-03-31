@@ -108,7 +108,6 @@ namespace CSM.Networking
             // Set the steam presence 'connect' key. This allows users to click "Join Game" within the steam overlay.
             if (CSM.IsSteamPresent)
             {
-                ChatLogPanel.PrintGameMessage("Setting up Steam support...");
                 SteamHelpers.SetRichPresence("connect", "csm_connect=true");
             }
 
