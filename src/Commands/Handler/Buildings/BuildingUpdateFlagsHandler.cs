@@ -7,9 +7,6 @@ namespace CSM.Commands.Handler.Buildings
 {
     public class BuildingUpdateFlagsHandler : CommandHandler<BuildingUpdateFlagsCommand>
     {
-        private static object rebuildClickedDelegate;
-        private static Type delegateType = null;
-        
         protected override void Handle(BuildingUpdateFlagsCommand command)
         {
             IgnoreHelper.StartIgnore();

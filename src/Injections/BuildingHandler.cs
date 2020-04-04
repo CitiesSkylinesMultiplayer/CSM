@@ -412,10 +412,6 @@ namespace CSM.Injections
                 return;
             }
 
-            Building b = BuildingManager.instance.m_buildings.m_buffer[building];
-            Debug.Log("Initial B Status: " + (b.m_flags.IsFlagSet(Building.Flags.Abandoned) ? "Abandoned": "Not Abandoned"));
-            Debug.Log("Initial B Flags: " + b.m_flags);
-            Debug.Log("Mask: " + changeMask);
             __state = true;
 
 
@@ -430,10 +426,6 @@ namespace CSM.Injections
 
             IgnoreHelper.EndIgnore();
             ArrayHandler.StopCollecting();
-
-            Building b = BuildingManager.instance.m_buildings.m_buffer[building];
-            Debug.Log("Later B Status: " + (b.m_flags.IsFlagSet(Building.Flags.Abandoned) ? "Abandoned" : "Not Abandoned"));
-            Debug.Log("Later B Flags: " + b.m_flags);
 
             Command.SendToAll(new BuildingUpdateFlagsCommand()
             {
