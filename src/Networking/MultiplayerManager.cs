@@ -1,4 +1,6 @@
-﻿using CSM.Networking.Config;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
+using CSM.Networking.Config;
 using CSM.Panels;
 using System;
 using System.Collections.Generic;
@@ -28,7 +30,7 @@ namespace CSM.Networking
         /// </summary>
         public Client CurrentClient { get; } = new Client();
 
-        public bool GameBlocked { get; set; } = false;
+        public bool GameBlocked { get; private set; } = false;
 
         public void ProcessEvents()
         {
@@ -126,6 +128,46 @@ namespace CSM.Networking
                     break;
             }
             CurrentRole = MultiplayerRole.None;
+        }
+
+        public void BlockGame()
+        {
+            BlockGame(true, "");
+        }
+
+        public void BlockGame(string JoiningUsername)
+        {
+            BlockGame(false, JoiningUsername);
+        }
+
+        private void BlockGame(bool IsSelf, string JoiningUsername)
+        {
+            Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            {
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                if (clientJoinPanel == null)
+                {
+                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
+                }
+
+                clientJoinPanel.IsSelf = IsSelf;
+                clientJoinPanel.JoiningUsername = JoiningUsername;
+                clientJoinPanel.ShowPanel();
+            });
+            GameBlocked = true;
+        }
+
+        public void UnblockGame()
+        {
+            Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            {
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                if (clientJoinPanel != null)
+                {
+                    clientJoinPanel.HidePanel();
+                }
+            });
+            GameBlocked = false;
         }
 
         private static MultiplayerManager _multiplayerInstance;

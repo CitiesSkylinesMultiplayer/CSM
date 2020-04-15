@@ -261,7 +261,7 @@ namespace CSM.Networking
             _logger.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");
 
             // Log the reason to the console if we are not in 'connecting' state
-            if (Status != ClientStatus.Connecting)
+            if (Status == ClientStatus.Connected)
             {
                 switch (disconnectInfo.Reason)
                 {
@@ -284,7 +284,7 @@ namespace CSM.Networking
             }
 
             // If we are connected, disconnect
-            if (Status == ClientStatus.Connected)
+            if (Status != ClientStatus.Disconnected && Status != ClientStatus.Connecting)
                 MultiplayerManager.Instance.StopEverything();
 
             // In the case of ClientStatus.Connecting, this also ends the wait loop

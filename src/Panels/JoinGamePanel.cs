@@ -171,8 +171,11 @@ namespace CSM.Panels
                         // See WorldTransferHandler for actual loading
                         _connectionStatus.text = "";
                         isVisible = false;
-                        SyncPanel syncPanel = (SyncPanel)UIView.GetAView().AddUIComponent(typeof(SyncPanel));
-                        syncPanel.Focus();
+                        ClientJoinPanel clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
+                        clientJoinPanel.IsSelf = false;
+                        clientJoinPanel.IsFirstJoin = true;
+                        clientJoinPanel.JoiningUsername = MultiplayerManager.Instance.CurrentClient.Config.Username;
+                        clientJoinPanel.ShowPanel();
                     }
                 });
             });

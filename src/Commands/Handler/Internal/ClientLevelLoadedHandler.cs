@@ -18,9 +18,10 @@ namespace CSM.Commands.Handler.Internal
             P.Status = ClientStatus.Connected;
             Command.SendToOtherClients(new ClientJoiningCommand
             {
-                JoiningFinished = true
+                JoiningFinished = true,
+                JoiningUsername = P.Username
             }, P);
-            MultiplayerManager.Instance.GameBlocked = false;
+            MultiplayerManager.Instance.UnblockGame();
         }
     }
 }

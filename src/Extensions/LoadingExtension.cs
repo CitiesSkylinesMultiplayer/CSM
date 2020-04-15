@@ -1,5 +1,4 @@
 ﻿using System;
-using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
@@ -34,12 +33,7 @@ namespace CSM.Extensions
                 Command.SendToServer(new ClientLevelLoadedCommand());
 
                 // Hide join panel (from resyncing)
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
-                if (clientJoinPanel != null)
-                {
-                    clientJoinPanel.isVisible = false;
-                }
-                MultiplayerManager.Instance.GameBlocked = false;
+                MultiplayerManager.Instance.UnblockGame();
             }
 
             UIView uiView = UIView.GetAView();
@@ -105,7 +99,13 @@ namespace CSM.Extensions
 
                 // Destroy duplicated multiplayer button
                 UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
-                Object.Destroy(temp);
+                if (temp)
+                    Object.Destroy(temp);
+
+                // Destroy multiplayer join panel
+                UIComponent clientJoinPanel = UIView.GetAView().FindUIComponent("MPClientJoinPanel");
+                if (clientJoinPanel)
+                    Object.Destroy(clientJoinPanel);
             }
             catch (NullReferenceException)
             {
