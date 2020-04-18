@@ -100,7 +100,7 @@ namespace CSM.Panels
 
                         MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
                         SimulationManager.instance.SimulationPaused = true;
-                        MultiplayerManager.Instance.BlockGame();
+                        MultiplayerManager.Instance.BlockGameReSync();
 
                         Command.SendToServer(new RequestWorldTransferCommand());
                     }

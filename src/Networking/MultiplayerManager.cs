@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Networking.Config;
 using CSM.Panels;
@@ -130,19 +131,26 @@ namespace CSM.Networking
             CurrentRole = MultiplayerRole.None;
         }
 
-        public void BlockGame()
+        public void BlockGameReSync()
         {
-            BlockGame(true, "");
+            BlockGame(true, CurrentClient.Config.Username, false);
         }
 
         public void BlockGame(string JoiningUsername)
         {
-            BlockGame(false, JoiningUsername);
+            BlockGame(false, JoiningUsername, false);
         }
 
-        private void BlockGame(bool IsSelf, string JoiningUsername)
+        public void BlockGameFirstJoin()
         {
-            Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            BlockGame(false, CurrentClient.Config.Username, true);
+        }
+
+        private void BlockGame(bool IsSelf, string JoiningUsername, bool IsFirstJoin)
+        {
+            if (GameBlocked)
+                return;
+            QueueMainThread(() =>
             {
                 ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
                 if (clientJoinPanel == null)
@@ -152,22 +160,39 @@ namespace CSM.Networking
 
                 clientJoinPanel.IsSelf = IsSelf;
                 clientJoinPanel.JoiningUsername = JoiningUsername;
+                clientJoinPanel.IsFirstJoin = IsFirstJoin;
                 clientJoinPanel.ShowPanel();
             });
-            GameBlocked = true;
+
+            if (!IsFirstJoin)
+                GameBlocked = true;
         }
 
-        public void UnblockGame()
+        public void UnblockGame(bool RemoveFromUI = false)
         {
-            Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+            if (!GameBlocked)
+                return;
+            QueueMainThread(() =>
             {
                 ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
                 if (clientJoinPanel != null)
                 {
-                    clientJoinPanel.HidePanel();
+                    clientJoinPanel.HidePanel(RemoveFromUI);
                 }
             });
             GameBlocked = false;
+        }
+
+        private static void QueueMainThread(Action action)
+        {
+            if (Dispatcher.currentSafe == ThreadHelper.dispatcher)
+            {
+                action();
+            }
+            else
+            {
+                ThreadHelper.dispatcher.Dispatch(action);
+            }
         }
 
         private static MultiplayerManager _multiplayerInstance;

@@ -31,9 +31,6 @@ namespace CSM.Extensions
             {
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
                 Command.SendToServer(new ClientLevelLoadedCommand());
-
-                // Hide join panel (from resyncing)
-                MultiplayerManager.Instance.UnblockGame();
             }
 
             UIView uiView = UIView.GetAView();

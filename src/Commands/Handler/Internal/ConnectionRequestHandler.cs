@@ -145,7 +145,10 @@ namespace CSM.Commands.Handler.Internal
                 JoiningUsername = newPlayer.Username
             }, newPlayer);
 
-            // Wait to get all remaining pakets processed
+            /* 
+             * Wait to get all remaining pakets processed, because unprocessed packets
+             * before saving may end in an desynced game for the joining client
+             */
             Thread.Sleep(2000);
 
             // Get a serialized version of the server world to send to the player.

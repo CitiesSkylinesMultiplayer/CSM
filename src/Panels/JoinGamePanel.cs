@@ -1,10 +1,8 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
-using CSM.Networking.Status;
 using ColossalFramework.Threading;
 
 namespace CSM.Panels
@@ -171,11 +169,8 @@ namespace CSM.Panels
                         // See WorldTransferHandler for actual loading
                         _connectionStatus.text = "";
                         isVisible = false;
-                        ClientJoinPanel clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
-                        clientJoinPanel.IsSelf = false;
-                        clientJoinPanel.IsFirstJoin = true;
-                        clientJoinPanel.JoiningUsername = MultiplayerManager.Instance.CurrentClient.Config.Username;
-                        clientJoinPanel.ShowPanel();
+
+                        MultiplayerManager.Instance.BlockGameFirstJoin();
                     }
                 });
             });
