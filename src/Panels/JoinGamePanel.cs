@@ -1,10 +1,8 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
-using CSM.Networking.Status;
 using ColossalFramework.Threading;
 
 namespace CSM.Panels
@@ -171,8 +169,8 @@ namespace CSM.Panels
                         // See WorldTransferHandler for actual loading
                         _connectionStatus.text = "";
                         isVisible = false;
-                        SyncPanel syncPanel = (SyncPanel)UIView.GetAView().AddUIComponent(typeof(SyncPanel));
-                        syncPanel.Focus();
+
+                        MultiplayerManager.Instance.BlockGameFirstJoin();
                     }
                 });
             });

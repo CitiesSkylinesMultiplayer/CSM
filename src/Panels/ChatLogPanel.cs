@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using ColossalFramework.Threading;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
 using UnityEngine;
@@ -99,24 +98,9 @@ namespace CSM.Panels
                     {
                         PrintGameMessage("Requesting the save game from the server");
 
-                        // Show overlay panel
-                        ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
-                        if (clientJoinPanel != null)
-                        {
-                            clientJoinPanel.isVisible = true;
-                        }
-                        else 
-                        {
-                            clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
-                        }
-
-                        clientJoinPanel.IsSelf = true;
-                        clientJoinPanel.UpdateText();
-                        clientJoinPanel.Focus();
-
                         MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
                         SimulationManager.instance.SimulationPaused = true;
-                        MultiplayerManager.Instance.GameBlocked = true;
+                        MultiplayerManager.Instance.BlockGameReSync();
 
                         Command.SendToServer(new RequestWorldTransferCommand());
                     }

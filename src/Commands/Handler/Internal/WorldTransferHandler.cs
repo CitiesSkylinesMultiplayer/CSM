@@ -2,7 +2,6 @@
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
-using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -18,21 +17,20 @@ namespace CSM.Commands.Handler.Internal
 
         protected override void Handle(WorldTransferCommand command)
         {
-            new Thread(() =>
+            if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Downloading)
             {
-                if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Downloading)
-                {
-                    _logger.Info("World has been received, preparing to load world.");
+                _logger.Info("World has been received, preparing to load world.");
 
-                    MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
+                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
 
-                    MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
+                MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
 
-                    SaveHelpers.LoadLevel(command.World);
+                SaveHelpers.LoadLevel(command.World);
 
-                    // See LoadingExtension for events after level loaded
-                }
-            }).Start();
+                MultiplayerManager.Instance.UnblockGame(true);
+
+                // See LoadingExtension for events after level loaded
+            }
         }
     }
 }

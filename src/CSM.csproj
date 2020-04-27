@@ -277,7 +277,6 @@
     <Compile Include="Panels\ChatLogPanel.cs" />
     <Compile Include="Panels\ClientJoinPanel.cs" />
     <Compile Include="Panels\SettingsPanel.cs" />
-    <Compile Include="Panels\SyncPanel.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\ManageGamePanel.cs" />
     <Compile Include="Panels\HostGamePanel.cs" />

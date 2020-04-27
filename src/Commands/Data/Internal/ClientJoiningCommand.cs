@@ -18,5 +18,11 @@ namespace CSM.Commands.Data.Internal
         /// </summary>
         [ProtoMember(1)]
         public bool JoiningFinished { get; set; }
+
+        /// <summary>
+        ///     Username of the joining player
+        /// </summary>
+        [ProtoMember(2)]
+        public string JoiningUsername { get; set; }
     }
 }
