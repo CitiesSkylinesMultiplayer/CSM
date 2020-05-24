@@ -11,7 +11,15 @@ namespace CSM.Models
         public string Username;
         public string Password;
 
-        public JoinGameData(string ip, string port, string username, string password)
+        public JoinGameData()
+        {
+            IP = "localhost";
+            Port = "4320";
+            Username = "";
+            Password = "";
+        }
+
+        public void Update(string ip, string port, string username, string password)
         {
             IP = ip;
             Port = port;
