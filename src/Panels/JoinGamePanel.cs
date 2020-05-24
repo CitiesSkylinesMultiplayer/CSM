@@ -28,10 +28,11 @@ namespace CSM.Panels
         public static Color playerColor = Color.red;
 
         private static string _dataFile = "multiplayer-data.json";
+        JoinGameData _joinGameData;
 
         public override void Start()
         {
-            JoinGameData joinGameData = Read(_dataFile);
+            _joinGameData = Load(_dataFile);
 
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
@@ -56,22 +57,22 @@ namespace CSM.Panels
             this.CreateLabel("IP Address:", new Vector2(10, -70));
 
             // IP Address field
-            _ipAddressField = this.CreateTextField(joinGameData.IP, new Vector2(10, -100));
+            _ipAddressField = this.CreateTextField(_joinGameData.IP, new Vector2(10, -100));
 
             // Port Label
             this.CreateLabel("Port:", new Vector2(10, -150));
 
             // Port field
-            _portField = this.CreateTextField(joinGameData.Port, new Vector2(10, -180));
+            _portField = this.CreateTextField(_joinGameData.Port, new Vector2(10, -180));
             _portField.numericalOnly = true;
 
             // Username label
             this.CreateLabel("Username:", new Vector2(10, -230));
 
             // Username field
-            _usernameField = this.CreateTextField(joinGameData.Username, new Vector2(10, -260));
+            _usernameField = this.CreateTextField(_joinGameData.Username, new Vector2(10, -260));
             _usernameField.width -= 40;
-            if (PlatformService.active && PlatformService.personaName != null && joinGameData.Username != "")
+            if (PlatformService.active && PlatformService.personaName != null && _joinGameData.Username != "")
             {
                 _usernameField.text = PlatformService.personaName;
             }
@@ -99,7 +100,7 @@ namespace CSM.Panels
             _passwordBox = this.CreateCheckBox("Show Password", new Vector2(120, -310));
 
             // Password field
-            _passwordField = this.CreateTextField(joinGameData.Password, new Vector2(10, -340));
+            _passwordField = this.CreateTextField(_joinGameData.Password, new Vector2(10, -340));
             _passwordField.isPasswordField = true;
 
             // Connect to Server Button
@@ -127,9 +128,8 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            JoinGameData joinGameData = new JoinGameData(_ipAddressField.text, _portField.text, _usernameField.text, _passwordField.text);
-            
-            Save(joinGameData, _dataFile);
+            _joinGameData.Update(_ipAddressField.text, _portField.text, _usernameField.text, _passwordField.text);
+            Save(_joinGameData, _dataFile);
 
             MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
 
@@ -185,17 +185,17 @@ namespace CSM.Panels
                 });
             });
         }
-        public JoinGameData Read(string filename)
+        private JoinGameData Load(string filename)
         {
             if (!File.Exists(filename))
             {
-                return new JoinGameData("localhost", "4230", "", "");
+                return new JoinGameData();
             }
             string json = File.ReadAllText(filename);
             return JsonUtility.FromJson<JoinGameData>(json);
         }
 
-        public void Save(JoinGameData joinGameData, string filename)
+        private void Save(JoinGameData joinGameData, string filename)
         {
             File.WriteAllText(filename, joinGameData.SaveToString());
         }
