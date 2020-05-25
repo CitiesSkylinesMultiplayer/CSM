@@ -273,6 +273,8 @@
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />
     <Compile Include="Commands\TransactionHandler.cs" />
+    <Compile Include="Panels\MessagePanel.cs" />
+    <Compile Include="Panels\PanelManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Panels\ChatLogPanel.cs" />
     <Compile Include="Panels\ClientJoinPanel.cs" />

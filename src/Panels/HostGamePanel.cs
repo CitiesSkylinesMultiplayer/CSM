@@ -30,7 +30,6 @@ namespace CSM.Panels
             AddUIComponent(typeof(UIDragHandle));
 
             backgroundSprite = "GenericPanel";
-            name = "MPHostGamePanel";
             color = new Color32(110, 110, 110, 250);
 
             // Grab the view for calculating width and height of game

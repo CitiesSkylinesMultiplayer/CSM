@@ -22,7 +22,7 @@ namespace CSM.Panels
         public override void Start()
         {
             backgroundSprite = "GenericPanel";
-            name = "MPClientJoinPanel";
+            name = "ClientJoinPanel";
             color = new Color32(110, 110, 110, 220);
 
             // Grab the view for calculating width and height of game

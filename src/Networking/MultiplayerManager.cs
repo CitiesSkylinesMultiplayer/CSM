@@ -152,7 +152,7 @@ namespace CSM.Networking
                 return;
             QueueMainThread(() =>
             {
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
                 if (clientJoinPanel == null)
                 {
                     clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
@@ -174,7 +174,7 @@ namespace CSM.Networking
                 return;
             QueueMainThread(() =>
             {
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
                 if (clientJoinPanel != null)
                 {
                     clientJoinPanel.HidePanel(RemoveFromUI);
