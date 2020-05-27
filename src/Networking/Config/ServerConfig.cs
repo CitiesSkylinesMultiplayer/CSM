@@ -7,10 +7,6 @@
     public class ServerConfig
     {
         /// <summary>
-        ///     Gets path of the config file.
-        /// </summary>
-
-        /// <summary>
         ///      Creates a new configuration for the game server.
         /// </summary>
         /// <param name="port">The port to run this server on.</param>
