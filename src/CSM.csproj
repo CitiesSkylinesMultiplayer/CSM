@@ -260,12 +260,12 @@
     <Compile Include="Helpers\UiHelper.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Models\ColorSurrogate.cs" />
-    <Compile Include="Models\JoinGameData.cs" />
     <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\ControlPointSurrogate.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
+    <Compile Include="Networking\Config\ConfigData.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
     <Compile Include="Networking\IpAddress.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />

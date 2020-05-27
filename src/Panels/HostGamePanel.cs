@@ -6,6 +6,7 @@ using System.Threading;
 using UnityEngine;
 using ColossalFramework.PlatformServices;
 using ColossalFramework.Threading;
+using CSM.Networking.Config;
 
 namespace CSM.Panels
 {
@@ -24,8 +25,11 @@ namespace CSM.Panels
 
         private UICheckBox _passwordBox;
 
+        private ServerConfig _serverConfig;
         public override void Start()
         {
+            ConfigData.Load(ref _serverConfig);
+
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
 
@@ -48,7 +52,7 @@ namespace CSM.Panels
             // Port Label
             this.CreateLabel("Port:", new Vector2(10, -65));
             // Port field
-            _portField = this.CreateTextField("4230", new Vector2(10, -90));
+            _portField = this.CreateTextField(_serverConfig.Port.ToString(), new Vector2(10, -90));
             _portField.numericalOnly = true;
 
             // Password label
@@ -57,14 +61,14 @@ namespace CSM.Panels
             _passwordBox = this.CreateCheckBox("Show Password", new Vector2(10, -170));
             _passwordBox.isChecked = false;
             // Password field
-            _passwordField = this.CreateTextField("", new Vector2(10, -190));
+            _passwordField = this.CreateTextField(_serverConfig.Password, new Vector2(10, -190));
             _passwordField.isPasswordField = true;
 
             // Username label
             this.CreateLabel("Username:", new Vector2(10, -245));
             // Username field
-            _usernameField = this.CreateTextField("", new Vector2(10, -270));
-            if (PlatformService.active && PlatformService.personaName != null)
+            _usernameField = this.CreateTextField(_serverConfig.Username, new Vector2(10, -270));
+            if (PlatformService.active && PlatformService.personaName != null && _serverConfig.Username == "")
             {
                 _usernameField.text = PlatformService.personaName;
             }
@@ -123,6 +127,9 @@ namespace CSM.Panels
         /// </summary>
         private void OnCreateServerClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
+            _serverConfig = new ServerConfig(System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0);
+            ConfigData.Save(ref _serverConfig);
+
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
             _connectionStatus.text = "Setting up server...";
 
