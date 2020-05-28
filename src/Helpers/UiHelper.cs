@@ -21,10 +21,10 @@ namespace CSM.Helpers
             button.normalBgSprite = "ButtonMenu";
             button.hoveredBgSprite = "ButtonMenuHovered";
             button.pressedBgSprite = "ButtonMenuPressed";
-            button.textColor = new Color32(255, 51, 153, 150);
-            button.disabledTextColor = new Color32(7, 7, 7, 200);
+            button.textColor = new Color32(200, 200, 200, 255);
+            button.disabledTextColor = new Color32(50, 50, 50, 255);
             button.hoveredTextColor = new Color32(255, 255, 255, 255);
-            button.pressedTextColor = new Color32(204, 0, 0, 255);
+            button.pressedTextColor = new Color32(255, 255, 255, 255);
             button.playAudioEvents = true;
             button.isEnabled = true;
             button.isVisible = true;
@@ -58,7 +58,7 @@ namespace CSM.Helpers
 
         public static UITextField CreateTextField(this UIComponent uiComponent, string placeholderText,
             Vector2 position, int width = 340,
-            int height = 40)
+            int height = 43)
         {
             UITextField textField = (UITextField)uiComponent.AddUIComponent(typeof(UITextField));
             textField.atlas = GetAtlas("Ingame");
@@ -81,24 +81,6 @@ namespace CSM.Helpers
             textField.text = placeholderText;
 
             return textField;
-        }
-
-        public static UIColorField CreateColorField(this UIComponent parent, string text, Vector2 position)
-        {
-            UIComponent template = UITemplateManager.Get("LineTemplate");
-            if (template == null) return null;
-
-            UIColorField colorFIeldTemplate = template.Find<UIColorField>("LineColor");
-            if (colorFIeldTemplate == null) return null;
-
-            UIColorField colorField = Object.Instantiate(colorFIeldTemplate.gameObject).GetComponent<UIColorField>();
-            parent.AttachUIComponent(colorField.gameObject);
-            colorField.name = "PainterColorField";
-            colorField.AlignTo(parent, UIAlignAnchor.TopRight);
-            colorField.position = position;
-            colorField.size = new Vector2(40f, 40f);
-            colorField.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
-            return colorField;
         }
 
         public static UICheckBox CreateCheckBox(this UIComponent uiComponent, string text, Vector2 position)

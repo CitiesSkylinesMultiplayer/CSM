@@ -23,8 +23,6 @@ namespace CSM.Panels
         private UICheckBox _passwordBox;
         private UICheckBox _rememberBox;
 
-        private UIColorField _playerColorField;
-
         public static Color playerColor = Color.red;
 
         ClientConfig _clientConfig;
@@ -38,7 +36,6 @@ namespace CSM.Panels
             AddUIComponent(typeof(UIDragHandle));
 
             backgroundSprite = "GenericPanel";
-            name = "MPJoinGamePanel";
             color = new Color32(110, 110, 110, 255);
 
             // Grab the view for calculating width and height of game
@@ -71,26 +68,9 @@ namespace CSM.Panels
 
             // Username field
             _usernameField = this.CreateTextField(_clientConfig.Username, new Vector2(10, -260));
-            _usernameField.width -= 40;
             if (PlatformService.active && PlatformService.personaName != null && _clientConfig.Username == "")
             {
                 _usernameField.text = PlatformService.personaName;
-            }
-
-            // Add color picker to username field
-            // TODO: Figure out why this is null on main menu
-            _playerColorField = this.CreateColorField("Player Color", new Vector2(_usernameField.width + 15, -260));
-            if (_playerColorField != null)
-            {
-                _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
-                {
-                    this._usernameField.textColor = value;
-                    playerColor = value;
-                };
-                _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
-                {
-                    colorPicker.component.height += 30f;
-                };
             }
 
             // Password label
@@ -98,6 +78,11 @@ namespace CSM.Panels
 
             // Password checkbox
             _passwordBox = this.CreateCheckBox("Show Password", new Vector2(120, -310));
+
+            _passwordBox.eventClicked += (component, param) =>
+            {
+                _passwordField.isPasswordField = !_passwordBox.isChecked;
+            };
 
             // Password field
             _passwordField = this.CreateTextField(_clientConfig.Password, new Vector2(10, -340));
@@ -123,11 +108,6 @@ namespace CSM.Panels
             _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -420));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-
-            _passwordBox.eventClicked += (component, param) =>
-            {
-                _passwordField.isPasswordField = !_passwordBox.isChecked;
-            };
         }
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)

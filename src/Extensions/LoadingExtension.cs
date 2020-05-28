@@ -1,7 +1,10 @@
 ﻿using System;
+using ColossalFramework;
+using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
+using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
@@ -64,15 +67,22 @@ namespace CSM.Extensions
             // Respond to button click.
             _multiplayerButton.eventClick += (component, param) =>
             {
-                ConnectionPanel panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
-
-                if (panel != null)
+                // Open host game menu if not in multiplayer session, else open connection panel
+                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
                 {
-                    panel.isVisible = !panel.isVisible;
+                    PanelManager.TogglePanel<HostGamePanel>();
+
+                    // Display warning if DLCs or other mods are enabled
+                    if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None ||
+                        Singleton<PluginManager>.instance.enabledModCount > 1)
+                    {
+                        MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
+                        msgPanel.DisplayContentWarning();
+                    }
                 }
                 else
                 {
-                    uiView.AddUIComponent(typeof(ConnectionPanel));
+                    PanelManager.TogglePanel<ConnectionPanel>();
                 }
 
                 _multiplayerButton.Unfocus();
