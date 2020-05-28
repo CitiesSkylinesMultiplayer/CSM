@@ -5,47 +5,42 @@ namespace CSM.Networking.Config
 {
     public static class ConfigData
     {
-        const string clientFile = "client-config.json";
-        const string serverFile = "server-config.json";
+        public const string ClientFile = "client-config.json";
+        public const string ServerFile = "server-config.json";
 
-        public static void Load(ref ClientConfig config)
+        public static bool Load<T>(ref T config, string filePath) where T : new()
         {
-            config = Read<ClientConfig>(clientFile);
-        }
-
-        public static void Load(ref ServerConfig config)
-        {
-            config = Read<ServerConfig>(serverFile);
-        }
-
-        public static void Save(ref ClientConfig config)
-        {
-            Write<ClientConfig>(config, clientFile);
-        }
-
-        public static void Save(ref ServerConfig config)
-        {
-            Write<ServerConfig>(config, serverFile);
-        }
-
-        private static T Read<T>(string path) where T : new()
-        {
-            if (!File.Exists(path)) { return new T(); }
+            if (!File.Exists(filePath)) 
+            { 
+                config = new T();
+                return false;
+            }
 
             try
             {
-                return JsonUtility.FromJson<T>(File.ReadAllText(path));
+                config = JsonUtility.FromJson<T>(File.ReadAllText(filePath));
+                return true;
             }
-            catch { return new T(); }
+            catch 
+            { 
+                config = new T();
+                return false;
+            }
         }
 
-        private static void Write<T>(T config, string path)
+        public static void Save<T>(ref T config, string filePath, bool isAllowed)
         {
+            if (!isAllowed)
+            {
+                if (!File.Exists(filePath)) { return; }
+                File.Delete(filePath);
+                return;
+            }
             try
             {
-                File.WriteAllText(path, JsonUtility.ToJson(config, true));
+                File.WriteAllText(filePath, JsonUtility.ToJson(config, true));
             }
-            catch { }
+            catch { return; }
         }
     }
 }

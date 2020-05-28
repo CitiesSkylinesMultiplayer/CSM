@@ -21,16 +21,18 @@ namespace CSM.Panels
         private UIButton _closeButton;
 
         private UICheckBox _passwordBox;
+        private UICheckBox _rememberBox;
 
         private UIColorField _playerColorField;
 
         public static Color playerColor = Color.red;
 
         ClientConfig _clientConfig;
+        private bool _hasRemembered;
 
         public override void Start()
         {
-            ConfigData.Load(ref _clientConfig);
+            _hasRemembered = ConfigData.Load<ClientConfig>(ref _clientConfig, ConfigData.ClientFile);
 
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
@@ -46,7 +48,7 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
 
             width = 360;
-            height = 560;
+            height = 585;
 
             // Title Label
             this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
@@ -101,12 +103,16 @@ namespace CSM.Panels
             _passwordField = this.CreateTextField(_clientConfig.Password, new Vector2(10, -340));
             _passwordField.isPasswordField = true;
 
+            // Remember-Me checkbox
+            _rememberBox = this.CreateCheckBox("Remember Me", new Vector2(10, -390));
+            _rememberBox.isChecked = _hasRemembered;
+
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -420));
+            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -445));
             _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -490));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -515));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -114,7 +120,7 @@ namespace CSM.Panels
                 MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
+            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -420));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
@@ -126,8 +132,9 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
+
             _clientConfig = new ClientConfig(_ipAddressField.text, System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text);
-            ConfigData.Save(ref _clientConfig);
+            ConfigData.Save(ref _clientConfig, ConfigData.ClientFile,_rememberBox.isChecked);
 
             MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
 

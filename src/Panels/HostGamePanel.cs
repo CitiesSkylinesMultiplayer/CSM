@@ -24,11 +24,13 @@ namespace CSM.Panels
         private UIButton _closeButton;
 
         private UICheckBox _passwordBox;
+        private UICheckBox _rememberBox;
 
         private ServerConfig _serverConfig;
+        private bool _hasRemembered;
         public override void Start()
         {
-            ConfigData.Load(ref _serverConfig);
+            _hasRemembered = ConfigData.Load<ServerConfig>(ref _serverConfig, ConfigData.ServerFile);
 
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
@@ -44,7 +46,7 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
 
             width = 360;
-            height = 530;
+            height = 580;
 
             // Title Label
             this.CreateTitleLabel("Host Server", new Vector2(120, -20));
@@ -73,7 +75,11 @@ namespace CSM.Panels
                 _usernameField.text = PlatformService.personaName;
             }
 
-            _connectionStatus = this.CreateLabel("", new Vector2(10, -310));
+            // Remember-Me box
+            _rememberBox = this.CreateCheckBox("Remember Me", new Vector2(10, -325));
+            _rememberBox.isChecked = _hasRemembered;
+
+            _connectionStatus = this.CreateLabel("", new Vector2(10, -350));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
@@ -81,19 +87,19 @@ namespace CSM.Panels
             new Thread(RequestIPs).Start();
 
             // Create Local IP Label
-            _localIp = this.CreateLabel("", new Vector2(10, -330));
+            _localIp = this.CreateLabel("", new Vector2(10, -380));
             _localIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create External IP Label
-            _externalIp = this.CreateLabel("", new Vector2(10, -350));
+            _externalIp = this.CreateLabel("", new Vector2(10, -400));
             _externalIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create Server Button
-            _createButton = this.CreateButton("Create Server", new Vector2(10, -390));
+            _createButton = this.CreateButton("Create Server", new Vector2(10, -445));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -460));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -515));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -128,7 +134,7 @@ namespace CSM.Panels
         private void OnCreateServerClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
             _serverConfig = new ServerConfig(System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0);
-            ConfigData.Save(ref _serverConfig);
+            ConfigData.Save<ServerConfig>(ref _serverConfig, ConfigData.ServerFile, _rememberBox.isChecked);
 
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
             _connectionStatus.text = "Setting up server...";
