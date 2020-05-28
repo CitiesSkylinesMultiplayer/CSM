@@ -265,6 +265,7 @@
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
+    <Compile Include="Networking\Config\ConfigData.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
     <Compile Include="Networking\IpAddress.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
