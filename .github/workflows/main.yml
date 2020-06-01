@@ -38,3 +38,21 @@ jobs:
     - name: Build Mod
       run: powershell.exe -NoP -NonI -Command "../scripts/build.ps1 -Build"
       working-directory: src
+    
+    # Copy Files
+    
+    # Copy Install Script
+    
+    # Publish artifacts
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: src/bin/Release/*.dll
+        
+    # Publish install script
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: scripts/install.ps1  
+      
+      
