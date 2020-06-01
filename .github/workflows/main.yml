@@ -39,4 +39,4 @@ jobs:
       run: echo Hello, world!
     
     - name: Build Mod
-      run: powershell.exe -NoP -NonI -Command "'scripts/build.ps1' -Build"
+      run: powershell.exe -NoP -NonI -Command "scripts/build.ps1  -Build"
