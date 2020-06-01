@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # Run this on windows
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    
+    # Download the assemblies required to build the mod
+    - name: Download Assemblies
+      uses: carlosperate/download-file-action@v1.0.3
+      with:
+        file-url: https://gridentertainment.blob.core.windows.net/general-storage/csm/Assemblies.zip
+        # New filename to rename the downloaded file
+        file-name: Assemblies.zip
+
+    # Extract these assemblies
+    - name: Extract Assemblies
+      run: powershell.exe -NoP -NonI -Command "Expand-Archive 'Assemblies.zip' 'assemblies'"
+  
+    # Runs a single command using the runners shell
+    - name: Run a one-line script
+      run: echo Hello, world!
+    
+    - name: Build Mod
+      run: powershell.exe -NoP -NonI -Command "'scripts/build.ps1' -Build"
