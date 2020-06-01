@@ -24,7 +24,7 @@
         public ClientConfig()
         {
             HostAddress = "localhost";
-            Port = 4320;
+            Port = 4230;
             Username = "";
             Password = "";
         }
