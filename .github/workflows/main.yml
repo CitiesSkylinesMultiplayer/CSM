@@ -26,6 +26,12 @@ jobs:
     - name: Set Version
       run: echo "::set-env name=CSM_VERSION::1.0.$GITHUB_RUN_ID"
     
+    # Test
+    - name: Testing
+      run: |
+        echo $CSM_VERSION
+        echo $GITHUB_RUN_ID
+    
     # Download the assemblies required to build the mod
     - name: Download Assemblies
       uses: carlosperate/download-file-action@v1.0.3
@@ -57,14 +63,14 @@ jobs:
     - name: Upload mod DLLs
       uses: actions/upload-artifact@v2
       with:
-        name: CSM $CSM_VERSION
+        name: "CSM $CSM_VERSION"
         path: src/bin/Release/*.dll
         
     # Publish install script
     - name: Upload install script
       uses: actions/upload-artifact@v2
       with:
-        name: CSM $CSM_VERSION
+        name: "CSM $CSM_VERSION"
         path: scripts/install.ps1  
       
       
