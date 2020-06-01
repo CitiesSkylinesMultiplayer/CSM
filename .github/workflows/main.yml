@@ -39,10 +39,16 @@ jobs:
       run: powershell.exe -NoP -NonI -Command "../scripts/build.ps1 -Build"
       working-directory: src
     
-    # Copy Files
-    
-    # Copy Install Script
-    
+    # Delete files only used for building
+    - name: Delete unused artifacts
+      working-directory: src/bin/Release
+      run: | 
+        del Assembly-CSharp.dll
+        del ColossalManaged.dll
+        del ICities.dll
+        del UnityEngine.dll
+        del UnityEngine.UI.dll
+          
     # Publish artifacts
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
