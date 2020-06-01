@@ -23,14 +23,13 @@ jobs:
     - uses: actions/checkout@v2
         
     # The version string
-    - name: Set Version
-      run: echo "::set-env name=csm_version::1.0.${{ github.run_number }}"
+    - name: Set Version Environment Variable
+      run: echo "::set-env name=csm_version::1.${{ github.run_number }}.0"
     
-    # Test
-    - name: Testing
-      run: |
-        echo ${{ env.csm_version }}
-        echo ${{ github.run_number }}
+    # Update the assembly versiob to match the csm version
+    - name: Update Assembly Version
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -RootFolder Properties -FilePatten AssemblyInfo.cs -Version ${{ env.csm_version }}.0 -FileVersion ${{ env.csm_version }}.0"
+      working-directory: src
     
     # Download the assemblies required to build the mod
     - name: Download Assemblies
