@@ -1,7 +1,7 @@
 # CSM - Cities: Skylines Multiplayer
 
 [![Discord](https://img.shields.io/discord/508902220943851522.svg)](https://discord.gg/RjACPhd)
-[![Build status](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_apis/build/status/CSM%20-%20Build%20Process)](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build/latest?definitionId=4)
+[![Build status](https://github.com/CitiesSkylinesMultiplayer/CSM/workflows/CI/badge.svg)](https://github.com/CitiesSkylinesMultiplayer/CSM/actions)
 [![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
 ## Quick Links
