@@ -36,5 +36,5 @@ jobs:
     
     # Build the mod using the built in build script
     - name: Build Mod
-      run: powershell.exe -NoP -NonI -Command "scripts/build.ps1 -Build"
+      run: powershell.exe -NoP -NonI -Command "../scripts/build.ps1 -Build"
       working-directory: src
