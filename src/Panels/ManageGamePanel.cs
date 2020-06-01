@@ -83,7 +83,8 @@ namespace CSM.Panels
                 if (!visible)
                     return;
 
-                _portField.text = MultiplayerManager.Instance.CurrentServer.Config.Port.ToString();
+                _portVal = MultiplayerManager.Instance.CurrentServer.Config.Port.ToString();
+                _portField.text = _portVal;
             };
         }
     }

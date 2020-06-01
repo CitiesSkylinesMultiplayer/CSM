@@ -171,7 +171,7 @@ namespace CSM.Panels
             }
 
             // Start server and check for errors
-            MultiplayerManager.Instance.StartGameServer(int.Parse(_portField.text), _passwordField.text, _usernameField.text, 5, (success) =>
+            MultiplayerManager.Instance.StartGameServer(_serverConfig, (success) =>
             {
                 ThreadHelper.dispatcher.Dispatch(() =>
                 {
