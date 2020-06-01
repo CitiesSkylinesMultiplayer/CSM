@@ -39,6 +39,6 @@ jobs:
       run: echo Hello, world!
     
     - name: Build Mod
-      run: scripts/build.ps1 -Build
+      run: .\scripts\build.ps1 -Build
       working-directory: src
       #run: powershell.exe -NoP -NonI -Command "scripts/build.ps1  -Build"
