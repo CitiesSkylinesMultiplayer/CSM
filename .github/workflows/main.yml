@@ -33,12 +33,8 @@ jobs:
     # Extract these assemblies
     - name: Extract Assemblies
       run: powershell.exe -NoP -NonI -Command "Expand-Archive 'Assemblies.zip' 'assemblies'"
-  
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
     
+    # Build the mod using the built in build script
     - name: Build Mod
-      run: .\scripts\build.ps1 -Build
+      run: powershell.exe -NoP -NonI -Command "scripts/build.ps1 -Build"
       working-directory: src
-      #run: powershell.exe -NoP -NonI -Command "scripts/build.ps1  -Build"
