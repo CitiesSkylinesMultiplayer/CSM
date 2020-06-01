@@ -32,13 +32,13 @@ To install the mod for other platforms than Steam, follow the instructions below
   - Windows: `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`
   - Mac OSX: `~/Library/Application Support/Colossal Order/Cities_Skylines/Addons/Mods/CSM`
   - Linux: `~/.local/share/Colossal Order/Cities_Skylines/Addons/Mods/CSM`
-3. Open Cities: Skylines and enable the mod in the content manager.
+3. Open Cities: Skylines and enable the mod in the content manager
 
 You can also download the latest development builds by following the instructions below:
 
-1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build/latest?definitionId=4).
-2. Click on the `1 published` button (third column of the first white block)
-3. Click on the download icon on the right of the page which will become visible when hovering over the file name.
+1. Navigate to the list of CI builds [here](https://github.com/CitiesSkylinesMultiplayer/CSM/actions?query=workflow%3ACI)
+2. Click on the latest build with a green checkmark
+3. Under the `Artifacts` heading, click on `CSM [Version]`
 
 If you want to build the mod yourself, follow the developer instructions in the wiki located [here](https://github.com/DominicMaas/Tango/wiki/Developer-Resources).
 
