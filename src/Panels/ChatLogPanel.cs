@@ -57,8 +57,9 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("support", "Display support links for the mod.", (command) =>
                 {
-                    PrintGameMessage("GitHub : https://github.com/DominicMaas/Tango");
-                    PrintGameMessage("Discord : https://www.patreon.com/CSM_MultiplayerMod");
+                    PrintGameMessage("Website : https://citiesskylinesmultiplayer.com");
+                    PrintGameMessage("GitHub : https://github.com/CitiesSkylinesMultiplayer/CSM");
+                    PrintGameMessage("Discord : https://discord.gg/RjACPhd");
                     PrintGameMessage("Steam Workshop : https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291");
                 }),
                 new ChatCommand("players", "Displays a list of players connected to the server", (command) =>
@@ -81,7 +82,7 @@ namespace CSM.Panels
                 new ChatCommand("donate", "Find out how to support the mod developers", (command) =>
                 {
                     PrintGameMessage("Want to help support the mod?");
-                    PrintGameMessage("Help develop the mod here: https://github.com/DominicMaas/Tango");
+                    PrintGameMessage("Help develop the mod here: https://github.com/CitiesSkylinesMultiplayer/CSM");
                     PrintGameMessage("Donate to the developers here: https://www.patreon.com/CSM_MultiplayerMod");
                 }),
                 new ChatCommand("clear", "Clear everything from the chat log.", (command) =>

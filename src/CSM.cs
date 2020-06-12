@@ -30,7 +30,7 @@ namespace CSM
             try
             {
                 _logger.Info("Attempting to patch Cities: Skylines using Harmony...");
-                _harmony = new Harmony("net.gridentertainment.csm");
+                _harmony = new Harmony("com.citiesskylinesmultiplayer");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _logger.Info("Successfully patched Cities: Skylines!");
             }
@@ -96,15 +96,5 @@ namespace CSM
         public string Name => "Cities: Skylines Multiplayer";
 
         public string Description => "Multiplayer mod for Cities: Skylines.";
-
-        /// <summary>
-        ///     Log a message to the console.
-        /// </summary>
-        /// <param name="message"></param>
-        [Obsolete("Use NLog instead.")]
-        public static void Log(string message)
-        {
-            _logger.Info(message);
-        }
     }
 }
