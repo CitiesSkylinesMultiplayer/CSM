@@ -4,7 +4,7 @@ using CSM.Networking;
 
 namespace CSM.Commands.Handler.Weather
 {
-    class WeatherHandler : CommandHandler<WeatherCommand>
+    public class WeatherHandler : CommandHandler<WeatherCommand>
     {
         protected override void Handle(WeatherCommand command)
         {

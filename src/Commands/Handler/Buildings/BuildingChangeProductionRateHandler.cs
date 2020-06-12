@@ -1,16 +1,16 @@
-using System;
 using ColossalFramework.UI;
 using CSM.Commands.Data.Buildings;
 using CSM.Helpers;
+using System;
 
 namespace CSM.Commands.Handler.Buildings
 {
     public class BuildingChangeProductionRateHandler : CommandHandler<BuildingChangeProductionRateCommand>
     {
         private static readonly Type[] checkTypes =
-        { 
-            typeof(CityServiceWorldInfoPanel), typeof(ChirpXPanel), 
-            typeof(FestivalPanel), typeof(FootballPanel), typeof(VarsitySportsArenaPanel), typeof(ShelterWorldInfoPanel), 
+        {
+            typeof(CityServiceWorldInfoPanel), typeof(ChirpXPanel),
+            typeof(FestivalPanel), typeof(FootballPanel), typeof(VarsitySportsArenaPanel), typeof(ShelterWorldInfoPanel),
             typeof(UniqueFactoryWorldInfoPanel), typeof(WarehouseWorldInfoPanel)
         };
 

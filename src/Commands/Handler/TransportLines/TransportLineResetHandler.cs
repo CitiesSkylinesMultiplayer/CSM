@@ -11,13 +11,13 @@ namespace CSM.Commands.Handler.TransportLines
             TransportTool tool = ToolSimulator.GetTool<TransportTool>(command.SenderId);
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
-            
+
             IgnoreHelper.StartIgnore();
 
             ReflectionHelper.Call(tool, "ResetTool");
-            
+
             IgnoreHelper.EndIgnore();
-            
+
             ArrayHandler.StopApplying();
         }
     }

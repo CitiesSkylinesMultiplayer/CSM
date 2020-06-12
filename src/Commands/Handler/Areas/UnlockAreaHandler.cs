@@ -1,5 +1,4 @@
-﻿
-using CSM.Commands.Data.Areas;
+﻿using CSM.Commands.Data.Areas;
 using CSM.Helpers;
 
 namespace CSM.Commands.Handler.Areas

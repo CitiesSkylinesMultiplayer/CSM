@@ -1,8 +1,8 @@
 ﻿using CSM.Commands;
-using CSM.Helpers;
-using HarmonyLib;
 using CSM.Commands.Data.Weather;
+using CSM.Helpers;
 using CSM.Networking;
+using HarmonyLib;
 
 namespace CSM.Injections
 {

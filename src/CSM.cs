@@ -1,12 +1,12 @@
-﻿using HarmonyLib;
+﻿using CSM.Injections;
+using CSM.Panels;
+using HarmonyLib;
+using ICities;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Reflection;
-using CSM.Injections;
-using CSM.Panels;
-using ICities;
 
 namespace CSM
 {

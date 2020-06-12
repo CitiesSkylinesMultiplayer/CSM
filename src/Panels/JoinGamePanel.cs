@@ -1,10 +1,10 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework.PlatformServices;
+using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
-using UnityEngine;
-using ColossalFramework.PlatformServices;
-using ColossalFramework.Threading;
 using CSM.Networking.Config;
+using UnityEngine;
 
 namespace CSM.Panels
 {
@@ -25,7 +25,7 @@ namespace CSM.Panels
 
         public static Color playerColor = Color.red;
 
-        ClientConfig _clientConfig;
+        private ClientConfig _clientConfig;
         private bool _hasRemembered;
 
         public override void Start()
@@ -112,9 +112,8 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-
             _clientConfig = new ClientConfig(_ipAddressField.text, System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text);
-            ConfigData.Save(ref _clientConfig, ConfigData.ClientFile,_rememberBox.isChecked);
+            ConfigData.Save(ref _clientConfig, ConfigData.ClientFile, _rememberBox.isChecked);
 
             MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
 

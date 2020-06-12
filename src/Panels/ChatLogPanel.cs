@@ -1,14 +1,14 @@
-﻿using System;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Commands;
+using CSM.Commands.Data.Internal;
+using CSM.Container;
 using CSM.Helpers;
 using CSM.Networking;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using CSM.Commands.Data.Internal;
-using CSM.Container;
 using UnityEngine;
 
 namespace CSM.Panels

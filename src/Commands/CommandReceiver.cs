@@ -1,9 +1,9 @@
-﻿using CSM.Commands.Handler;
+﻿using CSM.Commands.Data.Internal;
+using CSM.Commands.Handler;
+using CSM.Commands.Handler.Internal;
 using CSM.Networking;
 using LiteNetLib;
 using System.IO;
-using CSM.Commands.Data.Internal;
-using CSM.Commands.Handler.Internal;
 
 namespace CSM.Commands
 {

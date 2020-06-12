@@ -1,6 +1,5 @@
 ﻿using CSM.Commands.Data.TransportLines;
 using CSM.Helpers;
-using CSM.Injections;
 
 namespace CSM.Commands.Handler.TransportLines
 {
@@ -9,7 +8,7 @@ namespace CSM.Commands.Handler.TransportLines
         protected override void Handle(TransportLineSyncCommand command)
         {
             TransportTool tool = ToolSimulator.GetTool<TransportTool>(command.SenderId);
-            
+
             IgnoreHelper.StartIgnore();
 
             if (command.UpdateLines)
@@ -20,11 +19,11 @@ namespace CSM.Commands.Handler.TransportLines
             if (command.UpdatePaths)
             {
                 ushort tempLine = ReflectionHelper.GetAttr<ushort>(tool, "m_tempLine");
-                TransportManager.instance.m_lines.m_buffer[(int) tempLine].UpdatePaths(tempLine);
+                TransportManager.instance.m_lines.m_buffer[(int)tempLine].UpdatePaths(tempLine);
             }
-            
+
             IgnoreHelper.EndIgnore();
-            
+
             ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);
             ReflectionHelper.SetAttr(tool, "m_fixedPlatform", command.FixedPlatform);
             ReflectionHelper.SetAttr(tool, "m_hoverStopIndex", command.HoverStopIndex);

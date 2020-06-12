@@ -1,12 +1,12 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using CSM.Commands.Data.Internal;
+﻿using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
 using LiteNetLib;
 using NLog;
+using System;
+using System.Reflection;
+using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -100,7 +100,8 @@ namespace CSM.Commands.Handler.Internal
             bool clientJoining = false;
             foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
             {
-                if (p.Status != ClientStatus.Connected) {
+                if (p.Status != ClientStatus.Connected)
+                {
                     clientJoining = true;
                 }
             }
@@ -118,7 +119,7 @@ namespace CSM.Commands.Handler.Internal
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
-            
+
             // Send the result command
             Command.SendToClient(peer, new ConnectionResultCommand
             {
@@ -145,7 +146,7 @@ namespace CSM.Commands.Handler.Internal
                 JoiningUsername = newPlayer.Username
             }, newPlayer);
 
-            /* 
+            /*
              * Wait to get all remaining pakets processed, because unprocessed packets
              * before saving may end in an desynced game for the joining client
              */

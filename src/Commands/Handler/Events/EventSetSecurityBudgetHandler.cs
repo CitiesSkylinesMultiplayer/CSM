@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler.Events
 
             ref EventData eventData = ref EventManager.instance.m_events.m_buffer[command.Event];
             eventData.Info.m_eventAI.SetSecurityBudget(command.Event, ref eventData, command.Budget);
-            
+
             if (InfoPanelHelper.IsEventBuilding(typeof(FestivalPanel), command.Event, out WorldInfoPanel panel))
             {
                 UISlider slider = ReflectionHelper.GetAttr<UISlider>(panel, "m_securityBudgetSlider");

@@ -1,5 +1,4 @@
-﻿using ColossalFramework;
-using ColossalFramework.Threading;
+﻿using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Networking.Config;
 using CSM.Panels;

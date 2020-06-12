@@ -1,12 +1,12 @@
 ﻿using ColossalFramework;
+using ColossalFramework.PlatformServices;
+using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
+using CSM.Networking.Config;
 using System.Threading;
 using UnityEngine;
-using ColossalFramework.PlatformServices;
-using ColossalFramework.Threading;
-using CSM.Networking.Config;
 
 namespace CSM.Panels
 {
@@ -28,6 +28,7 @@ namespace CSM.Panels
 
         private ServerConfig _serverConfig;
         private bool _hasRemembered;
+
         public override void Start()
         {
             _hasRemembered = ConfigData.Load<ServerConfig>(ref _serverConfig, ConfigData.ServerFile);

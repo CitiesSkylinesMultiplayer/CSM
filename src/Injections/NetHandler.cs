@@ -1,9 +1,9 @@
 ﻿using CSM.Commands;
-using System;
-using System.Reflection;
 using CSM.Commands.Data.Net;
 using CSM.Helpers;
 using HarmonyLib;
+using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace CSM.Injections

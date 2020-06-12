@@ -16,7 +16,7 @@ namespace CSM.Commands.Data.Buildings
         /// </summary>
         [ProtoMember(1)]
         public ushort Building { get; set; }
-        
+
         /// <summary>
         ///     The new production rate of the building.
         /// </summary>

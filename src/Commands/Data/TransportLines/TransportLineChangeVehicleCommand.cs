@@ -1,7 +1,7 @@
 using ProtoBuf;
 
 namespace CSM.Commands.Data.TransportLines
-{ 
+{
     /// <summary>
     ///     Called when the vehicle type of a transport line was changed.
     /// </summary>
