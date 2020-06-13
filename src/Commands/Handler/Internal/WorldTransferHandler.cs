@@ -5,12 +5,12 @@ using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler.Internal
 {
-    class WorldTransferHandler : CommandHandler<WorldTransferCommand>
+    public class WorldTransferHandler : CommandHandler<WorldTransferCommand>
     {
         // Class logger
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public WorldTransferHandler() 
+        public WorldTransferHandler()
         {
             TransactionCmd = false;
         }

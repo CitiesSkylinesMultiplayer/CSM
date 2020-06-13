@@ -4,7 +4,7 @@ using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler.Internal
 {
-    class ClientLevelLoadedHandler : CommandHandler<ClientLevelLoadedCommand>
+    public class ClientLevelLoadedHandler : CommandHandler<ClientLevelLoadedCommand>
     {
         public ClientLevelLoadedHandler()
         {

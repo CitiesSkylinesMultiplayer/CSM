@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CSM.Panels
 {
-    class ClientJoinPanel : UIPanel
+    public class ClientJoinPanel : UIPanel
     {
         private UILabel _statusLabel;
 
@@ -63,7 +63,7 @@ namespace CSM.Panels
             HidePanel(true);
         }
 
-        private void UpdateText() 
+        private void UpdateText()
         {
             new Thread(() =>
             {

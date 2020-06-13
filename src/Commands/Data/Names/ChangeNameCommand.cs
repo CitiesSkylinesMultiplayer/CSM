@@ -17,7 +17,7 @@ namespace CSM.Commands.Data.Names
         /// </summary>
         [ProtoMember(1)]
         public InstanceType Type { get; set; }
-        
+
         /// <summary>
         ///     The id of the changed element as an int.
         ///     Can be later casted into a uint, short or ushort.

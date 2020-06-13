@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using CSM.Commands.Data.Buildings;
+﻿using CSM.Commands.Data.Buildings;
 using CSM.Helpers;
 using CSM.Injections;
+using System.Collections;
 
 namespace CSM.Commands.Handler.Buildings
 {
@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Buildings
         protected override void Handle(BuildingToolCreateCommand command)
         {
             BuildingTool tool = ToolSimulator.GetTool<BuildingTool>(command.SenderId);
-            
+
             IgnoreHelper.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 

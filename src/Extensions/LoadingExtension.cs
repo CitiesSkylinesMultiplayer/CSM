@@ -1,5 +1,4 @@
-﻿using System;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using CSM.Commands;
@@ -9,6 +8,7 @@ using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
 using ICities;
+using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

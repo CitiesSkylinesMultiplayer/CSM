@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Economy
             IgnoreHelper.StartIgnore();
 
             EconomyManager.instance.SetTaxRate(command.Service, command.SubService, command.Level, command.Rate);
-            
+
             EconomyPanel panel = typeof(ToolsModifierControl).GetField("m_EconomyPanel", ReflectionHelper.AllAccessFlags)?.GetValue(null) as EconomyPanel;
             if (panel != null)
             {

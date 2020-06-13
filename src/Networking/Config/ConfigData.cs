@@ -10,8 +10,8 @@ namespace CSM.Networking.Config
 
         public static bool Load<T>(ref T config, string filePath) where T : new()
         {
-            if (!File.Exists(filePath)) 
-            { 
+            if (!File.Exists(filePath))
+            {
                 config = new T();
                 return false;
             }
@@ -21,8 +21,8 @@ namespace CSM.Networking.Config
                 config = JsonUtility.FromJson<T>(File.ReadAllText(filePath));
                 return true;
             }
-            catch 
-            { 
+            catch
+            {
                 config = new T();
                 return false;
             }

@@ -1,8 +1,8 @@
-﻿using System;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Commands.Data.Names;
 using CSM.Helpers;
 using NLog;
+using System;
 
 namespace CSM.Commands.Handler.Names
 {
@@ -16,7 +16,7 @@ namespace CSM.Commands.Handler.Names
             Type renameType = null;
             // List of types where the text box is potentially located (length needs to be equal to length of panelTypes). Leave empty to use renameType.
             Type[] renameTypes = new Type[0];
-            // List of panels which potentially can be open. Leave empty when equal to renameType. 
+            // List of panels which potentially can be open. Leave empty when equal to renameType.
             Type[] panelTypes = new Type[0];
             // The instance type the currently opened panel needs to correspond to
             InstanceType instanceType = command.Type;
@@ -57,10 +57,11 @@ namespace CSM.Commands.Handler.Names
                         typeof(ServicePersonWorldInfoPanel)
                     };
                     break;
+
                 case InstanceType.Disaster:
                     DisasterManager.instance.SetDisasterName((ushort)command.Id, command.Name).MoveNext();
 
-                    if (!HandleSpecialMeteorRename((ushort) command.Id, command.Name))
+                    if (!HandleSpecialMeteorRename((ushort)command.Id, command.Name))
                     {
                         renameType = typeof(DisasterWorldInfoPanel);
                         nameFieldVar = "m_nameField";
@@ -77,7 +78,7 @@ namespace CSM.Commands.Handler.Names
 
                 case InstanceType.Park:
                     DistrictManager.instance.SetParkName(command.Id, command.Name).MoveNext();
-                    
+
                     panelTypes = new Type[]
                     {
                         typeof(IndustryWorldInfoPanel), typeof(CampusWorldInfoPanel), typeof(ParkWorldInfoPanel)
@@ -104,7 +105,7 @@ namespace CSM.Commands.Handler.Names
 
                 case InstanceType.TransportLine:
                     TransportManager.instance.SetLineName((ushort)command.Id, command.Name).MoveNext();
-                    
+
                     // Works fine :)
                     break;
 
@@ -118,7 +119,7 @@ namespace CSM.Commands.Handler.Names
 
                     renameTypes = new Type[]
                     {
-                        typeof(VehicleWorldInfoPanel), typeof(VehicleWorldInfoPanel), 
+                        typeof(VehicleWorldInfoPanel), typeof(VehicleWorldInfoPanel),
                         typeof(VehicleWorldInfoPanel), typeof(VehicleWorldInfoPanel),
                         typeof(MeteorWorldInfoPanel)
                     };
@@ -130,11 +131,12 @@ namespace CSM.Commands.Handler.Names
                         typeof(MeteorWorldInfoPanel)
                     };
                     break;
+
                 default:
                     LogManager.GetCurrentClassLogger().Warn("Unknown instance type in ChangeNameHandler received!");
                     break;
             }
-            
+
             if (panelTypes.Length == 0 && renameType != null)
             {
                 panelTypes = new Type[] { renameType };
@@ -153,35 +155,44 @@ namespace CSM.Commands.Handler.Names
                 switch (instanceType)
                 {
                     case InstanceType.Building:
-                        isEqual = instanceId.Building == (ushort) id;
+                        isEqual = instanceId.Building == (ushort)id;
                         break;
+
                     case InstanceType.Citizen:
-                        isEqual = instanceId.Citizen == (uint) id;
+                        isEqual = instanceId.Citizen == (uint)id;
                         break;
+
                     case InstanceType.CitizenInstance:
-                        isEqual = instanceId.CitizenInstance == (ushort) id;
+                        isEqual = instanceId.CitizenInstance == (ushort)id;
                         break;
+
                     case InstanceType.Disaster:
-                        isEqual = instanceId.Disaster == (ushort) id;
+                        isEqual = instanceId.Disaster == (ushort)id;
                         break;
+
                     case InstanceType.District:
-                        isEqual = instanceId.District == (byte) id;
+                        isEqual = instanceId.District == (byte)id;
                         break;
+
                     case InstanceType.Park:
-                        isEqual = instanceId.Park == (byte) id;
+                        isEqual = instanceId.Park == (byte)id;
                         break;
+
                     case InstanceType.Event:
                         ushort curEventId = ReflectionHelper.GetAttr<ushort>(infoPanel, "m_currentEventID");
-                        isEqual = curEventId == (ushort) id;
+                        isEqual = curEventId == (ushort)id;
                         break;
+
                     case InstanceType.NetSegment:
-                        isEqual = instanceId.NetSegment == (ushort) id;
+                        isEqual = instanceId.NetSegment == (ushort)id;
                         break;
+
                     case InstanceType.Vehicle:
-                        isEqual = instanceId.Vehicle == (ushort) id;
+                        isEqual = instanceId.Vehicle == (ushort)id;
                         break;
+
                     case InstanceType.ParkedVehicle:
-                        isEqual = instanceId.ParkedVehicle == (ushort) id;
+                        isEqual = instanceId.ParkedVehicle == (ushort)id;
                         break;
                 }
 
@@ -193,7 +204,6 @@ namespace CSM.Commands.Handler.Names
                     renameVarType = renameTypes[i];
                 else if (renameType != null)
                     renameVarType = renameType;
-
 
                 string varName = nameFieldVar;
                 if (nameFieldVarArr.Length > i)
@@ -209,7 +219,7 @@ namespace CSM.Commands.Handler.Names
         private bool HandleSpecialMeteorRename(ushort disaster, string newName)
         {
             InstanceID instanceId = InfoPanelHelper.GetInstanceID(typeof(MeteorWorldInfoPanel), out WorldInfoPanel panel);
-            
+
             InstanceManager.Group group = InstanceManager.instance.GetGroup(instanceId);
             if (group == null)
                 return false;
@@ -217,7 +227,7 @@ namespace CSM.Commands.Handler.Names
             ushort disasterId = group.m_ownerInstance.Disaster;
             if (disasterId != disaster)
                 return false;
-            
+
             SetNameField(panel.GetType(), panel, "m_NameField", newName);
             return true;
         }

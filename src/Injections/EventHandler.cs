@@ -1,8 +1,8 @@
-using System;
 using CSM.Commands;
 using CSM.Commands.Data.Events;
 using CSM.Helpers;
 using HarmonyLib;
+using System;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -15,14 +15,14 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             Command.SendToAll(new EventActivateCommand()
             {
                 Event = eventID
             });
         }
     }
-    
+
     [HarmonyPatch(typeof(EventAI))]
     [HarmonyPatch("SetColor")]
     public class RocketSetColor
@@ -46,7 +46,7 @@ namespace CSM.Injections
             });
         }
     }
-    
+
     [HarmonyPatch(typeof(EventAI))]
     [HarmonyPatch("SetSecurityBudget")]
     public class SetSecurityBudget
@@ -66,7 +66,7 @@ namespace CSM.Injections
             });
         }
     }
-    
+
     [HarmonyPatch(typeof(EventAI))]
     [HarmonyPatch("SetTicketPrice")]
     public class SetTicketPrice

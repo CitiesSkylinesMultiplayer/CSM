@@ -1,13 +1,13 @@
+using ColossalFramework.UI;
 using System;
 using System.Reflection;
-using ColossalFramework.UI;
 
 namespace CSM.Helpers
 {
     public class InfoPanelHelper
     {
         private static FieldInfo _instanceIdField = null;
-        
+
         public static InstanceID GetInstanceID(Type panelType, out WorldInfoPanel panel)
         {
             panel = UIView.library.Get<WorldInfoPanel>(panelType.Name);
@@ -20,9 +20,9 @@ namespace CSM.Helpers
             if (_instanceIdField == null)
                 return InstanceID.Empty;
 
-            return(InstanceID) _instanceIdField.GetValue(panel);
+            return (InstanceID)_instanceIdField.GetValue(panel);
         }
-        
+
         public static bool IsBuilding(Type panelType, ushort buildingId, out WorldInfoPanel panel)
         {
             InstanceID instance = GetInstanceID(panelType, out panel);

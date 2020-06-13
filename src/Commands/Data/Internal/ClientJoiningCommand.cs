@@ -10,7 +10,7 @@ namespace CSM.Commands.Data.Internal
     /// - ClientLevelLoadedHandler
     /// - ConnectionRequestHandler
     [ProtoContract]
-    class ClientJoiningCommand : CommandBase
+    public class ClientJoiningCommand : CommandBase
     {
         /// <summary>
         ///     False: A player starts to join (Game should be blocked)

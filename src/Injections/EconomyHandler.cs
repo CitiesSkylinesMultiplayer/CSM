@@ -1,10 +1,10 @@
 ﻿using CSM.Commands;
-using System;
-using System.Collections.Generic;
 using CSM.Commands.Data.Economy;
 using CSM.Helpers;
 using CSM.Networking;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
 using static EconomyManager;
 
 namespace CSM.Injections
@@ -34,8 +34,8 @@ namespace CSM.Injections
     {
         public static void Prefix(int index)
         {
-            Loan[] loans =  ReflectionHelper.GetAttr<Loan[]>(EconomyManager.instance, "m_loans");
-            
+            Loan[] loans = ReflectionHelper.GetAttr<Loan[]>(EconomyManager.instance, "m_loans");
+
             if (IgnoreHelper.IsIgnored() || index >= loans.Length)
                 return;
 
@@ -83,7 +83,7 @@ namespace CSM.Injections
 
     [HarmonyPatch(typeof(EconomyManager))]
     [HarmonyPatch("SetBudget")]
-    [HarmonyPatch(new Type[] {typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(int), typeof(bool)})]
+    [HarmonyPatch(new Type[] { typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(int), typeof(bool) })]
     public class SetBudget
     {
         public static void Prefix(ItemClass.Service service, ItemClass.SubService subService, int budget, bool night, out bool __state)
@@ -119,7 +119,7 @@ namespace CSM.Injections
 
     [HarmonyPatch(typeof(EconomyManager))]
     [HarmonyPatch("SetTaxRate")]
-    [HarmonyPatch(new Type[] {typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(ItemClass.Level), typeof(int)})]
+    [HarmonyPatch(new Type[] { typeof(ItemClass.Service), typeof(ItemClass.SubService), typeof(ItemClass.Level), typeof(int) })]
     public class SetTaxRate
     {
         public static void Prefix(ItemClass.Service service, ItemClass.SubService subService, ItemClass.Level level, int rate, out bool __state)
@@ -221,7 +221,6 @@ namespace CSM.Injections
         public static void Postfix(Resource resource, ItemClass.Service service, ItemClass.SubService subService,
             ItemClass.Level level, ref int __result, ref bool __state)
         {
-
             if (!__state)
                 return;
 
@@ -245,7 +244,7 @@ namespace CSM.Injections
         public static bool DontAddResource = false;
         public static bool DontRunPatch = false;
 
-        public static bool Prefix(Resource resource, int amount, ItemClass.Service service, ItemClass.SubService subService, 
+        public static bool Prefix(Resource resource, int amount, ItemClass.Service service, ItemClass.SubService subService,
             ItemClass.Level level, DistrictPolicies.Taxation taxationPolicies, ref int __result, out bool __state)
         {
             __state = false;
@@ -281,12 +280,13 @@ namespace CSM.Injections
                         // Tell the method caller that the money was added successfully
                         __result = amount;
                         return false;
+
                     case Resource.PrivateIncome:
                         // Return the same amount as the real method would return (see EconomyManager::AddPrivateIncome)
                         int taxRate = EconomyManager.instance.GetTaxRate(service, subService, level, taxationPolicies);
                         taxRate = UniqueFacultyAI.IncreaseByBonus(UniqueFacultyAI.FacultyBonus.Economics, taxRate);
                         int taxMultiplier = ReflectionHelper.GetAttr<int>(EconomyManager.instance, "m_taxMultiplier");
-                        __result = (int) ((amount * taxRate * taxMultiplier + 999999L) / 1000000L);
+                        __result = (int)((amount * taxRate * taxMultiplier + 999999L) / 1000000L);
                         return false;
                 }
             }
@@ -295,7 +295,7 @@ namespace CSM.Injections
             return true;
         }
 
-        public static void Postfix(Resource resource, ItemClass.Service service, ItemClass.SubService subService, 
+        public static void Postfix(Resource resource, ItemClass.Service service, ItemClass.SubService subService,
             ItemClass.Level level, DistrictPolicies.Taxation taxationPolicies, int amount, ref bool __state)
         {
             AddPrivateIncome.DontRunPatch = false;
@@ -366,9 +366,9 @@ namespace CSM.Injections
         {
             if (_commands.Count == 0)
                 return;
-            
+
             EconomyResourceCommand[] cmdArray = _commands.ToArray();
-            
+
             Command.SendToAll(new EconomyResourcesCommand()
             {
                 Commands = cmdArray

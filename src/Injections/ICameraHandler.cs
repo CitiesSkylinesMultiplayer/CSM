@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using CSM.Networking;
-using CSM.Commands;
+﻿using CSM.Commands;
 using CSM.Commands.Data.Internal;
+using CSM.Networking;
 using CSM.Panels;
 using HarmonyLib;
+using UnityEngine;
 
 namespace CSM.Injections
 {

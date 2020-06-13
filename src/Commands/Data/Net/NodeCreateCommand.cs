@@ -15,7 +15,7 @@ namespace CSM.Commands.Data.Net
         /// </summary>
         [ProtoMember(1)]
         public ushort[] Array16Ids { get; set; }
-        
+
         /// <summary>
         ///     The list of generated Array32 ids collected by the ArrayHandler.
         /// </summary>
@@ -27,19 +27,19 @@ namespace CSM.Commands.Data.Net
         /// </summary>
         [ProtoMember(3)]
         public ushort Prefab { get; set; }
-        
+
         /// <summary>
         ///     The start point of the created net part.
         /// </summary>
         [ProtoMember(4)]
         public NetTool.ControlPoint StartPoint { get; set; }
-        
+
         /// <summary>
         ///     The middle point of the created net part.
         /// </summary>
         [ProtoMember(5)]
         public NetTool.ControlPoint MiddlePoint { get; set; }
-        
+
         /// <summary>
         ///     The end point of the created net part.
         /// </summary>
@@ -57,25 +57,25 @@ namespace CSM.Commands.Data.Net
         /// </summary>
         [ProtoMember(8)]
         public bool TestEnds { get; set; }
-        
+
         /// <summary>
         ///     AutoFix
         /// </summary>
         [ProtoMember(9)]
         public bool AutoFix { get; set; }
-        
+
         /// <summary>
         ///     If the invert mode is enabled.
         /// </summary>
         [ProtoMember(10)]
         public bool Invert { get; set; }
-        
+
         /// <summary>
         ///     If the direction should be changed.
         /// </summary>
         [ProtoMember(11)]
         public bool SwitchDir { get; set; }
-        
+
         /// <summary>
         ///     The building id that is being relocated.
         /// </summary>

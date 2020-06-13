@@ -16,7 +16,7 @@ namespace CSM.Panels
             return ShowPanel<T>(false);
         }
 
-        private static T ShowPanel<T>(bool toggle) where T: UIComponent
+        private static T ShowPanel<T>(bool toggle) where T : UIComponent
         {
             if (!_uiView)
                 _uiView = UIView.GetAView();
@@ -33,7 +33,7 @@ namespace CSM.Panels
             }
             else
             {
-                panel = (T) _uiView.AddUIComponent(typeof(T));
+                panel = (T)_uiView.AddUIComponent(typeof(T));
                 panel.name = name;
             }
             panel.Focus();

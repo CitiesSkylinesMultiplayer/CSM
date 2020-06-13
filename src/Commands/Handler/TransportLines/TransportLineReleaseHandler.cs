@@ -10,9 +10,9 @@ namespace CSM.Commands.Handler.TransportLines
         {
             IgnoreHelper.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, null);
-            
+
             TransportManager.instance.ReleaseLine(command.Line);
-            
+
             ArrayHandler.StopApplying();
             IgnoreHelper.EndIgnore();
         }

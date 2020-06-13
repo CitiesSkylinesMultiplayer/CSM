@@ -1,13 +1,12 @@
 ﻿using CSM.Commands;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using CSM.Commands.Data.Names;
 using CSM.Commands.Data.Net;
-using CSM.Commands.Handler;
 using CSM.Commands.Handler.Names;
 using CSM.Helpers;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace CSM.Injections
 {
@@ -233,7 +232,7 @@ namespace CSM.Injections
         {
             __state = EventManager.instance.GetEventName(eventID) != name;
         }
-        
+
         public static void Postfix(ushort eventID, string name, bool __result, ref bool __state)
         {
             if (IgnoreHelper.IsIgnored() || !__state)

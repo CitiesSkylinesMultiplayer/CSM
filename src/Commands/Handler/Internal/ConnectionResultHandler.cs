@@ -1,5 +1,4 @@
 ﻿using ColossalFramework.Threading;
-using ColossalFramework.UI;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
@@ -27,7 +26,7 @@ namespace CSM.Commands.Handler.Internal
             // If we are allowed to connect
             if (command.Success)
             {
-                // Log and set that we are connected.            
+                // Log and set that we are connected.
                 _logger.Info("Successfully connected to server. Downloading world...");
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Downloading;
                 MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;

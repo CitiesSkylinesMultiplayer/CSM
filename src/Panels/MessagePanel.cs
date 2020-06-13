@@ -1,6 +1,6 @@
-using System.Linq;
 using ColossalFramework.UI;
 using CSM.Helpers;
+using System.Linq;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -52,7 +52,7 @@ namespace CSM.Panels
             _title = "Warning";
             if (_titleLabel)
                 _titleLabel.text = _title;
-            
+
             _message = "Playing with other mods or DLCs is\n" +
                        "currently not officially supported.\n\n" +
                        "Try to disable them if you encounter\n" +
@@ -69,7 +69,7 @@ namespace CSM.Panels
             _title = "DLC Mismatch";
             if (_titleLabel)
                 _titleLabel.text = _title;
-            
+
             DLCPanelNew dlcPanel = FindObjectOfType<DLCPanelNew>();
 
             string message = "Your DLCs don't match with the server's DLCs\n\n";

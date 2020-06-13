@@ -8,7 +8,7 @@ namespace CSM.Commands.Handler.Roads
         protected override void Handle(RoadSettingsCommand command)
         {
             IgnoreHelper.StartIgnore();
-            
+
             // Simulate traffic routes mode (otherwise the flags would not change)
             InfoManager.InfoMode oldMode = InfoManager.instance.CurrentMode;
             ReflectionHelper.SetAttr(InfoManager.instance, "m_actualMode", InfoManager.InfoMode.TrafficRoutes);
