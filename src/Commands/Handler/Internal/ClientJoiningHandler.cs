@@ -4,7 +4,7 @@ using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler.Internal
 {
-    internal class ClientJoiningHandler : CommandHandler<ClientJoiningCommand>
+    public class ClientJoiningHandler : CommandHandler<ClientJoiningCommand>
     {
         public ClientJoiningHandler()
         {
