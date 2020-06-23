@@ -36,7 +36,7 @@ namespace CSM.Injections
                     playerCameraRotation_last = _rotation;
 
 
-                    // Set the correct playerName if our currentRole is SERVER, else use the CurrebntClient Username
+                    // Set the correct playerName if our currentRole is SERVER, else use the CurrentClient Username
                     String playerName = null;
                     if(MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server){
                         playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
