@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.Collections.Generic;
 
 namespace CSM.Commands.Data.Internal
 {

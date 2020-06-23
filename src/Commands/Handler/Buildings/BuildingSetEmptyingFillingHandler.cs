@@ -1,7 +1,7 @@
-using System;
 using ColossalFramework.UI;
 using CSM.Commands.Data.Buildings;
 using CSM.Helpers;
+using System;
 
 namespace CSM.Commands.Handler.Buildings
 {
@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler.Buildings
                 building.Info.m_buildingAI.SetFilling(command.Building, ref building, command.Value);
 
             // Update panel if opened
-            foreach (Type panelType in new Type[] {typeof(CityServiceWorldInfoPanel), typeof(ShelterWorldInfoPanel), typeof(WarehouseWorldInfoPanel)})
+            foreach (Type panelType in new Type[] { typeof(CityServiceWorldInfoPanel), typeof(ShelterWorldInfoPanel), typeof(WarehouseWorldInfoPanel) })
             {
                 if (InfoPanelHelper.IsBuilding(panelType, command.Building, out WorldInfoPanel panel))
                 {
@@ -27,7 +27,7 @@ namespace CSM.Commands.Handler.Buildings
                         if (panelType == typeof(CityServiceWorldInfoPanel))
                         {
                             // Update emptying button
-                            ((CityServiceWorldInfoPanel) panel).SetSpecialActionButtonImages();
+                            ((CityServiceWorldInfoPanel)panel).SetSpecialActionButtonImages();
 
                             // Update "accept intercity trains" checkbox
                             ReflectionHelper.Call(panel, "Update");

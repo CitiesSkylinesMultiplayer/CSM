@@ -1,7 +1,7 @@
 using ProtoBuf;
 
 namespace CSM.Commands.Data.Buildings
-{ 
+{
     /// <summary>
     ///     Called when a building is upgraded.
     /// </summary>

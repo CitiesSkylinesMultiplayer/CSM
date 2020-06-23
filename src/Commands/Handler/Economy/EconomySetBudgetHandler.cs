@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Economy
             IgnoreHelper.StartIgnore();
 
             EconomyManager.instance.SetBudget(command.Service, command.SubService, command.Budget, command.Night);
-            
+
             EconomyPanel panel = typeof(ToolsModifierControl).GetField("m_EconomyPanel", ReflectionHelper.AllAccessFlags)?.GetValue(null) as EconomyPanel;
             if (panel != null)
             {

@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using CSM.Commands.Data.TransportLines;
+﻿using CSM.Commands.Data.TransportLines;
 using CSM.Helpers;
 using CSM.Injections;
+using System.Collections;
 
 namespace CSM.Commands.Handler.TransportLines
 {
@@ -18,10 +18,10 @@ namespace CSM.Commands.Handler.TransportLines
             int mode = ReflectionHelper.GetEnumValue(typeof(TransportTool).GetNestedType("Mode", ReflectionHelper.AllAccessFlags), "AddStops");
             ReflectionHelper.SetAttr(tool, "m_mode", mode);
             ReflectionHelper.SetAttr(tool, "m_errors", ToolBase.ToolErrors.None);
-            
-            IEnumerator addStop = (IEnumerator) ReflectionHelper.Call(tool, "AddStop");
+
+            IEnumerator addStop = (IEnumerator)ReflectionHelper.Call(tool, "AddStop");
             addStop.MoveNext();
-            
+
             IgnoreHelper.EndIgnore();
 
             ArrayHandler.StopApplying();

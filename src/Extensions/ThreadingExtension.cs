@@ -1,9 +1,9 @@
-﻿using System;
-using CSM.Commands;
+﻿using CSM.Commands;
 using CSM.Commands.Data.Game;
 using CSM.Injections;
 using CSM.Networking;
 using ICities;
+using System;
 
 namespace CSM.Extensions
 {

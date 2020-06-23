@@ -21,7 +21,6 @@ namespace CSM.Panels
             AddUIComponent(typeof(UIDragHandle));
 
             backgroundSprite = "GenericPanel";
-            name = "MPManageGamePanel";
             color = new Color32(110, 110, 110, 250);
 
             // Grab the view for calculating width and height of game
@@ -84,7 +83,8 @@ namespace CSM.Panels
                 if (!visible)
                     return;
 
-                _portField.text = MultiplayerManager.Instance.CurrentServer.Config.Port.ToString();
+                _portVal = MultiplayerManager.Instance.CurrentServer.Config.Port.ToString();
+                _portField.text = _portVal;
             };
         }
     }

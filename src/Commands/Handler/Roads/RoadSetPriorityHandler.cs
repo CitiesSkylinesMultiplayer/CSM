@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Roads
         {
             IgnoreHelper.StartIgnore();
             NetManager.instance.SetPriorityRoad(command.SegmentId, command.Priority).MoveNext();
-            
+
             InstanceID instance = InfoPanelHelper.GetInstanceID(typeof(RoadWorldInfoPanel), out WorldInfoPanel panel);
             if (instance.Type == InstanceType.NetSegment && instance.NetSegment == command.SegmentId)
             {

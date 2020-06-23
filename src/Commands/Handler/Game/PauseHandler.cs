@@ -1,5 +1,4 @@
-﻿
-using CSM.Commands.Data.Game;
+﻿using CSM.Commands.Data.Game;
 
 namespace CSM.Commands.Handler.Game
 {

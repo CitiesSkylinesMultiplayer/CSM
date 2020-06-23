@@ -27,7 +27,7 @@ namespace CSM.Commands.Data.Parks
         /// </summary>
         [ProtoMember(3)]
         public DistrictPark.ParkLevel ParkLevel { get; set; }
-        
+
         /// <summary>
         ///     The random seed of the park (e.g. for the park name).
         /// </summary>

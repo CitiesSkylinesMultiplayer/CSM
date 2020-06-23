@@ -16,43 +16,43 @@ namespace CSM.Commands.Data.TransportLines
         /// </summary>
         [ProtoMember(1)]
         public Vector3 HitPosition { get; set; }
-        
+
         /// <summary>
         ///     If the stops of the current line have a fixed platform.
         /// </summary>
         [ProtoMember(2)]
         public bool FixedPlatform { get; set; }
-        
+
         /// <summary>
         ///     The index of the stop that was hovered.
         /// </summary>
         [ProtoMember(3)]
         public int HoverStopIndex { get; set; }
-        
+
         /// <summary>
         ///     The index of the segment that was hovered.
         /// </summary>
         [ProtoMember(4)]
         public int HoverSegmentIndex { get; set; }
-        
+
         /// <summary>
         ///     The current mode of the tool.
         /// </summary>
         [ProtoMember(5)]
         public int Mode { get; set; }
-        
+
         /// <summary>
         ///     The list of current errors.
         /// </summary>
         [ProtoMember(6)]
         public ToolBase.ToolErrors Errors { get; set; }
-        
+
         /// <summary>
         ///     If TransportManager::UpdateLinesNow was called during tick processing.
         /// </summary>
         [ProtoMember(7)]
         public bool UpdateLines { get; set; }
-        
+
         /// <summary>
         ///     If TransportLine::UpdatePaths was called on the temp line during tick processing.
         /// </summary>

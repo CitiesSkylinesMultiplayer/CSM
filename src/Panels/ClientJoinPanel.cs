@@ -1,29 +1,33 @@
-﻿using ColossalFramework;
+﻿using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
-using CSM.Networking.Status;
 using System.Threading;
 using UnityEngine;
 
 namespace CSM.Panels
 {
-    class ClientJoinPanel : UIPanel
+    public class ClientJoinPanel : UIPanel
     {
-        private ClientStatus _lastStatus;
-
         private UILabel _statusLabel;
+
+        private UIButton _cancelButton;
+
+        public bool IsSelf { get; set; }
+
+        public bool IsFirstJoin { get; set; }
+
+        public string JoiningUsername { get; set; }
 
         public override void Start()
         {
             backgroundSprite = "GenericPanel";
-            name = "MPClientJoinPanel";
+            name = "ClientJoinPanel";
             color = new Color32(110, 110, 110, 220);
 
             // Grab the view for calculating width and height of game
             UIView view = UIView.GetAView();
 
-            // Center this window in the game
             relativePosition = new Vector3(0, 0);
 
             width = view.fixedWidth;
@@ -31,73 +35,73 @@ namespace CSM.Panels
 
             // Connecting Status
             _statusLabel = this.CreateTitleLabel("", new Vector2(0, 0));
-            UpdateText("A client is joining...");
 
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-            {
-                StartCheck();
-            }
+            // Canel button only while first join
+            _cancelButton = this.CreateButton("Cancel", new Vector2((width / 2f) - 170f, -(height / 2f) - 60f));
+            _cancelButton.eventClick += OnCancelButtonClick;
+            _cancelButton.isVisible = false;
         }
 
-        private void UpdateText(string message) 
+        public void ShowPanel()
         {
-            _statusLabel.position = new Vector2(0, 60);
-            _statusLabel.text = message;
-            float w = _statusLabel.width;
-            _statusLabel.position = new Vector2((width / 2f) - (w / 2f), -(height / 2f) + 60f);
+            UpdateText();
+            isVisible = true;
+            Focus();
+        }
+
+        public void HidePanel(bool RemoveFromUI = false)
+        {
+            isVisible = false;
+            if (RemoveFromUI)
+                RemoveUIComponent(this);
+        }
+
+        private void OnCancelButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
+        {
+            MultiplayerManager.Instance.CurrentClient.Disconnect();
+            MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
+            HidePanel(true);
+        }
+
+        private void UpdateText()
+        {
+            new Thread(() =>
+            {
+                // Waiting for _statusLabel and _cancelButton being created
+                while (!_statusLabel || !_cancelButton)
+                {
+                    Thread.Sleep(50);
+                }
+
+                // Update _statusLabel and _cancelButton
+                ThreadHelper.dispatcher.Dispatch(() =>
+                {
+                    _statusLabel.position = new Vector2(0, 60);
+                    _statusLabel.text = GetStatusMessage();
+                    float w = _statusLabel.width;
+                    _statusLabel.position = new Vector2((width - w) / 2f, -(height / 2f) + 60f);
+                    if (IsFirstJoin)
+                    {
+                        _cancelButton.isVisible = true;
+                    }
+                });
+            }).Start();
         }
 
         private string GetStatusMessage()
         {
-            switch (_lastStatus)
+            if (IsFirstJoin)
             {
-                case ClientStatus.Downloading:
-                    return "Client is downloading save game...";
-                case ClientStatus.Loading:
-                    return "Client is loading save game...";
-                default:
-                    return "Invalid status";
+                return "Downloading save game...";
             }
-        }
-
-        private ClientStatus GetStatus()
-        {
-            foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
+            else if (IsSelf)
             {
-                if (p.Status != ClientStatus.Connected)
-                {
-                    return p.Status;
-                }
+                return "Re-downloading save game...";
             }
-            return ClientStatus.Connected;
-        }
-
-        public void StartCheck() 
-        {
-            _lastStatus = GetStatus();
-            UpdateText(GetStatusMessage());
-
-            new Thread(() =>
+            else
             {
-                ClientStatus CurrentStatus = GetStatus();
-                while (CurrentStatus == ClientStatus.Downloading || CurrentStatus == ClientStatus.Loading)
-                {
-                    Thread.Sleep(100);
-                    if (_lastStatus != CurrentStatus)
-                    {
-                        _lastStatus = CurrentStatus;
-                        Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
-                        {
-                            UpdateText(GetStatusMessage());
-                        });
-                    }
-                    CurrentStatus = GetStatus();
-                }
-                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
-                {
-                    isVisible = false;
-                });
-            }).Start();
+                return JoiningUsername + " is joining...";
+            }
         }
     }
 }

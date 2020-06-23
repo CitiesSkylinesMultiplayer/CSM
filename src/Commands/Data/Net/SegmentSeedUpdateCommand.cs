@@ -15,7 +15,7 @@ namespace CSM.Commands.Data.Net
         /// </summary>
         [ProtoMember(1)]
         public ushort SegmentId { get; set; }
-        
+
         /// <summary>
         ///     The new name seed.
         /// </summary>

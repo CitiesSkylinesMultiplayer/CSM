@@ -16,7 +16,7 @@ namespace CSM.Commands.Handler.Events
             if (InfoPanelHelper.IsEventBuilding(typeof(FootballPanel), command.Event, out WorldInfoPanel panel))
             {
                 UISlider slider = ReflectionHelper.GetAttr<UISlider>(panel, "m_TicketPriceSlider");
-                
+
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
                     slider.value = command.Price;

@@ -61,7 +61,7 @@ namespace CSM.Helpers
         {
             return obj.GetType().GetField(attribute, AllAccessFlags)?.GetValue(obj);
         }
-        
+
         public static T GetProp<T>(object obj, string property)
         {
             return (T)GetProp(obj, property);

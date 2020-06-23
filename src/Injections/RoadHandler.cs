@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using CSM.Commands;
 using CSM.Commands.Data.Roads;
 using CSM.Helpers;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace CSM.Injections
 {
@@ -15,7 +15,7 @@ namespace CSM.Injections
         public static void Prefix(ref NetNode data, int index, out int __state)
         {
             __state = -1;
-            
+
             if (IgnoreHelper.IsIgnored())
                 return;
 

@@ -1,4 +1,6 @@
-﻿using CSM.Networking.Config;
+﻿using ColossalFramework.Threading;
+using ColossalFramework.UI;
+using CSM.Networking.Config;
 using CSM.Panels;
 using System;
 using System.Collections.Generic;
@@ -28,7 +30,7 @@ namespace CSM.Networking
         /// </summary>
         public Client CurrentClient { get; } = new Client();
 
-        public bool GameBlocked { get; set; } = false;
+        public bool GameBlocked { get; private set; } = false;
 
         public void ProcessEvents()
         {
@@ -83,12 +85,9 @@ namespace CSM.Networking
         /// <summary>
         ///     Starts the game server on the given port.
         /// </summary>
-        /// <param name="port">The port to start the server on.</param>
-        /// <param name="password">The password to use.</param>
-        /// <param name="hostUsername">The username of the host player.</param>
-        /// <param name="maxPlayers">The maximum amount of players that can join the server.</param>
+        /// <param name="config">The ServerConfig</param>
         /// <param name="callback">This callback returns if the server was started successfully.</param>
-        public void StartGameServer(int port, string password, string hostUsername, int maxPlayers, Action<bool> callback)
+        public void StartGameServer(ServerConfig config, Action<bool> callback)
         {
             if (CurrentRole == MultiplayerRole.Client)
             {
@@ -99,7 +98,7 @@ namespace CSM.Networking
             new Thread(() =>
             {
                 // Create the server and start it
-                bool isConnected = CurrentServer.StartServer(new ServerConfig(port, hostUsername, password, maxPlayers));
+                bool isConnected = CurrentServer.StartServer(config);
 
                 // Set the current role
                 CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
@@ -126,6 +125,70 @@ namespace CSM.Networking
                     break;
             }
             CurrentRole = MultiplayerRole.None;
+        }
+
+        public void BlockGameReSync()
+        {
+            BlockGame(true, CurrentClient.Config.Username, false);
+        }
+
+        public void BlockGame(string JoiningUsername)
+        {
+            BlockGame(false, JoiningUsername, false);
+        }
+
+        public void BlockGameFirstJoin()
+        {
+            BlockGame(false, CurrentClient.Config.Username, true);
+        }
+
+        private void BlockGame(bool IsSelf, string JoiningUsername, bool IsFirstJoin)
+        {
+            if (GameBlocked)
+                return;
+            QueueMainThread(() =>
+            {
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
+                if (clientJoinPanel == null)
+                {
+                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
+                }
+
+                clientJoinPanel.IsSelf = IsSelf;
+                clientJoinPanel.JoiningUsername = JoiningUsername;
+                clientJoinPanel.IsFirstJoin = IsFirstJoin;
+                clientJoinPanel.ShowPanel();
+            });
+
+            if (!IsFirstJoin)
+                GameBlocked = true;
+        }
+
+        public void UnblockGame(bool RemoveFromUI = false)
+        {
+            if (!GameBlocked)
+                return;
+            QueueMainThread(() =>
+            {
+                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
+                if (clientJoinPanel != null)
+                {
+                    clientJoinPanel.HidePanel(RemoveFromUI);
+                }
+            });
+            GameBlocked = false;
+        }
+
+        private static void QueueMainThread(Action action)
+        {
+            if (Dispatcher.currentSafe == ThreadHelper.dispatcher)
+            {
+                action();
+            }
+            else
+            {
+                ThreadHelper.dispatcher.Dispatch(action);
+            }
         }
 
         private static MultiplayerManager _multiplayerInstance;

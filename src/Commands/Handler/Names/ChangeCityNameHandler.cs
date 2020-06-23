@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler.Names
         protected override void Handle(ChangeCityNameCommand command)
         {
             IgnoreHelper.StartIgnore();
-            
+
             // Update name internally
             CityInfoPanel.instance.SetCityName(command.Name).MoveNext();
 

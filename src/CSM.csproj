@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\assemblies\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\assemblies\Assembly-CSharp.dll</HintPath>
@@ -110,6 +107,7 @@
     <Compile Include="Commands\Data\Internal\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\Internal\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerListCommand.cs" />
+    <Compile Include="Commands\Data\Internal\RequestWorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Internal\WorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeCityNameCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeNameCommand.cs" />
@@ -191,6 +189,7 @@
     <Compile Include="Commands\Handler\Internal\FinishTransactionHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerLocationHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\RequestWorldTransferHandler.cs" />
     <Compile Include="Commands\Handler\Internal\WorldTransferHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeCityNameHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeNameHandler.cs" />
@@ -266,6 +265,7 @@
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
+    <Compile Include="Networking\Config\ConfigData.cs" />
     <Compile Include="Networking\Config\ServerConfig.cs" />
     <Compile Include="Networking\IpAddress.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
@@ -274,11 +274,12 @@
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />
     <Compile Include="Commands\TransactionHandler.cs" />
+    <Compile Include="Panels\MessagePanel.cs" />
+    <Compile Include="Panels\PanelManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Panels\ChatLogPanel.cs" />
     <Compile Include="Panels\ClientJoinPanel.cs" />
     <Compile Include="Panels\SettingsPanel.cs" />
-    <Compile Include="Panels\SyncPanel.cs" />
     <Compile Include="Panels\ConnectionPanel.cs" />
     <Compile Include="Panels\ManageGamePanel.cs" />
     <Compile Include="Panels\HostGamePanel.cs" />
@@ -287,17 +288,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Lib.Harmony">
+      <Version>2.0.0.8</Version>
+    </PackageReference>
     <PackageReference Include="LiteNetLib">
-      <Version>0.8.2-beta</Version>
+      <Version>0.8.3.1</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.5.11</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
     <PackageReference Include="Open.Nat">
       <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="protobuf-net">
-      <Version>2.4.0</Version>
+      <Version>2.4.4</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

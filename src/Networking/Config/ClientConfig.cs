@@ -3,6 +3,7 @@
     /// <summary>
     ///     This class contains configuration for the game client.
     /// </summary>
+    [System.Serializable]
     public class ClientConfig
     {
         /// <summary>
@@ -20,25 +21,33 @@
             Password = password;
         }
 
+        public ClientConfig()
+        {
+            HostAddress = "localhost";
+            Port = 4230;
+            Username = "";
+            Password = "";
+        }
+
         /// <summary>
         ///     Gets the server that this client will connect to.
         /// </summary>
-        public string HostAddress { get; }
+        public string HostAddress;
 
         /// <summary>
         ///     Gets the server port that this client will connect to.
         /// </summary>
-        public int Port { get; }
+        public int Port;
 
         /// <summary>
         ///     Gets the players user name that they will use
         ///     on the connected server.
         /// </summary>
-        public string Username { get; }
+        public string Username;
 
         /// <summary>
         ///     Gets the password used to login to the server (if required).
         /// </summary>
-        public string Password { get; }
+        public string Password;
     }
 }

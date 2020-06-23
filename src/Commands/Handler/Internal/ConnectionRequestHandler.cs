@@ -1,15 +1,12 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using ColossalFramework.Threading;
-using ColossalFramework.UI;
-using CSM.Commands.Data.Internal;
+﻿using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
-using CSM.Panels;
 using LiteNetLib;
 using NLog;
+using System;
+using System.Reflection;
+using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -103,7 +100,8 @@ namespace CSM.Commands.Handler.Internal
             bool clientJoining = false;
             foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
             {
-                if (p.Status != ClientStatus.Connected) {
+                if (p.Status != ClientStatus.Connected)
+                {
                     clientJoining = true;
                 }
             }
@@ -120,32 +118,7 @@ namespace CSM.Commands.Handler.Internal
 
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);
-            newPlayer.Status = ClientStatus.Downloading;
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
-
-            // Open status window
-            ThreadHelper.dispatcher.Dispatch(() =>
-            {
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
-                if (clientJoinPanel != null)
-                {
-                    clientJoinPanel.isVisible = true;
-                    clientJoinPanel.StartCheck();
-                }
-                else
-                {
-                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
-                }
-                clientJoinPanel.Focus();
-            });
-
-            // Inform other clients about the joining client
-            Command.SendToOtherClients(new ClientJoiningCommand
-            {
-                JoiningFinished = false
-            }, newPlayer);
-            MultiplayerManager.Instance.GameBlocked = true;
-            SimulationManager.instance.SimulationPaused = true;
 
             // Send the result command
             Command.SendToClient(peer, new ConnectionResultCommand
@@ -153,6 +126,31 @@ namespace CSM.Commands.Handler.Internal
                 Success = true,
                 ClientId = peer.Id
             });
+
+            PrepareWorldLoad(newPlayer);
+
+            MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
+        }
+
+        public static void PrepareWorldLoad(Player newPlayer)
+        {
+            newPlayer.Status = ClientStatus.Downloading;
+
+            MultiplayerManager.Instance.BlockGame(newPlayer.Username);
+            SimulationManager.instance.SimulationPaused = true;
+
+            // Inform other clients about the joining client
+            Command.SendToOtherClients(new ClientJoiningCommand
+            {
+                JoiningFinished = false,
+                JoiningUsername = newPlayer.Username
+            }, newPlayer);
+
+            /*
+             * Wait to get all remaining pakets processed, because unprocessed packets
+             * before saving may end in an desynced game for the joining client
+             */
+            Thread.Sleep(2000);
 
             // Get a serialized version of the server world to send to the player.
             SaveHelpers.SaveServerLevel();
@@ -164,15 +162,13 @@ namespace CSM.Commands.Handler.Internal
                     Thread.Sleep(100);
                 }
 
-                Command.SendToClient(peer, new WorldTransferCommand
+                Command.SendToClient(newPlayer, new WorldTransferCommand
                 {
                     World = SaveHelpers.GetWorldFile()
                 });
 
                 newPlayer.Status = ClientStatus.Loading;
             }).Start();
-
-            MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
         }
     }
 }

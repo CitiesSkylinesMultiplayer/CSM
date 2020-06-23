@@ -1,13 +1,10 @@
-﻿using ColossalFramework.Threading;
-using ColossalFramework.UI;
-using CSM.Commands.Data.Internal;
+﻿using CSM.Commands.Data.Internal;
 using CSM.Networking;
 using CSM.Networking.Status;
-using CSM.Panels;
 
 namespace CSM.Commands.Handler.Internal
 {
-    class ClientJoiningHandler : CommandHandler<ClientJoiningCommand>
+    public class ClientJoiningHandler : CommandHandler<ClientJoiningCommand>
     {
         public ClientJoiningHandler()
         {
@@ -18,32 +15,11 @@ namespace CSM.Commands.Handler.Internal
         {
             if (command.JoiningFinished)
             {
-                ThreadHelper.dispatcher.Dispatch(() =>
-                {
-                    ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
-                    if (clientJoinPanel != null)
-                    {
-                        clientJoinPanel.isVisible = false;
-                    }
-                });
-                MultiplayerManager.Instance.GameBlocked = false;
+                MultiplayerManager.Instance.UnblockGame();
             }
             else
             {
-                ThreadHelper.dispatcher.Dispatch(() =>
-                {
-                    ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
-                    if (clientJoinPanel != null)
-                    {
-                        clientJoinPanel.isVisible = true;
-                    }
-                    else 
-                    {
-                        clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
-                    }
-                    clientJoinPanel.Focus();
-                });
-                MultiplayerManager.Instance.GameBlocked = true;
+                MultiplayerManager.Instance.BlockGame(command.JoiningUsername);
             }
         }
 
@@ -53,9 +29,10 @@ namespace CSM.Commands.Handler.Internal
             {
                 Command.SendToClients(new ClientJoiningCommand
                 {
-                    JoiningFinished = true
+                    JoiningFinished = true,
+                    JoiningUsername = player.Username
                 });
-                MultiplayerManager.Instance.GameBlocked = false;
+                MultiplayerManager.Instance.UnblockGame();
             }
         }
     }

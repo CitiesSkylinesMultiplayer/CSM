@@ -1,11 +1,16 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.Plugins;
+using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
+using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
 using ICities;
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CSM.Extensions
 {
@@ -25,7 +30,7 @@ namespace CSM.Extensions
         {
             base.OnLevelLoaded(mode);
 
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client) 
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
                 Command.SendToServer(new ClientLevelLoadedCommand());
@@ -62,15 +67,22 @@ namespace CSM.Extensions
             // Respond to button click.
             _multiplayerButton.eventClick += (component, param) =>
             {
-                ConnectionPanel panel = uiView.FindUIComponent<ConnectionPanel>("MPConnectionPanel");
-
-                if (panel != null)
+                // Open host game menu if not in multiplayer session, else open connection panel
+                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
                 {
-                    panel.isVisible = !panel.isVisible;
+                    PanelManager.TogglePanel<HostGamePanel>();
+
+                    // Display warning if DLCs or other mods are enabled
+                    if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None ||
+                        Singleton<PluginManager>.instance.enabledModCount > 1)
+                    {
+                        MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
+                        msgPanel.DisplayContentWarning();
+                    }
                 }
                 else
                 {
-                    uiView.AddUIComponent(typeof(ConnectionPanel));
+                    PanelManager.TogglePanel<ConnectionPanel>();
                 }
 
                 _multiplayerButton.Unfocus();
@@ -82,18 +94,31 @@ namespace CSM.Extensions
             base.OnLevelUnloading();
 
             //Code below destroys any created UI from the screen.
-            UIComponent _getui = UIView.GetAView().FindUIComponent<UIComponent>("ChatLogPanel");
-
-            UIComponent[] children = _getui.GetComponentsInChildren<UIComponent>();
-
-            foreach (UIComponent child in children)
+            try
             {
-                Object.Destroy(child);
-            }
+                UIComponent _getui = UIView.GetAView().FindUIComponent<UIComponent>("ChatLogPanel");
+                UIComponent[] children = _getui.GetComponentsInChildren<UIComponent>();
 
-            // Destroy duplicated multiplayer button
-            UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
-            Object.Destroy(temp);
+                foreach (UIComponent child in children)
+                {
+                    Object.Destroy(child);
+                }
+
+                // Destroy duplicated multiplayer button
+                UIComponent temp = UIView.GetAView().FindUIComponent("MPConnectionPanel");
+                if (temp)
+                    Object.Destroy(temp);
+
+                // Destroy multiplayer join panel
+                UIComponent clientJoinPanel = UIView.GetAView().FindUIComponent("MPClientJoinPanel");
+                if (clientJoinPanel)
+                    Object.Destroy(clientJoinPanel);
+            }
+            catch (NullReferenceException)
+            {
+                // Ignore, because it sometimes throws them... (Not caused by us)
+                // TODO: Rework this to be more stable
+            }
         }
     }
 }

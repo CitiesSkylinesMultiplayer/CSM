@@ -1,5 +1,8 @@
-﻿using ColossalFramework.Plugins;
+﻿using ColossalFramework;
+using ColossalFramework.Plugins;
 using CSM.Commands;
+using CSM.Commands.Data.Internal;
+using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
@@ -10,9 +13,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using ColossalFramework;
-using CSM.Commands.Data.Internal;
-using CSM.Helpers;
 
 namespace CSM.Networking
 {
@@ -178,8 +178,11 @@ namespace CSM.Networking
 
             if (needsUnload)
             {
-                // Go back to the main menu after disconnecting
-                Singleton<LoadingManager>.instance.UnloadLevel();
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
+                    // Go back to the main menu after disconnecting
+                    Singleton<LoadingManager>.instance.UnloadLevel();
+                });
             }
 
             _logger.Info("Disconnected from server");
@@ -261,7 +264,7 @@ namespace CSM.Networking
             _logger.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");
 
             // Log the reason to the console if we are not in 'connecting' state
-            if (Status != ClientStatus.Connecting)
+            if (Status == ClientStatus.Connected)
             {
                 switch (disconnectInfo.Reason)
                 {
@@ -284,7 +287,7 @@ namespace CSM.Networking
             }
 
             // If we are connected, disconnect
-            if (Status == ClientStatus.Connected)
+            if (Status != ClientStatus.Disconnected && Status != ClientStatus.Connecting)
                 MultiplayerManager.Instance.StopEverything();
 
             // In the case of ClientStatus.Connecting, this also ends the wait loop

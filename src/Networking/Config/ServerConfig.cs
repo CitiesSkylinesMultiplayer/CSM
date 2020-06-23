@@ -3,6 +3,7 @@
     /// <summary>
     ///     This class contains configuration for the game server.
     /// </summary>
+    [System.Serializable]
     public class ServerConfig
     {
         /// <summary>
@@ -20,24 +21,32 @@
             MaxPlayers = maxPlayers;
         }
 
+        public ServerConfig()
+        {
+            Port = 4230;
+            Username = "";
+            Password = "";
+            MaxPlayers = 0;
+        }
+
         /// <summary>
         ///     Gets the port that this server will run on.
         /// </summary>
-        public int Port { get; }
+        public int Port;
 
         /// <summary>
         ///     Gets the maximum amount of players that can connect to this server.
         /// </summary>
-        public int MaxPlayers { get; }
+        public int MaxPlayers;
 
         /// <summary>
         ///     Gets the user name for the player hosting the server.
         /// </summary>
-        public string Username { get; }
+        public string Username;
 
         /// <summary>
         ///     Gets the optional server password.
         /// </summary>
-        public string Password { get; }
+        public string Password;
     }
 }
