@@ -19,7 +19,7 @@ namespace CSM.Injections
             // Make sure the camera object is defined, this should always happen but for some strange reason it didnt (look bellow)
             // This is not happening if i test it localy. (debug using AllocConsole in CSM.cs)
             // https://github.com/DominicMaas/Tango/issues/155
-            if (___m_camera && MultiplayerManager.Instance.PlayerList.Count > 0)
+            if (___m_camera && MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None)
             {
                 // Get camera rotation, angle and position
                 Transform transform = ___m_camera.transform;
