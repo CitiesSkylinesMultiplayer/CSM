@@ -7,7 +7,12 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Reflection;
-
+#if DEBUG
+using System.IO;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+using System.Text;
+#endif
 namespace CSM
 {
     public class CSM : ICities.IUserMod
@@ -18,11 +23,41 @@ namespace CSM
 
         private readonly Settings _settings;
 
+#if DEBUG
+        // Imports for the debug console
+        [DllImport("kernel32.dll",
+            EntryPoint = "GetStdHandle",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            CallingConvention = CallingConvention.StdCall)]
+        private static extern IntPtr GetStdHandle(int nStdHandle);
+        [DllImport("kernel32.dll",
+            EntryPoint = "AllocConsole",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            CallingConvention = CallingConvention.StdCall)]
+        private static extern int AllocConsole();
+#endif
+
         public CSM()
         {
             // Setup the correct logging configuration
             _settings = new Settings();
             SetupLogging();
+
+#if DEBUG
+            // This will output all logs to the console instead of a file. (Build with Debug mode on)
+            // This will not be shipped in a release build because of the #if DEBUG tags
+            AllocConsole();
+            IntPtr stdHandle = GetStdHandle(-11);
+            SafeFileHandle safeFileHandle = new SafeFileHandle(stdHandle, true);
+            FileStream fileStream = new FileStream(safeFileHandle, FileAccess.Write);
+            Encoding encoding = System.Text.Encoding.GetEncoding(System.Text.Encoding.UTF8.CodePage);
+            StreamWriter standardOutput = new StreamWriter(fileStream, encoding);
+            standardOutput.AutoFlush = true;
+            Console.SetOut(standardOutput);
+#endif
+
         }
 
         public void OnEnabled()
