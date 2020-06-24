@@ -37,7 +37,7 @@ namespace CSM.Injections
 
 
                     // Set the correct playerName if our currentRole is SERVER, else use the CurrentClient Username
-                    String playerName = null;
+                    string playerName = null;
                     if(MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server){
                         playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
                     }else{
