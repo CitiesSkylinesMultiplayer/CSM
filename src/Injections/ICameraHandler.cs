@@ -37,17 +37,20 @@ namespace CSM.Injections
 
 
                     // Set the correct playerName if our currentRole is SERVER, else use the CurrentClient Username
-                    string playerName = null;
-                    if(MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server){
+                    string playerName;
+                    if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+                    {
                         playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
-                    }else{
+                    }
+                    else
+                    {
                         playerName = MultiplayerManager.Instance.CurrentClient.Config.Username;
                     }
 
                     // Send info to all clients
                     Command.SendToAll(new PlayerLocationCommand
                     {
-                        PlayerName = MultiplayerManager.Instance.CurrentClient.Config.Username,
+                        PlayerName = playerName,
                         PlayerCameraPosition = _position,
                         PlayerCameraRotation = _rotation,
                         PlayerCameraHeight = __instance.m_currentHeight,
@@ -55,7 +58,6 @@ namespace CSM.Injections
                     });
                 }
             }
-
         }
     }
 }
