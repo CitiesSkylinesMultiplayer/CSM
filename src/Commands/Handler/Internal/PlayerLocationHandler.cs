@@ -1,4 +1,6 @@
 ﻿using CSM.Commands.Data.Internal;
+using CSM.Networking;
+using CSM.Networking.Status;
 using CSM.Panels;
 using UnityEngine;
 
@@ -13,6 +15,14 @@ namespace CSM.Commands.Handler.Internal
 
         protected override void Handle(PlayerLocationCommand command)
         {
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None ||
+                (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client &&
+                MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected))
+            {
+                // Ignore packets while not connected
+                return;
+            }
+
             GameObject _playerLocation = GameObject.Find("/PlayerLocation_" + command.PlayerName);
             LineRenderer lineRenderer;
             if (_playerLocation == null)
