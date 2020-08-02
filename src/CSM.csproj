@@ -108,6 +108,7 @@
     <Compile Include="Commands\Data\Internal\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerListCommand.cs" />
     <Compile Include="Commands\Data\Internal\RequestWorldTransferCommand.cs" />
+    <Compile Include="Commands\Data\Internal\SlowdownCommand.cs" />
     <Compile Include="Commands\Data\Internal\WorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeCityNameCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeNameCommand.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Commands\Handler\Internal\PlayerListHandler.cs" />
     <Compile Include="Commands\Handler\Internal\PlayerLocationHandler.cs" />
     <Compile Include="Commands\Handler\Internal\RequestWorldTransferHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\SlowdownHandler.cs" />
     <Compile Include="Commands\Handler\Internal\WorldTransferHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeCityNameHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeNameHandler.cs" />
@@ -240,6 +242,7 @@
     <Compile Include="Helpers\IgnoreHelper.cs" />
     <Compile Include="Helpers\InfoPanelHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Helpers\SlowdownHelper.cs" />
     <Compile Include="Helpers\ToolSimulator.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
@@ -252,6 +255,7 @@
     <Compile Include="Injections\NetHandler.cs" />
     <Compile Include="Injections\PropHandler.cs" />
     <Compile Include="Injections\RoadHandler.cs" />
+    <Compile Include="Injections\TickLoopHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TransportHandler.cs" />
     <Compile Include="Injections\TreeHandler.cs" />
