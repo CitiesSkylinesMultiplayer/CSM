@@ -35,12 +35,17 @@ namespace CSM.Networking
         /// <summary>
         ///     The current status of the client
         /// </summary>
-        public ClientStatus Status { get; set; }
+        public ClientStatus Status {
+            get => ClientPlayer.Status;
+            set => ClientPlayer.Status = value;
+        }
 
         /// <summary>
         ///     The assigned client id.
         /// </summary>
         public int ClientId { get; set; }
+
+        public Player ClientPlayer { get; set; } = new Player();
 
         /// <summary>
         ///     If the status is disconnected, this will contain
@@ -61,6 +66,7 @@ namespace CSM.Networking
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
             listener.PeerDisconnectedEvent += ListenerOnPeerDisconnectedEvent;
+            listener.NetworkLatencyUpdateEvent += ListenerOnNetworkLatencyUpdateEvent;
         }
 
         /// <summary>
@@ -91,6 +97,7 @@ namespace CSM.Networking
 
             // Set the configuration
             Config = clientConfig;
+            ClientPlayer.Username = Config.Username;
 
             // Start the client, if client setup fails, return out and
             // tell the user
@@ -301,6 +308,11 @@ namespace CSM.Networking
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
             _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+        }
+        
+        private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
+        {
+            ClientPlayer.Latency = latency;
         }
 
         public void StartMainMenuEventProcessor()

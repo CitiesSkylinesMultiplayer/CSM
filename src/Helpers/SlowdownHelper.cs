@@ -68,9 +68,23 @@ namespace CSM.Helpers
             lock (_toDropLock)
             {
                 _framesToDrop += frames;
-                _dropInterval = ticksUntil / _framesToDrop;
+                if (_framesToDrop > 0)
+                {
+                    _dropInterval = ticksUntil / _framesToDrop;
+                }
             }
             _logger.Debug($"Dropping {_framesToDrop} frames in the next 10 seconds (drop every {_dropInterval} frames)");
+        }
+
+        /// <summary>
+        ///     Clears all frames that are queued for dropping (e.g. when paused)
+        /// </summary>
+        public static void ClearDropFrames()
+        {
+            lock (_toDropLock)
+            {
+                _framesToDrop = 0;
+            }
         }
 
         /// <summary>
