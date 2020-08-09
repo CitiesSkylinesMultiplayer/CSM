@@ -28,6 +28,7 @@ namespace CSM.Commands.Handler.Internal
             {
                 // Log and set that we are connected.
                 _logger.Info("Successfully connected to server. Downloading world...");
+                MultiplayerManager.Instance.CurrentClient.ClientPlayer = new Player();
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Downloading;
                 MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
             }

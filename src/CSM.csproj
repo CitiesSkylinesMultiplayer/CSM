@@ -88,6 +88,7 @@
     <Compile Include="Commands\Data\Events\EventColorChangedCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetSecurityBudgetCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetTicketPriceCommand.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseReachedCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientLevelLoadedCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerLocationCommand.cs" />
@@ -98,8 +99,8 @@
     <Compile Include="Commands\Data\Districts\DistrictPolicyCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictPolicyUnsetCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictReleaseCommand.cs" />
-    <Compile Include="Commands\Data\Game\PauseCommand.cs" />
-    <Compile Include="Commands\Data\Game\SpeedCommand.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseResponseCommand.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseRequestCommand.cs" />
     <Compile Include="Commands\Data\Internal\ChatMessageCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientConnectCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientDisconnectCommand.cs" />
@@ -178,8 +179,9 @@
     <Compile Include="Commands\Handler\Events\EventColorChangedHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetSecurityBudgetHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetTicketPriceHandler.cs" />
-    <Compile Include="Commands\Handler\Game\PauseHandler.cs" />
-    <Compile Include="Commands\Handler\Game\SpeedHandler.cs" />
+    <Compile Include="Commands\Handler\Game\SpeedPauseReachedHandler.cs" />
+    <Compile Include="Commands\Handler\Game\SpeedPauseResponseHandler.cs" />
+    <Compile Include="Commands\Handler\Game\SpeedPauseRequestHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ChatMessageHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ClientConnectHandler.cs" />
     <Compile Include="Commands\Handler\Internal\ClientDisonnectHandler.cs" />
@@ -243,6 +245,7 @@
     <Compile Include="Helpers\InfoPanelHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Helpers\SlowdownHelper.cs" />
+    <Compile Include="Helpers\SpeedPauseHelper.cs" />
     <Compile Include="Helpers\ToolSimulator.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
