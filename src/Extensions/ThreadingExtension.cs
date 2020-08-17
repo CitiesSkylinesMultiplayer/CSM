@@ -4,6 +4,7 @@ using CSM.Injections;
 using CSM.Networking;
 using ICities;
 using System;
+using CSM.Helpers;
 
 namespace CSM.Extensions
 {
@@ -14,7 +15,7 @@ namespace CSM.Extensions
     {
         private int _lastSelectedSimulationSpeed;
         private bool _lastSimulationPausedState;
-        private DateTime lastEconomySync;
+        private DateTime _lastEconomyAndDropSync;
 
         public override void OnBeforeSimulationTick()
         {
@@ -55,10 +56,11 @@ namespace CSM.Extensions
             _lastSelectedSimulationSpeed = SimulationManager.instance.SelectedSimulationSpeed;
 
             // Send economy packets every two seconds
-            if (DateTime.Now.Subtract(lastEconomySync).TotalSeconds > 2)
+            if (DateTime.Now.Subtract(_lastEconomyAndDropSync).TotalSeconds > 2)
             {
                 ResourceCommandHandler.Send();
-                lastEconomySync = DateTime.Now;
+                SlowdownHelper.SendDroppedFrames();
+                _lastEconomyAndDropSync = DateTime.Now;
             }
 
             // Finish transactions
