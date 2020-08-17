@@ -180,7 +180,7 @@ namespace CSM.Commands
                   .ToArray();
 
                 // Create a protobuf model
-                RuntimeTypeModel model = TypeModel.Create();
+                RuntimeTypeModel model = RuntimeTypeModel.Create();
 
                 // Set type surrogates
                 model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
