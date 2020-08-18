@@ -12,7 +12,10 @@ namespace CSM.Injections
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // All the types for Array16<T> and Array32<T> we currently need to track
-        private static readonly Type[] _array16Types = { typeof(Building), typeof(NetNode), typeof(NetSegment), typeof(PropInstance), typeof(TransportLine) };
+        private static readonly Type[] _array16Types = {
+            typeof(Building), typeof(NetNode), typeof(NetSegment),
+            typeof(PropInstance), typeof(TransportLine), typeof(ZoneBlock)
+        };
 
         private static readonly Type[] _array32Types = { typeof(TreeInstance) };
 
