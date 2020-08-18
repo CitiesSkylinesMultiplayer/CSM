@@ -23,5 +23,9 @@ namespace CSM.Networking
         public Player(string username) : this(null, username)
         {
         }
+
+        public Player() : this(null, null)
+        {
+        }
     }
 }
