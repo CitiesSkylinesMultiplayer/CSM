@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
@@ -75,10 +76,6 @@ namespace CSM.Panels
                         PrintGameMessage(player);
                     }
                 }),
-                new ChatCommand("hide-chat", "Hides the chat console. Can be displayed again by pressing the '`' key.", (command) =>
-                {
-                    isVisible = !isVisible;
-                }),
                 new ChatCommand("donate", "Find out how to support the mod developers", (command) =>
                 {
                     PrintGameMessage("Want to help support the mod?");
@@ -115,19 +112,14 @@ namespace CSM.Panels
 
         public override void Update()
         {
-            // Toggle the chat when the tidle key is pressed.
-            if (Input.GetKeyDown(KeyCode.BackQuote))
-            {
-                isVisible = !isVisible;
-            }
+            // Prevent opening the chat while typing in text fields or the pause menu is opened
+            bool allowOpen = !(UIView.HasModalInput() || UIView.HasInputFocus());
 
-            // Gain focus on chat when the tab key is pressed.
-            if (Input.GetKeyDown(KeyCode.Tab))
+            // Show the chat when T is pressed.
+            if (allowOpen && Input.GetKeyDown(KeyCode.T) && (!isVisible || !_chatText.hasFocus))
             {
-                if (!_chatText.hasFocus && _chatText.isVisible)
-                {
-                    _chatText.Focus();
-                }
+                 isVisible = true;
+                _chatText.Focus();
             }
 
             base.Update();
@@ -276,74 +268,90 @@ namespace CSM.Panels
 
             base.Start();
         }
-
+        
         private void OnChatKeyDown(UIComponent component, UIKeyEventParameter eventParam)
         {
-            // Don't run this code if the user has typed nothing in
-            if (string.IsNullOrEmpty(_chatText.text))
-                return;
-
             // Run this code when the user presses the enter key
             if (eventParam.keycode == KeyCode.Return || eventParam.keycode == KeyCode.KeypadEnter)
             {
-                // Get and clear the text
-                string text = _chatText.text;
-                _chatText.text = string.Empty;
+                eventParam.Use();
 
-                // If a command, parse it
-                if (text.StartsWith("/"))
+                if (string.IsNullOrEmpty(_chatText.text))
                 {
-                    ChatCommand command = _chatCommands.Find(x => x.Command == text.TrimStart('/'));
-                    if (command == null)
-                    {
-                        PrintGameMessage(MessageType.Warning, $"'{text.TrimStart('/')}' is not a valid command.");
-                        return;
-                    }
-
-                    // Run the command
-                    command.Action.Invoke(text.TrimStart('/'));
-
+                    isVisible = false;
+                    base.Update();
                     return;
                 }
 
-                // If not connected to a server / hosting a server, tell the user and return
-                //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
-                //{
-                //    PrintGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
-                //    return;
-                //}
-
-                // Get the player name
-                string playerName = "Local";
-
-                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
-                {
-                    playerName = MultiplayerManager.Instance.CurrentClient.Config.Username;
-                }
-                else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-                {
-                    playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
-                }
-
-                // Build and send this message
-                ChatMessageCommand message = new ChatMessageCommand
-                {
-                    Username = playerName,
-                    Message = text
-                };
-
-                Command.SendToAll(message);
-
-                // Add the message to the chat UI
-                PrintChatMessage(playerName, text);
+                string text = _chatText.text;
+                _chatText.text = string.Empty;
+                SubmitText(text);
             }
+            else if (eventParam.keycode == KeyCode.Escape)
+            {
+                eventParam.Use();
+
+                isVisible = false;
+                _chatText.text = string.Empty;
+            }
+
+            base.Update();
+        }
+
+        private void SubmitText(string text)
+        {
+            // If a command, parse it
+            if (text.StartsWith("/"))
+            {
+                ChatCommand command = _chatCommands.Find(x => x.Command == text.TrimStart('/'));
+                if (command == null)
+                {
+                    PrintGameMessage(MessageType.Warning, $"'{text.TrimStart('/')}' is not a valid command.");
+                    return;
+                }
+
+                // Run the command
+                command.Action.Invoke(text.TrimStart('/'));
+
+                return;
+            }
+
+            // If not connected to a server / hosting a server, tell the user and return
+            //if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
+            //{
+            //    PrintGameMessage(MessageType.Warning, "You can only use the chat feature when hosting or connected.");
+            //    return;
+            //}
+
+            // Get the player name
+            string playerName = "Local";
+
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            {
+                playerName = MultiplayerManager.Instance.CurrentClient.Config.Username;
+            }
+            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            {
+                playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
+            }
+
+            // Build and send this message
+            ChatMessageCommand message = new ChatMessageCommand
+            {
+                Username = playerName,
+                Message = text
+            };
+
+            Command.SendToAll(message);
+
+            // Add the message to the chat UI
+            PrintChatMessage(playerName, text);
         }
 
         public void WelcomeChatMessage()
         {
             PrintGameMessage("Welcome to Cities: Skylines Multiplayer!");
-            PrintGameMessage("Press the ~ (tilde) key to show or hide the chat.");
-            PrintGameMessage("Press the tab key to switch focus to the chat.");
+            PrintGameMessage("The chat can be opened by pressing T and closed by pressing escape.");
             PrintGameMessage("Join our discord server at: https://discord.gg/RjACPhd");
             PrintGameMessage("Type '/help' to see a list of commands and usage.");
             PrintGameMessage("Type '/support' to find out where to report bugs and get help.");
@@ -384,6 +392,13 @@ namespace CSM.Panels
             {
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
+                    ChatLogPanel chatPanel = UIView.GetAView().FindUIComponent<ChatLogPanel>("ChatLogPanel");
+                    if (chatPanel != null && !chatPanel.isVisible)
+                    {
+                        chatPanel.isVisible = true;
+                        chatPanel.Update();
+                    }
+
                     UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
                     if (messageBox != null)
                     {
