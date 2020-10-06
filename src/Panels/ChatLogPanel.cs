@@ -33,6 +33,8 @@ namespace CSM.Panels
 
         private readonly List<ChatCommand> _chatCommands;
 
+        private int _timeoutCounter;
+
         public enum MessageType
         {
             Normal,
@@ -120,6 +122,20 @@ namespace CSM.Panels
             {
                  isVisible = true;
                 _chatText.Focus();
+
+                // Reset the timeout counter
+                _timeoutCounter = 0;
+            }
+
+            // Increment the timeout counter if panel is visible
+            // note: Timer is framerate dependent!!! ColossalFramework has no delta time,
+            // could be done crudely, but this seems sufficient.
+            if(isVisible) _timeoutCounter ++;
+
+            // If timeout counter has timed out, hide chat.
+            if(_timeoutCounter > 40000) {
+                isVisible = false;
+                _timeoutCounter = 0;
             }
 
             base.Update();
@@ -271,6 +287,9 @@ namespace CSM.Panels
         
         private void OnChatKeyDown(UIComponent component, UIKeyEventParameter eventParam)
         {
+            // Reset chat timeout
+            _timeoutCounter = 0;
+
             // Run this code when the user presses the enter key
             if (eventParam.keycode == KeyCode.Return || eventParam.keycode == KeyCode.KeypadEnter)
             {
@@ -383,6 +402,9 @@ namespace CSM.Panels
         /// <param name="msg">The message.</param>
         public static void PrintChatMessage(string username, string msg)
         {
+            // Reset the timeout counter
+            _timeoutCounter = 0;
+
             PrintMessage($"<{username}> {msg}");
         }
 
