@@ -33,6 +33,8 @@ namespace CSM.Panels
 
         private readonly List<ChatCommand> _chatCommands;
 
+        private float _timeoutCounter;
+
         public enum MessageType
         {
             Normal,
@@ -120,6 +122,18 @@ namespace CSM.Panels
             {
                  isVisible = true;
                 _chatText.Focus();
+
+                // Reset the timeout counter
+                _timeoutCounter = 0;
+            }
+
+            // Increment the timeout counter if panel is visible
+            if(isVisible && !_chatText.hasFocus) _timeoutCounter += Time.deltaTime;
+
+            // If timeout counter has timed out, hide chat.
+            if(_timeoutCounter > 5) {
+                isVisible = false;
+                _timeoutCounter = 0;
             }
 
             base.Update();
@@ -271,6 +285,9 @@ namespace CSM.Panels
         
         private void OnChatKeyDown(UIComponent component, UIKeyEventParameter eventParam)
         {
+            // Reset chat timeout
+            _timeoutCounter = 0;
+
             // Run this code when the user presses the enter key
             if (eventParam.keycode == KeyCode.Return || eventParam.keycode == KeyCode.KeypadEnter)
             {
@@ -393,10 +410,17 @@ namespace CSM.Panels
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
                     ChatLogPanel chatPanel = UIView.GetAView().FindUIComponent<ChatLogPanel>("ChatLogPanel");
-                    if (chatPanel != null && !chatPanel.isVisible)
+                    if (chatPanel != null)
                     {
-                        chatPanel.isVisible = true;
-                        chatPanel.Update();
+                        // Reset the timeout counter when a new message is recieved
+                        chatPanel._timeoutCounter = 0;
+
+                        // If the panel is closed, make sure it gets shown
+                        if(!chatPanel.isVisible)    
+                        {
+                            chatPanel.isVisible = true;
+                            chatPanel.Update();
+                        }
                     }
 
                     UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
