@@ -410,13 +410,13 @@ namespace CSM.Panels
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
                     ChatLogPanel chatPanel = UIView.GetAView().FindUIComponent<ChatLogPanel>("ChatLogPanel");
-                    if (chatPanel != null && !chatPanel.isVisible)
+                    if (chatPanel != null)
                     {
                         // Reset the timeout counter when a new message is recieved
                         chatPanel._timeoutCounter = 0;
 
                         // If the panel is closed, make sure it gets shown
-                        if(!chatPanel.isVisible)
+                        if(!chatPanel.isVisible)    
                         {
                             chatPanel.isVisible = true;
                             chatPanel.Update();
