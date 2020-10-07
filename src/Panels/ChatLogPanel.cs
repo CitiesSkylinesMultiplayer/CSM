@@ -128,12 +128,10 @@ namespace CSM.Panels
             }
 
             // Increment the timeout counter if panel is visible
-            // note: Timer is framerate dependent!!! ColossalFramework has no delta time,
-            // could be done crudely, but this seems sufficient.
-            if(isVisible) _timeoutCounter ++;
+            if(isVisible && !_chatText.hasFocus) _timeoutCounter += Time.deltaTime;
 
             // If timeout counter has timed out, hide chat.
-            if(_timeoutCounter > 40000) {
+            if(_timeoutCounter > 5) {
                 isVisible = false;
                 _timeoutCounter = 0;
             }
@@ -402,9 +400,6 @@ namespace CSM.Panels
         /// <param name="msg">The message.</param>
         public static void PrintChatMessage(string username, string msg)
         {
-            // Reset the timeout counter
-            _timeoutCounter = 0;
-
             PrintMessage($"<{username}> {msg}");
         }
 
@@ -419,6 +414,9 @@ namespace CSM.Panels
                     {
                         chatPanel.isVisible = true;
                         chatPanel.Update();
+
+                        // Reset the timeout counter
+                        chatPanel._timeoutCounter = 0;
                     }
 
                     UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
