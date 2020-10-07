@@ -33,7 +33,7 @@ namespace CSM.Panels
 
         private readonly List<ChatCommand> _chatCommands;
 
-        private int _timeoutCounter;
+        private float _timeoutCounter;
 
         public enum MessageType
         {
