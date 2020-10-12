@@ -1,6 +1,6 @@
 ﻿using CSM.Commands.Data.Game;
 using CSM.Helpers;
-using NLog;
+using CSM.Util;
 
 namespace CSM.Commands.Handler.Game
 {
@@ -11,8 +11,6 @@ namespace CSM.Commands.Handler.Game
         private int _numberOfClients;
         private long _highestLatency;
         private long _highestTime;
-        
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SpeedPauseResponseHandler()
         {

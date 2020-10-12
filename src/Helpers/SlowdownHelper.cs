@@ -1,6 +1,6 @@
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
-using NLog;
+using CSM.Util;
 using UnityEngine;
 
 namespace CSM.Helpers
@@ -12,8 +12,6 @@ namespace CSM.Helpers
     /// </summary>
     public static class SlowdownHelper
     {
-        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
-
         private static int _locallyDroppedFrames = 0;
         private static readonly object _localDropLock = new object();
 
@@ -48,7 +46,7 @@ namespace CSM.Helpers
 
             if (dropped > 0)
             {
-                _logger.Debug($"{dropped} dropped frames!");
+                Log.Debug($"{dropped} dropped frames!");
                 Command.SendToAll(new SlowdownCommand()
                 {
                     DroppedFrames = dropped
@@ -73,7 +71,7 @@ namespace CSM.Helpers
                     _dropInterval = ticksUntil / _framesToDrop;
                 }
             }
-            _logger.Debug($"Dropping {_framesToDrop} frames in the next 10 seconds (drop every {_dropInterval} frames)");
+            Log.Debug($"Dropping {_framesToDrop} frames in the next 10 seconds (drop every {_dropInterval} frames)");
         }
 
         /// <summary>

@@ -4,7 +4,6 @@ using CSM.Networking;
 using ICities;
 using System;
 using CSM.Helpers;
-using NLog;
 
 namespace CSM.Extensions
 {

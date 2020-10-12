@@ -1,5 +1,5 @@
 ﻿using CSM.Panels;
-using NLog;
+using CSM.Util;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -24,7 +24,7 @@ namespace CSM.Helpers
             }
             else
             {
-                LogManager.GetCurrentClassLogger().Error($"ArrayXExtension: {arr.GetType()} is not a supported type!");
+                Log.Error($"ArrayXExtension: {arr.GetType()} is not a supported type!");
             }
         }
 
@@ -52,7 +52,7 @@ namespace CSM.Helpers
                 if (!found)
                 {
                     // The arrays are no longer in sync
-                    LogManager.GetCurrentClassLogger().Error($"{type}: Received id {id} already in use. Please restart the multiplayer session!");
+                    Log.Error($"{type}: Received id {id} already in use. Please restart the multiplayer session!");
                     ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "ID collision. Please restart the multiplayer session.");
                     return;
                 }

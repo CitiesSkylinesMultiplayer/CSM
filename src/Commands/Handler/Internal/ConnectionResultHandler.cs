@@ -4,14 +4,12 @@ using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
+using CSM.Util;
 
 namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionResultHandler : CommandHandler<ConnectionResultCommand>
     {
-        // Class logger
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
         public ConnectionResultHandler()
         {
             TransactionCmd = false;
@@ -27,14 +25,14 @@ namespace CSM.Commands.Handler.Internal
             if (command.Success)
             {
                 // Log and set that we are connected.
-                _logger.Info("Successfully connected to server. Downloading world...");
+                Log.Info("Successfully connected to server. Downloading world...");
                 MultiplayerManager.Instance.CurrentClient.ClientPlayer = new Player();
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Downloading;
                 MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
             }
             else
             {
-                _logger.Info($"Could not connect: {command.Reason}");
+                Log.Info($"Could not connect: {command.Reason}");
                 MultiplayerManager.Instance.CurrentClient.ConnectionMessage = command.Reason;
                 MultiplayerManager.Instance.CurrentClient.Disconnect();
                 if (command.Reason.Contains("DLC")) // No other way to detect if we should display the box

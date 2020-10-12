@@ -2,8 +2,8 @@
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
+using CSM.Util;
 using LiteNetLib;
-using NLog;
 using System;
 using System.Reflection;
 using System.Threading;
@@ -12,8 +12,6 @@ namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
         public ConnectionRequestHandler()
         {
             TransactionCmd = false;
@@ -26,11 +24,11 @@ namespace CSM.Commands.Handler.Internal
 
         public void HandleOnServer(ConnectionRequestCommand command, NetPeer peer)
         {
-            _logger.Info("Received connection request.");
+            Log.Info("Received connection request.");
             // Check to see if the game versions match
             if (command.GameVersion != BuildConfig.applicationVersion)
             {
-                _logger.Info($"Connection rejected: Game versions {command.GameVersion} (client) and {BuildConfig.applicationVersion} (server) differ.");
+                Log.Info($"Connection rejected: Game versions {command.GameVersion} (client) and {BuildConfig.applicationVersion} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
@@ -45,7 +43,7 @@ namespace CSM.Commands.Handler.Internal
 
             if (command.ModVersion != versionString)
             {
-                _logger.Info($"Connection rejected: Mod versions {command.ModVersion} (client) and {versionString} (server) differ.");
+                Log.Info($"Connection rejected: Mod versions {command.ModVersion} (client) and {versionString} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
@@ -58,7 +56,7 @@ namespace CSM.Commands.Handler.Internal
             bool hasExistingPlayer = MultiplayerManager.Instance.PlayerList.Contains(command.Username);
             if (hasExistingPlayer)
             {
-                _logger.Info($"Connection rejected: Username {command.Username} already in use.");
+                Log.Info($"Connection rejected: Username {command.Username} already in use.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
@@ -72,7 +70,7 @@ namespace CSM.Commands.Handler.Internal
             {
                 if (command.Password != MultiplayerManager.Instance.CurrentServer.Config.Password)
                 {
-                    _logger.Warn("Connection rejected: Invalid password provided!");
+                    Log.Warn("Connection rejected: Invalid password provided!");
                     Command.SendToClient(peer, new ConnectionResultCommand
                     {
                         Success = false,
@@ -86,7 +84,7 @@ namespace CSM.Commands.Handler.Internal
             // Check both client have the same DLCs enabled
             if (!command.DLCBitMask.Equals(dlcMask))
             {
-                _logger.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
+                Log.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
