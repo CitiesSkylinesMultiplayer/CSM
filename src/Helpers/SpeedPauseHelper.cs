@@ -4,14 +4,13 @@ using CSM.Commands;
 using CSM.Commands.Data.Game;
 using CSM.Commands.Handler.Game;
 using CSM.Networking;
-using NLog;
+using CSM.Util;
 using UnityEngine;
 
 namespace CSM.Helpers
 {
     public static class SpeedPauseHelper
     {
-        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
         private static System.Random _rand;
         
         private static SpeedPauseState _state;
@@ -43,17 +42,17 @@ namespace CSM.Helpers
             if (_state == SpeedPauseState.Paused && !pause)
             {
                 WaitForPlay(speed);
-                _logger.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested locally.");
+                Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested locally.");
             }
             else if (_state == SpeedPauseState.Playing && pause)
             {
                 RequestPause();
-                _logger.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Paused} requested locally.");
+                Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Paused} requested locally.");
             }
             else if (_state == SpeedPauseState.Playing && speed != _speed)
             {
                 RequestSpeedChange(speed);
-                _logger.Debug("[SpeedPauseHelper] Speed change requested locally.");
+                Log.Debug("[SpeedPauseHelper] Speed change requested locally.");
             }
         }
 
@@ -72,7 +71,7 @@ namespace CSM.Helpers
                      _state == SpeedPauseState.WaitingForPlay))
                 {
                     Play(speed);
-                    _logger.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested remotely.");
+                    Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested remotely.");
                 }
             }
             else if (pause) // Pause requested
@@ -81,7 +80,7 @@ namespace CSM.Helpers
                 if (_state == SpeedPauseState.Playing)
                 {
                     _state = SpeedPauseState.PauseRequested;
-                    _logger.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Paused} requested remotely.");
+                    Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Paused} requested remotely.");
                 }
             }
             else // Speed change requested
@@ -91,7 +90,7 @@ namespace CSM.Helpers
                 {
                     _state = SpeedPauseState.SpeedChangeRequested;
                     _speed = speed;
-                    _logger.Debug("[SpeedPauseHelper] Speed change requested remotely.");
+                    Log.Debug("[SpeedPauseHelper] Speed change requested remotely.");
                 }
             }
         }
@@ -169,7 +168,7 @@ namespace CSM.Helpers
                 _state = SpeedPauseState.Paused;
             }
 
-            _logger.Debug($"[SpeedPauseHelper] State {_state} reached!");
+            Log.Debug($"[SpeedPauseHelper] State {_state} reached!");
         }
 
         /// <summary>

@@ -2,14 +2,12 @@
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
+using CSM.Util;
 
 namespace CSM.Commands.Handler.Internal
 {
     public class WorldTransferHandler : CommandHandler<WorldTransferCommand>
     {
-        // Class logger
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
         public WorldTransferHandler()
         {
             TransactionCmd = false;
@@ -19,7 +17,7 @@ namespace CSM.Commands.Handler.Internal
         {
             if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Downloading)
             {
-                _logger.Info("World has been received, preparing to load world.");
+                Log.Info("World has been received, preparing to load world.");
 
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
 

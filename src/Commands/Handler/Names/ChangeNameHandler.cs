@@ -1,7 +1,7 @@
 ﻿using ColossalFramework.UI;
 using CSM.Commands.Data.Names;
 using CSM.Helpers;
-using NLog;
+using CSM.Util;
 using System;
 
 namespace CSM.Commands.Handler.Names
@@ -133,7 +133,7 @@ namespace CSM.Commands.Handler.Names
                     break;
 
                 default:
-                    LogManager.GetCurrentClassLogger().Warn("Unknown instance type in ChangeNameHandler received!");
+                    Log.Warn("Unknown instance type in ChangeNameHandler received!");
                     break;
             }
 

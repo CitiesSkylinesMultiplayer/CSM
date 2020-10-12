@@ -1,5 +1,6 @@
 using ColossalFramework.UI;
 using CSM.Helpers;
+using CSM.Util;
 using System.Linq;
 using UnityEngine;
 
@@ -7,9 +8,6 @@ namespace CSM.Panels
 {
     public class MessagePanel : UIPanel
     {
-        // Class logger
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
         private UILabel _titleLabel;
         private UILabel _messageLabel;
         private string _title;
@@ -94,7 +92,7 @@ namespace CSM.Panels
 
             Show(true);
 
-            _logger.Info("DLCs don't match:\n" + message);
+            Log.Info("DLCs don't match:\n" + message);
         }
     }
 }

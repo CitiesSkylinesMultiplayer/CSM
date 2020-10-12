@@ -1,7 +1,7 @@
 ﻿using CSM.Commands.Data.Districts;
 using CSM.Helpers;
 using CSM.Panels;
-using NLog;
+using CSM.Util;
 
 namespace CSM.Commands.Handler.Districts
 {
@@ -14,7 +14,7 @@ namespace CSM.Commands.Handler.Districts
 
             if (district != command.DistrictId)
             {
-                LogManager.GetCurrentClassLogger().Log(LogLevel.Error, $"District array no longer in sync! Generated {district} instead of {command.DistrictId}");
+                Log.Error($"District array no longer in sync! Generated {district} instead of {command.DistrictId}");
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "District array no longer in sync! Please restart the multiplayer session!");
             }
 

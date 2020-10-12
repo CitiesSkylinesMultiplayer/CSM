@@ -1,7 +1,7 @@
 ﻿using ColossalFramework.UI;
 using CSM.Panels;
+using CSM.Util;
 using HarmonyLib;
-using NLog;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -22,11 +22,9 @@ namespace CSM.Injections
 
     public static class MainMenuHandler
     {
-        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
-
         public static void CreateOrUpdateJoinGameButton()
         {
-            _logger.Info("Creating join game button...");
+            Log.Info("Creating join game button...");
 
             UIPanel uiView = UIView.GetAView()?.FindUIComponent("Menu") as UIPanel;
 
