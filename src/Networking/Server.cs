@@ -25,6 +25,10 @@ namespace CSM.Networking
         // Connected clients
         public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
 
+        /// <summary>
+        ///     Get the Player object of the server host
+        /// </summary>
+        public Player HostPlayer { get { return _hostPlayer; } }
         // The player instance for the host player
         private Player _hostPlayer;
 

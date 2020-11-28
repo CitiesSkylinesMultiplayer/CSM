@@ -11,6 +11,8 @@ namespace CSM.Panels
 
         private UIButton _serverManageButton;
 
+        private UIButton _connectedPlayersButton;
+
         private UICheckBox _playerPointers;
         public static bool showPlayerPointers = false;
 
@@ -29,7 +31,7 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 100.0f);
 
             width = 360;
-            height = 240;
+            height = 320;
 
             // Handle visible change events
             eventVisibilityChanged += (component, visible) =>
@@ -49,8 +51,13 @@ namespace CSM.Panels
             // Close server button
             _disconnectButton = this.CreateButton("Stop Server", new Vector2(10, -130));
 
+            // Connected Players window button
+            _connectedPlayersButton = this.CreateButton("Player List", new Vector2(10, -200));
+
             // Show Player Pointers
-            _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, -210));
+            _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, -270));
+
+
             _playerPointers.eventClicked += (component, param) =>
             {
                 showPlayerPointers = _playerPointers.isChecked;
@@ -67,6 +74,11 @@ namespace CSM.Panels
                 PanelManager.ShowPanel<ManageGamePanel>();
 
                 isVisible = false;
+            };
+
+            _connectedPlayersButton.eventClick += (component, param) =>
+            {
+                PanelManager.ShowPanel<ConnectedPlayersPanel>();
             };
 
             base.Start();

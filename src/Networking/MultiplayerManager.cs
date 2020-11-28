@@ -4,6 +4,7 @@ using CSM.Networking.Config;
 using CSM.Panels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace CSM.Networking
@@ -189,6 +190,19 @@ namespace CSM.Networking
             {
                 ThreadHelper.dispatcher.Dispatch(action);
             }
+        }
+
+        /// <summary>
+        ///     Get the Player object by username. Warning, expensive call!!!
+        /// </summary>
+        public static Player GetPlayerByUsername(string username)
+        {
+            if (username == Instance.CurrentServer.HostPlayer.Username)
+                return Instance.CurrentServer.HostPlayer;
+            else if (Instance.CurrentServer.ConnectedPlayers.Single(z => z.Value.Username == username).Value != null)
+                return Instance.CurrentServer.ConnectedPlayers.Single(z => z.Value.Username == username).Value;
+            else
+                return null;
         }
 
         private static MultiplayerManager _multiplayerInstance;
