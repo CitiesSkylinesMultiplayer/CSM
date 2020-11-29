@@ -24,7 +24,7 @@ jobs:
         
     # The version string
     - name: Set Version Environment Variable
-      run: powershell.exe -NoP -NonI -Command "Write-Host '::set-env name=csm_version::$(Get-Date -Format yyMM).${{ github.run_number }}'"
+      run: echo "csm_version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
     
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
