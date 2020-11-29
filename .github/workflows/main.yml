@@ -24,12 +24,15 @@ jobs:
         
     # The version string
     - name: Set Version Environment Variable
-      run: echo "csm_version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
+      id: csm_version
+      run: echo "version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
     
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
-      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion ${{ env.csm_version }}.0.0 -assemblyFileVersion ${{ env.csm_version }}.0.0"
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion $version.0.0 -assemblyFileVersion ${{ env.VERSION }}.0.0"
       working-directory: src
+      env:
+          VERSION: ${{ steps.csm_version.outputs.version }}
     
     # Download the assemblies required to build the mod
     - name: Download Assemblies
@@ -62,14 +65,16 @@ jobs:
     - name: Upload mod DLLs
       uses: actions/upload-artifact@v2
       with:
-        name: CSM ${{ env.csm_version }}
+        name: CSM ${{ steps.csm_version.outputs.version }}
         path: src/bin/Release/*.dll
         
     # Publish install script
     - name: Upload install script
       uses: actions/upload-artifact@v2
       with:
-        name: CSM ${{ env.csm_version }}
-        path: scripts/install.ps1  
+        name: CSM ${{ env.VERSION }}
+        path: scripts/install.ps1
+      env:
+          VERSION: ${{ steps.csm_version.outputs.version }}
       
       
