@@ -25,10 +25,10 @@ jobs:
     # The version string
     - name: Set Version Environment Variable
       id: csm_version
-      run: echo "version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
+      run: echo "::export-variable name=csm_version::$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
     
     - name: Test
-      run: echo "${{ steps.csm_version.outputs.version }} ${{ steps.csm_version.outputs.date }} ${{ steps.csm_version.outputs.csm_version }}"
+      run: echo "${{ env.csm_version }} ${{ steps.csm_version.outputs.date }} ${{ steps.csm_version.outputs.csm_version }}"
     
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
