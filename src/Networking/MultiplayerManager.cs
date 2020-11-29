@@ -192,19 +192,6 @@ namespace CSM.Networking
             }
         }
 
-        /// <summary>
-        ///     Get the Player object by username. Warning, expensive call!!!
-        /// </summary>
-        public static Player GetPlayerByUsername(string username)
-        {
-            if (username == Instance.CurrentServer.HostPlayer.Username)
-                return Instance.CurrentServer.HostPlayer;
-            else if (Instance.CurrentServer.ConnectedPlayers.Single(z => z.Value.Username == username).Value != null)
-                return Instance.CurrentServer.ConnectedPlayers.Single(z => z.Value.Username == username).Value;
-            else
-                return null;
-        }
-
         private static MultiplayerManager _multiplayerInstance;
         public static MultiplayerManager Instance => _multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());
     }

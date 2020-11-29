@@ -14,6 +14,8 @@ namespace CSM.Panels
         private List<UILabel> _playerLabels;
         private List<UIButton> _kickButtons;
 
+        private int _playerListLastHash;
+
         public override void Start()
         {
             _playerLabels = new List<UILabel>();
@@ -44,21 +46,17 @@ namespace CSM.Panels
                 isVisible = false;
             };
 
-            eventVisibilityChanged += (component, visible) =>
-            {
-                if (!visible)
-                    return;
-            };
-
             base.Start();
         }
 
         public override void Update()
         {
             // Update the list of players and the kick buttons
-            if (isVisible)
+            if (isVisible && _playerListLastHash == MultiplayerManager.Instance.PlayerList.GetHashCode())
             {
-                foreach(UILabel label in _playerLabels)
+                _playerListLastHash = MultiplayerManager.Instance.PlayerList.GetHashCode();
+
+                foreach (UILabel label in _playerLabels)
                 {
                     label.Hide();
                     label.Disable();
@@ -98,7 +96,7 @@ namespace CSM.Panels
 
                             _kickButtons[i].eventClick += (component, param) =>
                             {
-                                MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Single(z => z.Value.Username == player).Value.NetPeer.Disconnect();
+                                MultiplayerManager.Instance.CurrentServer.GetPlayerByUsername(player).NetPeer.Disconnect();
                             };
                         }
                         else

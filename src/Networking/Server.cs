@@ -8,6 +8,7 @@ using LiteNetLib;
 using Open.Nat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -263,6 +264,17 @@ namespace CSM.Networking
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
             Log.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+        }
+
+        /// <summary>
+        ///     Get the Player object by username. Warning, expensive call!!!
+        /// </summary>
+        public Player GetPlayerByUsername(string username)
+        {
+            if (username == HostPlayer.Username)
+                return HostPlayer;
+            else
+                return ConnectedPlayers.Single(z => z.Value.Username == username).Value;
         }
     }
 }
