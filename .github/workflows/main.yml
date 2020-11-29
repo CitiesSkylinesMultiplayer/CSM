@@ -29,7 +29,7 @@ jobs:
     
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
-      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion $version.0.0 -assemblyFileVersion ${{ version }}.0.0"
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion ${{ version }}.0.0 -assemblyFileVersion ${{ version }}.0.0"
       working-directory: src
 #      env:
 #          VERSION: ${{ steps.csm_version.outputs.version }}
