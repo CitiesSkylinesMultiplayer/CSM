@@ -27,9 +27,12 @@ jobs:
       id: csm_version
       run: echo "version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
     
+    - name: Test
+      run: echo "${{ env.version }} ${{ steps.csm_version.outputs }}"
+    
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
-      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion ${{ version }}.0.0 -assemblyFileVersion ${{ version }}.0.0"
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion $version.0.0 -assemblyFileVersion $version.0.0"
       working-directory: src
 #      env:
 #          VERSION: ${{ steps.csm_version.outputs.version }}
