@@ -28,7 +28,7 @@ jobs:
       run: echo "version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_ENV
     
     - name: Test
-      run: echo "${{ env.version }} ${{ steps.csm_version.outputs }}"
+      run: echo "${{ steps.csm_version.outputs.version }} ${{ steps.csm_version.outputs.date }} ${{ steps.csm_version.outputs.csm_version }}"
     
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
