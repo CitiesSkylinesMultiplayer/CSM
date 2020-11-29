@@ -52,7 +52,7 @@ namespace CSM.Panels
         public override void Update()
         {
             // Update the list of players and the kick buttons
-            if (isVisible && _playerListLastHash == MultiplayerManager.Instance.PlayerList.GetHashCode())
+            if (isVisible && _playerListLastHash != MultiplayerManager.Instance.PlayerList.GetHashCode())
             {
                 _playerListLastHash = MultiplayerManager.Instance.PlayerList.GetHashCode();
 
