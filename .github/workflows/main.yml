@@ -27,15 +27,10 @@ jobs:
       id: csm_version
       run: echo "::set-output name=version::$(date +'%y%m').${{ github.run_number }}"
     
-    - name: Test
-      run: echo "${{ steps.csm_version.outputs.version }}"
-    
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
-      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion $version.0.0 -assemblyFileVersion $version.0.0"
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion ${{ steps.csm_version.outputs.version }}.0.0 -assemblyFileVersion ${{ steps.csm_version.outputs.version }}.0.0"
       working-directory: src
-#      env:
-#          VERSION: ${{ steps.csm_version.outputs.version }}
     
     # Download the assemblies required to build the mod
     - name: Download Assemblies
@@ -75,9 +70,5 @@ jobs:
     - name: Upload install script
       uses: actions/upload-artifact@v2
       with:
-        name: CSM ${{ env.VERSION }}
+        name: CSM ${{ steps.csm_version.outputs.version }}
         path: scripts/install.ps1
-      env:
-          VERSION: ${{ steps.csm_version.outputs.version }}
-      
-      
