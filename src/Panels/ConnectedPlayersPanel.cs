@@ -56,6 +56,7 @@ namespace CSM.Panels
             {
                 _playerListLastHash = MultiplayerManager.Instance.PlayerList.GetHashCode();
 
+                // Destroy Unity reference
                 foreach(UILabel label in _playerLabels) {
                     Destroy(label);
                 }
@@ -64,6 +65,7 @@ namespace CSM.Panels
                     Destroy(button);
                 }
 
+                // Clear managed references
                 _playerLabels.Clear();
                 _kickButtons.Clear();
 
@@ -83,12 +85,10 @@ namespace CSM.Panels
                         string player = players[i];
 
                         _playerLabels.Add(this.CreateLabel(player, new Vector2(10, topOffset + currentPlayerOffset)));
-                        _kickButtons.Add(this.CreateButton("Kick", new Vector2(200, topOffset + currentPlayerOffset), 100, 30));
 
-                        if (player == MultiplayerManager.Instance.CurrentServer.HostPlayer.Username)
+                        if (player != MultiplayerManager.Instance.CurrentServer.HostPlayer.Username)
                         {
-                            _kickButtons[i].Hide();
-                            _kickButtons[i].Disable();
+                            _kickButtons.Add(this.CreateButton("Kick", new Vector2(200, topOffset + currentPlayerOffset), 100, 30));
                         }
 
                         _kickButtons[i].eventClick += (component, param) =>
