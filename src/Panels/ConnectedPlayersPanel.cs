@@ -51,17 +51,23 @@ namespace CSM.Panels
 
         public override void Update()
         {
-            // Update the list of players and the kick buttons
+            // Update the list of players and kick buttons if anything has changed
             if (isVisible && _playerListLastHash != MultiplayerManager.Instance.PlayerList.GetHashCode())
             {
                 _playerListLastHash = MultiplayerManager.Instance.PlayerList.GetHashCode();
 
-                foreach (UILabel label in _playerLabels)
-                {
-                    label.Hide();
-                    label.Disable();
+                foreach(UILabel label in _playerLabels) {
+                    Destroy(label);
                 }
 
+                foreach(UIButton button in _kickButtons) {
+                    Destroy(button);
+                }
+
+                _playerLabels.Clear();
+                _kickButtons.Clear();
+
+                // Kick button margins for UI
                 int topOffset = -75;
                 int currentPlayerOffset = 0;
                 int playerOffset = -30;
@@ -69,12 +75,6 @@ namespace CSM.Panels
                 // Enable Host to see and kick all players
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
-                    foreach (UIButton button in _kickButtons)
-                    {
-                        button.Hide();
-                        button.Disable();
-                    }
-
                     List<string> players = MultiplayerManager.Instance.PlayerList.ToList();
 
                     // List all the players
@@ -82,34 +82,19 @@ namespace CSM.Panels
                     {
                         string player = players[i];
 
-                        if (i < _playerLabels.Count)
+                        _playerLabels.Add(this.CreateLabel(player, new Vector2(10, topOffset + currentPlayerOffset)));
+                        _kickButtons.Add(this.CreateButton("Kick", new Vector2(200, topOffset + currentPlayerOffset), 100, 30));
+
+                        if (player == MultiplayerManager.Instance.CurrentServer.HostPlayer.Username)
                         {
-                            _playerLabels[i].text = player;
-                            _playerLabels[i].Show();
-                            _playerLabels[i].Enable();
-
-                            if (player != MultiplayerManager.Instance.CurrentServer.HostPlayer.Username)
-                            {
-                                _kickButtons[i].Show();
-                                _kickButtons[i].Enable();
-                            }
-
-                            _kickButtons[i].eventClick += (component, param) =>
-                            {
-                                MultiplayerManager.Instance.CurrentServer.GetPlayerByUsername(player).NetPeer.Disconnect();
-                            };
+                            _kickButtons[i].Hide();
+                            _kickButtons[i].Disable();
                         }
-                        else
+
+                        _kickButtons[i].eventClick += (component, param) =>
                         {
-                            _playerLabels.Add(this.CreateLabel(player, new Vector2(10, topOffset + currentPlayerOffset)));
-                            _kickButtons.Add(this.CreateButton("Kick", new Vector2(200, topOffset + currentPlayerOffset), 100, 30));
-
-                            if (player == MultiplayerManager.Instance.CurrentServer.HostPlayer.Username)
-                            {
-                                _kickButtons[i].Hide();
-                                _kickButtons[i].Disable();
-                            }
-                        }
+                            MultiplayerManager.Instance.CurrentServer.GetPlayerByUsername(player).NetPeer.Disconnect();
+                        };
 
                         currentPlayerOffset += playerOffset;
                     }
@@ -122,18 +107,7 @@ namespace CSM.Panels
                     // List all the players
                     for (int i = 0; i < players.Count; i++)
                     {
-                        string player = players[i];
-
-                        if (i < _playerLabels.Count)
-                        {
-                            _playerLabels[i].text = player;
-                            _playerLabels[i].Show();
-                            _playerLabels[i].Enable();
-                        }
-                        else
-                        {
-                            _playerLabels.Add(this.CreateLabel(player, new Vector2(10, topOffset + currentPlayerOffset)));
-                        }
+                        _playerLabels.Add(this.CreateLabel(players[i], new Vector2(10, topOffset + currentPlayerOffset)));
 
                         currentPlayerOffset += playerOffset;
                     }
