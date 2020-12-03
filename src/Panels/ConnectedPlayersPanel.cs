@@ -14,7 +14,8 @@ namespace CSM.Panels
         private List<UILabel> _playerLabels;
         private List<UIButton> _kickButtons;
 
-        private int _playerListLastHash;
+        private int _playerCountLastUpdate;
+        private bool _playerListChanged;
 
         public override void Start()
         {
@@ -51,17 +52,28 @@ namespace CSM.Panels
 
         public override void Update()
         {
-            // Update the list of players and kick buttons if anything has changed
-            if (isVisible && _playerListLastHash != MultiplayerManager.Instance.PlayerList.GetHashCode())
-            {
-                _playerListLastHash = MultiplayerManager.Instance.PlayerList.GetHashCode();
+            int playerCountThisUpdate = MultiplayerManager.Instance.PlayerList.Count;
 
+            // This assumes that two players cannot join at once, but that seems resonable
+            if (_playerCountLastUpdate == playerCountThisUpdate)
+                return;
+            else
+            {
+                _playerCountLastUpdate = playerCountThisUpdate;
+                _playerListChanged = true;
+            }
+
+            // Update the list of players and kick buttons if anything has changed
+            if (isVisible && _playerListChanged == true)
+            {
                 // Destroy Unity reference
-                foreach(UILabel label in _playerLabels) {
+                foreach (UILabel label in _playerLabels)
+                {
                     Destroy(label);
                 }
 
-                foreach(UIButton button in _kickButtons) {
+                foreach (UIButton button in _kickButtons)
+                {
                     Destroy(button);
                 }
 
@@ -112,6 +124,8 @@ namespace CSM.Panels
                         currentPlayerOffset += playerOffset;
                     }
                 }
+
+                _playerListChanged = false;
             }
 
             base.Update();
