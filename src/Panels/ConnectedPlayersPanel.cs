@@ -57,11 +57,9 @@ namespace CSM.Panels
             // This assumes that two players cannot join at once, but that seems resonable
             if (_playerCountLastUpdate == playerCountThisUpdate)
                 return;
-            else
-            {
-                _playerCountLastUpdate = playerCountThisUpdate;
-                _playerListChanged = true;
-            }
+
+            _playerCountLastUpdate = playerCountThisUpdate;
+            _playerListChanged = true;
 
             // Update the list of players and kick buttons if anything has changed
             if (isVisible && _playerListChanged == true)
