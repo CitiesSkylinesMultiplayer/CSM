@@ -2,7 +2,6 @@
 using CSM.Helpers;
 using CSM.Networking;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -54,15 +53,15 @@ namespace CSM.Panels
         {
             int playerCountThisUpdate = MultiplayerManager.Instance.PlayerList.Count;
 
-            // This assumes that two players cannot join at once, but that seems resonable
-            if (_playerCountLastUpdate == playerCountThisUpdate)
-                return;
-
-            _playerCountLastUpdate = playerCountThisUpdate;
-            _playerListChanged = true;
+            // This assumes that two players cannot join at once, but that seems reasonable
+            if (_playerCountLastUpdate != playerCountThisUpdate)
+            {
+                _playerCountLastUpdate = playerCountThisUpdate;
+                _playerListChanged = true;
+            }
 
             // Update the list of players and kick buttons if anything has changed
-            if (isVisible && _playerListChanged == true)
+            if (isVisible && _playerListChanged)
             {
                 // Destroy Unity reference
                 foreach (UILabel label in _playerLabels)
@@ -87,24 +86,22 @@ namespace CSM.Panels
                 // Enable Host to see and kick all players
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
-                    List<string> players = MultiplayerManager.Instance.PlayerList.ToList();
-
                     // List all the players
-                    for (int i = 0; i < players.Count; i++)
+                    foreach (string player in MultiplayerManager.Instance.PlayerList)
                     {
-                        string player = players[i];
-
                         _playerLabels.Add(this.CreateLabel(player, new Vector2(10, topOffset + currentPlayerOffset)));
 
                         if (player != MultiplayerManager.Instance.CurrentServer.HostPlayer.Username)
                         {
-                            _kickButtons.Add(this.CreateButton("Kick", new Vector2(200, topOffset + currentPlayerOffset), 100, 30));
-                        }
+                            UIButton button = this.CreateButton("Kick", new Vector2(200, topOffset + currentPlayerOffset), 100, 30);
 
-                        _kickButtons[i].eventClick += (component, param) =>
-                        {
-                            MultiplayerManager.Instance.CurrentServer.GetPlayerByUsername(player).NetPeer.Disconnect();
-                        };
+                            button.eventClick += (component, param) =>
+                            {
+                                MultiplayerManager.Instance.CurrentServer.GetPlayerByUsername(player).NetPeer.Disconnect();
+                            };
+
+                            _kickButtons.Add(button);
+                        }
 
                         currentPlayerOffset += playerOffset;
                     }
@@ -112,12 +109,10 @@ namespace CSM.Panels
                 // Enable Client to see all players
                 else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 {
-                    List<string> players = MultiplayerManager.Instance.PlayerList.ToList();
-
                     // List all the players
-                    for (int i = 0; i < players.Count; i++)
+                    foreach (string player in MultiplayerManager.Instance.PlayerList)
                     {
-                        _playerLabels.Add(this.CreateLabel(players[i], new Vector2(10, topOffset + currentPlayerOffset)));
+                        _playerLabels.Add(this.CreateLabel(player, new Vector2(10, topOffset + currentPlayerOffset)));
 
                         currentPlayerOffset += playerOffset;
                     }
