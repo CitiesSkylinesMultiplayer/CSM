@@ -105,12 +105,12 @@ If ($Update)
     Else
     {
         # Full folder path
-        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)CitiesSkylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
 
         # Try with lowercase SteamApps (linux)
         if (!(Test-Path -Path $AssemblyDirectory))
         {
-            $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+            $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)CitiesSkylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
         }
     }
 

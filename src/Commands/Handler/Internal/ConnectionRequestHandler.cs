@@ -26,7 +26,7 @@ namespace CSM.Commands.Handler.Internal
         {
             Log.Info("Received connection request.");
             // Check to see if the game versions match
-            if (command.GameVersion != BuildConfig.applicationVersion)
+            if (command.GameVersion != command.GameVersion)
             {
                 Log.Info($"Connection rejected: Game versions {command.GameVersion} (client) and {BuildConfig.applicationVersion} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
@@ -41,7 +41,7 @@ namespace CSM.Commands.Handler.Internal
             Version version = Assembly.GetAssembly(typeof(Client)).GetName().Version;
             string versionString = $"{version.Major}.{version.Minor}";
 
-            if (command.ModVersion != versionString)
+            if (command.ModVersion != command.ModVersion)
             {
                 Log.Info($"Connection rejected: Mod versions {command.ModVersion} (client) and {versionString} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
