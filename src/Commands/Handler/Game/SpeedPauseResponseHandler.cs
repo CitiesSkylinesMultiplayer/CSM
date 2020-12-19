@@ -1,12 +1,11 @@
 ﻿using CSM.Commands.Data.Game;
 using CSM.Helpers;
-using CSM.Util;
 
 namespace CSM.Commands.Handler.Game
 {
     public class SpeedPauseResponseHandler : CommandHandler<SpeedPauseResponseCommand>
     {
-        private int _currentWaitingId;
+        private static int _currentWaitingId;
         private int _maxNumberOfClients;
         private int _numberOfClients;
         private long _highestLatency;
@@ -60,9 +59,6 @@ namespace CSM.Commands.Handler.Game
                 
                 // Set waiting target for the SpeedPauseReachedCommand
                 SpeedPauseReachedHandler.SetWaitingFor(_currentWaitingId, _maxNumberOfClients);
-
-                // Reset waiting id
-                _currentWaitingId = -1;
             }
         }
 
@@ -73,6 +69,11 @@ namespace CSM.Commands.Handler.Game
             _numberOfClients = 0;
             _highestLatency = -1;
             _highestTime = -1;
+        }
+
+        public static void ResetWaitingId()
+        {
+            _currentWaitingId = -1;
         }
     }
 }

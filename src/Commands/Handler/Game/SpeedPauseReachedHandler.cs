@@ -23,6 +23,11 @@ namespace CSM.Commands.Handler.Game
                 {
                     SpeedPauseHelper.StateReached();
                     _currentWaitingId = -1;
+
+                    // Allow the response handler to process new requests
+                    // We need to wait until now because responses of conflicting requests
+                    // could arrive during the waiting phase, but need to be discarded.
+                    SpeedPauseResponseHandler.ResetWaitingId();
                 }
             }
         }
