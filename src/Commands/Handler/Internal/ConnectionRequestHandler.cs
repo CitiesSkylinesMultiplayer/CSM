@@ -6,6 +6,7 @@ using CSM.Util;
 using LiteNetLib;
 using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
@@ -25,14 +26,21 @@ namespace CSM.Commands.Handler.Internal
         public void HandleOnServer(ConnectionRequestCommand command, NetPeer peer)
         {
             Log.Info("Received connection request.");
+
+            string joiningVersion = command.GameVersion;
+            string appVersion = BuildConfig.applicationVersion;
+
+            MatchVersionString(ref joiningVersion);
+            MatchVersionString(ref appVersion);
+
             // Check to see if the game versions match
-            if (command.GameVersion != BuildConfig.applicationVersion)
+            if (joiningVersion != appVersion)
             {
-                Log.Info($"Connection rejected: Game versions {command.GameVersion} (client) and {BuildConfig.applicationVersion} (server) differ.");
+                Log.Info($"Connection rejected: Game versions {joiningVersion} (client) and {appVersion} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
-                    Reason = $"Client and server have different game versions. Client: {command.GameVersion}, Server: {BuildConfig.applicationVersion}."
+                    Reason = $"Client and server have different game versions. Client: {joiningVersion}, Server: {appVersion}."
                 });
                 return;
             }
@@ -167,6 +175,27 @@ namespace CSM.Commands.Handler.Internal
 
                 newPlayer.Status = ClientStatus.Loading;
             }).Start();
+        }
+
+        /**
+         * Version format:
+         * x.y.z-tb(-e12)
+         *
+         * x.y.z is the version number
+         * t is the release type (proto, alpha, beta, f)
+         * b is the build number
+         * and e12 is hardcoded for epic (not set on steam)
+         *
+         * Since epic and steam differ beginning at z, we
+         * now only check for x.y to be equal.
+         */
+        private static void MatchVersionString(ref string version)
+        {
+            Match match = Regex.Match(version, @"^(\d+\.\d+)\.\d+-\w+(?:-\w+)?$");
+            if (match.Success && match.Groups.Count > 1)
+            {
+                version = match.Groups[1].Value;
+            }
         }
     }
 }
