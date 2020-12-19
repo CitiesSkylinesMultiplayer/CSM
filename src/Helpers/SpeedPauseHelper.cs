@@ -4,6 +4,7 @@ using CSM.Commands;
 using CSM.Commands.Data.Game;
 using CSM.Commands.Handler.Game;
 using CSM.Networking;
+using CSM.Networking.Status;
 using CSM.Util;
 using UnityEngine;
 
@@ -41,7 +42,7 @@ namespace CSM.Helpers
         {
             if (_state == SpeedPauseState.Paused && !pause)
             {
-                WaitForPlay(speed);
+                RequestPlay(speed);
                 Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested locally.");
             }
             else if (_state == SpeedPauseState.Playing && pause)
@@ -64,34 +65,30 @@ namespace CSM.Helpers
         /// <param name="requestId"></param>
         public static void PlayPauseRequest(bool pause, int speed, int requestId)
         {
-            if (requestId == -1) // Play requested
-            { 
-                if (!pause &&
-                    (_state == SpeedPauseState.Paused ||
-                     _state == SpeedPauseState.WaitingForPlay))
-                {
-                    Play(speed);
-                    Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested remotely.");
-                }
-            }
-            else if (pause) // Pause requested
+            if (pause) // Pause requested
             {
-                SendSpeedPauseResponse(requestId);
                 if (_state == SpeedPauseState.Playing)
                 {
                     _state = SpeedPauseState.PauseRequested;
                     Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Paused} requested remotely.");
                 }
-            }
-            else // Speed change requested
-            {
                 SendSpeedPauseResponse(requestId);
+            }
+            else // Speed change or play requested
+            {
                 if (_state == SpeedPauseState.Playing)
                 {
                     _state = SpeedPauseState.SpeedChangeRequested;
                     _speed = speed;
                     Log.Debug("[SpeedPauseHelper] Speed change requested remotely.");
                 }
+                else if (_state == SpeedPauseState.Paused)
+                {
+                    _state = SpeedPauseState.PlayRequested;
+                    _speed = speed;
+                    Log.Debug($"[SpeedPauseHelper] State {SpeedPauseState.Playing} requested remotely.");
+                }
+                SendSpeedPauseResponse(requestId);
             }
         }
 
@@ -115,6 +112,13 @@ namespace CSM.Helpers
             {
                 _state = SpeedPauseState.WaitingForSpeedChange;
                 _waitTargetTime = pauseTime;
+            }
+            else if (_state == SpeedPauseState.PlayRequested)
+            {
+                _state = SpeedPauseState.WaitingForPlay;
+
+                // TODO: Maybe find a way to start the games simultaneously
+                _waitTargetTime = DateTime.Now;
             }
         }
 
@@ -146,7 +150,8 @@ namespace CSM.Helpers
             {
                 SimulationManager.instance.SimulationPaused = false;
                 SimulationManager.instance.SelectedSimulationSpeed = _speed;
-                _state = SpeedPauseState.Playing;
+                _state = SpeedPauseState.PlayingWaiting;
+                SendReached();
 
                 // Clear queued drop frames because those that arrived during paused state can be ignored
                 SlowdownHelper.ClearDropFrames();
@@ -171,36 +176,23 @@ namespace CSM.Helpers
             Log.Debug($"[SpeedPauseHelper] State {_state} reached!");
         }
 
-        /// <summary>
-        ///     Start playing with given speed now.
-        ///     Sets state to WaitingForPlay with a target time of now.
-        /// </summary>
-        /// <param name="speed">The speed to start with.</param>
-        private static void Play(int speed)
+        private static void RequestPlay(int speed)
         {
-            _state = SpeedPauseState.WaitingForPlay;
-            _speed = speed;
-            _waitTargetTime = DateTime.Now;
-        }
+            _state = SpeedPauseState.PlayRequested;
 
-        /// <summary>
-        ///     Schedule state to change to Playing after the minimal network latency time has passed.
-        ///     Sets state to WaitingForPlay.
-        ///     Sends a SpeedPauseRequest.
-        /// </summary>
-        /// <param name="speed">The speed to start with.</param>
-        private static void WaitForPlay(int speed)
-        {
-            _state = SpeedPauseState.WaitingForPlay;
-            _speed = speed;
-            _waitTargetTime = DateTime.Now.AddMilliseconds(GetMinimumLatency());
+            InitRand();
+
+            int requestId = _rand.Next();
 
             Command.SendToAll(new SpeedPauseRequestCommand()
             {
-                RequestId = -1,
+                RequestId = requestId,
                 SimulationPaused = false,
                 SelectedSimulationSpeed = speed
             });
+
+            _speed = speed;
+            SendSpeedPauseResponse(requestId);
         }
 
         /// <summary>
@@ -263,7 +255,8 @@ namespace CSM.Helpers
                     numClients = -1;
                     break;
                 case MultiplayerRole.Server:
-                    numClients = MultiplayerManager.Instance.PlayerList.Count;
+                    numClients = 1 + MultiplayerManager.Instance.CurrentServer.ConnectedPlayers
+                        .Count(p => p.Value.Status == ClientStatus.Connected);
                     break;
                 default:
                     numClients = 1;
@@ -396,6 +389,11 @@ namespace CSM.Helpers
             ///     The game is paused and button clicks are accepted.
             /// </summary>
             Paused,
+            /// <summary>
+            ///     The play state is requested, we wait for other games to respond to the request.
+            ///     No button clicks are allowed.
+            /// </summary>
+            PlayRequested,
             /// <summary>
             ///     The game is waiting until waitTargetTime (realtime) is reached to change the state to Playing.
             ///     No button clicks are allowed.
