@@ -95,22 +95,22 @@ If ($Update)
     Write-Host "[CSM Update Script] Please Note: This may break the mod if any major game changes have occured."
 
     # Get the steam directory
-    $SteamDirectory = Read-Host "[CSM Update Script] Please enter your steam folder directory (not steamapps). For example, 'C:\Program Files\Steam\'" 
+    $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory. For example, for Windows, 'C:\Program Files\Steam\steamapps\common\Cities_Skylines' for Steam or 'C:\Program Files\Epic Games\CitiesSkylines' for Epic Games." 
 
     If ($IsMacOS)
     {
         # Full folder path
-        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities.App$($Sep)Contents$($Sep)Resources$($Sep)Data$($Sep)Managed$($Sep)"
+        $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities.App$($Sep)Contents$($Sep)Resources$($Sep)Data$($Sep)Managed$($Sep)"
     }
     Else
     {
         # Full folder path
-        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+        $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities_Data$($Sep)Managed$($Sep)"
 
         # Try with lowercase SteamApps (linux)
         if (!(Test-Path -Path $AssemblyDirectory))
         {
-            $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
+            $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities_Data$($Sep)Managed$($Sep)"
         }
     }
 
