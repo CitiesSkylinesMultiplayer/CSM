@@ -375,13 +375,13 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Prints a game message to the ChatLogPanel with MessageType.NORMAL.
+        ///     Prints a game message to the ChatLogPanel & Chirper with MessageType.NORMAL.
         /// </summary>
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(string msg)
         {
             PrintGameMessage(MessageType.Normal, msg);  
-            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage(0, "CSM", msg));
+            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage("CSM", msg));
         }
 
         /// <summary>
@@ -395,14 +395,14 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Prints a chat message to the ChatLogPanel.
+        ///     Prints a chat message to the ChatLogPanel & Chirper.
         /// </summary>
         /// <param name="username">The name of the sending user.</param>
         /// <param name="msg">The message.</param>
         public static void PrintChatMessage(string username, string msg)
         {
             PrintMessage($"<{username}> {msg}");
-            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage(0, username, msg));
+            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage(username, msg));
         }
 
         private static void PrintMessage(string msg)
