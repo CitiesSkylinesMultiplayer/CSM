@@ -30,7 +30,6 @@ namespace CSM.Panels
         private UISlicedSprite _trackingsprite;
         private UISlicedSprite _trackingthumb;
         private UIDragHandle _draghandle;
-        private ChirpPanel _chirpPanel;
 
         private readonly List<ChatCommand> _chatCommands;
 
