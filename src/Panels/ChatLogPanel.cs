@@ -30,6 +30,7 @@ namespace CSM.Panels
         private UISlicedSprite _trackingsprite;
         private UISlicedSprite _trackingthumb;
         private UIDragHandle _draghandle;
+        private ChirpPanel _chirpPanel;
 
         private readonly List<ChatCommand> _chatCommands;
 
@@ -381,6 +382,7 @@ namespace CSM.Panels
         public static void PrintGameMessage(string msg)
         {
             PrintGameMessage(MessageType.Normal, msg);
+            
         }
 
         /// <summary>
@@ -439,6 +441,11 @@ namespace CSM.Panels
                             scrollBar.minValue = scrollBar.maxValue;
                         }
                     }
+
+                    ChirpPanel chirpPanel = GameObject.Find("ChirperPanel").GetComponent<ChirpPanel>();
+
+                    chirpPanel.AddMessage(new ChirperMessage(0, "CSM", msg));
+
                 });
             }
             catch (Exception)
