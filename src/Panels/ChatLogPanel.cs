@@ -380,8 +380,8 @@ namespace CSM.Panels
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(string msg)
         {
-            PrintGameMessage(MessageType.Normal, msg);
-            
+            PrintGameMessage(MessageType.Normal, msg);  
+            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage(0, "CSM", msg));
         }
 
         /// <summary>
@@ -402,6 +402,7 @@ namespace CSM.Panels
         public static void PrintChatMessage(string username, string msg)
         {
             PrintMessage($"<{username}> {msg}");
+            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage(0, username, msg));
         }
 
         private static void PrintMessage(string msg)
@@ -440,10 +441,6 @@ namespace CSM.Panels
                             scrollBar.minValue = scrollBar.maxValue;
                         }
                     }
-
-                    ChirpPanel chirpPanel = GameObject.Find("ChirperPanel").GetComponent<ChirpPanel>();
-
-                    chirpPanel.AddMessage(new ChirperMessage(0, "CSM", msg));
 
                 });
             }
