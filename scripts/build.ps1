@@ -30,7 +30,7 @@ Function Find-MsBuild([int] $MaxVersion = 2019)
     
     $fallback2015Path = "${Env:ProgramFiles(x86)}\MSBuild\14.0\Bin\MSBuild.exe"
     $fallback2013Path = "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
-    $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319"
+    $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 		
     If ((2019 -le $MaxVersion) -And (Test-Path $agent2019Path)) { return $agent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $ent2019Path)) { return $ent2019Path } 
