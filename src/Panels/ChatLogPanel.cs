@@ -441,7 +441,6 @@ namespace CSM.Panels
                             scrollBar.minValue = scrollBar.maxValue;
                         }
                     }
-
                 });
             }
             catch (Exception)
