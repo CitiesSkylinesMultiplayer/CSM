@@ -36,13 +36,16 @@ namespace CSM.Container
         /// This is meant to reduce expensive GameObject.Find calls by caching the result.
         /// </summary>
         /// <returns>ChirpPanel GameObject.</returns>
-        public static ChirpPanel getChirpPanel()
+        public static ChirpPanel ChirpPanel
         {
-            if (_chirpPanel == null)
+            get
             {
-                _chirpPanel = GameObject.Find("ChirperPanel").GetComponent<ChirpPanel>();
+                if (_chirpPanel == null)
+                {
+                    _chirpPanel = GameObject.Find("ChirperPanel").GetComponent<ChirpPanel>();
+                }
+                return _chirpPanel;
             }
-            return _chirpPanel;
         }
     }
 }

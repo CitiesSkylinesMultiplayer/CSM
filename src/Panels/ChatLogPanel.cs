@@ -381,7 +381,7 @@ namespace CSM.Panels
         public static void PrintGameMessage(string msg)
         {
             PrintGameMessage(MessageType.Normal, msg);
-            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage("CSM", msg));
+            ChirperMessage.ChirpPanel.AddMessage(new ChirperMessage("CSM", msg));
         }
 
         /// <summary>
@@ -402,7 +402,7 @@ namespace CSM.Panels
         public static void PrintChatMessage(string username, string msg)
         {
             PrintMessage($"<{username}> {msg}");
-            ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage(username, msg));
+            ChirperMessage.ChirpPanel.AddMessage(new ChirperMessage(username, msg));
         }
 
         private static void PrintMessage(string msg)
