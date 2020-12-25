@@ -23,7 +23,7 @@ namespace CSM.Container
         /// </summary>
         /// <param name="senderName">Sender name, this will apper as blue text above the message</param>
         /// <param name="text">The body of the message</param>
-        /// <param name="senderID">This does not appear to important for our use; defaults to 0</param>
+        /// <param name="senderID">This does not appear to be important for our use case; defaults to 0.</param>
         public ChirperMessage(string senderName, string text, uint senderID = 0)
         {
             _senderID = senderID;
