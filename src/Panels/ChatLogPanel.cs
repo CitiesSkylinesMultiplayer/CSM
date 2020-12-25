@@ -395,7 +395,7 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Prints a chat message to the ChatLogPanel & Chirper.
+        ///     Prints a chat message to the ChatLogPanel and Chirper.
         /// </summary>
         /// <param name="username">The name of the sending user.</param>
         /// <param name="msg">The message.</param>
