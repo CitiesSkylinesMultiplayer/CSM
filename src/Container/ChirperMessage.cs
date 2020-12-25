@@ -35,7 +35,7 @@ namespace CSM.Container
         /// Returns a reference to the ChirpPanel GameObject.
         /// This is meant to reduce expensive GameObject.Find calls by caching the result.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>ChirpPanel GameObject.</returns>
         public static ChirpPanel getChirpPanel()
         {
             if (_chirpPanel == null)

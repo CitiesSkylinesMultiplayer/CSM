@@ -380,7 +380,7 @@ namespace CSM.Panels
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(string msg)
         {
-            PrintGameMessage(MessageType.Normal, msg);  
+            PrintGameMessage(MessageType.Normal, msg);
             ChirperMessage.getChirpPanel().AddMessage(new ChirperMessage("CSM", msg));
         }
 
