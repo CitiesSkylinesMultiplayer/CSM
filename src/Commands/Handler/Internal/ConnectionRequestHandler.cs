@@ -121,6 +121,11 @@ namespace CSM.Commands.Handler.Internal
                 });
                 return;
             }
+            //Check if join requests are enabled.
+            if (MultiplayerManager.Instance.CurrentServer.Config.EnablePlayerJoinRequest)
+            {
+
+            }
 
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);

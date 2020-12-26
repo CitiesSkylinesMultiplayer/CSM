@@ -13,12 +13,14 @@
         /// <param name="username">The user name for the hosting player.</param>
         /// <param name="password">The optional password for this server.</param>
         /// <param name="maxPlayers">The maximum amount of players that can connect to the server.</param>
-        public ServerConfig(int port, string username, string password, int maxPlayers)
+        /// <param name="enableJoinRequest">Are join requests for players enabled?</param>
+        public ServerConfig(int port, string username, string password, int maxPlayers, bool enableJoinRequest)
         {
             Port = port;
             Username = username;
             Password = password;
             MaxPlayers = maxPlayers;
+            EnablePlayerJoinRequest = enableJoinRequest;
         }
 
         public ServerConfig()
@@ -27,6 +29,7 @@
             Username = "";
             Password = "";
             MaxPlayers = 0;
+            EnablePlayerJoinRequest = false;
         }
 
         /// <summary>
@@ -48,5 +51,10 @@
         ///     Gets the optional server password.
         /// </summary>
         public string Password;
+
+        /// <summary>
+        ///     Gets if the host has enabled join requests for this server
+        /// </summary>
+        public bool EnablePlayerJoinRequest;
     }
 }

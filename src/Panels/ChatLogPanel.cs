@@ -92,7 +92,7 @@ namespace CSM.Panels
                 {
                     Process.Start(Path.GetFullPath(".") + "/multiplayer-logs/log-current.txt");
                 }),
-                new ChatCommand("sync", "Redownloads the entire save", (command) =>
+                new ChatCommand("sync", "Redownloads the entire save game. Use this to alleviate syncing issues", (command) =>
                 {
                     if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                     {
@@ -106,7 +106,7 @@ namespace CSM.Panels
                     }
                     else
                     {
-                        PrintGameMessage("You are the server");
+                        PrintGameMessage("You are the server. Unable to download the save from yourself.");
                     }
                 })
             };
