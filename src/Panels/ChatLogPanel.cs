@@ -375,7 +375,7 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Prints a game message to the ChatLogPanel & Chirper with MessageType.NORMAL.
+        ///     Prints a game message to the ChatLogPanel and Chirper with MessageType.NORMAL.
         /// </summary>
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(string msg)
