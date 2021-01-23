@@ -146,6 +146,11 @@ If ($Build)
     }
 
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    If ($LastExitCode -ne 0)
+    {
+        Write-Host "[CSM Build Script] Build failed!"
+        exit $LastExitCode
+    }
     Write-Host "[CSM Build Script] Build Complete!"
 }
 
