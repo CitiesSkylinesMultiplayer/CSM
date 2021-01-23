@@ -234,6 +234,7 @@
     <Compile Include="Commands\Handler\Zones\DemandDisplayedHandler.cs" />
     <Compile Include="Commands\Handler\Zones\ZoneUpdateHandler.cs" />
     <Compile Include="Container\ChatCommand.cs" />
+    <Compile Include="Container\ChirperMessage.cs" />
     <Compile Include="Container\Tuple.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />

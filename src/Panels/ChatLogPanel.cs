@@ -1,5 +1,4 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
@@ -375,7 +374,7 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Prints a game message to the ChatLogPanel with MessageType.NORMAL.
+        ///     Prints a game message to the ChatLogPanel and Chirper with MessageType.NORMAL.
         /// </summary>
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(string msg)
@@ -384,35 +383,39 @@ namespace CSM.Panels
         }
 
         /// <summary>
-        ///     Prints a game message to the ChatLogPanel.
+        ///     Prints a game message to the ChatLogPanel and Chirper.
         /// </summary>
         /// <param name="type">The message type.</param>
         /// <param name="msg">The message.</param>
         public static void PrintGameMessage(MessageType type, string msg)
         {
-            PrintMessage($"<CSM> {msg}");
+            PrintMessage("CSM", msg);
         }
 
         /// <summary>
-        ///     Prints a chat message to the ChatLogPanel.
+        ///     Prints a chat message to the ChatLogPanel and Chirper.
         /// </summary>
         /// <param name="username">The name of the sending user.</param>
         /// <param name="msg">The message.</param>
         public static void PrintChatMessage(string username, string msg)
         {
-            PrintMessage($"<{username}> {msg}");
+            PrintMessage(username, msg);
         }
 
-        private static void PrintMessage(string msg)
+        private static void PrintMessage(string sender, string msg)
         {
             try
             {
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
+                    // Write message to Chirper panel
+                    ChirperMessage.ChirpPanel.AddMessage(new ChirperMessage(sender, msg));
+
+                    msg = $"<{sender}> {msg}";
                     ChatLogPanel chatPanel = UIView.GetAView().FindUIComponent<ChatLogPanel>("ChatLogPanel");
                     if (chatPanel != null)
                     {
-                        // Reset the timeout counter when a new message is recieved
+                        // Reset the timeout counter when a new message is received
                         chatPanel._timeoutCounter = 0;
 
                         // If the panel is closed, make sure it gets shown
