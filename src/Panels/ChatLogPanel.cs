@@ -116,14 +116,27 @@ namespace CSM.Panels
             // Prevent opening the chat while typing in text fields or the pause menu is opened
             bool allowOpen = !(UIView.HasModalInput() || UIView.HasInputFocus());
 
-            // Show the chat when T is pressed.
-            if (allowOpen && Input.GetKeyDown(KeyCode.T) && (!isVisible || !_chatText.hasFocus))
+            // Check if chat is allowed to open.
+            if (allowOpen && (!isVisible || !_chatText.hasFocus))
             {
-                 isVisible = true;
-                _chatText.Focus();
+                // On T is pressed.
+                if (Input.GetKeyDown(KeyCode.T))
+                {
+                    // Open the chat window.
+                    OpenChatWindow();
+                }
+                // On forward slash is pressed.
+                else if (Input.inputString == "/")
+                {
+                    // Prefix chat input.
+                    _chatText.text = "/";
 
-                // Reset the timeout counter
-                _timeoutCounter = 0;
+                    // Open the chat window.
+                    OpenChatWindow();
+
+                    // Move the cursor to the end of field.
+                    _chatText.MoveToEnd();
+                }
             }
 
             // Increment the timeout counter if panel is visible
@@ -136,6 +149,15 @@ namespace CSM.Panels
             }
 
             base.Update();
+        }
+
+        private void OpenChatWindow()
+        {
+                isVisible = true;
+                _chatText.Focus();
+
+                // Reset the timeout counter
+                _timeoutCounter = 0;
         }
 
         public override void Start()
