@@ -16,8 +16,6 @@ namespace CSM.Extensions
 {
     public class LoadingExtension : LoadingExtensionBase
     {
-        private UIButton _multiplayerButton;
-
         public override void OnReleased()
         {
             // Stop everything
