@@ -36,36 +36,19 @@ namespace CSM.Extensions
                 Command.SendToServer(new ClientLevelLoadedCommand());
             }
 
-            UIView uiView = UIView.GetAView();
+            UIButton resumeButton = UIView.GetAView()?.FindUIComponent("Resume") as UIButton;
 
-            // Add the chat log
-            uiView.AddUIComponent(typeof(ChatLogPanel));
+            // Check if resume button exists.
+            if (resumeButton == null)
+            {
+                return;
+            }
 
-            _multiplayerButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
-
-            _multiplayerButton.text = "Multiplayer";
-            _multiplayerButton.width = 150;
-            _multiplayerButton.height = 40;
-
-            _multiplayerButton.normalBgSprite = "ButtonMenu";
-            _multiplayerButton.disabledBgSprite = "ButtonMenuDisabled";
-            _multiplayerButton.hoveredBgSprite = "ButtonMenuHovered";
-            _multiplayerButton.focusedBgSprite = "ButtonMenuFocused";
-            _multiplayerButton.pressedBgSprite = "ButtonMenuPressed";
-            _multiplayerButton.textColor = new Color32(255, 255, 255, 255);
-            _multiplayerButton.disabledTextColor = new Color32(7, 7, 7, 255);
-            _multiplayerButton.hoveredTextColor = new Color32(7, 132, 255, 255);
-            _multiplayerButton.focusedTextColor = new Color32(255, 255, 255, 255);
-            _multiplayerButton.pressedTextColor = new Color32(30, 30, 44, 255);
-
-            // Enable button sounds.
-            _multiplayerButton.playAudioEvents = true;
-
-            // Place the button.
-            _multiplayerButton.transformPosition = new Vector3(-1.45f, 0.97f);
-
-            // Respond to button click.
-            _multiplayerButton.eventClick += (component, param) =>
+            // Set btn text.
+            resumeButton.text = "HOST GAME";
+            
+            // Add additional eventClick.
+            resumeButton.eventClick += (s, e) =>
             {
                 // Open host game menu if not in multiplayer session, else open connection panel
                 if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
@@ -84,9 +67,12 @@ namespace CSM.Extensions
                 {
                     PanelManager.TogglePanel<ConnectionPanel>();
                 }
+            }
 
-                _multiplayerButton.Unfocus();
-            };
+            UIView uiView = UIView.GetAView();
+
+            // Add the chat log
+            uiView.AddUIComponent(typeof(ChatLogPanel));
         }
 
         public override void OnLevelUnloading()
