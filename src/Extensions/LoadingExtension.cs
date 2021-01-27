@@ -67,7 +67,7 @@ namespace CSM.Extensions
                 {
                     PanelManager.TogglePanel<ConnectionPanel>();
                 }
-            }
+            };
 
             UIView uiView = UIView.GetAView();
 
