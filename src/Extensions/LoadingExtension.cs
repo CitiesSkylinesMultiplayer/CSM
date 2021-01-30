@@ -1,15 +1,12 @@
-﻿using ColossalFramework;
-using ColossalFramework.Plugins;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
-using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
 using CSM.Panels;
+using CSM.Injections;
 using ICities;
 using System;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace CSM.Extensions
@@ -34,43 +31,11 @@ namespace CSM.Extensions
                 Command.SendToServer(new ClientLevelLoadedCommand());
             }
 
-            UIButton resumeButton = UIView.GetAView()?.FindUIComponent("Resume") as UIButton;
-
-            // Check if resume button exists.
-            if (resumeButton == null)
-            {
-                return;
-            }
-
-            // Set btn text.
-            resumeButton.text = "MULTIPLAYER";
-            
-            // Add additional eventClick.
-            resumeButton.eventClick += (s, e) =>
-            {
-                // Open host game menu if not in multiplayer session, else open connection panel
-                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
-                {
-                    PanelManager.TogglePanel<HostGamePanel>();
-
-                    // Display warning if DLCs or other mods are enabled
-                    if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None ||
-                        Singleton<PluginManager>.instance.enabledModCount > 1)
-                    {
-                        MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
-                        msgPanel.DisplayContentWarning();
-                    }
-                }
-                else
-                {
-                    PanelManager.TogglePanel<ConnectionPanel>();
-                }
-            };
-
-            UIView uiView = UIView.GetAView();
-
             // Add the chat log
-            uiView.AddUIComponent(typeof(ChatLogPanel));
+            UIView.GetAView().AddUIComponent(typeof(ChatLogPanel));
+
+            // Setup Pause menu.
+            PauseMenuHandler.CreateOrUpdateMultiplayerButton();
         }
 
         public override void OnLevelUnloading()
