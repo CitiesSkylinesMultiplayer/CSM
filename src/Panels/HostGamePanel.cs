@@ -111,6 +111,15 @@ namespace CSM.Panels
             };
         }
 
+        public override void Update()
+        {
+            // Check if escape is pressed and panel is visible.
+            if (isVisible && Input.GetKeyDown(KeyCode.Escape))
+            {
+                isVisible = false;
+            }
+        }
+
         private void RequestIPs()
         {
             // Request ips
