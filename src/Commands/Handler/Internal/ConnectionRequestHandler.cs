@@ -13,6 +13,8 @@ namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
+        public static Player WorldLoadingPlayer = null;
+
         public ConnectionRequestHandler()
         {
             TransactionCmd = false;
@@ -143,7 +145,6 @@ namespace CSM.Commands.Handler.Internal
             newPlayer.Status = ClientStatus.Downloading;
 
             MultiplayerManager.Instance.BlockGame(newPlayer.Username);
-            SimulationManager.instance.SimulationPaused = true;
 
             // Inform other clients about the joining client
             Command.SendToOtherClients(new ClientJoiningCommand
@@ -152,20 +153,36 @@ namespace CSM.Commands.Handler.Internal
                 JoiningUsername = newPlayer.Username
             }, newPlayer);
 
-            /*
-             * Wait to get all remaining pakets processed, because unprocessed packets
-             * before saving may end in an desynced game for the joining client
-             */
-            Thread.Sleep(2000);
+            WorldLoadingPlayer = newPlayer;
 
-            // Get a serialized version of the server world to send to the player.
-            SaveHelpers.SaveServerLevel();
+            // If the game is already paused, continue with the load process.
+            // Otherwise we wait until the pause negotiation is done.
+            // Note that a joining (+syncing) player is not considered during this process, but already force paused at this point.
+            // See SpeedPauseHelper::StateReached()
+            if (SimulationManager.instance.SimulationPaused && SpeedPauseHelper.IsStable())
+            {
+                AllGamesBlocked();
+            }
+        }
+
+        public static void AllGamesBlocked()
+        {
+            Player newPlayer = WorldLoadingPlayer;
+            WorldLoadingPlayer = null;
 
             new Thread(() =>
             {
-                while (SaveHelpers.IsSaving())
+                // Wait to get all remaining packets processed, because unprocessed packets
+                // before saving may end in an desynced game for the joining client
+                Thread.Sleep(2000);
+
+                // Create game save in the main thread
+                AsyncAction action = SimulationManager.instance.AddAction(SaveHelpers.SaveServerLevel);
+
+                // Wait until the save action is queued and the game is saved
+                while (!action.completed || SaveHelpers.IsSaving())
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(10);
                 }
 
                 Command.SendToClient(newPlayer, new WorldTransferCommand

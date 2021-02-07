@@ -14,10 +14,9 @@ namespace CSM.Commands.Handler.Game
 
         protected override void Handle(SpeedPauseRequestCommand command)
         {
-            // If we are a client but not yet connected, don't answer as we're not counted towards
+            // If we are not yet connected don't answer as we're not counted towards
             // the "number of required consenting clients" until we are done with loading
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client &&
-                MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected)
+            if (!MultiplayerManager.Instance.IsConnected())
             {
                 return;
             }

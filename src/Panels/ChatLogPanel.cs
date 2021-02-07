@@ -95,13 +95,20 @@ namespace CSM.Panels
                 {
                     if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                     {
-                        PrintGameMessage("Requesting the save game from the server");
+                        if (MultiplayerManager.Instance.GameBlocked)
+                        {
+                            PrintGameMessage("Please wait until the currently joining player is connected!");
+                        }
+                        else
+                        {
+                            PrintGameMessage("Requesting the save game from the server");
 
-                        MultiplayerManager.Instance.CurrentClient.Status = Networking.Status.ClientStatus.Downloading;
-                        SimulationManager.instance.SimulationPaused = true;
-                        MultiplayerManager.Instance.BlockGameReSync();
+                            MultiplayerManager.Instance.CurrentClient.Status =
+                                Networking.Status.ClientStatus.Downloading;
+                            MultiplayerManager.Instance.BlockGameReSync();
 
-                        Command.SendToServer(new RequestWorldTransferCommand());
+                            Command.SendToServer(new RequestWorldTransferCommand());
+                        }
                     }
                     else
                     {
