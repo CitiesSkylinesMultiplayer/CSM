@@ -75,8 +75,12 @@ namespace CSM.Helpers
                 if (!SimulationManager.instance.SimulationPaused &&
                     MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 {
-                    SimulationManager.instance.SimulationPaused = true;
-                    allowNegotiation = true;
+                    // Only request pause when the state is stable (so no warning message is shown to the user)
+                    if (IsStable())
+                    {
+                        PauseTarget = true;
+                        allowNegotiation = true;
+                    }
                 }
                 // Pause the game if it is not yet paused (on the joining/syncing client) but don't trigger a negotiation
                 else if (!SimulationManager.instance.SimulationPaused &&
