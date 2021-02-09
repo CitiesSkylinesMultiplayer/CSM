@@ -260,6 +260,7 @@
     <Compile Include="Injections\NetHandler.cs" />
     <Compile Include="Injections\PropHandler.cs" />
     <Compile Include="Injections\RoadHandler.cs" />
+    <Compile Include="Injections\SpeedPauseHandler.cs" />
     <Compile Include="Injections\TickLoopHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TransportHandler.cs" />
