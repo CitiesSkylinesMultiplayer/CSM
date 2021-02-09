@@ -1,3 +1,4 @@
+#!/bin/pwsh
 #########################################################################
 # This script handles updating, building and installing the mod.        #
 # Version 2.0 - Created by Dominic Maas                                 #
@@ -106,12 +107,6 @@ If ($Update)
     {
         # Full folder path
         $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities_Data$($Sep)Managed$($Sep)"
-
-        # Try with lowercase SteamApps (linux)
-        if (!(Test-Path -Path $AssemblyDirectory))
-        {
-            $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities_Data$($Sep)Managed$($Sep)"
-        }
     }
 
     # Test to see if the path is valid
@@ -151,6 +146,11 @@ If ($Build)
     }
 
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    If ($LastExitCode -ne 0)
+    {
+        Write-Host "[CSM Build Script] Build failed!"
+        exit $LastExitCode
+    }
     Write-Host "[CSM Build Script] Build Complete!"
 }
 
