@@ -86,6 +86,15 @@ namespace CSM.Panels
             RefreshState();
         }
 
+        public override void Update()
+        {
+            // Check if escape is pressed and panel is visible.
+            if (isVisible && Input.GetKeyDown(KeyCode.Escape))
+            {
+                isVisible = false;
+            }
+        }
+
         /// <summary>
         ///     Refresh which buttons should be displayed on the user interface
         /// </summary>
