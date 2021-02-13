@@ -165,6 +165,9 @@ namespace CSM.Panels
 
                 // Reset the timeout counter
                 _timeoutCounter = 0;
+
+                // Scroll to bottom of the panel.
+                _scrollablepanel.ScrollToBottom();
         }
 
         public override void Start()
