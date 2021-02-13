@@ -1,3 +1,4 @@
+#!/bin/pwsh
 # Installer script to be bundled with release files
 param (
     [string]$ModDirectory = "Default"

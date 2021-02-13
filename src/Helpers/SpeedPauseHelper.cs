@@ -3,8 +3,10 @@ using System.Linq;
 using CSM.Commands;
 using CSM.Commands.Data.Game;
 using CSM.Commands.Handler.Game;
+using CSM.Commands.Handler.Internal;
 using CSM.Networking;
 using CSM.Networking.Status;
+using CSM.Panels;
 using CSM.Util;
 using UnityEngine;
 
@@ -13,19 +15,129 @@ namespace CSM.Helpers
     public static class SpeedPauseHelper
     {
         private static System.Random _rand;
-        
+
+        // Current state of the state machine
         private static SpeedPauseState _state;
+        // Currently queued speed
         private static int _speed;
         
         // Target time during WaitingForPlay or WaitingForPause states representing real-time and in game time respectively
         private static DateTime _waitTargetTime;
+
+
+        // Target values if one of the buttons was pressed by the player
+        public static bool? PauseTarget = null;
+        public static int? SpeedTarget = null;
+        
+        // If the state machine was already initialized
+        private static bool _initialized = false;
+
+        /// <summary>
+        ///     Resets the speed and pause states and re-initializes the state machine.
+        /// </summary>
+        public static void ResetSpeedAndPauseState()
+        {
+            _initialized = false;
+            SetSpeedStateInternal(1);
+            SetPauseStateInternal(true);
+        }
+
+        /// <summary>
+        ///     Checks if the current play/pause state is stable, e.g. for the /sync command.
+        /// </summary>
+        /// <returns>If the state is either paused or playing but not in any kind of waiting state.</returns>
+        public static bool IsStable()
+        {
+            return _state == SpeedPauseState.Paused || _state == SpeedPauseState.Playing;
+        }
+
+        /// <summary>
+        ///     Called every simulation step to check for any changed speed or pause states.
+        /// </summary>
+        public static void SimulationStep()
+        {
+            // First tick in the game, initialize speed and pause state tracking variables
+            if (!_initialized)
+            {
+                Initialize(SimulationManager.instance.SimulationPaused, SimulationManager.instance.SelectedSimulationSpeed);
+                _initialized = true;
+            }
+
+            // Stores if a speed or pause state negotiation is allowed to start or if a changed state should be ignored
+            bool allowNegotiation = false;
+
+            // If game is blocked or client is connecting
+            if (MultiplayerManager.Instance.GameBlocked ||
+               (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client && 
+                MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected))
+            {
+                // Pause the game if it is not yet paused (on the server) and thus trigger the pause negotiation (PauseRequest)
+                if (!SimulationManager.instance.SimulationPaused &&
+                    MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+                {
+                    // Only request pause when the state is stable (so no warning message is shown to the user)
+                    if (IsStable())
+                    {
+                        PauseTarget = true;
+                        allowNegotiation = true;
+                    }
+                }
+                // Pause the game if it is not yet paused (on the joining/syncing client) but don't trigger a negotiation
+                else if (!SimulationManager.instance.SimulationPaused &&
+                         MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected)
+                {
+                    SetSpeedStateInternal(1);
+                    SetPauseStateInternal(true);
+                }
+            }
+            else
+            {
+                allowNegotiation = true;
+            }
+
+            if (allowNegotiation)
+            {
+                // Check if speed or pause state have changed
+                if ((SpeedTarget.HasValue && SpeedTarget.Value != SimulationManager.instance.SelectedSimulationSpeed) ||
+                    (PauseTarget.HasValue && PauseTarget != SimulationManager.instance.SimulationPaused))
+                {
+                    PlayPauseSpeedChanged(PauseTarget ?? SimulationManager.instance.SimulationPaused,
+                        SpeedTarget ?? SimulationManager.instance.SelectedSimulationSpeed);
+                }
+            }
+
+            // Reset changes in speed or pause state because we don't want to consider them in a later tick
+            SpeedTarget = null;
+            PauseTarget = null;
+
+            // Update play/pause state if needed
+            ChangePauseStateIfNeeded();
+        }
+
+        /// <summary>
+        ///     Sets the internal pause state without triggering a negotiation by calling the setter.
+        /// </summary>
+        /// <param name="paused">If the game should be paused.</param>
+        private static void SetPauseStateInternal(bool paused)
+        {
+            ReflectionHelper.SetAttr(SimulationManager.instance, "m_simulationPaused", paused);
+        }
+
+        /// <summary>
+        ///     Sets the internal speed without triggering a negotiation by calling the setter.
+        /// </summary>
+        /// <param name="speed">The game speed to set.</param>
+        private static void SetSpeedStateInternal(int speed)
+        {
+            ReflectionHelper.SetAttr(SimulationManager.instance, "m_simulationSpeed", speed);
+        }
 
         /// <summary>
         ///     Initialize current speed and pause states.
         /// </summary>
         /// <param name="paused">If the game is currently paused.</param>
         /// <param name="speed">Current game speed from 0 to 3.</param>
-        public static void Initialize(bool paused, int speed)
+        private static void Initialize(bool paused, int speed)
         {
             _state = paused ? SpeedPauseState.Paused : SpeedPauseState.Playing;
             _speed = speed;
@@ -38,7 +150,7 @@ namespace CSM.Helpers
         /// </summary>
         /// <param name="pause">If the game should be paused.</param>
         /// <param name="speed">The newly selected speed.</param>
-        public static void PlayPauseSpeedChanged(bool pause, int speed)
+        private static void PlayPauseSpeedChanged(bool pause, int speed)
         {
             if (_state == SpeedPauseState.Paused && !pause)
             {
@@ -54,6 +166,11 @@ namespace CSM.Helpers
             {
                 RequestSpeedChange(speed);
                 Log.Debug("[SpeedPauseHelper] Speed change requested locally.");
+            }
+            else
+            {
+                ChatLogPanel.PrintGameMessage("Please wait until all players have reached the same play/pause state and speed!");
+                Log.Info($"[SpeedPauseHelper] (Pause: {pause}, Speed: {speed}) requested, but state was {_state}");
             }
         }
 
@@ -125,11 +242,11 @@ namespace CSM.Helpers
         /// <summary>
         ///     This method is called every tick and checks if the waitTargetTime has already been reached.
         /// </summary>
-        public static void ChangePauseStateIfNeeded()
+        private static void ChangePauseStateIfNeeded()
         {
             if (_state == SpeedPauseState.WaitingForPause && GetCurrentTime() > _waitTargetTime)
             {
-                SimulationManager.instance.SimulationPaused = true;
+                SetPauseStateInternal(true);
                 _state = SpeedPauseState.PausedWaiting;
                 SendReached();
 
@@ -138,7 +255,7 @@ namespace CSM.Helpers
             }
             else if (_state == SpeedPauseState.WaitingForSpeedChange && GetCurrentTime() > _waitTargetTime)
             {
-                SimulationManager.instance.SelectedSimulationSpeed = _speed;
+                SetSpeedStateInternal(_speed);
                 _state = SpeedPauseState.PlayingWaiting;
                 SendReached();
                 
@@ -148,8 +265,8 @@ namespace CSM.Helpers
             }
             else if (_state == SpeedPauseState.WaitingForPlay && DateTime.Now >= _waitTargetTime)
             {
-                SimulationManager.instance.SimulationPaused = false;
-                SimulationManager.instance.SelectedSimulationSpeed = _speed;
+                SetPauseStateInternal(false);
+                SetSpeedStateInternal(_speed);
                 _state = SpeedPauseState.PlayingWaiting;
                 SendReached();
 
@@ -171,6 +288,12 @@ namespace CSM.Helpers
             else if (_state == SpeedPauseState.PausedWaiting)
             {
                 _state = SpeedPauseState.Paused;
+                
+                // If a connection request is pending, we complete it here, since now all games are paused.
+                if (ConnectionRequestHandler.WorldLoadingPlayer != null)
+                {
+                    ConnectionRequestHandler.AllGamesBlocked();
+                }
             }
 
             Log.Debug($"[SpeedPauseHelper] State {_state} reached!");

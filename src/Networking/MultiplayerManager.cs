@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using CSM.Networking.Status;
 
 namespace CSM.Networking
 {
@@ -126,6 +127,12 @@ namespace CSM.Networking
                     break;
             }
             CurrentRole = MultiplayerRole.None;
+        }
+
+        public bool IsConnected()
+        {
+            return CurrentRole == MultiplayerRole.Server || (CurrentRole == MultiplayerRole.Client &&
+                                                             CurrentClient.Status == ClientStatus.Connected);
         }
 
         public void BlockGameReSync()

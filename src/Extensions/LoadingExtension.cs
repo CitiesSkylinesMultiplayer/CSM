@@ -7,6 +7,8 @@ using CSM.Panels;
 using CSM.Injections;
 using ICities;
 using System;
+using CSM.Commands.Handler.Game;
+using CSM.Helpers;
 using Object = UnityEngine.Object;
 
 namespace CSM.Extensions
@@ -25,6 +27,8 @@ namespace CSM.Extensions
         {
             base.OnLevelLoaded(mode);
 
+            ResetData();
+
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
@@ -36,6 +40,21 @@ namespace CSM.Extensions
 
             // Setup Pause menu.
             PauseMenuHandler.CreateOrUpdateMultiplayerButton();
+        }
+
+        private void ResetData()
+        {
+            // Pause simulation on game load and reset cached speed and pause states
+            SpeedPauseHelper.ResetSpeedAndPauseState();
+            
+            // Reset waiting id as the last speed/pause request is no longer valid
+            SpeedPauseResponseHandler.ResetWaitingId();
+            
+            // Don't handle dropped frames from before the map was loaded
+            SlowdownHelper.ClearDropFrames();
+            SlowdownHelper.ClearLocalDropFrames();
+
+            // TODO: Check if we need to reset more caches
         }
 
         public override void OnLevelUnloading()

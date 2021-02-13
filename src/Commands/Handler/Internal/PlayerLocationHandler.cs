@@ -15,9 +15,7 @@ namespace CSM.Commands.Handler.Internal
 
         protected override void Handle(PlayerLocationCommand command)
         {
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None ||
-                (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client &&
-                MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected))
+            if (!MultiplayerManager.Instance.IsConnected())
             {
                 // Ignore packets while not connected
                 return;

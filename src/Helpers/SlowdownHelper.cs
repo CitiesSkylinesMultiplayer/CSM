@@ -86,6 +86,17 @@ namespace CSM.Helpers
         }
 
         /// <summary>
+        ///     Clears all locally collected dropped frames so they are never send out.
+        /// </summary>
+        public static void ClearLocalDropFrames()
+        {
+            lock (_localDropLock)
+            {
+                _locallyDroppedFrames = 0;
+            }
+        }
+
+        /// <summary>
         ///     Checks if a frame needs to be dropped.
         ///     Every _dropInterval a frame is dropped.
         /// </summary>
