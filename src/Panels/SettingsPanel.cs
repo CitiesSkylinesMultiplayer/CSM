@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using CSM.Util;
 using ICities;
 
 namespace CSM.Panels
@@ -7,6 +8,21 @@ namespace CSM.Panels
     {
         public static void Build(UIHelperBase helper, Settings settings)
         {
+            var chatGroup = helper.AddGroup("Chat");
+
+            UICheckBox useChirper = (UICheckBox) chatGroup.AddCheckbox("Use Chirper as chat", settings.UseChirper,
+                c => { settings.UseChirper = c; });
+            UICheckBox regularChirper = (UICheckBox) chatGroup.AddCheckbox("Print regular Chirper messages", settings.PrintChirperMsgs.value,
+                c => { settings.PrintChirperMsgs.value = c; });
+
+            if (ModCompat.HasDisableChirperMod)
+            {
+                useChirper.readOnly = true;
+                useChirper.tooltip = "Disable Chirper mod detected. Chirper chat is not available.";
+                regularChirper.readOnly = true;
+                regularChirper.tooltip = "Disable Chirper mod detected. Chirper chat is not available.";
+            }
+
             var advancedGroup = helper.AddGroup("Advanced");
 
             UICheckBox cb = (UICheckBox)advancedGroup.AddCheckbox("Enable debug logging (requires game restart)", settings.DebugLogging.value,
