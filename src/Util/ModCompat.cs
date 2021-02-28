@@ -6,7 +6,7 @@ namespace CSM.Util
 {
     public static class ModCompat
     {
-        private static readonly string[] DisableChirperNames = { "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper" };
+        private static readonly string[] DisableChirperNames = { "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper", "ChirpRemover.ChirpRemover" };
         public static bool HasDisableChirperMod {
             get
             {
@@ -14,7 +14,7 @@ namespace CSM.Util
                 {
                     foreach (PluginManager.PluginInfo info in Singleton<PluginManager>.instance.GetPluginsInfo())
                     {
-                        if (info.isEnabled && DisableChirperNames.Contains(info.name))
+                        if (info.isEnabled && DisableChirperNames.Contains(info.userModInstance.ToString()))
                         {
                             _hasDisableChirperMod = true;
                             break;
