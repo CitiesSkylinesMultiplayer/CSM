@@ -12,9 +12,10 @@ namespace CSM
             GameSettings.AddSettingsFile(new SettingsFile { fileName = SettingsFile });
         }
 
-        private static readonly bool DefaultDebugLogging = false;
-        private static readonly bool DefaultUseChirper = true;
-        private static readonly bool DefaultPrintChirperMsgs = false;
+        private const bool DefaultDebugLogging = false;
+        private const bool DefaultUseChirper = true;
+        private const bool DefaultPrintChirperMsgs = false;
+        private const string DefaultLastSeenReleaseNotes = "0.0";
 
         public readonly SavedBool DebugLogging =
             new SavedBool(nameof(DebugLogging), SettingsFile, DefaultDebugLogging, true);
@@ -37,5 +38,8 @@ namespace CSM
 
         public readonly SavedBool PrintChirperMsgs =
             new SavedBool(nameof(PrintChirperMsgs), SettingsFile, DefaultPrintChirperMsgs, true);
+
+        public readonly SavedString LastSeenReleaseNotes =
+            new SavedString(nameof(LastSeenReleaseNotes), SettingsFile, DefaultLastSeenReleaseNotes, true);
     }
 }

@@ -28,6 +28,12 @@ namespace CSM.Panels
             UICheckBox cb = (UICheckBox)advancedGroup.AddCheckbox("Enable debug logging (requires game restart)", settings.DebugLogging.value,
                 c => { settings.DebugLogging.value = c; });
             cb.tooltip = "Note: This may cause excessive logging and slow down the game!";
+
+            advancedGroup.AddButton("Show Release Notes", () =>
+            {
+                MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                panel.DisplayReleaseNotes();
+            });
         }
     }
 }

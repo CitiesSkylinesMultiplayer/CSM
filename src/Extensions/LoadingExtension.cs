@@ -7,6 +7,7 @@ using CSM.Panels;
 using CSM.Injections;
 using ICities;
 using System;
+using System.Reflection;
 using CSM.Commands.Handler.Game;
 using CSM.Helpers;
 using Object = UnityEngine.Object;
@@ -40,6 +41,16 @@ namespace CSM.Extensions
 
             // Setup Pause menu.
             PauseMenuHandler.CreateOrUpdateMultiplayerButton();
+
+            // Show release notes if not shown for this version
+            Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
+            string strVersion = $"{version.Major}.{version.Minor}";
+            if (string.Compare(strVersion, CSM.Settings.LastSeenReleaseNotes) > 0)
+            {
+                MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                panel.DisplayReleaseNotes();
+                CSM.Settings.LastSeenReleaseNotes.value = strVersion;
+            }
         }
 
         private void ResetData()
