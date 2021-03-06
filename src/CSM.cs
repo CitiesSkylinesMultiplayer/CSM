@@ -1,3 +1,4 @@
+using CSM.Helpers;
 using CSM.Injections;
 using CSM.Panels;
 using CSM.Util;
@@ -44,16 +45,16 @@ namespace CSM
                 IsSteamPresent = SteamHelpers.Init();
                 if (IsSteamPresent)
                 {
-                    Log.Info("Mod is running in a steam context. Steam features will be enabled.");
+                    Log.Info("CSM is running in a steam context. Steam features will be enabled.");
                 }
                 else
                 {
-                    Log.Error("Steam API init returned false! Steam features will not be enabled.");
+                    Log.Warn("CSM is not running in a steam context. Steam features will not be enabled.");
                 }
             }
             catch (Exception e)
             {
-                Log.Error("Error running Steam API init: " + e.ToString());
+                Log.Warn("CSM is not running in a steam context. Steam features will not be enabled: " + e.Message);
                 IsSteamPresent = false;
             }
 
