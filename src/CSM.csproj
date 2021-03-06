@@ -250,6 +250,7 @@
     <Compile Include="Helpers\ToolSimulator.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
+    <Compile Include="Injections\ChatHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\EventHandler.cs" />
     <Compile Include="Injections\ICameraHandler.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="CSM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Log.cs" />
+    <Compile Include="Util\ModCompat.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">

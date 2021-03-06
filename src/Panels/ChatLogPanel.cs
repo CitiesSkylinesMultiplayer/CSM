@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using ColossalFramework;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -23,6 +24,7 @@ namespace CSM.Panels
         private UILabel _messageBox;
         private UILabel _title;
         private UITextField _chatText;
+        private static UITextField _chatTextChirper;
         private UIResizeHandle _resize;
         private UIScrollablePanel _scrollablepanel;
         private UIScrollbar _scrollbar;
@@ -34,6 +36,8 @@ namespace CSM.Panels
 
         private float _timeoutCounter;
 
+        private static bool UseChirper => CSM.Settings.UseChirper;
+
         public enum MessageType
         {
             Normal,
@@ -43,6 +47,11 @@ namespace CSM.Panels
 
         public ChatLogPanel()
         {
+            if (UseChirper)
+            {
+                isVisible = false;
+            }
+
             _chatCommands = new List<ChatCommand>
             {
                 new ChatCommand("help", "Displays information about which commands can be displayed.", (command) =>
@@ -85,7 +94,14 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("clear", "Clear everything from the chat log.", (command) =>
                 {
-                    _messageBox.text = "";
+                    if (UseChirper)
+                    {
+                        ChirpPanel.instance.ClearMessages();
+                    }
+                    else
+                    {
+                        _messageBox.text = "";
+                    }
                 }),
                 new ChatCommand("open-log", "Opens the multiplayer log.", (command) =>
                 {
@@ -135,22 +151,29 @@ namespace CSM.Panels
                 // On forward slash is pressed.
                 else if (Input.inputString == "/")
                 {
-                    // Prefix chat input.
-                    _chatText.text = "/";
+                    if (UseChirper)
+                    {
+                        // Prefix chat input.
+                        _chatTextChirper.text = "/";
+                        // Move the cursor to the end of field.
+                        _chatTextChirper.MoveToEnd();
+                    }
+                    else
+                    {
+                        _chatText.text = "/";
+                        _chatText.MoveToEnd();
+                    }
 
                     // Open the chat window.
                     OpenChatWindow();
-
-                    // Move the cursor to the end of field.
-                    _chatText.MoveToEnd();
                 }
             }
 
             // Increment the timeout counter if panel is visible
-            if(isVisible && !_chatText.hasFocus) _timeoutCounter += Time.deltaTime;
+            if (isVisible && !_chatText.hasFocus) _timeoutCounter += Time.deltaTime;
 
             // If timeout counter has timed out, hide chat.
-            if(_timeoutCounter > 5) {
+            if (_timeoutCounter > 5) {
                 isVisible = false;
                 _timeoutCounter = 0;
             }
@@ -160,6 +183,40 @@ namespace CSM.Panels
 
         private void OpenChatWindow()
         {
+            if (UseChirper)
+            {
+                _chatTextChirper.Show();
+                _chatTextChirper.Focus();
+                if (ChirpPanel.instance.isShowing)
+                {
+                    // Don't close Chirper automatically if already open
+                    ReflectionHelper.SetAttr(ChirpPanel.instance, "m_Timeout", 0f);
+                }
+                else
+                {
+                    ChirpPanel.instance.Show(0);
+                    Vector3 posInit = _chatTextChirper.position;
+                    posInit.y = -45f;
+                    _chatTextChirper.position = posInit;
+                    ValueAnimator.Animate("ChirpPanelChatX", val =>
+                    {
+                        _chatTextChirper.width = val;
+                    }, new AnimatedFloat(25, 350, ChirpPanel.instance.m_ShowHideTime, ChirpPanel.instance.m_ShowEasingType), () =>
+                    {
+                        if (!ChirpPanel.instance.isShowing)
+                            return;
+
+                        ValueAnimator.Animate("ChirpPanelChatY", val =>
+                        {
+                            Vector3 pos = _chatTextChirper.position;
+                            pos.y = val;
+                            _chatTextChirper.position = pos;
+                        }, new AnimatedFloat(-45f, -155, ChirpPanel.instance.m_ShowHideTime, ChirpPanel.instance.m_ShowEasingType));
+                    });
+                }
+            }
+            else
+            {
                 isVisible = true;
                 _chatText.Focus();
 
@@ -168,6 +225,7 @@ namespace CSM.Panels
 
                 // Scroll to bottom of the panel.
                 _scrollablepanel.ScrollToBottom();
+            }
         }
 
         public override void Start()
@@ -295,6 +353,28 @@ namespace CSM.Panels
             _chatText.selectionSprite = "EmptySprite";
             _chatText.name = "ChatLogPanelChatText";
 
+            // Add chirper input field
+            _chatTextChirper = (UITextField) ChirpPanel.instance.component.AddUIComponent(typeof(UITextField));
+            _chatTextChirper.width = 350;
+            _chatTextChirper.height = 30;
+            _chatTextChirper.position = new Vector2(15, -155);
+            _chatTextChirper.atlas = UiHelpers.GetAtlas("Ingame");
+            _chatTextChirper.normalBgSprite = "TextFieldPanelHovered";
+            _chatTextChirper.builtinKeyNavigation = true;
+            _chatTextChirper.isInteractive = true;
+            _chatTextChirper.readOnly = false;
+            _chatTextChirper.horizontalAlignment = UIHorizontalAlignment.Left;
+            _chatTextChirper.eventKeyDown += OnChatKeyDown;
+            _chatTextChirper.textColor = new Color32(0, 0, 0, 255);
+            _chatTextChirper.padding = new RectOffset(6, 6, 6, 6);
+            _chatTextChirper.selectionSprite = "EmptySprite";
+            _chatTextChirper.name = "ChatLogChirperChatText";
+
+            if (UseChirper)
+            {
+                _chatTextChirper.isVisible = false;
+            }
+
             WelcomeChatMessage();
 
             // Add resizable adjustments
@@ -324,23 +404,43 @@ namespace CSM.Panels
             {
                 eventParam.Use();
 
-                if (string.IsNullOrEmpty(_chatText.text))
+                string text = UseChirper ? _chatTextChirper.text : _chatText.text;
+
+                if (string.IsNullOrEmpty(text))
                 {
                     isVisible = false;
                     base.Update();
                     return;
                 }
 
-                string text = _chatText.text;
-                _chatText.text = string.Empty;
+                if (UseChirper)
+                {
+                    _chatTextChirper.text = string.Empty;
+                    _chatTextChirper.Hide();
+                    ReflectionHelper.SetAttr(ChirpPanel.instance, "m_Timeout", 6f);
+                }
+                else
+                {
+                    _chatText.text = string.Empty;
+                }
+
                 SubmitText(text);
             }
             else if (eventParam.keycode == KeyCode.Escape)
             {
                 eventParam.Use();
 
-                isVisible = false;
-                _chatText.text = string.Empty;
+                if (UseChirper)
+                {
+                    _chatTextChirper.text = string.Empty;
+                    ChirpPanel.instance.Hide();
+                    _chatTextChirper.Hide();
+                }
+                else
+                {
+                    _chatText.text = string.Empty;
+                    isVisible = false;
+                }
             }
 
             base.Update();
@@ -440,38 +540,46 @@ namespace CSM.Panels
             {
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
-                    // Write message to Chirper panel
-                    ChirperMessage.ChirpPanel.AddMessage(new ChirperMessage(sender, msg));
-
-                    msg = $"<{sender}> {msg}";
-                    ChatLogPanel chatPanel = UIView.GetAView().FindUIComponent<ChatLogPanel>("ChatLogPanel");
-                    if (chatPanel != null)
+                    if (UseChirper)
                     {
-                        // Reset the timeout counter when a new message is received
-                        chatPanel._timeoutCounter = 0;
-
-                        // If the panel is closed, make sure it gets shown
-                        if(!chatPanel.isVisible)    
-                        {
-                            chatPanel.isVisible = true;
-                            chatPanel.Update();
-                        }
+                        // Write message to Chirper panel
+                        ChirperMessage.ChirpPanel.AddMessage(new ChirperMessage(sender, msg), true);
                     }
-
-                    UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
-                    if (messageBox != null)
+                    else
                     {
-                        // Check if the thumb is at the bottom of the scrollbar for autoscrolling
-                        UIScrollbar scrollBar = UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
-                        UISlicedSprite thumb = UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
-                        float size = (thumb.relativePosition.y + thumb.size.y);
-                        bool autoScroll = Math.Abs(size - scrollBar.height) < 0.2f;
 
-                        messageBox.text += ($"{msg}\n");
-
-                        if (autoScroll)
+                        msg = $"<{sender}> {msg}";
+                        ChatLogPanel chatPanel = UIView.GetAView().FindUIComponent<ChatLogPanel>("ChatLogPanel");
+                        if (chatPanel != null)
                         {
-                            scrollBar.minValue = scrollBar.maxValue;
+                            // Reset the timeout counter when a new message is received
+                            chatPanel._timeoutCounter = 0;
+
+                            // If the panel is closed, make sure it gets shown
+                            if (!chatPanel.isVisible)
+                            {
+                                chatPanel.isVisible = true;
+                                chatPanel.Update();
+                            }
+                        }
+
+                        UILabel messageBox = UIView.GetAView().FindUIComponent<UILabel>("ChatLogPanelMessageBox");
+                        if (messageBox != null)
+                        {
+                            // Check if the thumb is at the bottom of the scrollbar for autoscrolling
+                            UIScrollbar scrollBar =
+                                UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
+                            UISlicedSprite thumb =
+                                UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
+                            float size = (thumb.relativePosition.y + thumb.size.y);
+                            bool autoScroll = Math.Abs(size - scrollBar.height) < 0.2f;
+
+                            messageBox.text += ($"{msg}\n");
+
+                            if (autoScroll)
+                            {
+                                scrollBar.minValue = scrollBar.maxValue;
+                            }
                         }
                     }
                 });
@@ -480,6 +588,11 @@ namespace CSM.Panels
             {
                 // IGNORE
             }
+        }
+
+        public static void HideChirpText()
+        {
+            _chatTextChirper.Hide();
         }
     }
 }
