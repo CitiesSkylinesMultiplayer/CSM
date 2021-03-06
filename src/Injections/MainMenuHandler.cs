@@ -1,7 +1,7 @@
 ﻿using ColossalFramework.UI;
 using CSM.Panels;
+using CSM.Util;
 using HarmonyLib;
-using NLog;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -22,11 +22,9 @@ namespace CSM.Injections
 
     public static class MainMenuHandler
     {
-        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
-
         public static void CreateOrUpdateJoinGameButton()
         {
-            _logger.Info("Creating join game button...");
+            Log.Info("Creating join game button...");
 
             UIPanel uiView = UIView.GetAView()?.FindUIComponent("Menu") as UIPanel;
 
@@ -42,18 +40,7 @@ namespace CSM.Injections
                 joinGameButton = (UIButton)uiView.AddUIComponent(typeof(UIButton));
                 joinGameButton.eventClick += (s, e) =>
                 {
-                    JoinGamePanel panel = UIView.GetAView().FindUIComponent<JoinGamePanel>("MPJoinGamePanel");
-
-                    if (panel != null)
-                    {
-                        panel.isVisible = true;
-                        panel.Focus();
-                    }
-                    else
-                    {
-                        JoinGamePanel joinGamePanel = (JoinGamePanel)UIView.GetAView().AddUIComponent(typeof(JoinGamePanel));
-                        joinGamePanel.Focus();
-                    }
+                    PanelManager.ShowPanel<JoinGamePanel>();
                 };
             }
 

@@ -1,11 +1,10 @@
-﻿using ColossalFramework;
+﻿using ColossalFramework.PlatformServices;
+using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
+using CSM.Networking.Config;
 using UnityEngine;
-using ColossalFramework.PlatformServices;
-using CSM.Networking.Status;
-using ColossalFramework.Threading;
 
 namespace CSM.Panels
 {
@@ -22,18 +21,21 @@ namespace CSM.Panels
         private UIButton _closeButton;
 
         private UICheckBox _passwordBox;
-
-        private UIColorField _playerColorField;
+        private UICheckBox _rememberBox;
 
         public static Color playerColor = Color.red;
 
+        private ClientConfig _clientConfig;
+        private bool _hasRemembered;
+
         public override void Start()
         {
+            _hasRemembered = ConfigData.Load<ClientConfig>(ref _clientConfig, ConfigData.ClientFile);
+
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
 
             backgroundSprite = "GenericPanel";
-            name = "MPJoinGamePanel";
             color = new Color32(110, 110, 110, 255);
 
             // Grab the view for calculating width and height of game
@@ -43,7 +45,7 @@ namespace CSM.Panels
             relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 250.0f);
 
             width = 360;
-            height = 560;
+            height = 585;
 
             // Title Label
             this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
@@ -52,40 +54,23 @@ namespace CSM.Panels
             this.CreateLabel("IP Address:", new Vector2(10, -70));
 
             // IP Address field
-            _ipAddressField = this.CreateTextField("localhost", new Vector2(10, -100));
+            _ipAddressField = this.CreateTextField(_clientConfig.HostAddress, new Vector2(10, -100));
 
             // Port Label
             this.CreateLabel("Port:", new Vector2(10, -150));
 
             // Port field
-            _portField = this.CreateTextField("4230", new Vector2(10, -180));
+            _portField = this.CreateTextField(_clientConfig.Port.ToString(), new Vector2(10, -180));
             _portField.numericalOnly = true;
 
             // Username label
             this.CreateLabel("Username:", new Vector2(10, -230));
 
             // Username field
-            _usernameField = this.CreateTextField("", new Vector2(10, -260));
-            _usernameField.width -= 40;
-            if (PlatformService.active && PlatformService.personaName != null)
+            _usernameField = this.CreateTextField(_clientConfig.Username, new Vector2(10, -260));
+            if (PlatformService.active && PlatformService.personaName != null && _clientConfig.Username == "")
             {
                 _usernameField.text = PlatformService.personaName;
-            }
-
-            // Add color picker to username field
-            // TODO: Figure out why this is null on main menu
-            _playerColorField = this.CreateColorField("Player Color", new Vector2(_usernameField.width + 15, -260));
-            if (_playerColorField != null)
-            {
-                _playerColorField.eventSelectedColorChanged += (UIComponent component, Color value) =>
-                {
-                    this._usernameField.textColor = value;
-                    playerColor = value;
-                };
-                _playerColorField.eventColorPickerOpen += (UIColorField colorField, UIColorPicker colorPicker, ref bool overridden) =>
-                {
-                    colorPicker.component.height += 30f;
-                };
             }
 
             // Password label
@@ -94,16 +79,25 @@ namespace CSM.Panels
             // Password checkbox
             _passwordBox = this.CreateCheckBox("Show Password", new Vector2(120, -310));
 
+            _passwordBox.eventClicked += (component, param) =>
+            {
+                _passwordField.isPasswordField = !_passwordBox.isChecked;
+            };
+
             // Password field
-            _passwordField = this.CreateTextField("", new Vector2(10, -340));
+            _passwordField = this.CreateTextField(_clientConfig.Password, new Vector2(10, -340));
             _passwordField.isPasswordField = true;
 
+            // Remember-Me checkbox
+            _rememberBox = this.CreateCheckBox("Remember Me", new Vector2(10, -390));
+            _rememberBox.isChecked = _hasRemembered;
+
             // Connect to Server Button
-            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -420));
+            _connectButton = this.CreateButton("Connect to Server", new Vector2(10, -445));
             _connectButton.eventClick += OnConnectButtonClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -490));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -515));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -111,18 +105,16 @@ namespace CSM.Panels
                 MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -395));
+            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -420));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
-
-            _passwordBox.eventClicked += (component, param) =>
-            {
-                _passwordField.isPasswordField = !_passwordBox.isChecked;
-            };
         }
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
+            _clientConfig = new ClientConfig(_ipAddressField.text, System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text);
+            ConfigData.Save(ref _clientConfig, ConfigData.ClientFile, _rememberBox.isChecked);
+
             MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
 
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
@@ -171,8 +163,8 @@ namespace CSM.Panels
                         // See WorldTransferHandler for actual loading
                         _connectionStatus.text = "";
                         isVisible = false;
-                        SyncPanel syncPanel = (SyncPanel)UIView.GetAView().AddUIComponent(typeof(SyncPanel));
-                        syncPanel.Focus();
+
+                        MultiplayerManager.Instance.BlockGameFirstJoin();
                     }
                 });
             });

@@ -11,9 +11,9 @@ namespace CSM.Commands.Handler.TransportLines
             TransportTool tool = ToolSimulator.GetTool<TransportTool>(command.SenderId);
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
-            
+
             TransportInfo info = PrefabCollection<TransportInfo>.GetPrefab(command.InfoIndex);
-            
+
             IgnoreHelper.StartIgnore();
 
             ReflectionHelper.Call(tool, "EnsureTempLine", info, command.SourceLine, command.MoveIndex, command.AddIndex, command.AddPos, command.FixedPlatform);

@@ -1,18 +1,20 @@
 ﻿using ColossalFramework.Math;
 using CSM.Helpers;
+using CSM.Util;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using HarmonyLib;
 
 namespace CSM.Injections
 {
     public static class ArrayHandler
     {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
         // All the types for Array16<T> and Array32<T> we currently need to track
-        private static readonly Type[] _array16Types = { typeof(Building), typeof(NetNode), typeof(NetSegment), typeof(PropInstance), typeof(TransportLine) };
+        private static readonly Type[] _array16Types = {
+            typeof(Building), typeof(NetNode), typeof(NetSegment),
+            typeof(PropInstance), typeof(TransportLine), typeof(ZoneBlock)
+        };
 
         private static readonly Type[] _array32Types = { typeof(TreeInstance) };
 
@@ -41,13 +43,13 @@ namespace CSM.Injections
         {
             if (_collecting)
             {
-                _logger.Warn("ArrayHandler: Collecting already in progress! Ignoring.");
+                Log.Warn("ArrayHandler: Collecting already in progress! Ignoring.");
                 return;
             }
 
             if (_applying)
             {
-                _logger.Warn("Arrayhandler: Started collecting while applying! Ignoring.");
+                Log.Warn("Arrayhandler: Started collecting while applying! Ignoring.");
                 return;
             }
 
@@ -73,13 +75,13 @@ namespace CSM.Injections
         {
             if (_collecting)
             {
-                _logger.Warn("ArrayHandler: Started applying while collecting! Ignoring.");
+                Log.Warn("ArrayHandler: Started applying while collecting! Ignoring.");
                 return;
             }
 
             if (_applying)
             {
-                _logger.Warn("ArrayHandler: Applying already in progress! Ignoring.");
+                Log.Warn("ArrayHandler: Applying already in progress! Ignoring.");
                 return;
             }
 
@@ -109,7 +111,7 @@ namespace CSM.Injections
             _applying = false;
             if (_list16Pointer != _array16Collected.Count || _list32Pointer != _array32Collected.Count)
             {
-                _logger.Warn("ArrayHandler: Not all collected array elements have been applied!");
+                Log.Warn("ArrayHandler: Not all collected array elements have been applied!");
             }
         }
 
@@ -158,7 +160,7 @@ namespace CSM.Injections
                 {
                     if (_list16Pointer == _array16Collected.Count)
                     {
-                        _logger.Warn("ArrayHandler: Applying more items than collected!");
+                        Log.Warn("ArrayHandler: Applying more items than collected!");
                         return true;
                     }
 
@@ -240,7 +242,7 @@ namespace CSM.Injections
                 {
                     if (_list32Pointer == _array32Collected.Count)
                     {
-                        _logger.Warn("ArrayHandler: Applying more items than collected!");
+                        Log.Warn("ArrayHandler: Applying more items than collected!");
                         return true;
                     }
 

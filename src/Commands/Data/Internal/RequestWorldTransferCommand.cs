@@ -8,7 +8,7 @@ namespace CSM.Commands.Data.Internal
     /// Sent by:
     /// - ChatLogPanel
     [ProtoContract]
-    class RequestWorldTransferCommand : CommandBase
+    public class RequestWorldTransferCommand : CommandBase
     {
     }
 }

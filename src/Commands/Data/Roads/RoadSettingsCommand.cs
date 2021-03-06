@@ -15,7 +15,7 @@ namespace CSM.Commands.Data.Roads
         /// </summary>
         [ProtoMember(1)]
         public ushort NodeId { get; set; }
-        
+
         /// <summary>
         ///     The index of the button that was clicked on the node.
         /// </summary>

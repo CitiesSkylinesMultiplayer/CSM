@@ -1,8 +1,12 @@
-﻿using ColossalFramework.Plugins;
+﻿using ColossalFramework;
+using ColossalFramework.Plugins;
 using CSM.Commands;
+using CSM.Commands.Data.Internal;
+using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
+using CSM.Util;
 using LiteNetLib;
 using System;
 using System.Diagnostics;
@@ -10,9 +14,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using ColossalFramework;
-using CSM.Commands.Data.Internal;
-using CSM.Helpers;
 
 namespace CSM.Networking
 {
@@ -23,10 +24,7 @@ namespace CSM.Networking
     {
         // The client
         private readonly LiteNetLib.NetManager _netClient;
-
-        // Class logger
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
+        
         /// <summary>
         ///     Configuration for the client
         /// </summary>
@@ -35,12 +33,17 @@ namespace CSM.Networking
         /// <summary>
         ///     The current status of the client
         /// </summary>
-        public ClientStatus Status { get; set; }
+        public ClientStatus Status {
+            get => ClientPlayer.Status;
+            set => ClientPlayer.Status = value;
+        }
 
         /// <summary>
         ///     The assigned client id.
         /// </summary>
         public int ClientId { get; set; }
+
+        public Player ClientPlayer { get; set; } = new Player();
 
         /// <summary>
         ///     If the status is disconnected, this will contain
@@ -61,6 +64,7 @@ namespace CSM.Networking
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
             listener.PeerDisconnectedEvent += ListenerOnPeerDisconnectedEvent;
+            listener.NetworkLatencyUpdateEvent += ListenerOnNetworkLatencyUpdateEvent;
         }
 
         /// <summary>
@@ -71,13 +75,13 @@ namespace CSM.Networking
         public bool Connect(ClientConfig clientConfig)
         {
             // Let the user know that we are trying to connect to a server
-            _logger.Info($"Attempting to connect to server at {clientConfig.HostAddress}:{clientConfig.Port}...");
+            Log.Info($"Attempting to connect to server at {clientConfig.HostAddress}:{clientConfig.Port}...");
 
             // if we are currently trying to connect, cancel
             // and try again.
             if (Status == ClientStatus.Connecting)
             {
-                _logger.Info("Current status is 'connecting', attempting to disconnect first.");
+                Log.Info("Current status is 'connecting', attempting to disconnect first.");
                 Disconnect();
             }
 
@@ -85,25 +89,26 @@ namespace CSM.Networking
             // disconnect.
             if (Status == ClientStatus.Connected)
             {
-                _logger.Info("Current status is 'connected', attempting to disconnect first.");
+                Log.Info("Current status is 'connected', attempting to disconnect first.");
                 Disconnect();
             }
 
             // Set the configuration
             Config = clientConfig;
+            ClientPlayer.Username = Config.Username;
 
             // Start the client, if client setup fails, return out and
             // tell the user
             bool result = _netClient.Start();
             if (!result)
             {
-                _logger.Error("The client failed to start.");
+                Log.Error("The client failed to start.");
                 ConnectionMessage = "The client failed to start.";
                 Disconnect(); // make sure we are fully disconnected
                 return false;
             }
 
-            _logger.Info("Set status to 'connecting'...");
+            Log.Info("Set status to 'connecting'...");
 
             // Try connect to server, update the status to say that
             // we are trying to connect.
@@ -114,7 +119,7 @@ namespace CSM.Networking
             catch (Exception ex)
             {
                 ConnectionMessage = "Failed to connect.";
-                _logger.Error(ex, $"Failed to connect to {Config.HostAddress}:{Config.Port}");
+                Log.Error($"Failed to connect to {Config.HostAddress}:{Config.Port}", ex);
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"Failed to connect: {ex.Message}");
                 Disconnect();
                 return false;
@@ -136,7 +141,7 @@ namespace CSM.Networking
                 // If we connect, exit the loop and return true
                 if (Status == ClientStatus.Connected || Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
                 {
-                    _logger.Info("Client has connected.");
+                    Log.Info("Client has connected.");
                     return true;
                 }
 
@@ -144,7 +149,7 @@ namespace CSM.Networking
                 // variable will contain why.
                 if (Status == ClientStatus.Disconnected)
                 {
-                    _logger.Warn("Client disconnected while in connecting loop.");
+                    Log.Warn("Client disconnected while in connecting loop.");
                     Disconnect(); // make sure we are fully disconnected
                     return false;
                 }
@@ -155,7 +160,7 @@ namespace CSM.Networking
 
             // We have timed out
             ConnectionMessage = "Could not connect to server, timed out.";
-            _logger.Warn("Connection timeout!");
+            Log.Warn("Connection timeout!");
 
             // Did not connect
             Disconnect(); // make sure we are fully disconnected
@@ -178,24 +183,27 @@ namespace CSM.Networking
 
             if (needsUnload)
             {
-                // Go back to the main menu after disconnecting
-                Singleton<LoadingManager>.instance.UnloadLevel();
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
+                    // Go back to the main menu after disconnecting
+                    Singleton<LoadingManager>.instance.UnloadLevel();
+                });
             }
 
-            _logger.Info("Disconnected from server");
+            Log.Info("Disconnected from server");
         }
 
         public void SendToServer(CommandBase message)
         {
             if (Status == ClientStatus.Disconnected)
             {
-                _logger.Error("Attempted to send message to server, but the client is disconnected");
+                Log.Error("Attempted to send message to server, but the client is disconnected");
                 return;
             }
 
             NetPeer server = _netClient.ConnectedPeerList[0];
 
-            _logger.Debug($"Sending {message.GetType().Name} to server");
+            Log.Debug($"Sending {message.GetType().Name} to server");
 
             server.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
         }
@@ -221,7 +229,7 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:");
+                Log.Error($"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:", ex);
             }
         }
 
@@ -247,7 +255,7 @@ namespace CSM.Networking
                 DLCBitMask = DLCHelper.GetOwnedDLCs()
             };
 
-            _logger.Info("Sending connection request to server...");
+            Log.Info("Sending connection request to server...");
 
             Command.SendToServer(connectionRequest);
         }
@@ -258,10 +266,10 @@ namespace CSM.Networking
                 ConnectionMessage = "Failed to connect!";
 
             // Log the error message
-            _logger.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");
+            Log.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");
 
             // Log the reason to the console if we are not in 'connecting' state
-            if (Status != ClientStatus.Connecting)
+            if (Status == ClientStatus.Connected)
             {
                 switch (disconnectInfo.Reason)
                 {
@@ -284,7 +292,7 @@ namespace CSM.Networking
             }
 
             // If we are connected, disconnect
-            if (Status == ClientStatus.Connected)
+            if (Status != ClientStatus.Disconnected && Status != ClientStatus.Connecting)
                 MultiplayerManager.Instance.StopEverything();
 
             // In the case of ClientStatus.Connecting, this also ends the wait loop
@@ -297,7 +305,12 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
-            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+            Log.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+        }
+        
+        private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
+        {
+            ClientPlayer.Latency = latency;
         }
 
         public void StartMainMenuEventProcessor()

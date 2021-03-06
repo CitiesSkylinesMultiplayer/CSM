@@ -1,21 +1,16 @@
-﻿using HarmonyLib;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
-using System;
-using System.Reflection;
-using CSM.Helpers;
 using CSM.Injections;
 using CSM.Panels;
+using CSM.Util;
+using HarmonyLib;
 using ICities;
+using System;
+using System.Reflection;
 
 namespace CSM
 {
     public class CSM : ICities.IUserMod
     {
         private Harmony _harmony;
-
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly Settings _settings;
 
@@ -25,21 +20,21 @@ namespace CSM
         {
             // Setup the correct logging configuration
             _settings = new Settings();
-            SetupLogging();
+            Log.Initialize(_settings.DebugLogging.value);
         }
 
         public void OnEnabled()
         {
             try
             {
-                _logger.Info("Attempting to patch Cities: Skylines using Harmony...");
-                _harmony = new Harmony("net.gridentertainment.csm");
+                Log.Info("Attempting to patch Cities: Skylines using Harmony...");
+                _harmony = new Harmony("com.citiesskylinesmultiplayer");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
-                _logger.Info("Successfully patched Cities: Skylines!");
+                Log.Info("Successfully patched Cities: Skylines!");
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Patching failed");
+                Log.Error("Patching failed", ex);
             }
 
             MainMenuHandler.CreateOrUpdateJoinGameButton();
@@ -49,83 +44,33 @@ namespace CSM
                 IsSteamPresent = SteamHelpers.Init();
                 if (IsSteamPresent)
                 {
-                    _logger.Info("Mod is running in a steam context. Steam features will be enabled.");
+                    Log.Info("Mod is running in a steam context. Steam features will be enabled.");
                 }
                 else
                 {
-                    _logger.Error("Steam API init returned false! Steam features will not be enabled.");
+                    Log.Error("Steam API init returned false! Steam features will not be enabled.");
                 }
             }
             catch (Exception e)
             {
-                _logger.Error("Error running Steam API init: " + e.ToString());
+                Log.Error("Error running Steam API init: " + e.ToString());
                 IsSteamPresent = false;
             }
 
-            _logger.Info("Construction Complete!");
+            Log.Info("Construction Complete!");
         }
 
         public void OnDisabled()
         {
-            _logger.Info("Unpatching Harmony...");
+            Log.Info("Unpatching Harmony...");
             _harmony.UnpatchAll();
-            _logger.Info("Destruction complete!");
+            Log.Info("Destruction complete!");
         }
 
         public void OnSettingsUI(UIHelperBase helper) => SettingsPanel.Build(helper, _settings);
 
-        /// <summary>
-        ///     This code sets up the different
-        ///     logging levels for the mod.
-        /// </summary>
-        private void SetupLogging()
-        {
-            LoggingConfiguration config = new LoggingConfiguration();
-
-            // The layout of the log
-            string layout = "[${time}] [" + Assembly.GetAssembly(typeof(CSM)).GetName().Version + "] [${level}] ${message} ${exception:format=tostring}";
-
-            // Target for file logging
-            FileTarget logfile = new FileTarget("logfile")
-            {
-                FileName = "multiplayer-logs/log-current.txt",
-                ArchiveFileName = "multiplayer-logs/log-${shortdate}.txt",
-                Layout = layout,
-                ArchiveEvery = FileArchivePeriod.Day,
-                MaxArchiveFiles = 7,
-                ConcurrentWrites = true,
-            };
-
-            // Target for console logging
-            ConsoleTarget logConsole = new ConsoleTarget("logconsole") { Layout = layout };
-
-            // If debug logging is enabled
-            if (_settings.DebugLogging.value)
-            {
-                config.AddRule(LogLevel.Debug, LogLevel.Fatal, logConsole);
-                config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
-            }
-            else
-            {
-                config.AddRule(LogLevel.Info, LogLevel.Fatal, logConsole);
-                config.AddRule(LogLevel.Info, LogLevel.Fatal, logfile);
-            }
-
-            LogManager.Configuration = config;
-        }
-
         public string Name => "Cities: Skylines Multiplayer";
 
         public string Description => "Multiplayer mod for Cities: Skylines.";
-
-        /// <summary>
-        ///     Log a message to the console.
-        /// </summary>
-        /// <param name="message"></param>
-        [Obsolete("Use NLog instead.")]
-        public static void Log(string message)
-        {
-            _logger.Info(message);
-        }
     }
 }

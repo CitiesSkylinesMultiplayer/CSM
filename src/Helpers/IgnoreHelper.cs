@@ -40,7 +40,7 @@ namespace CSM.Helpers
         {
             IgnoreAll = Math.Max(IgnoreAll - 1, 0);
         }
-        
+
         /// <summary>
         ///     Stop the ignore mode where the injection handlers
         ///     ignore all method calls.

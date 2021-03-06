@@ -1,0 +1,74 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # Run this on windows
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+        
+    # The version string
+    - name: Set Version Environment Variable
+      id: csm_version
+      run: echo "::set-output name=version::$(date +'%y%m').${{ github.run_number }}"
+    
+    # Update the assembly versiob to match the csm version
+    - name: Update Assembly Version
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion ${{ steps.csm_version.outputs.version }}.0.0 -assemblyFileVersion ${{ steps.csm_version.outputs.version }}.0.0"
+      working-directory: src
+    
+    # Download the assemblies required to build the mod
+    - name: Download Assemblies
+      uses: carlosperate/download-file-action@v1.0.3
+      with:
+        file-url: https://gridentertainment.blob.core.windows.net/general-storage/csm/Assemblies.zip
+        # New filename to rename the downloaded file
+        file-name: Assemblies.zip
+
+    # Extract these assemblies
+    - name: Extract Assemblies
+      run: powershell.exe -NoP -NonI -Command "Expand-Archive 'Assemblies.zip' 'assemblies'"
+    
+    # Build the mod using the built in build script
+    - name: Build Mod
+      run: powershell.exe -NoP -NonI -Command "../scripts/build.ps1 -Build"
+      working-directory: src
+    
+    # Delete files only used for building
+    - name: Delete unused artifacts
+      working-directory: src/bin/Release
+      run: | 
+        del Assembly-CSharp.dll
+        del ColossalManaged.dll
+        del ICities.dll
+        del UnityEngine.dll
+        del UnityEngine.UI.dll
+          
+    # Publish artifacts
+    - name: Upload mod DLLs
+      uses: actions/upload-artifact@v2
+      with:
+        name: CSM ${{ steps.csm_version.outputs.version }}
+        path: src/bin/Release/*.dll
+        
+    # Publish install script
+    - name: Upload install script
+      uses: actions/upload-artifact@v2
+      with:
+        name: CSM ${{ steps.csm_version.outputs.version }}
+        path: scripts/install.ps1

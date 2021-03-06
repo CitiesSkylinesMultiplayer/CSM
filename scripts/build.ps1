@@ -1,3 +1,4 @@
+#!/bin/pwsh
 #########################################################################
 # This script handles updating, building and installing the mod.        #
 # Version 2.0 - Created by Dominic Maas                                 #
@@ -30,8 +31,8 @@ Function Find-MsBuild([int] $MaxVersion = 2019)
     
     $fallback2015Path = "${Env:ProgramFiles(x86)}\MSBuild\14.0\Bin\MSBuild.exe"
     $fallback2013Path = "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
-    $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319"
-        
+    $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
+		
     If ((2019 -le $MaxVersion) -And (Test-Path $agent2019Path)) { return $agent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $ent2019Path)) { return $ent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $pro2019Path)) { return $pro2019Path } 
@@ -95,23 +96,17 @@ If ($Update)
     Write-Host "[CSM Update Script] Please Note: This may break the mod if any major game changes have occured."
 
     # Get the steam directory
-    $SteamDirectory = Read-Host "[CSM Update Script] Please enter your steam folder directory (not steamapps). For example, 'C:\Program Files\Steam\'" 
+    $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory. For example, for Windows, 'C:\Program Files\Steam\steamapps\common\Cities_Skylines' for Steam or 'C:\Program Files\Epic Games\CitiesSkylines' for Epic Games." 
 
     If ($IsMacOS)
     {
         # Full folder path
-        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities.App$($Sep)Contents$($Sep)Resources$($Sep)Data$($Sep)Managed$($Sep)"
+        $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities.App$($Sep)Contents$($Sep)Resources$($Sep)Data$($Sep)Managed$($Sep)"
     }
     Else
     {
         # Full folder path
-        $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)SteamApps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
-
-        # Try with lowercase SteamApps (linux)
-        if (!(Test-Path -Path $AssemblyDirectory))
-        {
-            $AssemblyDirectory = $SteamDirectory.TrimEnd($Sep) + "$($Sep)steamapps$($Sep)common$($Sep)Cities_Skylines$($Sep)Cities_Data$($Sep)Managed$($Sep)"
-        }
+        $AssemblyDirectory = $GameDirectory.TrimEnd($Sep) + "$($Sep)Cities_Data$($Sep)Managed$($Sep)"
     }
 
     # Test to see if the path is valid
@@ -151,6 +146,11 @@ If ($Build)
     }
 
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    If ($LastExitCode -ne 0)
+    {
+        Write-Host "[CSM Build Script] Build failed!"
+        exit $LastExitCode
+    }
     Write-Host "[CSM Build Script] Build Complete!"
 }
 

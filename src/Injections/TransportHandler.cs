@@ -1,10 +1,10 @@
 ﻿using CSM.Commands;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using CSM.Commands.Data.TransportLines;
 using CSM.Helpers;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -53,13 +53,13 @@ namespace CSM.Injections
             {
                 return;
             }
-            
+
             IgnoreHelper.EndIgnore("NewLine");
             ArrayHandler.StopCollecting();
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
 
-            ushort prefab = (ushort) Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
+            ushort prefab = (ushort)Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
             int building = tool.m_building;
 
             Command.SendToAll(new TransportLineCreateCommand()
@@ -122,7 +122,7 @@ namespace CSM.Injections
             ArrayHandler.StopCollecting();
 
             int building = ReflectionHelper.GetAttr<int>(tool, "m_building");
-            ushort prefab = (ushort) Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
+            ushort prefab = (ushort)Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
 
             Command.SendToAll(new TransportLineRemoveStopCommand()
             {
@@ -191,7 +191,7 @@ namespace CSM.Injections
             return ReflectionHelper.GetIteratorTargetMethod(typeof(TransportTool), "<AddStop>c__Iterator2", out Type _);
         }
     }
-    
+
     [HarmonyPatch]
     public class MoveStop
     {
@@ -242,7 +242,7 @@ namespace CSM.Injections
             return ReflectionHelper.GetIteratorTargetMethod(typeof(TransportTool), "<MoveStop>c__Iterator3", out Type _);
         }
     }
-    
+
     [HarmonyPatch]
     public class CancelPrevStop
     {
@@ -283,7 +283,7 @@ namespace CSM.Injections
             ArrayHandler.StopCollecting();
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
-            ushort prefab = (ushort) Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
+            ushort prefab = (ushort)Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
             int building = tool.m_building;
 
             Command.SendToAll(new TransportLineCancelPrevStopCommand()
@@ -341,7 +341,7 @@ namespace CSM.Injections
             ArrayHandler.StopCollecting();
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
-            ushort prefab = (ushort) Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
+            ushort prefab = (ushort)Mathf.Clamp(tool.m_prefab.m_prefabDataIndex, 0, 65535);
 
             Command.SendToAll(new TransportLineCancelMoveStopCommand()
             {
@@ -364,7 +364,7 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             Command.SendToAll(new TransportLineInitCommand());
         }
     }
@@ -377,16 +377,16 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             ArrayHandler.StartCollecting();
             IgnoreHelper.StartIgnore("ResetTool");
         }
-        
+
         public static void Postfix()
         {
             if (IgnoreHelper.IsIgnored("ResetTool"))
                 return;
-            
+
             IgnoreHelper.EndIgnore("ResetTool");
             ArrayHandler.StopCollecting();
 
@@ -396,7 +396,7 @@ namespace CSM.Injections
             });
         }
     }
-    
+
     [HarmonyPatch(typeof(TransportTool))]
     [HarmonyPatch("StartEditingBuildingLine")]
     public class StartEditingBuildingLine
@@ -409,7 +409,7 @@ namespace CSM.Injections
             ArrayHandler.StartCollecting();
             IgnoreHelper.StartIgnore("StartEditingBuildingLine");
         }
-        
+
         public static void Postfix(TransportInfo info, ushort buildingID)
         {
             if (IgnoreHelper.IsIgnored("StartEditingBuildingLine"))
@@ -421,7 +421,7 @@ namespace CSM.Injections
             Command.SendToAll(new TransportLineStartEditBuildingCommand()
             {
                 Array16Ids = ArrayHandler.Collected16,
-                Prefab = (ushort) Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
+                Prefab = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
                 Building = buildingID
             });
         }
@@ -451,12 +451,12 @@ namespace CSM.Injections
             __state.mode = ___m_mode;
             __state.errors = ___m_errors;
         }
-        
+
         public static void Postfix(TransportInfo ___m_prefab, Vector3 ___m_hitPosition, bool ___m_fixedPlatform, int ___m_hoverStopIndex, int ___m_hoverSegmentIndex, int ___m_mode, ToolBase.ToolErrors ___m_errors, ref DataStore __state)
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             TransportHandler.TrackSimulationStep = false;
 
             // Only send when values have changed
@@ -492,7 +492,7 @@ namespace CSM.Injections
             public ToolBase.ToolErrors errors;
         }
     }
-    
+
     [HarmonyPatch(typeof(TransportTool))]
     [HarmonyPatch("EnsureTempLine")]
     public class EnsureTempLine
@@ -500,7 +500,7 @@ namespace CSM.Injections
         public static void Prefix(ushort ___m_tempLine, ushort ___m_lastEditLine, int ___m_lastMoveIndex, int ___m_lastAddIndex, Vector3 ___m_lastAddPos, out DataStore __state)
         {
             __state = new DataStore();
-            
+
             if (IgnoreHelper.IsIgnored() || !TransportHandler.TrackSimulationStep)
                 return;
 
@@ -535,14 +535,14 @@ namespace CSM.Injections
                 {
                     return;
                 }
-                
+
                 __state.addPLast = addPos;
                 __state.moveLast = moveIndex;
                 __state.addLast = addIndex;
-                
+
                 Command.SendToAll(new TransportLineTempCommand()
                 {
-                    InfoIndex = (ushort) Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
+                    InfoIndex = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
                     SourceLine = sourceLine,
                     MoveIndex = moveIndex,
                     AddIndex = addIndex,
@@ -557,7 +557,7 @@ namespace CSM.Injections
         {
             public int moveLast, addLast;
             public Vector3 addPLast;
-        
+
             public ushort tempLine, editLine;
             public int move, add;
             public Vector3 addP;
@@ -576,7 +576,7 @@ namespace CSM.Injections
             TransportHandler.DidUpdateLinesNow = true;
         }
     }
-    
+
     [HarmonyPatch(typeof(TransportLine))]
     [HarmonyPatch("UpdatePaths")]
     public class UpdatePaths
@@ -601,17 +601,17 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             ArrayHandler.StartCollecting();
         }
-        
+
         public static void Postfix(ushort lineID)
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             ArrayHandler.StopCollecting();
-            
+
             Command.SendToAll(new TransportLineReleaseCommand()
             {
                 Array16Ids = ArrayHandler.Collected16,
@@ -627,17 +627,17 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             ArrayHandler.StartCollecting();
         }
-        
+
         public static void Postfix(ushort lineID, int index, Vector3 newPos, bool fixedPlatform)
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             ArrayHandler.StopCollecting();
-            
+
             Command.SendToAll(new TransportLineMoveStopManCommand()
             {
                 Array16Ids = ArrayHandler.Collected16,
@@ -647,7 +647,7 @@ namespace CSM.Injections
                 FixedPlatform = fixedPlatform
             });
         }
-        
+
         public static MethodBase TargetMethod()
         {
             return typeof(TransportLine).GetMethod("MoveStop", AccessTools.all, null, new Type[] { typeof(ushort), typeof(int), typeof(Vector3), typeof(bool), typeof(Vector3).MakeByRefType() }, new ParameterModifier[] { });
@@ -662,10 +662,10 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             ushort lineId = ReflectionHelper.Call<ushort>(__instance, "GetLineID");
 
-            if ((ushort) value == TransportManager.instance.m_lines.m_buffer[lineId].m_budget)
+            if ((ushort)value == TransportManager.instance.m_lines.m_buffer[lineId].m_budget)
                 return;
 
             Command.SendToAll(new TransportLineChangeSliderCommand()
@@ -676,7 +676,7 @@ namespace CSM.Injections
             });
         }
     }
-    
+
     [HarmonyPatch(typeof(PublicTransportWorldInfoPanel))]
     [HarmonyPatch("OnTicketPriceChanged")]
     public class ChangeTicketPrice
@@ -687,10 +687,10 @@ namespace CSM.Injections
                 return;
 
             ushort lineId = ReflectionHelper.Call<ushort>(__instance, "GetLineID");
-            
-            if ((ushort) value == TransportManager.instance.m_lines.m_buffer[lineId].m_ticketPrice)
+
+            if ((ushort)value == TransportManager.instance.m_lines.m_buffer[lineId].m_ticketPrice)
                 return;
-            
+
             Command.SendToAll(new TransportLineChangeSliderCommand()
             {
                 LineId = lineId,
@@ -699,7 +699,7 @@ namespace CSM.Injections
             });
         }
     }
-    
+
     [HarmonyPatch(typeof(TransportManager))]
     [HarmonyPatch("SetLineColor")]
     public class SetLineColor
@@ -727,11 +727,11 @@ namespace CSM.Injections
 
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            foreach (Type t in new Type[] {typeof(PublicTransportLineInfo), typeof(PublicTransportWorldInfoPanel)})
+            foreach (Type t in new Type[] { typeof(PublicTransportLineInfo), typeof(PublicTransportWorldInfoPanel) })
             {
-                foreach (string method in new string[] {"SetDayOnly", "SetNightOnly", "SetAllDay"})
+                foreach (string method in new string[] { "SetDayOnly", "SetNightOnly", "SetAllDay" })
                 {
-                    yield return t.GetMethod(method, ReflectionHelper.AllAccessFlags, null, new Type[] {typeof(ushort)}, null);
+                    yield return t.GetMethod(method, ReflectionHelper.AllAccessFlags, null, new Type[] { typeof(ushort) }, null);
                 }
             }
         }
@@ -764,12 +764,12 @@ namespace CSM.Injections
     public class ReplaceVehicles
     {
         public static VehicleInfo randomGen = null;
-        
+
         public static void Prefix()
         {
             randomGen = null;
         }
-        
+
         public static void Postfix(ushort lineID, VehicleInfo info)
         {
             if (IgnoreHelper.IsIgnored())
@@ -786,7 +786,7 @@ namespace CSM.Injections
             Command.SendToAll(new TransportLineChangeVehicleCommand()
             {
                 LineId = lineID,
-                Vehicle = (uint) info.m_prefabDataIndex
+                Vehicle = (uint)info.m_prefabDataIndex
             });
         }
     }

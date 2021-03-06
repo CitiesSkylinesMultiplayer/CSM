@@ -17,19 +17,19 @@ namespace CSM.Commands.Data.TransportLines
         /// </summary>
         [ProtoMember(1)]
         public ushort[] Array16Ids { get; set; }
-        
+
         /// <summary>
         ///     The modified line.
         /// </summary>
         [ProtoMember(2)]
         public ushort Line { get; set; }
-        
+
         /// <summary>
         ///     The new position of the stop.
         /// </summary>
         [ProtoMember(3)]
         public Vector3 NewPos { get; set; }
-        
+
         /// <summary>
         ///     If the stop has a fixed platform.
         /// </summary>

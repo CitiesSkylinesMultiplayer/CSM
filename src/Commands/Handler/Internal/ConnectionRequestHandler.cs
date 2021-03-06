@@ -1,21 +1,19 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using ColossalFramework.Threading;
-using ColossalFramework.UI;
-using CSM.Commands.Data.Internal;
+﻿using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Status;
-using CSM.Panels;
+using CSM.Util;
 using LiteNetLib;
-using NLog;
+using System;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        public static Player WorldLoadingPlayer = null;
 
         public ConnectionRequestHandler()
         {
@@ -29,15 +27,22 @@ namespace CSM.Commands.Handler.Internal
 
         public void HandleOnServer(ConnectionRequestCommand command, NetPeer peer)
         {
-            _logger.Info("Received connection request.");
+            Log.Info("Received connection request.");
+
+            string joiningVersion = command.GameVersion;
+            string appVersion = BuildConfig.applicationVersion;
+
+            MatchVersionString(ref joiningVersion);
+            MatchVersionString(ref appVersion);
+
             // Check to see if the game versions match
-            if (command.GameVersion != BuildConfig.applicationVersion)
+            if (joiningVersion != appVersion)
             {
-                _logger.Info($"Connection rejected: Game versions {command.GameVersion} (client) and {BuildConfig.applicationVersion} (server) differ.");
+                Log.Info($"Connection rejected: Game versions {joiningVersion} (client) and {appVersion} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
-                    Reason = $"Client and server have different game versions. Client: {command.GameVersion}, Server: {BuildConfig.applicationVersion}."
+                    Reason = $"Client and server have different game versions. Client: {joiningVersion}, Server: {appVersion}."
                 });
                 return;
             }
@@ -48,7 +53,7 @@ namespace CSM.Commands.Handler.Internal
 
             if (command.ModVersion != versionString)
             {
-                _logger.Info($"Connection rejected: Mod versions {command.ModVersion} (client) and {versionString} (server) differ.");
+                Log.Info($"Connection rejected: Mod versions {command.ModVersion} (client) and {versionString} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
@@ -61,7 +66,7 @@ namespace CSM.Commands.Handler.Internal
             bool hasExistingPlayer = MultiplayerManager.Instance.PlayerList.Contains(command.Username);
             if (hasExistingPlayer)
             {
-                _logger.Info($"Connection rejected: Username {command.Username} already in use.");
+                Log.Info($"Connection rejected: Username {command.Username} already in use.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
@@ -75,7 +80,7 @@ namespace CSM.Commands.Handler.Internal
             {
                 if (command.Password != MultiplayerManager.Instance.CurrentServer.Config.Password)
                 {
-                    _logger.Warn("Connection rejected: Invalid password provided!");
+                    Log.Warn("Connection rejected: Invalid password provided!");
                     Command.SendToClient(peer, new ConnectionResultCommand
                     {
                         Success = false,
@@ -89,7 +94,7 @@ namespace CSM.Commands.Handler.Internal
             // Check both client have the same DLCs enabled
             if (!command.DLCBitMask.Equals(dlcMask))
             {
-                _logger.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
+                Log.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
                 Command.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
@@ -103,7 +108,8 @@ namespace CSM.Commands.Handler.Internal
             bool clientJoining = false;
             foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
             {
-                if (p.Status != ClientStatus.Connected) {
+                if (p.Status != ClientStatus.Connected)
+                {
                     clientJoining = true;
                 }
             }
@@ -121,7 +127,7 @@ namespace CSM.Commands.Handler.Internal
             // Add the new player as a connected player
             Player newPlayer = new Player(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
-            
+
             // Send the result command
             Command.SendToClient(peer, new ConnectionResultCommand
             {
@@ -138,38 +144,45 @@ namespace CSM.Commands.Handler.Internal
         {
             newPlayer.Status = ClientStatus.Downloading;
 
-            // Open status window
-            ThreadHelper.dispatcher.Dispatch(() =>
-            {
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("MPClientJoinPanel");
-                if (clientJoinPanel != null)
-                {
-                    clientJoinPanel.isVisible = true;
-                    clientJoinPanel.StartCheck();
-                }
-                else
-                {
-                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
-                }
-                clientJoinPanel.Focus();
-            });
+            MultiplayerManager.Instance.BlockGame(newPlayer.Username);
 
             // Inform other clients about the joining client
             Command.SendToOtherClients(new ClientJoiningCommand
             {
-                JoiningFinished = false
+                JoiningFinished = false,
+                JoiningUsername = newPlayer.Username
             }, newPlayer);
-            MultiplayerManager.Instance.GameBlocked = true;
-            SimulationManager.instance.SimulationPaused = true;
 
-            // Get a serialized version of the server world to send to the player.
-            SaveHelpers.SaveServerLevel();
+            WorldLoadingPlayer = newPlayer;
+
+            // If the game is already paused, continue with the load process.
+            // Otherwise we wait until the pause negotiation is done.
+            // Note that a joining (+syncing) player is not considered during this process, but already force paused at this point.
+            // See SpeedPauseHelper::StateReached()
+            if (SimulationManager.instance.SimulationPaused && SpeedPauseHelper.IsStable())
+            {
+                AllGamesBlocked();
+            }
+        }
+
+        public static void AllGamesBlocked()
+        {
+            Player newPlayer = WorldLoadingPlayer;
+            WorldLoadingPlayer = null;
 
             new Thread(() =>
             {
-                while (SaveHelpers.IsSaving())
+                // Wait to get all remaining packets processed, because unprocessed packets
+                // before saving may end in an desynced game for the joining client
+                Thread.Sleep(2000);
+
+                // Create game save in the main thread
+                AsyncAction action = SimulationManager.instance.AddAction(SaveHelpers.SaveServerLevel);
+
+                // Wait until the save action is queued and the game is saved
+                while (!action.completed || SaveHelpers.IsSaving())
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(10);
                 }
 
                 Command.SendToClient(newPlayer, new WorldTransferCommand
@@ -179,6 +192,27 @@ namespace CSM.Commands.Handler.Internal
 
                 newPlayer.Status = ClientStatus.Loading;
             }).Start();
+        }
+
+        /**
+         * Version format:
+         * x.y.z-tb(-e12)
+         *
+         * x.y.z is the version number
+         * t is the release type (proto, alpha, beta, f)
+         * b is the build number
+         * and e12 is hardcoded for epic (not set on steam)
+         *
+         * Since epic and steam differ beginning at z, we
+         * now only check for x.y to be equal.
+         */
+        private static void MatchVersionString(ref string version)
+        {
+            Match match = Regex.Match(version, @"^(\d+\.\d+)\.\d+-\w+(?:-\w+)?$");
+            if (match.Success && match.Groups.Count > 1)
+            {
+                version = match.Groups[1].Value;
+            }
         }
     }
 }

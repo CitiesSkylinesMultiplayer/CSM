@@ -1,16 +1,15 @@
-﻿using CSM.Commands.Handler;
+﻿using CSM.Commands.Data.Internal;
+using CSM.Commands.Handler;
+using CSM.Commands.Handler.Internal;
 using CSM.Networking;
+using CSM.Util;
 using LiteNetLib;
 using System.IO;
-using CSM.Commands.Data.Internal;
-using CSM.Commands.Handler.Internal;
 
 namespace CSM.Commands
 {
     public static class CommandReceiver
     {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
         /// <summary>
         ///     This method is used to parse an incoming message on the client
         ///     and execute the appropriate actions.
@@ -37,7 +36,7 @@ namespace CSM.Commands
             // Make sure we know about the connected client on the server
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server && !MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.ContainsKey(peer.Id))
             {
-                _logger.Warn("Client tried to send packet but never joined with a ConnectionRequestCommand. Ignoring...");
+                Log.Warn("Client tried to send packet but never joined with a ConnectionRequestCommand. Ignoring...");
                 return false;
             }
 
@@ -62,12 +61,12 @@ namespace CSM.Commands
         {
             cmd = Deserialize(reader.GetRemainingBytes());
 
-            _logger.Debug($"Received {cmd.GetType().Name}");
+            Log.Debug($"Received {cmd.GetType().Name}");
 
             handler = Command.GetCommandHandler(cmd.GetType());
             if (handler == null)
             {
-                _logger.Error($"Command {cmd.GetType().Name} not found!");
+                Log.Error($"Command {cmd.GetType().Name} not found!");
                 return;
             }
         }

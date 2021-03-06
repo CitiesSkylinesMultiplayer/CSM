@@ -8,7 +8,7 @@ namespace CSM.Commands.Data.Internal
     /// Sent by:
     /// - ConnectionRequestHandler
     [ProtoContract]
-    class WorldTransferCommand : CommandBase
+    public class WorldTransferCommand : CommandBase
     {
         /// <summary>
         ///     The serialized save game.

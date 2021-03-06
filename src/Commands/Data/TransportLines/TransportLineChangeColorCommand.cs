@@ -16,7 +16,7 @@ namespace CSM.Commands.Data.TransportLines
         /// </summary>
         [ProtoMember(1)]
         public ushort LineId { get; set; }
-        
+
         /// <summary>
         ///     The new color of the line.
         /// </summary>

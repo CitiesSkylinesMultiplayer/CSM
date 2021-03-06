@@ -1,4 +1,3 @@
-using ColossalFramework;
 using ColossalFramework.UI;
 using CSM.Commands.Data.TransportLines;
 using CSM.Helpers;
@@ -13,9 +12,9 @@ namespace CSM.Commands.Handler.TransportLines
 
             TransportLine[] lines = TransportManager.instance.m_lines.m_buffer;
             if (command.IsTicketPrice)
-                lines[command.LineId].m_ticketPrice = (ushort) command.Value;
+                lines[command.LineId].m_ticketPrice = (ushort)command.Value;
             else
-                lines[command.LineId].m_budget = (ushort) command.Value;
+                lines[command.LineId].m_budget = (ushort)command.Value;
 
             // Update info panel if open:
             PublicTransportWorldInfoPanel panel = UIView.library.Get<PublicTransportWorldInfoPanel>(typeof(PublicTransportWorldInfoPanel).Name);
@@ -32,7 +31,7 @@ namespace CSM.Commands.Handler.TransportLines
                     });
                 }
             }
-            
+
             IgnoreHelper.EndIgnore();
         }
     }

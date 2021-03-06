@@ -1,7 +1,7 @@
 ﻿using ColossalFramework.UI;
 using CSM.Commands.Data.Names;
 using CSM.Helpers;
-using NLog;
+using CSM.Util;
 
 namespace CSM.Commands.Handler.Names
 {
@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler.Names
         protected override void Handle(ChangeCityNameCommand command)
         {
             IgnoreHelper.StartIgnore();
-            
+
             // Update name internally
             CityInfoPanel.instance.SetCityName(command.Name).MoveNext();
 
@@ -21,9 +21,13 @@ namespace CSM.Commands.Handler.Names
 
             // Update name in bottom bar
             if (Panel != null)
+            {
                 ReflectionHelper.Call(Panel, "SetName");
+            }
             else
-                LogManager.GetCurrentClassLogger().Warn("Bottom bar city name not found. Can't update name!");
+            {
+                Log.Warn("Bottom bar city name not found. Can't update name!");
+            }                
 
             IgnoreHelper.EndIgnore();
         }

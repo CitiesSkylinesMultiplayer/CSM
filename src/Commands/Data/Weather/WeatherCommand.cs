@@ -8,9 +8,8 @@ namespace CSM.Commands.Data.Weather
     /// Sent by:
     /// - WeatherHandler
     [ProtoContract]
-    class WeatherCommand : CommandBase
+    public class WeatherCommand : CommandBase
     {
-
         /// <summary>
         ///     The current cloud
         /// </summary>
@@ -36,13 +35,13 @@ namespace CSM.Commands.Data.Weather
         public float TargetFog { get; set; }
 
         /// <summary>
-        ///     The current nothern lights 
+        ///     The current nothern lights
         /// </summary>
         [ProtoMember(5)]
         public float CurrentNothernLights { get; set; }
 
         /// <summary>
-        ///     The target nothern lights 
+        ///     The target nothern lights
         /// </summary>
         [ProtoMember(6)]
         public float TargetNothernLights { get; set; }

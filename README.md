@@ -1,7 +1,7 @@
 # CSM - Cities: Skylines Multiplayer
 
 [![Discord](https://img.shields.io/discord/508902220943851522.svg)](https://discord.gg/RjACPhd)
-[![Build status](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_apis/build/status/CSM%20-%20Build%20Process)](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build/latest?definitionId=4)
+[![Build status](https://github.com/CitiesSkylinesMultiplayer/CSM/workflows/CI/badge.svg)](https://github.com/CitiesSkylinesMultiplayer/CSM/actions)
 [![Steam File Size](https://img.shields.io/steam/size/1558438291.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291)
 
 ## Quick Links
@@ -23,12 +23,22 @@ This mod and its source code is licensed under the MIT license.
 
 ## Download & Install
 
-The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). You can also download the latest development builds by following the instructions below.
- 
-1. Navigate to the latest build on Azure Devops [here](https://dev.azure.com/dominicmaas/CSM%20-%20Build%20Process/_build/latest?definitionId=4).
-2. Click on the `Artifacts` button (top right) and download the zip folder.
-3. Extract the folder and either run the install script, or copy all the *.dll files to `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`.
-4. Open Cities: Skylines and enable the mod.
+The easiest way to install this mod is from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1558438291). Remember to enable it in the content manager.
+
+To install the mod for other platforms than Steam, follow the instructions below:
+
+1. Download the [latest release from Github](https://github.com/DominicMaas/Tango/releases/latest)
+2. Extract the folder and either run the install script, or copy all the *.dll files to the mod directory:
+  - Windows: `%LOCALAPPDATA%\Colossal Order\Cities_Skylines\Addons\Mods\CSM`
+  - Mac OSX: `~/Library/Application Support/Colossal Order/Cities_Skylines/Addons/Mods/CSM`
+  - Linux: `~/.local/share/Colossal Order/Cities_Skylines/Addons/Mods/CSM`
+3. Open Cities: Skylines and enable the mod in the content manager
+
+You can also download the latest development builds by following the instructions below:
+
+1. Navigate to the list of CI builds [here](https://github.com/CitiesSkylinesMultiplayer/CSM/actions?query=workflow%3ACI)
+2. Click on the latest build with a green checkmark
+3. Under the `Artifacts` heading, click on `CSM [Version]`
 
 If you want to build the mod yourself, follow the developer instructions in the wiki located [here](https://github.com/DominicMaas/Tango/wiki/Developer-Resources).
 
@@ -36,8 +46,7 @@ If you want to build the mod yourself, follow the developer instructions in the 
 
 1. Create a new game or open an existing game (if using an existing game, make a backup!)
 2. Click the `Multiplayer` button on the top-left of your screen.
-3. Click `Host Game`.
-4. Update any of the fields to your liking, click `Create Server`.
+3. Update any of the fields to your liking, click `Create Server`.
 
 ## Usage (Clients)
 

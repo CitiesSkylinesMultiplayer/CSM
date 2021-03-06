@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using CSM.Commands;
 using CSM.Commands.Data.Buildings;
 using CSM.Helpers;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace CSM.Injections
@@ -46,7 +46,7 @@ namespace CSM.Injections
 
             ArrayHandler.StopCollecting();
             IgnoreHelper.EndIgnore();
-            
+
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
             ToolController controller = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
 
@@ -213,7 +213,7 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             bool isEmptying = (data.m_flags & Building.Flags.Downgrading) != Building.Flags.None;
             if (isEmptying == emptying)
                 return;
@@ -228,7 +228,7 @@ namespace CSM.Injections
 
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            foreach (Type t in new Type[] {typeof(CemeteryAI), typeof(LandfillSiteAI), typeof(ShelterAI), typeof(SnowDumpAI), typeof(WarehouseAI), typeof(TransportStationAI)})
+            foreach (Type t in new Type[] { typeof(CemeteryAI), typeof(LandfillSiteAI), typeof(ShelterAI), typeof(SnowDumpAI), typeof(WarehouseAI), typeof(TransportStationAI) })
             {
                 yield return t.GetMethod("SetEmptying");
             }
@@ -243,7 +243,7 @@ namespace CSM.Injections
         {
             if (IgnoreHelper.IsIgnored())
                 return;
-            
+
             bool isFilling = (data.m_flags & Building.Flags.Filling) != Building.Flags.None;
             if (isFilling == filling)
                 return;
@@ -292,7 +292,7 @@ namespace CSM.Injections
             ArrayHandler.StartCollecting();
             IgnoreHelper.StartIgnore();
         }
-        
+
         public static void Postfix(object __instance, ref bool __state)
         {
             if (!__state)
@@ -302,7 +302,7 @@ namespace CSM.Injections
             ArrayHandler.StopCollecting();
 
             ushort building = ReflectionHelper.GetAttr<ushort>(__instance, "buildingID");
-            
+
             Command.SendToAll(new BuildingRebuildCommand()
             {
                 Building = building,
@@ -340,7 +340,7 @@ namespace CSM.Injections
             ArrayHandler.StartCollecting();
             IgnoreHelper.StartIgnore();
         }
-        
+
         public static void Postfix(ushort buildingID, ref bool __state)
         {
             if (!__state)
@@ -348,7 +348,7 @@ namespace CSM.Injections
 
             IgnoreHelper.EndIgnore();
             ArrayHandler.StopCollecting();
-            
+
             Command.SendToAll(new BuildingUpgradeCommand()
             {
                 Array16Ids = ArrayHandler.Collected16,
@@ -367,10 +367,10 @@ namespace CSM.Injections
             if (IgnoreHelper.IsIgnored())
                 return;
 
-            if (__instance.m_storageType != TransferManager.TransferReason.None || 
+            if (__instance.m_storageType != TransferManager.TransferReason.None ||
                 __instance.GetTransferReason(buildingID, ref data) == material)
                 return;
-            
+
             Command.SendToAll(new BuildingSetTransferReasonCommand()
             {
                 Building = buildingID,

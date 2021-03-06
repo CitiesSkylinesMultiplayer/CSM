@@ -8,14 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using CSM.Util;
 
 namespace CSM.Commands
 {
     public class Command
     {
         private static readonly Dictionary<Type, CommandHandler> _cmdMapping = new Dictionary<Type, CommandHandler>();
-
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static TypeModel Model { get; private set; }
 
@@ -180,7 +179,7 @@ namespace CSM.Commands
                   .ToArray();
 
                 // Create a protobuf model
-                RuntimeTypeModel model = TypeModel.Create();
+                RuntimeTypeModel model = RuntimeTypeModel.Create();
 
                 // Set type surrogates
                 model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
@@ -219,7 +218,7 @@ namespace CSM.Commands
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Failed to initialize data model");
+                Log.Error("Failed to initialize data model", ex);
             }
         }
     }

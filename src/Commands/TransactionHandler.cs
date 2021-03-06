@@ -1,10 +1,9 @@
-﻿using System;
-using CSM.Commands.Data;
+﻿using CSM.Commands.Data.Internal;
 using CSM.Commands.Handler;
-using CSM.Helpers;
-using System.Collections.Generic;
-using CSM.Commands.Data.Internal;
 using CSM.Container;
+using CSM.Util;
+using System;
+using System.Collections.Generic;
 
 namespace CSM.Commands
 {
@@ -83,7 +82,7 @@ namespace CSM.Commands
                 }
                 catch (Exception ex)
                 {
-                    NLog.LogManager.GetCurrentClassLogger().Error(ex, $"Exception while parsing {transaction.Var2.GetType().Name}");
+                    Log.Error($"Exception while parsing {transaction.Var2.GetType().Name}", ex);
                 }
             }
 

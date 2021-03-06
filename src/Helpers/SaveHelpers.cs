@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Packaging;
 using ColossalFramework.UI;
+using CSM.Util;
 using System.IO;
 
 namespace CSM.Helpers
@@ -11,8 +12,6 @@ namespace CSM.Helpers
     public static class SaveHelpers
     {
         private const string SYNC_NAME = "CSM_SyncSave";
-
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Save a level to the local save folder where it can then be sent to all clients.
@@ -56,7 +55,7 @@ namespace CSM.Helpers
         /// </summary>
         public static void LoadLevel(byte[] world)
         {
-            _logger.Info($"Preparing to load world (of size {world.Length})...");
+            Log.Info($"Preparing to load world (of size {world.Length})...");
 
             // Load the package
             Package package = new Package(SYNC_NAME, world);
@@ -78,7 +77,7 @@ namespace CSM.Helpers
             };
 
             // Load the level
-            _logger.Info("Telling the loading manager to load the level");
+            Log.Info("Telling the loading manager to load the level");
             Singleton<LoadingManager>.instance.LoadLevel(metaData.assetRef, "Game", "InGame", simulation, false);
         }
     }

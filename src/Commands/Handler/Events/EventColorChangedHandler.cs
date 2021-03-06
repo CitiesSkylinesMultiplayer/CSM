@@ -1,8 +1,7 @@
-using System;
-using System.CodeDom;
 using ColossalFramework.UI;
 using CSM.Commands.Data.Events;
 using CSM.Helpers;
+using System;
 
 namespace CSM.Commands.Handler.Events
 {
@@ -45,7 +44,7 @@ namespace CSM.Commands.Handler.Events
                 {
                     SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                     {
-                        ((FootballPanel) panel).teamColor = command.Color;
+                        ((FootballPanel)panel).teamColor = command.Color;
                     });
                 }
             }

@@ -21,9 +21,9 @@ namespace CSM.Commands.Data.Buildings
         /// </summary>
         [ProtoMember(2)]
         public bool Value { get; set; }
-        
+
         /// <summary>
-        ///     True if SetEmptying was called, false when SetFilling was called. 
+        ///     True if SetEmptying was called, false when SetFilling was called.
         /// </summary>
         [ProtoMember(3)]
         public bool SetEmptying { get; set; }

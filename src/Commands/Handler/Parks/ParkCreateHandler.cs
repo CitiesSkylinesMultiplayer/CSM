@@ -1,7 +1,7 @@
 ﻿using CSM.Commands.Data.Parks;
 using CSM.Helpers;
 using CSM.Panels;
-using NLog;
+using CSM.Util;
 
 namespace CSM.Commands.Handler.Parks
 {
@@ -14,7 +14,7 @@ namespace CSM.Commands.Handler.Parks
 
             if (park != command.ParkId)
             {
-                LogManager.GetCurrentClassLogger().Log(LogLevel.Error, $"Park array no longer in sync! Generated {park} instead of {command.ParkId}");
+                Log.Error($"Park array no longer in sync! Generated {park} instead of {command.ParkId}");
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Park array no longer in sync! Please restart the multiplayer session!");
             }
 

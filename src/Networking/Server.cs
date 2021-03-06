@@ -1,15 +1,17 @@
 ﻿using CSM.Commands;
+using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Panels;
+using CSM.Util;
 using LiteNetLib;
 using Open.Nat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using CSM.Helpers;
 
 namespace CSM.Networking
 {
@@ -20,13 +22,14 @@ namespace CSM.Networking
     {
         // The server
         private LiteNetLib.NetManager _netServer;
-
-        // Class logger
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
+        
         // Connected clients
         public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
 
+        /// <summary>
+        ///     Get the Player object of the server host
+        /// </summary>
+        public Player HostPlayer { get { return _hostPlayer; } }
         // The player instance for the host player
         private Player _hostPlayer;
 
@@ -67,16 +70,15 @@ namespace CSM.Networking
             Config = serverConfig;
 
             // Let the user know that we are trying to start the server
-            _logger.Info($"Attempting to start server on port {Config.Port}...");
+            Log.Info($"Attempting to start server on port {Config.Port}...");
 
             // Attempt to start the server
-            _netServer.DiscoveryEnabled = true;
             bool result = _netServer.Start(Config.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
             {
-                _logger.Error("The server failed to start.");
+                Log.Error("The server failed to start.");
                 StopServer(); // Make sure the server is fully stopped
                 return false;
             }
@@ -93,7 +95,7 @@ namespace CSM.Networking
             }
             catch (Exception e)
             {
-                _logger.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
+                Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
             }
 
@@ -112,7 +114,7 @@ namespace CSM.Networking
             }
 
             // Update the console to let the user know the server is running
-            _logger.Info("The server has started.");
+            Log.Info("The server has started.");
             ChatLogPanel.PrintGameMessage("The server has started.");
 
             return true;
@@ -137,7 +139,7 @@ namespace CSM.Networking
                 SteamHelpers.SetRichPresence("connect", null);
             }
 
-            _logger.Info("Server stopped.");
+            Log.Info("Server stopped.");
         }
 
         /// <summary>
@@ -151,7 +153,7 @@ namespace CSM.Networking
 
             _netServer.SendToAll(message.Serialize(), DeliveryMethod.ReliableOrdered);
 
-            _logger.Debug($"Sending {message.GetType().Name} to all clients");
+            Log.Debug($"Sending {message.GetType().Name} to all clients");
         }
 
         /// <summary>
@@ -164,7 +166,7 @@ namespace CSM.Networking
 
             peer.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
 
-            _logger.Debug($"Sending {message.GetType().Name} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
+            Log.Debug($"Sending {message.GetType().Name} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
         }
 
         /// <summary>
@@ -209,7 +211,7 @@ namespace CSM.Networking
             catch (Exception ex)
             {
                 ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Error while parsing command. See log.");
-                _logger.Error(ex, $"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:");
+                Log.Error($"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:", ex);
             }
         }
 
@@ -226,7 +228,7 @@ namespace CSM.Networking
             if (!ConnectedPlayers.TryGetValue(peer.Id, out Player player))
                 return;
 
-            _logger.Info($"Player {player.Username} lost connection! Reason: {disconnectInfo.Reason}");
+            Log.Info($"Player {player.Username} lost connection! Reason: {disconnectInfo.Reason}");
 
             switch (disconnectInfo.Reason)
             {
@@ -253,7 +255,7 @@ namespace CSM.Networking
 
         public void HandlePlayerConnect(Player player)
         {
-            _logger.Info($"Player {player.Username} has connected!");
+            Log.Info($"Player {player.Username} has connected!");
             ChatLogPanel.PrintGameMessage($"Player {player.Username} has connected!");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
             Command.HandleClientConnect(player);
@@ -274,7 +276,18 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
-            _logger.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+            Log.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+        }
+
+        /// <summary>
+        ///     Get the Player object by username. Warning, expensive call!!!
+        /// </summary>
+        public Player GetPlayerByUsername(string username)
+        {
+            if (username == HostPlayer.Username)
+                return HostPlayer;
+            else
+                return ConnectedPlayers.Single(z => z.Value.Username == username).Value;
         }
     }
 }

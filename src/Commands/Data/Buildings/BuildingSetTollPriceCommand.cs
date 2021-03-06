@@ -1,7 +1,7 @@
 using ProtoBuf;
 
 namespace CSM.Commands.Data.Buildings
-{ 
+{
     /// <summary>
     ///     Called when the price of a toll station was changed.
     /// </summary>

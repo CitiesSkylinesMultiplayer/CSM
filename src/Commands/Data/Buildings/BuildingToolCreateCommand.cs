@@ -16,13 +16,13 @@ namespace CSM.Commands.Data.Buildings
         /// </summary>
         [ProtoMember(1)]
         public ushort[] Array16Ids { get; set; }
-        
+
         /// <summary>
         ///     The list of generated Array32 ids collected by the ArrayHandler.
         /// </summary>
         [ProtoMember(2)]
         public uint[] Array32Ids { get; set; }
-        
+
         /// <summary>
         ///     The info index of the building's prefab.
         /// </summary>
@@ -34,31 +34,31 @@ namespace CSM.Commands.Data.Buildings
         /// </summary>
         [ProtoMember(4)]
         public int Relocate { get; set; }
-        
+
         /// <summary>
         ///     The colliding segments array of the ToolController.
         /// </summary>
         [ProtoMember(5)]
         public ulong[] CollidingSegments { get; set; }
-        
+
         /// <summary>
         ///     The colliding buildings array of the ToolController.
         /// </summary>
         [ProtoMember(6)]
         public ulong[] CollidingBuildings { get; set; }
-        
+
         /// <summary>
         ///     The position to create the building on.
         /// </summary>
         [ProtoMember(7)]
         public Vector3 MousePosition { get; set; }
-        
+
         /// <summary>
         ///     The angle to create the building on.
         /// </summary>
         [ProtoMember(8)]
         public float MouseAngle { get; set; }
-        
+
         /// <summary>
         ///     The elevation to create the building on.
         /// </summary>
