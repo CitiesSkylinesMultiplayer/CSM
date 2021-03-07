@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Util;
@@ -130,8 +131,11 @@ namespace CSM.Panels
 
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
+            DateTime date = new DateTime(2021, 03, 06);
+            string dateStr = date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: 27.02.2021\n\n" +
+                             $"Last Update: {dateStr}\n\n" +
                              "- UI Changes:\n" +
                              "  - The Chirper is now used as the chat\n" +
                              "    (The old chat can still be enabled in the settings)\n" +
