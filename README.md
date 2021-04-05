@@ -45,8 +45,9 @@ If you want to build the mod yourself, follow the developer instructions in the 
 ## Usage (Server)
 
 1. Create a new game or open an existing game (if using an existing game, make a backup!)
-2. Click the `Multiplayer` button on the top-left of your screen.
-3. Update any of the fields to your liking, click `Create Server`.
+2. Open the "Pause Menu" (using the ESC key)
+3. Click the `Multiplayer` button on the top of the menu.
+4. Update any of the fields to your liking, click `Create Server`.
 
 ## Usage (Clients)
 
