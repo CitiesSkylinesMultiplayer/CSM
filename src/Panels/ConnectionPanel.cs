@@ -24,11 +24,8 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Grab the view for calculating width and height of game
-            UIView view = UIView.GetAView();
-
             // Center this window in the game
-            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 100.0f);
+            relativePosition = new Vector3(Screen.width / 2.0f - 180.0f, Screen.height / 2.0f - 100.0f);
 
             width = 360;
             height = 320;

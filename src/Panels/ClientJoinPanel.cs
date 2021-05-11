@@ -25,19 +25,16 @@ namespace CSM.Panels
             name = "ClientJoinPanel";
             color = new Color32(110, 110, 110, 220);
 
-            // Grab the view for calculating width and height of game
-            UIView view = UIView.GetAView();
-
             relativePosition = new Vector3(0, 0);
 
-            width = view.fixedWidth;
-            height = view.fixedHeight;
+            width = Screen.width;
+            height = Screen.height;
 
             // Connecting Status
             _statusLabel = this.CreateTitleLabel("", new Vector2(0, 0));
 
             // Canel button only while first join
-            _cancelButton = this.CreateButton("Cancel", new Vector2((width / 2f) - 170f, -(height / 2f) - 60f));
+            _cancelButton = this.CreateButton("Cancel", new Vector2((Screen.width / 2f) - 170f, -(Screen.height / 2f) - 60f));
             _cancelButton.eventClick += OnCancelButtonClick;
             _cancelButton.isVisible = false;
         }
