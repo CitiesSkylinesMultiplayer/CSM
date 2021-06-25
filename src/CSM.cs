@@ -1,4 +1,5 @@
 ﻿using CSM.Injections;
+using CSM.Mods;
 using CSM.Panels;
 using CSM.Util;
 using HarmonyLib;
@@ -11,6 +12,7 @@ namespace CSM
     public class CSM : ICities.IUserMod
     {
         private Harmony _harmony;
+        private ModSupport modSupport;
 
         public static Settings Settings;
 
@@ -31,6 +33,12 @@ namespace CSM
                 _harmony = new Harmony("com.citiesskylinesmultiplayer");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 Log.Info("Successfully patched Cities: Skylines!");
+
+
+                Log.Info("Testing mod support!");
+                // Starting to test out code.
+                modSupport = new ModSupport();
+                modSupport.initModSupport();
             }
             catch (Exception ex)
             {

@@ -274,6 +274,7 @@
     <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\ControlPointSurrogate.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
+    <Compile Include="Mods\ModSupport.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
     <Compile Include="Networking\Config\ConfigData.cs" />
