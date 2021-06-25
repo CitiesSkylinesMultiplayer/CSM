@@ -150,6 +150,7 @@
     <Compile Include="Commands\Data\Weather\WeatherCommand.cs" />
     <Compile Include="Commands\Data\Zones\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\Data\Zones\ZoneUpdateCommand.cs" />
+    <Compile Include="Commands\Handler\API\ExternalModsApiHandler.cs" />
     <Compile Include="Commands\Handler\Areas\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingChangeProductionRateHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingCreateHandler.cs" />

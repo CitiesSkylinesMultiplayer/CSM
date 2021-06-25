@@ -1,8 +1,4 @@
 ﻿using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CSM.Commands.Data.API
 {
@@ -11,7 +7,7 @@ namespace CSM.Commands.Data.API
     /// </summary>
     /// Sent by:
     /// - ModSupport
-    class ExternalAPICommand : CommandBase
+    public class ExternalAPICommand : CommandBase
     {
         /// <summary>
         ///     The name of the mod.

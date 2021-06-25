@@ -1,17 +1,17 @@
 ﻿using CSM.API;
+using CSM.Commands;
 using CSM.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using CSM.Commands.Data.API;
 
 namespace CSM.Mods
 {
 
     class ModSupport
     {
-
         private List<ITest> _tests;
 
         public void initModSupport()
@@ -22,6 +22,7 @@ namespace CSM.Mods
             foreach (var handler in _tests)
             {
                 Log.Info(handler.Handle());
+                handler.ConnectToCSM(TransmitCommandToAllClients);
             }
         }
 
@@ -154,11 +155,21 @@ namespace CSM.Mods
             }
         }
 
-        public void ModCommandRecieved()
+        public static void SendCommandToLocalMod(ExternalAPICommand command)
         {
-
+            Log.Info(command.Name);
+            Log.Info(command.Data.ToString());
         }
 
+        public bool TransmitCommandToAllClients(string name, byte[] data)
+        {
+            Command.SendToAll(new ExternalAPICommand
+            {
+                Name = name,
+                Data = data
+            });
+            return true;
+        }
     }
 
 }
