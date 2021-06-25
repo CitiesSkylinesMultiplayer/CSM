@@ -5,12 +5,12 @@ namespace SampleExternalMod
 {
     public class SampleUserMod : IUserMod
     {
-        public String Name
+        public string Name
         {
             get { return "Sample External Mod"; }
         }
 
-        public String Description
+        public string Description
         {
             get { return "Adds Nothing"; }
         }

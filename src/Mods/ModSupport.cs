@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CSM.Commands.Data.API;
+using CSM.API.Commands;
 
 namespace CSM.Mods
 {
@@ -21,8 +21,10 @@ namespace CSM.Mods
             Log.Info("Printing out all Handlers tests!");
             foreach (var handler in _tests)
             {
-                Log.Info(handler.Value.Handle(null));
-                handler.Value.ConnectToCSM(TransmitCommandToAllClients);
+                if (handler.Value.ConnectToCSM(TransmitCommandToAllClients))
+                    Log.Info("Function passed to mod: " + handler.Value.name);
+                else
+                    Log.Warn("Failed to pass function to mod: " + handler.Value.name);
 
             }
         }
@@ -156,21 +158,9 @@ namespace CSM.Mods
             }
         }
 
-        public static void SendCommandToLocalMod(ExternalAPICommand command)
+        public bool TransmitCommandToAllClients(CommandBase command)
         {
-            Log.Info(command.Name);
-            Log.Info(command.Data.ToString());
-
-            _tests[command.Name].Handle(command.Data);
-        }
-
-        public bool TransmitCommandToAllClients(string name, byte[] data)
-        {
-            Command.SendToAll(new ExternalAPICommand
-            {
-                Name = name,
-                Data = data
-            });
+            Command.SendToAll(command);
             return true;
         }
     }

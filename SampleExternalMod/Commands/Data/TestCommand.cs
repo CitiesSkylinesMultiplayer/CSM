@@ -1,6 +1,7 @@
 ﻿using ProtoBuf;
+using CSM.API.Commands;
 
-namespace CSM.API.Commands.Data
+namespace SampleExternalMod.Commands
 {
     /// <summary>
     ///     This command is called when a player buys a new area.
@@ -10,8 +11,6 @@ namespace CSM.API.Commands.Data
     [ProtoContract]
     public class TestCommand : CommandBase
     {
-        [ProtoMember(1)] public int X { get; set; }
-
-        [ProtoMember(2)] public int Z { get; set; }
+        [ProtoMember(1)] public string testing { get; set; }
     }
 }

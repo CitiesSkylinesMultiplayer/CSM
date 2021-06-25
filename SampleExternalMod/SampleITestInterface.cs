@@ -1,20 +1,23 @@
 ﻿using System;
 using CSM.API;
+using CSM.API.Commands;
+using SampleExternalMod.Commands;
 
 namespace SampleExternalMod
 {
     class SampleITestInterface : ITest
     {
-        private Func<string, byte[],bool> sendCommand;
+        private Func<CommandBase, bool> sendCommand;
         public Guid HandlerID => new Guid();
 
         public string name => "Sample Mod";
 
-        public bool ConnectToCSM(Func<string, byte[], bool> function)
+        public bool ConnectToCSM(Func<CommandBase, bool> function)
         {
             sendCommand = function;
-            byte[] data = new byte[] { 0, 0, 1, 1 };
-            transmitUpdate(data);
+            TestCommand testCommand = new TestCommand();
+            testCommand.testing = "this is a test" ;
+            transmitCommand(testCommand);
             return true;
         }
 
@@ -24,9 +27,9 @@ namespace SampleExternalMod
             return test;
         }
 
-        public void transmitUpdate(byte[] someUpdate)
+        public void transmitCommand(CommandBase testCommand)
         {
-            sendCommand("SamepleMod",someUpdate);
+            sendCommand(testCommand);
         }
     }
 }
