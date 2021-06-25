@@ -13,8 +13,6 @@ namespace CSM.Mods
 
         public void initModSupport()
         {
-            FindHandlersInLoadedAssemblies();
-
             Log.Info(" ------------- Testing mod support!");
             RegisterHandlers();
         }
@@ -48,6 +46,11 @@ namespace CSM.Mods
             Log.Info(" ------------------------------------------ Testing mod support!");
             IEnumerable<Type> handlers = FindHandlersInLoadedAssemblies();
             //RegisterHandlers(handlers);
+
+            foreach (var handler in handlers)
+            {
+                Log.Info(handler.FullName);
+            }
         }
 
 
@@ -59,12 +62,8 @@ namespace CSM.Mods
             Log.Info(" ------------------------------------------------------------------------ Testing mod support!");
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            Log.Info("Printing out all the assemblies!");
             foreach (var assembly in assemblies)
             {
-                Log.Info(assembly.FullName);
-                Log.Info("-----");
-
                 var handlers = FetchHandlers(assembly);
                 foreach (var handler in handlers)
                 {
