@@ -7,7 +7,7 @@ namespace SampleExternalMod.Commands
     ///     This command is called when a player buys a new area.
     /// </summary>
     /// Sent by:
-    /// - AreaExtension
+    /// - 
     [ProtoContract]
     public class TestCommand : CommandBase
     {

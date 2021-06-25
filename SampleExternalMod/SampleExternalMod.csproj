@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Commands\Data\TestCommand.cs" />
     <Compile Include="Commands\Handlers\TestHandler.cs" />
+    <Compile Include="CSMConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleUserMod.cs" />
   </ItemGroup>
