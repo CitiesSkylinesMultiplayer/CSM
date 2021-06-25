@@ -16,7 +16,7 @@ namespace SampleExternalMod
             return true;
         }
 
-        public string Handle()
+        public string Handle(byte[] data)
         {
             string test = "This is a sample Mod";
             return test;

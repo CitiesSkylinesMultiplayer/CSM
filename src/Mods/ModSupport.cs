@@ -12,7 +12,7 @@ namespace CSM.Mods
 
     class ModSupport
     {
-        private List<ITest> _tests;
+        private static Dictionary<string,ITest> _tests;
 
         public void initModSupport()
         {
@@ -21,8 +21,9 @@ namespace CSM.Mods
             Log.Info("Printing out all Handlers tests!");
             foreach (var handler in _tests)
             {
-                Log.Info(handler.Handle());
-                handler.ConnectToCSM(TransmitCommandToAllClients);
+                Log.Info(handler.Value.Handle(null));
+                handler.Value.ConnectToCSM(TransmitCommandToAllClients);
+
             }
         }
 
@@ -110,7 +111,7 @@ namespace CSM.Mods
 
             if (_tests == null)
             {
-                _tests = new List<ITest>();
+                _tests = new Dictionary<string, ITest>();
             }
 
             foreach (var handler in handlers)
@@ -135,7 +136,7 @@ namespace CSM.Mods
                     }
 
                     // Duplicates handlers seem to pass the check above, so now we filter them based on their identifier values, which should work.
-                    exists = _tests.Any(obj => obj.HandlerID == handlerInstance.HandlerID);
+                    exists = _tests.Any(obj => obj.Value.HandlerID == handlerInstance.HandlerID);
                 }
                 catch (Exception ex)
                 {
@@ -149,7 +150,7 @@ namespace CSM.Mods
                 }
                 else
                 {
-                    _tests.Add(handlerInstance);
+                    _tests.Add(handlerInstance.name, handlerInstance);
                     Log.Info(String.Format("Added Request Handler: {0}", handler.FullName));
                 }
             }
@@ -159,6 +160,8 @@ namespace CSM.Mods
         {
             Log.Info(command.Name);
             Log.Info(command.Data.ToString());
+
+            _tests[command.Name].Handle(command.Data);
         }
 
         public bool TransmitCommandToAllClients(string name, byte[] data)

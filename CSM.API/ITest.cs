@@ -13,10 +13,12 @@ namespace CSM.API
         /// </summary>
         Guid HandlerID { get; }
 
+        string name { get; }
+
         /// <summary>
         /// Handles the specified request.  The method should not close the stream.
         /// </summary>
-        String Handle();
+        String Handle(byte[] data);
 
         
 
