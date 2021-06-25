@@ -5,7 +5,7 @@ using System.Text;
 namespace CSM.API
 {
 
-    interface ITest
+    public interface ITest
     {
 
         /// <summary>
