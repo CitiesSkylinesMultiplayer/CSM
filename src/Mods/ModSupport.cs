@@ -1,178 +1,70 @@
-﻿using CSM.API;
-using CSM.Commands;
-using CSM.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using CSM.Commands.Data.API;
+using CSM.API.Commands;
+using CSM.API.Networking;
+using CSM.Helpers;
+using LiteNetLib;
 
 namespace CSM.Mods
 {
-
     class ModSupport
     {
-        private static Dictionary<string,ITest> _tests;
-
         public void initModSupport()
         {
             RegisterHandlers();
-
-            Log.Info("Printing out all Handlers tests!");
-            foreach (var handler in _tests)
-            {
-                Log.Info(handler.Value.Handle(null));
-                handler.Value.ConnectToCSM(TransmitCommandToAllClients);
-
-            }
         }
 
-        // Not required, but prevents a number of spurious entries from making it to the log file.
-        private static readonly List<String> IgnoredAssemblies = new List<String>
-        {
-            "Anonymously Hosted DynamicMethods Assembly",
-            "Assembly-CSharp",
-            "Assembly-CSharp-firstpass",
-            "Assembly-UnityScript-firstpass",
-            "Boo.Lang",
-            "ColossalManaged",
-            "ICSharpCode.SharpZipLib",
-            "ICities",
-            "Mono.Security",
-            "mscorlib",
-            "System",
-            "System.Configuration",
-            "System.Core",
-            "System.Xml",
-            "UnityEngine",
-            "UnityEngine.UI",
-        };
-
-        /// <summary>
-        /// Searches all the assemblies in the current AppDomain for class definitions that implement the <see cref="IRequestHandler"/> interface.  Those classes are instantiated and registered as request handlers.
-        /// </summary>
         private void RegisterHandlers()
         {
-            IEnumerable<Type> handlers = FindHandlersInLoadedAssemblies();
-            RegisterHandlers(handlers);
-        }
-
-
-        /// <summary>
-        /// Searches all the assemblies in the current AppDomain, and returns a collection of those that implement the <see cref="IRequestHandler"/> interface.
-        /// </summary>
-        private IEnumerable<Type> FindHandlersInLoadedAssemblies()
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
-            {
-                var handlers = FetchHandlers(assembly);
-                foreach (var handler in handlers)
-                {
-                    yield return handler;
-                }
-            }
-        }
-
-        private IEnumerable<Type> FetchHandlers(Assembly assembly)
-        {
-            var assemblyName = assembly.GetName().Name;
-
-            // Skip any assemblies that we don't anticipate finding anything in.
-            if (IgnoredAssemblies.Contains(assemblyName)) { yield break; }
-
-            Type[] types = new Type[0];
-            try
-            {
-                types = assembly.GetTypes();
-            }
-            catch { }
-
-            foreach (var type in types)
-            {
-                Boolean isValid = false;
-                try
-                {
-                    isValid = typeof(ITest).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract;
-                }
-                catch { }
-
-                if (isValid)
-                {
-                    yield return type;
-                }
-            }
-        }
-
-        private void RegisterHandlers(IEnumerable<Type> handlers)
-        {
-            if (handlers == null) { return; }
-
-            if (_tests == null)
-            {
-                _tests = new Dictionary<string, ITest>();
-            }
+            IEnumerable<Type> handlers = CommandReflectionHelper.FindClassesByType(typeof(Connection));
 
             foreach (var handler in handlers)
             {
-                // Only register handlers that we don't already have an instance of.
-                if (_tests.Any(h => h.GetType() == handler))
-                {
-                    continue;
-                }
-
-                ITest handlerInstance = null;
-                Boolean exists = false;
-
-                try
-                {
-                    handlerInstance = (ITest)Activator.CreateInstance(handler);
-                    
-                    if (handlerInstance == null)
-                    {
-                        Log.Info(String.Format("Request Handler ({0}) could not be instantiated!", handler.Name));
-                        continue;
-                    }
-
-                    // Duplicates handlers seem to pass the check above, so now we filter them based on their identifier values, which should work.
-                    exists = _tests.Any(obj => obj.Value.HandlerID == handlerInstance.HandlerID);
-                }
-                catch (Exception ex)
-                {
-                    Log.Info(ex.ToString());
-                }
-
-                if (exists)
-                {
-                    // TODO: Allow duplicate registrations to occur; previous registration is removed and replaced with a new one?
-                    Log.Info(String.Format("Supressing duplicate handler registration for '{0}'", handler.Name));
-                }
-                else
-                {
-                    _tests.Add(handlerInstance.name, handlerInstance);
-                    Log.Info(String.Format("Added Request Handler: {0}", handler.FullName));
-                }
+                Connection connectionInstance = (Connection) Activator.CreateInstance(handler);
+                connectionInstance.ConnectToCSM(SendToClient, SendToClient2, SendToClients, SendToOtherClients,
+                    SendToServer, SendToAll);
             }
         }
 
-        public static void SendCommandToLocalMod(ExternalAPICommand command)
+        public bool SendToClient(NetPeer peer, CommandBase command)
         {
-            Log.Info(command.Name);
-            Log.Info(command.Data.ToString());
+            // Command.sendToClient(peer, command);
 
-            _tests[command.Name].Handle(command.Data);
+            return true;
         }
 
-        public bool TransmitCommandToAllClients(string name, byte[] data)
+        public bool SendToClient2(Player player, CommandBase command)
         {
-            Command.SendToAll(new ExternalAPICommand
-            {
-                Name = name,
-                Data = data
-            });
+            // Command.sendToClient(player, command);
+            return true;
+        }
+
+        public bool SendToClients(CommandBase command)
+        {
+            // Command.sendToClients(command);
+
+            return true;
+        }
+
+        public bool SendToOtherClients(CommandBase command, Player exclude)
+        {
+            // Command.sendToOtherClients(command, exclude);
+
+            return true;
+        }
+
+        public bool SendToServer(CommandBase command)
+        {
+            // Command.sendToServer(command);
+
+            return true;
+        }
+
+        public bool SendToAll(CommandBase command)
+        {
+            // Command.sendToAll(command);
+
             return true;
         }
     }
-
 }
