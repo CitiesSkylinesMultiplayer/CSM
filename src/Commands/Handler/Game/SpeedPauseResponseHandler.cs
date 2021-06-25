@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Game;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Game;
 using CSM.Helpers;
 
 namespace CSM.Commands.Handler.Game

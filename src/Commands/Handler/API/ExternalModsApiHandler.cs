@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.API;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.API;
 using CSM.Helpers;
 using CSM.Mods;
 

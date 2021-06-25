@@ -1,3 +1,4 @@
+using CSM.API.Commands;
 using CSM.Commands.Data.Economy;
 
 namespace CSM.Commands.Handler.Economy

@@ -1,6 +1,6 @@
-﻿using CSM.Commands.Data.Internal;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Internal;
 using CSM.Networking;
-using CSM.Networking.Status;
 using CSM.Panels;
 using UnityEngine;
 

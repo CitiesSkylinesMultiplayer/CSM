@@ -1,7 +1,6 @@
 ﻿using CSM.Commands;
 using CSM.Helpers;
 using CSM.Networking.Config;
-using CSM.Networking.Status;
 using CSM.Panels;
 using CSM.Util;
 using LiteNetLib;
@@ -12,6 +11,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using CSM.API.Commands;
+using CSM.API.Networking;
+using CSM.API.Networking.Status;
 
 namespace CSM.Networking
 {
@@ -138,7 +140,7 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            _netServer.SendToAll(message.Serialize(), DeliveryMethod.ReliableOrdered);
+            _netServer.SendToAll(Serializer.Serialize(message), DeliveryMethod.ReliableOrdered);
 
             Log.Debug($"Sending {message.GetType().Name} to all clients");
         }
@@ -151,7 +153,7 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            peer.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
+            peer.Send(Serializer.Serialize(message), DeliveryMethod.ReliableOrdered);
 
             Log.Debug($"Sending {message.GetType().Name} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
         }

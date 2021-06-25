@@ -4,7 +4,6 @@ using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking.Config;
-using CSM.Networking.Status;
 using CSM.Panels;
 using CSM.Util;
 using LiteNetLib;
@@ -14,6 +13,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using CSM.API.Commands;
+using CSM.API.Networking;
+using CSM.API.Networking.Status;
 
 namespace CSM.Networking
 {
@@ -205,7 +207,7 @@ namespace CSM.Networking
 
             Log.Debug($"Sending {message.GetType().Name} to server");
 
-            server.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
+            server.Send(Serializer.Serialize(message), DeliveryMethod.ReliableOrdered);
         }
 
         /// <summary>

@@ -1,12 +1,14 @@
-﻿using CSM.Commands.Handler;
-using CSM.Models;
+﻿using CSM.Models;
 using CSM.Networking;
-using CSM.Networking.Status;
+using CSM.API.Networking.Status;
 using LiteNetLib;
 using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSM.API.Commands;
+using CSM.API.Networking;
+using CSM.Helpers;
 using UnityEngine;
 using CSM.Util;
 
@@ -170,13 +172,7 @@ namespace CSM.Commands
         {
             try
             {
-                // Get all CommandHandler subclasses in the CSM.Commands.Handler namespace
-                Type[] handlers = typeof(Command).Assembly.GetTypes()
-                  .Where(t => t.Namespace != null)
-                  .Where(t => t.Namespace.StartsWith("CSM.Commands.Handler", StringComparison.Ordinal))
-                  .Where(t => t.IsSubclassOf(typeof(CommandHandler)))
-                  .Where(t => !t.IsAbstract)
-                  .ToArray();
+                Type[] handlers = CommandReflectionHelper.FindClassesByType(typeof(CommandHandler)).ToArray();
 
                 // Create a protobuf model
                 RuntimeTypeModel model = RuntimeTypeModel.Create();

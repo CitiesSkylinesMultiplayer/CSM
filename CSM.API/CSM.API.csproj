@@ -43,7 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="ITest.cs" />
+    <Compile Include="Networking\Player.cs" />
+    <Compile Include="Networking\Status\ClientStatus.cs" />
+    <Compile Include="Networking\Status\ServerStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">

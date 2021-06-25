@@ -1,3 +1,4 @@
+using CSM.API.Commands;
 using CSM.Commands.Data.Events;
 using CSM.Helpers;
 

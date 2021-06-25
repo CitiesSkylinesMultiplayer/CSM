@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Net;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Net;
 using CSM.Helpers;
 using CSM.Injections;
 

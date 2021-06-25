@@ -1,3 +1,4 @@
+using CSM.API.Commands;
 using ProtoBuf;
 
 namespace CSM.Commands.Data.Economy

@@ -4,9 +4,8 @@ using CSM.Networking.Config;
 using CSM.Panels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using CSM.Networking.Status;
+using CSM.API.Networking.Status;
 
 namespace CSM.Networking
 {
@@ -47,7 +46,7 @@ namespace CSM.Networking
                     break;
 
                 case MultiplayerRole.None:
-                    if (CurrentClient.Status == Status.ClientStatus.Connecting)
+                    if (CurrentClient.Status == ClientStatus.Connecting)
                     {
                         CurrentClient.ProcessEvents();
                     }

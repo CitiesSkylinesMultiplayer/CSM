@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using CSM.API.Commands;
+using ProtoBuf;
 using UnityEngine;
 
 namespace CSM.Commands.Data.Buildings

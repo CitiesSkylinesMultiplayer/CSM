@@ -2,12 +2,12 @@
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Networking;
-using CSM.Networking.Status;
 using CSM.Panels;
 using CSM.Injections;
 using ICities;
 using System;
 using System.Reflection;
+using CSM.API.Networking.Status;
 using CSM.Commands.Handler.Game;
 using CSM.Helpers;
 using Object = UnityEngine.Object;

@@ -1,7 +1,7 @@
-﻿using CSM.Networking.Status;
+﻿using CSM.API.Networking.Status;
 using LiteNetLib;
 
-namespace CSM.Networking
+namespace CSM.API.Networking
 {
     public class Player
     {

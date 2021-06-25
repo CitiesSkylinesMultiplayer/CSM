@@ -1,4 +1,5 @@
-﻿namespace CSM.Networking.Status
+﻿
+namespace CSM.API.Networking.Status
 {
     /// <summary>
     ///     Different client connection states

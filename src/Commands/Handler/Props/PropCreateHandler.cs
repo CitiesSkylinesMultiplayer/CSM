@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Props;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Props;
 using CSM.Helpers;
 using CSM.Injections;
 

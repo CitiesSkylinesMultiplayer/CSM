@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Weather;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Weather;
 using CSM.Helpers;
 using CSM.Networking;
 

@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Buildings;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Buildings;
 using CSM.Helpers;
 
 namespace CSM.Commands.Handler.Buildings

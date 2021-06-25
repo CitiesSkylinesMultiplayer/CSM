@@ -5,6 +5,7 @@ using CSM.Networking;
 using CSM.Util;
 using LiteNetLib;
 using System.IO;
+using CSM.API.Commands;
 
 namespace CSM.Commands
 {

@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using ColossalFramework;
+using CSM.API.Networking.Status;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -120,7 +121,7 @@ namespace CSM.Panels
                             PrintGameMessage("Requesting the save game from the server");
 
                             MultiplayerManager.Instance.CurrentClient.Status =
-                                Networking.Status.ClientStatus.Downloading;
+                                ClientStatus.Downloading;
                             MultiplayerManager.Instance.BlockGameReSync();
 
                             Command.SendToServer(new RequestWorldTransferCommand());

@@ -1,7 +1,6 @@
 ﻿using ProtoBuf;
-using System.IO;
 
-namespace CSM.Commands
+namespace CSM.API.Commands
 {
     /// <summary>
     ///     A base protobuf command that all other commands in this mod should
@@ -18,22 +17,5 @@ namespace CSM.Commands
         /// </summary>
         [ProtoMember(1)]
         public int SenderId { get; set; }
-
-        /// <summary>
-        ///     Serializes the command into a byte array for sending over the network.
-        /// </summary>
-        /// <returns>A byte array containing the message.</returns>
-        public byte[] Serialize()
-        {
-            byte[] result;
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                Command.Model.Serialize(stream, this);
-                result = stream.ToArray();
-            }
-
-            return result;
-        }
     }
 }

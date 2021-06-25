@@ -1,7 +1,7 @@
-﻿using CSM.Networking;
-using System;
+﻿using System;
+using CSM.API.Networking;
 
-namespace CSM.Commands.Handler
+namespace CSM.API.Commands
 {
     public abstract class CommandHandler
     {
@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler
         public abstract Type GetDataType();
 
         public abstract void Parse(CommandBase message);
-
+        
         public virtual void OnClientConnect(Player player)
         {
         }
@@ -39,7 +39,7 @@ namespace CSM.Commands.Handler
 
         public override void Parse(CommandBase command)
         {
-            Handle((C)command);
+            Handle((C) command);
         }
     }
 }

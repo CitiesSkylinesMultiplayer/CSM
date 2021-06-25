@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Terrain;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Terrain;
 using CSM.Helpers;
 
 namespace CSM.Commands.Handler.Terrain

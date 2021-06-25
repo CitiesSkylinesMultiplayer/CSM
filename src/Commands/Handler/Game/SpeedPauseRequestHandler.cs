@@ -1,7 +1,7 @@
-﻿using CSM.Commands.Data.Game;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Game;
 using CSM.Helpers;
 using CSM.Networking;
-using CSM.Networking.Status;
 
 namespace CSM.Commands.Handler.Game
 {

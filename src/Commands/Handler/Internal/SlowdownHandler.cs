@@ -1,4 +1,5 @@
-﻿using CSM.Commands.Data.Internal;
+﻿using CSM.API.Commands;
+using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 
 namespace CSM.Commands.Handler.Internal

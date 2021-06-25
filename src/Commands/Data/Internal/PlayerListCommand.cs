@@ -1,5 +1,6 @@
 ﻿using ProtoBuf;
 using System.Collections.Generic;
+using CSM.API.Commands;
 
 namespace CSM.Commands.Data.Internal
 {
