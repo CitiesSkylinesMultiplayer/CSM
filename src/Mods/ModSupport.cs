@@ -1,19 +1,14 @@
-﻿using CSM.API;
-using CSM.Commands;
-using CSM.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using CSM.API.Commands;
+using CSM.API.Networking;
+using CSM.Helpers;
+using LiteNetLib;
 
 namespace CSM.Mods
 {
-
     class ModSupport
     {
-        private static Dictionary<string,ITest> _tests;
-
         public void initModSupport()
         {
             RegisterHandlers();
@@ -21,59 +16,21 @@ namespace CSM.Mods
             Log.Info("Printing out all Handlers tests!");
             foreach (var handler in _tests)
             {
-                if (handler.Value.ConnectToCSM(TransmitCommandToAllClients))
-                    Log.Info("Function passed to mod: " + handler.Value.name);
-                else
-                    Log.Warn("Failed to pass function to mod: " + handler.Value.name);
+                Log.Info(handler.Value.Handle(null));
+                handler.Value.ConnectToCSM(TransmitCommandToAllClients);
 
             }
         }
 
-        // Not required, but prevents a number of spurious entries from making it to the log file.
-        private static readonly List<String> IgnoredAssemblies = new List<String>
-        {
-            "Anonymously Hosted DynamicMethods Assembly",
-            "Assembly-CSharp",
-            "Assembly-CSharp-firstpass",
-            "Assembly-UnityScript-firstpass",
-            "Boo.Lang",
-            "ColossalManaged",
-            "ICSharpCode.SharpZipLib",
-            "ICities",
-            "Mono.Security",
-            "mscorlib",
-            "System",
-            "System.Configuration",
-            "System.Core",
-            "System.Xml",
-            "UnityEngine",
-            "UnityEngine.UI",
-        };
-
-        /// <summary>
-        /// Searches all the assemblies in the current AppDomain for class definitions that implement the <see cref="IRequestHandler"/> interface.  Those classes are instantiated and registered as request handlers.
-        /// </summary>
         private void RegisterHandlers()
         {
-            IEnumerable<Type> handlers = FindHandlersInLoadedAssemblies();
-            RegisterHandlers(handlers);
-        }
+            IEnumerable<Type> handlers = CommandReflectionHelper.FindClassesByType(typeof(Connection));
 
-
-        /// <summary>
-        /// Searches all the assemblies in the current AppDomain, and returns a collection of those that implement the <see cref="IRequestHandler"/> interface.
-        /// </summary>
-        private IEnumerable<Type> FindHandlersInLoadedAssemblies()
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
+            foreach (var handler in handlers)
             {
-                var handlers = FetchHandlers(assembly);
-                foreach (var handler in handlers)
-                {
-                    yield return handler;
-                }
+                Connection connectionInstance = (Connection) Activator.CreateInstance(handler);
+                connectionInstance.ConnectToCSM(SendToClient, SendToClient2, SendToClients, SendToOtherClients,
+                    SendToServer, SendToAll);
             }
         }
 
@@ -161,8 +118,18 @@ namespace CSM.Mods
         public bool TransmitCommandToAllClients(CommandBase command)
         {
             Command.SendToAll(command);
+
+            _tests[command.Name].Handle(command.Data);
+        }
+
+        public bool TransmitCommandToAllClients(string name, byte[] data)
+        {
+            Command.SendToAll(new ExternalAPICommand
+            {
+                Name = name,
+                Data = data
+            });
             return true;
         }
     }
-
 }

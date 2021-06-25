@@ -11,7 +11,7 @@ namespace CSM.Commands.Handler.API
         protected override void Handle(ExternalAPICommand command)
         {
             IgnoreHelper.StartIgnore();
-            ModSupport.SendCommandToLocalMod(command);
+            // ModSupport.SendCommandToLocalMod(command);
             
             IgnoreHelper.EndIgnore();
         }
