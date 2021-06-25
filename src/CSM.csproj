@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandReceiver.cs" />
+    <Compile Include="Commands\Data\API\ExternalModsAPICommand.cs" />
     <Compile Include="Commands\Data\Areas\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingChangeProductionRateCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingCreateCommand.cs" />

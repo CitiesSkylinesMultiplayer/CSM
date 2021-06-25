@@ -18,7 +18,6 @@ namespace CSM.Mods
         {
             RegisterHandlers();
 
-
             Log.Info("Printing out all Handlers tests!");
             foreach (var handler in _tests)
             {
@@ -153,6 +152,11 @@ namespace CSM.Mods
                     Log.Info(String.Format("Added Request Handler: {0}", handler.FullName));
                 }
             }
+        }
+
+        public void ModCommandRecieved()
+        {
+
         }
 
     }
