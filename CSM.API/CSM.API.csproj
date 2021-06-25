@@ -7,8 +7,8 @@
     <ProjectGuid>{AB27EACD-B9A9-42BC-BF8A-3B25AABFF6CA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSM</RootNamespace>
-    <AssemblyName>CSM</AssemblyName>
+    <RootNamespace>CSM.API</RootNamespace>
+    <AssemblyName>CSM.API</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
