@@ -9,6 +9,11 @@ namespace CSM.API
     {
 
         /// <summary>
+        /// Gets a unique identifier for this handler.  Only one handler can be loaded with a given identifier.
+        /// </summary>
+        Guid HandlerID { get; }
+
+        /// <summary>
         /// Handles the specified request.  The method should not close the stream.
         /// </summary>
         String Handle();
