@@ -1,4 +1,5 @@
-﻿using CSM.Util;
+﻿using CSM.API;
+using CSM.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,18 @@ namespace CSM.Mods
     class ModSupport
     {
 
+        private List<ITest> _tests;
+
         public void initModSupport()
         {
-            Log.Info(" ------------- Testing mod support!");
             RegisterHandlers();
+
+
+            Log.Info("Printing out all Handlers tests!");
+            foreach (var handler in _tests)
+            {
+                Log.Info(handler.Handle());
+            }
         }
 
         // Not required, but prevents a number of spurious entries from making it to the log file.
@@ -43,14 +52,8 @@ namespace CSM.Mods
         /// </summary>
         private void RegisterHandlers()
         {
-            Log.Info(" ------------------------------------------ Testing mod support!");
             IEnumerable<Type> handlers = FindHandlersInLoadedAssemblies();
-            //RegisterHandlers(handlers);
-
-            foreach (var handler in handlers)
-            {
-                Log.Info(handler.FullName);
-            }
+            RegisterHandlers(handlers);
         }
 
 
@@ -59,7 +62,6 @@ namespace CSM.Mods
         /// </summary>
         private IEnumerable<Type> FindHandlersInLoadedAssemblies()
         {
-            Log.Info(" ------------------------------------------------------------------------ Testing mod support!");
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             foreach (var assembly in assemblies)
@@ -86,25 +88,70 @@ namespace CSM.Mods
             }
             catch { }
 
-            Log.Info("Printing out all the assemblies!");
             foreach (var type in types)
             {
-                //Boolean isValid = false;
-                //try
-                //{
-                //    isValid = typeof(IRequestHandler).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract;
-                //}
-                //catch { }
+                Boolean isValid = false;
+                try
+                {
+                    isValid = typeof(ITest).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract;
+                }
+                catch { }
 
-                //if (isValid)
-                //{
-                //    yield return type;
-                //}
+                if (isValid)
+                {
+                    yield return type;
+                }
+            }
+        }
 
-                Log.Info(" 1 - " + type.FullName);
-                Log.Info(" 2 - " + type.AssemblyQualifiedName);
-                Log.Info("-----");
-                yield return type;
+        private void RegisterHandlers(IEnumerable<Type> handlers)
+        {
+            if (handlers == null) { return; }
+
+            if (_tests == null)
+            {
+                _tests = new List<ITest>();
+            }
+
+            foreach (var handler in handlers)
+            {
+                // Only register handlers that we don't already have an instance of.
+                if (_tests.Any(h => h.GetType() == handler))
+                {
+                    continue;
+                }
+
+                ITest handlerInstance = null;
+                Boolean exists = false;
+
+                try
+                {
+                    handlerInstance = (ITest)Activator.CreateInstance(handler);
+                    
+                    if (handlerInstance == null)
+                    {
+                        Log.Info(String.Format("Request Handler ({0}) could not be instantiated!", handler.Name));
+                        continue;
+                    }
+
+                    // Duplicates handlers seem to pass the check above, so now we filter them based on their identifier values, which should work.
+                    exists = _tests.Any(obj => obj.HandlerID == handlerInstance.HandlerID);
+                }
+                catch (Exception ex)
+                {
+                    Log.Info(ex.ToString());
+                }
+
+                if (exists)
+                {
+                    // TODO: Allow duplicate registrations to occur; previous registration is removed and replaced with a new one?
+                    Log.Info(String.Format("Supressing duplicate handler registration for '{0}'", handler.Name));
+                }
+                else
+                {
+                    _tests.Add(handlerInstance);
+                    Log.Info(String.Format("Added Request Handler: {0}", handler.FullName));
+                }
             }
         }
 
