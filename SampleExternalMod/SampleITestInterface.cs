@@ -8,6 +8,8 @@ namespace SampleExternalMod
         private Func<string, byte[],bool> sendCommand;
         public Guid HandlerID => new Guid();
 
+        public string name => "Sample Mod";
+
         public bool ConnectToCSM(Func<string, byte[], bool> function)
         {
             sendCommand = function;
