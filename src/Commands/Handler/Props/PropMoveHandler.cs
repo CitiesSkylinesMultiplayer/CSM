@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Props
     {
         protected override void Handle(PropMoveCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             PropManager.instance.MoveProp(command.PropId, command.Position);
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

@@ -9,13 +9,13 @@ namespace CSM.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingUpgradeCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
             BuildingManager.instance.UpgradeBuilding(command.Building, false);
 
             ArrayHandler.StopApplying();
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

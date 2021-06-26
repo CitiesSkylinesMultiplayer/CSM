@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineChangeActiveCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             TransportManager.instance.m_lines.m_buffer[command.LineId].SetActive(command.Day, command.Night);
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

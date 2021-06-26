@@ -22,7 +22,7 @@ namespace CSM.Injections
     {
         public static void Prefix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -41,12 +41,12 @@ namespace CSM.Injections
             __state = true;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("NewLine");
+            IgnoreHelper.Instance.StartIgnore("NewLine");
         }
 
         public static void Postfix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored("NewLine"))
+            if (IgnoreHelper.Instance.IsIgnored("NewLine"))
                 return;
 
             if (!__state)
@@ -54,7 +54,7 @@ namespace CSM.Injections
                 return;
             }
 
-            IgnoreHelper.EndIgnore("NewLine");
+            IgnoreHelper.Instance.EndIgnore("NewLine");
             ArrayHandler.StopCollecting();
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -81,7 +81,7 @@ namespace CSM.Injections
     {
         public static void Prefix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -103,12 +103,12 @@ namespace CSM.Injections
             __state = true;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("RemoveStop");
+            IgnoreHelper.Instance.StartIgnore("RemoveStop");
         }
 
         public static void Postfix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored("RemoveStop"))
+            if (IgnoreHelper.Instance.IsIgnored("RemoveStop"))
                 return;
 
             if (!__state)
@@ -118,7 +118,7 @@ namespace CSM.Injections
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
 
-            IgnoreHelper.EndIgnore("RemoveStop");
+            IgnoreHelper.Instance.EndIgnore("RemoveStop");
             ArrayHandler.StopCollecting();
 
             int building = ReflectionHelper.GetAttr<int>(tool, "m_building");
@@ -143,7 +143,7 @@ namespace CSM.Injections
     {
         public static void Prefix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -164,12 +164,12 @@ namespace CSM.Injections
             __state = true;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("AddStop");
+            IgnoreHelper.Instance.StartIgnore("AddStop");
         }
 
         public static void Postfix(ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored("AddStop"))
+            if (IgnoreHelper.Instance.IsIgnored("AddStop"))
                 return;
 
             if (!__state)
@@ -177,7 +177,7 @@ namespace CSM.Injections
                 return;
             }
 
-            IgnoreHelper.EndIgnore("AddStop");
+            IgnoreHelper.Instance.EndIgnore("AddStop");
             ArrayHandler.StopCollecting();
 
             Command.SendToAll(new TransportLineAddStopCommand()
@@ -197,7 +197,7 @@ namespace CSM.Injections
     {
         public static void Prefix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -214,12 +214,12 @@ namespace CSM.Injections
             __state = true;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("MoveStop");
+            IgnoreHelper.Instance.StartIgnore("MoveStop");
         }
 
         public static void Postfix(ref bool __state, bool ___applyChanges)
         {
-            if (IgnoreHelper.IsIgnored("MoveStop"))
+            if (IgnoreHelper.Instance.IsIgnored("MoveStop"))
                 return;
 
             if (!__state)
@@ -227,7 +227,7 @@ namespace CSM.Injections
                 return;
             }
 
-            IgnoreHelper.EndIgnore("MoveStop");
+            IgnoreHelper.Instance.EndIgnore("MoveStop");
             ArrayHandler.StopCollecting();
 
             Command.SendToAll(new TransportLineMoveStopCommand()
@@ -248,7 +248,7 @@ namespace CSM.Injections
     {
         public static void Prefix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -266,12 +266,12 @@ namespace CSM.Injections
             __state = true;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("CancelPrevStop");
+            IgnoreHelper.Instance.StartIgnore("CancelPrevStop");
         }
 
         public static void Postfix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored("CancelPrevStop"))
+            if (IgnoreHelper.Instance.IsIgnored("CancelPrevStop"))
                 return;
 
             if (!__state)
@@ -279,7 +279,7 @@ namespace CSM.Injections
                 return;
             }
 
-            IgnoreHelper.EndIgnore("CancelPrevStop");
+            IgnoreHelper.Instance.EndIgnore("CancelPrevStop");
             ArrayHandler.StopCollecting();
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -305,7 +305,7 @@ namespace CSM.Injections
     {
         public static void Prefix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -324,12 +324,12 @@ namespace CSM.Injections
             __state = true;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("CancelMoveStop");
+            IgnoreHelper.Instance.StartIgnore("CancelMoveStop");
         }
 
         public static void Postfix(object __instance, ref bool __state)
         {
-            if (IgnoreHelper.IsIgnored("CancelMoveStop"))
+            if (IgnoreHelper.Instance.IsIgnored("CancelMoveStop"))
                 return;
 
             if (!__state)
@@ -337,7 +337,7 @@ namespace CSM.Injections
                 return;
             }
 
-            IgnoreHelper.EndIgnore("CancelMoveStop");
+            IgnoreHelper.Instance.EndIgnore("CancelMoveStop");
             ArrayHandler.StopCollecting();
 
             TransportTool tool = ReflectionHelper.GetAttr<TransportTool>(__instance, "$this");
@@ -362,7 +362,7 @@ namespace CSM.Injections
     {
         public static void Postfix()
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new TransportLineInitCommand());
@@ -375,19 +375,19 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("ResetTool");
+            IgnoreHelper.Instance.StartIgnore("ResetTool");
         }
 
         public static void Postfix()
         {
-            if (IgnoreHelper.IsIgnored("ResetTool"))
+            if (IgnoreHelper.Instance.IsIgnored("ResetTool"))
                 return;
 
-            IgnoreHelper.EndIgnore("ResetTool");
+            IgnoreHelper.Instance.EndIgnore("ResetTool");
             ArrayHandler.StopCollecting();
 
             Command.SendToAll(new TransportLineResetCommand()
@@ -403,19 +403,19 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("StartEditingBuildingLine");
+            IgnoreHelper.Instance.StartIgnore("StartEditingBuildingLine");
         }
 
         public static void Postfix(TransportInfo info, ushort buildingID)
         {
-            if (IgnoreHelper.IsIgnored("StartEditingBuildingLine"))
+            if (IgnoreHelper.Instance.IsIgnored("StartEditingBuildingLine"))
                 return;
 
-            IgnoreHelper.EndIgnore("StartEditingBuildingLine");
+            IgnoreHelper.Instance.EndIgnore("StartEditingBuildingLine");
             ArrayHandler.StopCollecting();
 
             Command.SendToAll(new TransportLineStartEditBuildingCommand()
@@ -435,7 +435,7 @@ namespace CSM.Injections
         {
             __state = new DataStore();
 
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportHandler.TrackSimulationStep = true;
@@ -454,7 +454,7 @@ namespace CSM.Injections
 
         public static void Postfix(TransportInfo ___m_prefab, Vector3 ___m_hitPosition, bool ___m_fixedPlatform, int ___m_hoverStopIndex, int ___m_hoverSegmentIndex, int ___m_mode, ToolBase.ToolErrors ___m_errors, ref DataStore __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             TransportHandler.TrackSimulationStep = false;
@@ -501,7 +501,7 @@ namespace CSM.Injections
         {
             __state = new DataStore();
 
-            if (IgnoreHelper.IsIgnored() || !TransportHandler.TrackSimulationStep)
+            if (IgnoreHelper.Instance.IsIgnored() || !TransportHandler.TrackSimulationStep)
                 return;
 
             __state.tempLine = ___m_tempLine;
@@ -511,15 +511,15 @@ namespace CSM.Injections
             __state.addP = ___m_lastAddPos;
 
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore("EnsureTempLine");
+            IgnoreHelper.Instance.StartIgnore("EnsureTempLine");
         }
 
         public static void Postfix(TransportInfo info, ushort sourceLine, int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform, ushort ___m_lastEditLine, ushort ___m_tempLine, ref DataStore __state)
         {
-            if (IgnoreHelper.IsIgnored("EnsureTempLine") || !TransportHandler.TrackSimulationStep)
+            if (IgnoreHelper.Instance.IsIgnored("EnsureTempLine") || !TransportHandler.TrackSimulationStep)
                 return;
 
-            IgnoreHelper.EndIgnore("EnsureTempLine");
+            IgnoreHelper.Instance.EndIgnore("EnsureTempLine");
             ArrayHandler.StopCollecting();
 
             // Make sure we send the command only when needed (Otherwise it would be really often!)
@@ -570,7 +570,7 @@ namespace CSM.Injections
     {
         public static void Postfix()
         {
-            if (IgnoreHelper.IsIgnored() || !TransportHandler.TrackSimulationStep)
+            if (IgnoreHelper.Instance.IsIgnored() || !TransportHandler.TrackSimulationStep)
                 return;
 
             TransportHandler.DidUpdateLinesNow = true;
@@ -583,7 +583,7 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort lineID)
         {
-            if (IgnoreHelper.IsIgnored() || !TransportHandler.TrackSimulationStep)
+            if (IgnoreHelper.Instance.IsIgnored() || !TransportHandler.TrackSimulationStep)
                 return;
 
             if (TransportHandler.TrackTempLine == lineID)
@@ -599,7 +599,7 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ArrayHandler.StartCollecting();
@@ -607,7 +607,7 @@ namespace CSM.Injections
 
         public static void Postfix(ushort lineID)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ArrayHandler.StopCollecting();
@@ -625,7 +625,7 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ArrayHandler.StartCollecting();
@@ -633,7 +633,7 @@ namespace CSM.Injections
 
         public static void Postfix(ushort lineID, int index, Vector3 newPos, bool fixedPlatform)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ArrayHandler.StopCollecting();
@@ -660,7 +660,7 @@ namespace CSM.Injections
     {
         public static void Prefix(float value, PublicTransportWorldInfoPanel __instance)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ushort lineId = ReflectionHelper.Call<ushort>(__instance, "GetLineID");
@@ -683,7 +683,7 @@ namespace CSM.Injections
     {
         public static void Prefix(float value, PublicTransportWorldInfoPanel __instance)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             ushort lineId = ReflectionHelper.Call<ushort>(__instance, "GetLineID");
@@ -706,7 +706,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort lineID, Color color)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new TransportLineChangeColorCommand()
@@ -745,7 +745,7 @@ namespace CSM.Injections
 
         public static void Prefix(bool day, bool night)
         {
-            if (IgnoreHelper.IsIgnored() || trackingLineId == 0)
+            if (IgnoreHelper.Instance.IsIgnored() || trackingLineId == 0)
                 return;
 
             Command.SendToAll(new TransportLineChangeActiveCommand()
@@ -772,7 +772,7 @@ namespace CSM.Injections
 
         public static void Postfix(ushort lineID, VehicleInfo info)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             if (info == null)

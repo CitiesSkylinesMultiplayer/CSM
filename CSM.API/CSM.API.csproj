@@ -67,6 +67,9 @@
       <Version>2.4.6</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('windows'))">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>

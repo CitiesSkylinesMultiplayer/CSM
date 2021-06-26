@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler.Weather
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
                 return;
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             WeatherManager.instance.m_currentCloud = command.CurrentCloud;
             WeatherManager.instance.m_targetCloud = command.TargetCloud;
@@ -32,7 +32,7 @@ namespace CSM.Commands.Handler.Weather
             WeatherManager.instance.m_currentTemperature = command.CurrentTemperature;
             WeatherManager.instance.m_targetTemperature = command.TargetTemperature;
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

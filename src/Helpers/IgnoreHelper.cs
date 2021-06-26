@@ -7,16 +7,18 @@ namespace CSM.Helpers
     ///     Helper class for keeping track if the injection handlers should ignore
     ///     all method calls. Can handle nested combinations of Start/End calls.
     /// </summary>
-    public static class IgnoreHelper
+    public class IgnoreHelper
     {
-        private static int IgnoreAll = 0;
-        private static readonly HashSet<string> Exceptions = new HashSet<string>();
+        public static IgnoreHelper Instance = new IgnoreHelper();
+        
+        private int IgnoreAll = 0;
+        private readonly HashSet<string> Exceptions = new HashSet<string>();
 
         /// <summary>
         ///     Starts the ignore mode where the injection handlers
         ///     ignore all method calls.
         /// </summary>
-        public static void StartIgnore()
+        public void StartIgnore()
         {
             IgnoreAll++;
         }
@@ -26,7 +28,7 @@ namespace CSM.Helpers
         ///     ignore all method calls.
         /// </summary>
         /// <param name="except">An action that should still be allowed.</param>
-        public static void StartIgnore(string except)
+        public void StartIgnore(string except)
         {
             StartIgnore();
             Exceptions.Add(except);
@@ -36,7 +38,7 @@ namespace CSM.Helpers
         ///     Stop the ignore mode where the injection handlers
         ///     ignore all method calls.
         /// </summary>
-        public static void EndIgnore()
+        public void EndIgnore()
         {
             IgnoreAll = Math.Max(IgnoreAll - 1, 0);
         }
@@ -46,7 +48,7 @@ namespace CSM.Helpers
         ///     ignore all method calls.
         /// </summary>
         /// <param name="except">The action that should be removed from the exceptions.</param>
-        public static void EndIgnore(string except)
+        public void EndIgnore(string except)
         {
             EndIgnore();
             Exceptions.Remove(except);
@@ -56,7 +58,7 @@ namespace CSM.Helpers
         ///     Checks if the injection handlers should ignore all method calls.
         /// </summary>
         /// <returns>If the calls should be ignored.</returns>
-        public static bool IsIgnored()
+        public bool IsIgnored()
         {
             return IgnoreAll > 0;
         }
@@ -66,7 +68,7 @@ namespace CSM.Helpers
         /// </summary>
         /// <param name="action">The current action (not ignored when in list of exceptions)</param>
         /// <returns>If the calls should be ignored.</returns>
-        public static bool IsIgnored(string action)
+        public bool IsIgnored(string action)
         {
             return IsIgnored() && !Exceptions.Contains(action);
         }

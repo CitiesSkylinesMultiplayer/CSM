@@ -13,7 +13,7 @@ namespace CSM.Injections
     {
         public static void Postfix(bool __result, ref ushort prop, Vector3 position, float angle, bool single)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             if (__result)
@@ -38,7 +38,7 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort prop, Vector3 position)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new PropMoveCommand
@@ -55,7 +55,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort prop)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new PropReleaseCommand

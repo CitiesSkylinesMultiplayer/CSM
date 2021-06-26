@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Trees
     {
         protected override void Handle(TreeReleaseCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             TreeManager.instance.ReleaseTree(command.TreeId);
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Events
     {
         protected override void Handle(EventSetTicketPriceCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             ref EventData eventData = ref EventManager.instance.m_events.m_buffer[command.Event];
             eventData.Info.m_eventAI.SetTicketPrice(command.Event, ref eventData, command.Price);
@@ -24,7 +24,7 @@ namespace CSM.Commands.Handler.Events
                 });
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

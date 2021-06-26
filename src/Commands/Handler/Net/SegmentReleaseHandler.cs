@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Net
     {
         protected override void Handle(SegmentReleaseCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             NetManager.instance.ReleaseSegment(command.SegmentId, command.KeepNodes);
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

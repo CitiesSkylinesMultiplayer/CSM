@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingRemoveCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             BuildingManager.instance.ReleaseBuilding(command.BuildingId);
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CSM.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineChangeVehicleCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             // Use ref because otherwise the TransportLine struct(!) would be copied
             ref TransportLine line = ref TransportManager.instance.m_lines.m_buffer[command.LineId];
@@ -16,7 +16,7 @@ namespace CSM.Commands.Handler.TransportLines
 
             ReflectionHelper.Call(line, "ReplaceVehicles", command.LineId, vehicle);
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

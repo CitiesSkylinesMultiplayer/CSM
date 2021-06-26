@@ -8,12 +8,12 @@ namespace CSM.Commands.Handler.Events
     {
         protected override void Handle(EventActivateCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             ref EventData eventData = ref EventManager.instance.m_events.m_buffer[command.Event];
             eventData.Info.m_eventAI.Activate(command.Event, ref eventData);
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

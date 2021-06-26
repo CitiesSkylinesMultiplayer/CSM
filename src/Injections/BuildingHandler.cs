@@ -16,7 +16,7 @@ namespace CSM.Injections
         {
             __state = new CallState();
 
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
             {
                 __state.run = false;
                 return;
@@ -35,7 +35,7 @@ namespace CSM.Injections
             __state.run = true;
             __state.relocate = tool.m_relocate; // Save relocate state as it will be cleared at the end of the method
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartCollecting();
         }
 
@@ -45,7 +45,7 @@ namespace CSM.Injections
                 return;
 
             ArrayHandler.StopCollecting();
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
 
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
             ToolController controller = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
@@ -93,7 +93,7 @@ namespace CSM.Injections
     {
         public static void Prefix(out bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
             {
                 __state = false;
                 return;
@@ -101,7 +101,7 @@ namespace CSM.Injections
 
             __state = true;
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartCollecting();
         }
 
@@ -110,7 +110,7 @@ namespace CSM.Injections
             if (!__state)
                 return;
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
             ArrayHandler.StopCollecting();
 
             if (__result)
@@ -136,7 +136,7 @@ namespace CSM.Injections
     {
         public static void Postfix(ushort building)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new BuildingRemoveCommand
@@ -152,7 +152,7 @@ namespace CSM.Injections
     {
         public static void Prefix(out bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
             {
                 __state = false;
                 return;
@@ -160,7 +160,7 @@ namespace CSM.Injections
 
             __state = true;
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
         }
 
         public static void Postfix(ushort building, ref bool __state)
@@ -168,7 +168,7 @@ namespace CSM.Injections
             if (!__state)
                 return;
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
 
             Building b = BuildingManager.instance.m_buildings.m_buffer[building];
 
@@ -186,7 +186,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort buildingID, byte rate, ref Building data)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             if (rate == data.m_productionRate)
@@ -211,7 +211,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort buildingID, ref Building data, bool emptying)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             bool isEmptying = (data.m_flags & Building.Flags.Downgrading) != Building.Flags.None;
@@ -241,7 +241,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort buildingID, ref Building data, bool filling)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             bool isFilling = (data.m_flags & Building.Flags.Filling) != Building.Flags.None;
@@ -263,7 +263,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort buildingID, ref Building data, int price, TollBoothAI __instance)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             if (__instance.GetTollPrice(buildingID, ref data) == price)
@@ -282,7 +282,7 @@ namespace CSM.Injections
     {
         public static void Prefix(out bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
             {
                 __state = false;
                 return;
@@ -290,7 +290,7 @@ namespace CSM.Injections
 
             __state = true;
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
         }
 
         public static void Postfix(object __instance, ref bool __state)
@@ -298,7 +298,7 @@ namespace CSM.Injections
             if (!__state)
                 return;
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
             ArrayHandler.StopCollecting();
 
             ushort building = ReflectionHelper.GetAttr<ushort>(__instance, "buildingID");
@@ -330,7 +330,7 @@ namespace CSM.Injections
     {
         public static void Prefix(out bool __state)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
             {
                 __state = false;
                 return;
@@ -338,7 +338,7 @@ namespace CSM.Injections
 
             __state = true;
             ArrayHandler.StartCollecting();
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
         }
 
         public static void Postfix(ushort buildingID, ref bool __state)
@@ -346,7 +346,7 @@ namespace CSM.Injections
             if (!__state)
                 return;
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
             ArrayHandler.StopCollecting();
 
             Command.SendToAll(new BuildingUpgradeCommand()
@@ -364,7 +364,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort buildingID, ref Building data, TransferManager.TransferReason material, WarehouseAI __instance)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             if (__instance.m_storageType != TransferManager.TransferReason.None ||
@@ -385,7 +385,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort buildingID, ref Building data, bool historical, BuildingAI __instance)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             if (__instance.IsHistorical(buildingID, ref data, out bool _) == historical)

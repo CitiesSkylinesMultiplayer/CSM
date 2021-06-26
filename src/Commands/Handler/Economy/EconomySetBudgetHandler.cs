@@ -8,7 +8,7 @@ namespace CSM.Commands.Handler.Economy
     {
         protected override void Handle(EconomySetBudgetCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             EconomyManager.instance.SetBudget(command.Service, command.SubService, command.Budget, command.Night);
 
@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler.Economy
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() => ReflectionHelper.Call(panel, "PopulateBudgetTab"));
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }
