@@ -172,7 +172,7 @@ namespace CSM.Commands
         {
             try
             {
-                Type[] handlers = CommandReflectionHelper.FindClassesByType(typeof(CommandHandler)).ToArray();
+                Type[] handlers = ReflectionHelper.FindClassesInMods(typeof(CommandHandler)).ToArray();
 
                 // Create a protobuf model
                 RuntimeTypeModel model = RuntimeTypeModel.Create();

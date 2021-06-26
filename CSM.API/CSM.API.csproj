@@ -46,6 +46,7 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="Helpers\IgnoreHelper.cs" />
     <Compile Include="Networking\Player.cs" />
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />
@@ -66,9 +67,6 @@
     <PackageReference Include="protobuf-net">
       <Version>2.4.6</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

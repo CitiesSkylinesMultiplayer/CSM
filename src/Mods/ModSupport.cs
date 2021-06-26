@@ -11,14 +11,10 @@ namespace CSM.Mods
 {
     class ModSupport
     {
-        public void initModSupport()
-        {
-            RegisterHandlers();
-        }
 
-        private void RegisterHandlers()
+        public void registerCommandSenders()
         {
-            IEnumerable<Type> handlers = CommandReflectionHelper.FindClassesByType(typeof(Connection));
+            IEnumerable<Type> handlers = ReflectionHelper.FindClassesInMods(typeof(Connection));
 
             foreach (var handler in handlers)
             {

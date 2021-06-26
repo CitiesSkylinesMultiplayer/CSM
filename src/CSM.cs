@@ -34,11 +34,9 @@ namespace CSM
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 Log.Info("Successfully patched Cities: Skylines!");
 
-
-                // Starting to test out code.
-                Log.Info("Testing mod support!");
+                Log.Info("Adding!");
                 modSupport = new ModSupport();
-                modSupport.initModSupport();
+                modSupport.registerCommandSenders();
             }
             catch (Exception ex)
             {

@@ -10,7 +10,7 @@ namespace CSM.Helpers
     public class IgnoreHelper
     {
         public static IgnoreHelper Instance = new IgnoreHelper();
-        
+
         private int IgnoreAll = 0;
         private readonly HashSet<string> Exceptions = new HashSet<string>();
 
