@@ -35,8 +35,8 @@ namespace CSM
                 Log.Info("Successfully patched Cities: Skylines!");
 
 
-                Log.Info("Testing mod support!");
                 // Starting to test out code.
+                Log.Info("Testing mod support!");
                 modSupport = new ModSupport();
                 modSupport.initModSupport();
             }
