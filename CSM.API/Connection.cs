@@ -3,7 +3,7 @@ using CSM.API.Commands;
 
 namespace CSM.API
 {
-    public abstract class Connection
+    public class Connection
     {
         private static Connection instance;
         public string name;
@@ -13,21 +13,16 @@ namespace CSM.API
         {
             get
             {
+                if (instance == null) {  
+                    instance = new Connection();  
+                }  
                 return instance;
             }
-        }
-
-        public static void SetInstance(Connection conn)
-        {
-            instance = conn;
         }
 
         public bool ConnectToCSM(Func<CommandBase, bool> SendToAllFunction)
         {
             SentToAll = SendToAllFunction;
-            SentToAll(new ConnectionTestCommand
-                { connectionTestInt = 1 }
-            );
             return true;
         }
     }

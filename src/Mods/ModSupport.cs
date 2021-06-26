@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using CSM.API.Commands;
 using CSM.API;
 using CSM.Commands;
@@ -21,11 +22,14 @@ namespace CSM.Mods
 
             foreach (var handler in handlers)
             {
-                Connection connectionInstance = (Connection) Activator.CreateInstance(handler);
-                if (connectionInstance.ConnectToCSM(SendToAll))
+                Connection connectionInstance = (Connection) handler.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null, null);
+                
+                if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll))
                     Log.Info("Mod connected: " + connectionInstance.name);
-                else
+                else if (connectionInstance != null)
                     Log.Warn("Mod failed to connect: " + connectionInstance.name);
+                else
+                    Log.Warn("Mod failed to instanciate.");
             }
         }
 
