@@ -18,7 +18,7 @@ namespace CSM.API.Commands
         public abstract Type GetDataType();
 
         public abstract void Parse(CommandBase message);
-        
+
         public virtual void OnClientConnect(Player player)
         {
         }

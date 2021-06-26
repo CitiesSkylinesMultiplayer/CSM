@@ -7,10 +7,10 @@ using NLog;
 namespace SampleExternalMod
 {
     public class SampleUserMod : IUserMod
-    {        
+    {
         private static readonly Logger _logger = LogManager.GetLogger("CSM");
         private Harmony _harmony;
-        
+
         public string Name
         {
             get { return "Sample External Mod"; }
@@ -28,9 +28,9 @@ namespace SampleExternalMod
                 _harmony = new Harmony("com.mytest");
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.Error("[TEST] Patching failed", ex);
+                _logger.Info("[TEST] Patching failed");
             }
 
             _logger.Info("[TEST] Construction Complete!");

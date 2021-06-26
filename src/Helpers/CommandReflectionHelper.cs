@@ -4,7 +4,6 @@ using System.Reflection;
 
 namespace CSM.Helpers
 {
-    
     public static class CommandReflectionHelper
     {
         // Not required, but prevents a number of spurious entries from making it to the log file.
@@ -13,19 +12,26 @@ namespace CSM.Helpers
             "Anonymously Hosted DynamicMethods Assembly",
             "Assembly-CSharp",
             "Assembly-CSharp-firstpass",
-            "Assembly-UnityScript-firstpass",
-            "Boo.Lang",
+            "CSM.API",
             "ColossalManaged",
+            "HarmonySharedState",
             "ICSharpCode.SharpZipLib",
             "ICities",
-            "Mono.Security",
+            "LiteNetLib",
             "mscorlib",
+            "Mono.Security",
+            "NLog",
+            "Open.Nat",
+            "protobuf-net",
+            "System.Threading",
             "System",
             "System.Configuration",
             "System.Core",
             "System.Xml",
             "UnityEngine",
             "UnityEngine.UI",
+            "UnityEngine.Networking",
+            "0Harmony",
         };
 
         /// <summary>
@@ -50,14 +56,19 @@ namespace CSM.Helpers
             var assemblyName = assembly.GetName().Name;
 
             // Skip any assemblies that we don't anticipate finding anything in.
-            if (IgnoredAssemblies.Contains(assemblyName)) { yield break; }
+            if (IgnoredAssemblies.Contains(assemblyName))
+            {
+                yield break;
+            }
 
             Type[] types = new Type[0];
             try
             {
                 types = assembly.GetTypes();
             }
-            catch { }
+            catch
+            {
+            }
 
             foreach (var type in types)
             {
@@ -66,7 +77,9 @@ namespace CSM.Helpers
                 {
                     isValid = typeToSearchFor.IsAssignableFrom(type) && type.IsClass && !type.IsAbstract;
                 }
-                catch { }
+                catch
+                {
+                }
 
                 if (isValid)
                 {
@@ -74,7 +87,5 @@ namespace CSM.Helpers
                 }
             }
         }
-        
     }
-    
 }

@@ -1,5 +1,5 @@
-﻿using ProtoBuf;
-using CSM.API.Commands;
+﻿using CSM.API.Commands;
+using ProtoBuf;
 
 namespace SampleExternalMod.Commands
 {

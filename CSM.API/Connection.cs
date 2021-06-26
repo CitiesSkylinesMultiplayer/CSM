@@ -13,9 +13,11 @@ namespace CSM.API
         {
             get
             {
-                if (instance == null) {  
-                    instance = new Connection();  
-                }  
+                if (instance == null)
+                {
+                    instance = new Connection();
+                }
+
                 return instance;
             }
         }

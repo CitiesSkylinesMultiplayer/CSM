@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using CSM.API.Commands;
 using CSM.API;
+using CSM.API.Commands;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Util;
@@ -22,8 +22,9 @@ namespace CSM.Mods
 
             foreach (var handler in handlers)
             {
-                Connection connectionInstance = (Connection) handler.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null, null);
-                
+                Connection connectionInstance = (Connection) handler
+                    .GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null, null);
+
                 if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll))
                     Log.Info("Mod connected: " + connectionInstance.name);
                 else if (connectionInstance != null)
@@ -38,7 +39,5 @@ namespace CSM.Mods
             Command.SendToAll(command);
             return false;
         }
-
-
     }
 }

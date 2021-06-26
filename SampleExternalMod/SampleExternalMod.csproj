@@ -39,7 +39,6 @@
     <Compile Include="Commands\Handlers\TestHandler.cs" />
     <Compile Include="CSMConnection.cs" />
     <Compile Include="Injections\MainMenuHandler.cs" />
-    <Compile Include="Injections\RoadHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleUserMod.cs" />
   </ItemGroup>
