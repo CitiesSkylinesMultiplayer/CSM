@@ -24,7 +24,7 @@ namespace CSM.Injections
         /// <param name="___m_zone2">Zone storage attribute 2</param>
         public static void Postfix(ushort blockID, ulong ___m_zone1, ulong ___m_zone2)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new ZoneUpdateCommand

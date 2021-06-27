@@ -8,7 +8,7 @@ namespace CSM.Commands.Handler.Economy
     {
         protected override void Handle(EconomySetTaxRateCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             EconomyManager.instance.SetTaxRate(command.Service, command.SubService, command.Level, command.Rate);
 
@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler.Economy
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() => ReflectionHelper.Call(panel, "PopulateTaxesTab"));
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

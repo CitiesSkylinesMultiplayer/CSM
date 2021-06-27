@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Events
     {
         protected override void Handle(EventSetSecurityBudgetCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             ref EventData eventData = ref EventManager.instance.m_events.m_buffer[command.Event];
             eventData.Info.m_eventAI.SetSecurityBudget(command.Event, ref eventData, command.Budget);
@@ -23,7 +23,7 @@ namespace CSM.Commands.Handler.Events
                 });
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

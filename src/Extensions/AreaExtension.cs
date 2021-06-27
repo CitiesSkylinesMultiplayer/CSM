@@ -9,7 +9,7 @@ namespace CSM.Extensions
     {
         public override void OnUnlockArea(int x, int z)
         {
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             Command.SendToAll(new UnlockAreaCommand

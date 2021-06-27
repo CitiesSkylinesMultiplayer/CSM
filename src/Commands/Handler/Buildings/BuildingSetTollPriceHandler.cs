@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingSetTollPriceCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             ref Building building = ref BuildingManager.instance.m_buildings.m_buffer[command.Building];
             ((TollBoothAI)building.Info.m_buildingAI).SetTollPrice(command.Building, ref building, command.Price);
@@ -23,7 +23,7 @@ namespace CSM.Commands.Handler.Buildings
                 });
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

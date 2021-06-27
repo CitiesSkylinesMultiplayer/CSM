@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineChangeSliderCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             TransportLine[] lines = TransportManager.instance.m_lines.m_buffer;
             if (command.IsTicketPrice)
@@ -33,7 +33,7 @@ namespace CSM.Commands.Handler.TransportLines
                 }
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

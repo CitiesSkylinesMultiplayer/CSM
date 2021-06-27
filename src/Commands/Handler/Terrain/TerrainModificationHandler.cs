@@ -21,11 +21,11 @@ namespace CSM.Commands.Handler.Terrain
             tool.m_mode = command.Mode;
             ReflectionHelper.SetAttr(tool, "m_mouseRightDown", command.MouseRightDown);
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             // Call original method
             ReflectionHelper.Call(tool, "ApplyBrush");
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

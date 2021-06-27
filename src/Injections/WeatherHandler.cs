@@ -14,7 +14,7 @@ namespace CSM.Injections
         {
             __state = new DataStore();
 
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             // store weather properties in a state to prvent sending a command for each simulation tick
@@ -28,7 +28,7 @@ namespace CSM.Injections
 
         public static void Postfix(WeatherManager __instance, ref DataStore __state)
         {
-            if (IgnoreHelper.IsIgnored() || MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (IgnoreHelper.Instance.IsIgnored() || MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
                 return;
 
             // don't send command if target values have not been changed

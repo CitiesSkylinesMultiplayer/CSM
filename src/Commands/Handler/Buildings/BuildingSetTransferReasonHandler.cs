@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingSetTransferReasonCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             ref Building building = ref BuildingManager.instance.m_buildings.m_buffer[command.Building];
             WarehouseAI ai = building.Info.m_buildingAI as WarehouseAI;
@@ -36,7 +36,7 @@ namespace CSM.Commands.Handler.Buildings
                 }
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace CSM.Commands.Handler.Buildings
 
         protected override void Handle(BuildingRebuildCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             // Using a delegate object because the 'OnRebuildClicked' delegate contains most of the needed code
             // This code from the CityServiceWorldInfoPanel is the same as in the EventBuildingWorldInfoPanel,
@@ -36,7 +36,7 @@ namespace CSM.Commands.Handler.Buildings
 
             ArrayHandler.StopApplying();
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

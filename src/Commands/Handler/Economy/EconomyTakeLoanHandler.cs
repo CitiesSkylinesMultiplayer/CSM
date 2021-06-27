@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Economy
     {
         protected override void Handle(EconomyTakeLoanCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             AddResource.DontAddResource = true;
 
@@ -23,7 +23,7 @@ namespace CSM.Commands.Handler.Economy
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() => ReflectionHelper.Call(panel, "PopulateLoansTab"));
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

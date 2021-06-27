@@ -9,13 +9,13 @@ namespace CSM.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineReleaseCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, null);
 
             TransportManager.instance.ReleaseLine(command.Line);
 
             ArrayHandler.StopApplying();
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

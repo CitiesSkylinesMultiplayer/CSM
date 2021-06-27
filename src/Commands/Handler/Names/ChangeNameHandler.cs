@@ -11,7 +11,7 @@ namespace CSM.Commands.Handler.Names
     {
         protected override void Handle(ChangeNameCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
 
             // The type where the text box is located (can be a base class of the actual panel)
             Type renameType = null;
@@ -214,7 +214,7 @@ namespace CSM.Commands.Handler.Names
                 break;
             }
 
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
 
         private bool HandleSpecialMeteorRename(ushort disaster, string newName)

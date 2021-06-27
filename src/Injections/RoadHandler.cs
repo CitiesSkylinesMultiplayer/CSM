@@ -16,7 +16,7 @@ namespace CSM.Injections
         {
             __state = -1;
 
-            if (IgnoreHelper.IsIgnored())
+            if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
             __state = GetFlags(data, index);
@@ -68,7 +68,7 @@ namespace CSM.Injections
 
         public static void Postfix(IEnumerator<bool> __instance, ref bool __state, ushort ___segmentID, bool ___priority)
         {
-            if (IgnoreHelper.IsIgnored() || !__state)
+            if (IgnoreHelper.Instance.IsIgnored() || !__state)
                 return;
 
             if (!ReflectionHelper.GetAttr<bool>(__instance, "$current"))

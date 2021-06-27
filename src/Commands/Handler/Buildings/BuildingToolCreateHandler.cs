@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler.Buildings
         {
             BuildingTool tool = ToolSimulator.GetTool<BuildingTool>(command.SenderId);
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
             BuildingInfo prefab = null;
@@ -36,7 +36,7 @@ namespace CSM.Commands.Handler.Buildings
             ReflectionHelper.Call<IEnumerator>(tool, "CreateBuilding")?.MoveNext();
 
             ArrayHandler.StopApplying();
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

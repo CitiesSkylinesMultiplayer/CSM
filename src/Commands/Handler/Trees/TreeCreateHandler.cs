@@ -11,12 +11,12 @@ namespace CSM.Commands.Handler.Trees
         {
             TreeInfo info = PrefabCollection<TreeInfo>.GetPrefab(command.InfoIndex);
 
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartApplying(null, new uint[] { command.TreeId });
 
             TreeManager.instance.CreateTree(out uint _, ref SimulationManager.instance.m_randomizer, info, command.Position, command.Single);
             ArrayHandler.StopApplying();
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }

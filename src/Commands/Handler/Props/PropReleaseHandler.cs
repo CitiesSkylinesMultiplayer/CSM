@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Props
     {
         protected override void Handle(PropReleaseCommand command)
         {
-            IgnoreHelper.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore();
             PropManager.instance.ReleaseProp(command.PropId);
-            IgnoreHelper.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }
