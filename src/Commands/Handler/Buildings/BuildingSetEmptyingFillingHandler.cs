@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingSetEmptyingFillingCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             ref Building building = ref BuildingManager.instance.m_buildings.m_buffer[command.Building];
             if (command.SetEmptying)
@@ -47,7 +47,7 @@ namespace CSM.Commands.Handler.Buildings
                 }
             }
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

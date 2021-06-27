@@ -14,7 +14,7 @@ namespace CSM.Commands.Handler.TransportLines
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             int mode = ReflectionHelper.GetEnumValue(typeof(TransportTool).GetNestedType("Mode", ReflectionHelper.AllAccessFlags), "MoveStops");
             ReflectionHelper.SetAttr(tool, "m_mode", mode);
@@ -23,7 +23,7 @@ namespace CSM.Commands.Handler.TransportLines
             IEnumerator moveStop = (IEnumerator)ReflectionHelper.Call(tool, "MoveStop", command.ApplyChanges);
             moveStop.MoveNext();
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ArrayHandler.StopApplying();
         }

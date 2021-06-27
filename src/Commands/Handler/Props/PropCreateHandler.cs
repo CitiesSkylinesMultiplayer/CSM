@@ -11,13 +11,13 @@ namespace CSM.Commands.Handler.Props
         {
             PropInfo info = PrefabCollection<PropInfo>.GetPrefab(command.InfoIndex);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             ArrayHandler.StartApplying(new ushort[] { command.PropId }, null);
 
             PropManager.instance.CreateProp(out ushort _, ref SimulationManager.instance.m_randomizer, info, command.Position, command.Angle, command.Single);
 
             ArrayHandler.StopApplying();
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

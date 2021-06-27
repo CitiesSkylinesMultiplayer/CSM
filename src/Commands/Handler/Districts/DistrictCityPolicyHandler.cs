@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Districts
     {
         protected override void Handle(DistrictCityPolicyCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             DistrictManager.instance.SetCityPolicy(command.Policy);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

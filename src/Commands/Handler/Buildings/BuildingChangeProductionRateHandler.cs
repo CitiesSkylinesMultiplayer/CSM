@@ -17,7 +17,7 @@ namespace CSM.Commands.Handler.Buildings
 
         protected override void Handle(BuildingChangeProductionRateCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             ref Building building = ref BuildingManager.instance.m_buildings.m_buffer[command.Building];
             building.Info.m_buildingAI.SetProductionRate(command.Building, ref building, command.Rate);
@@ -46,7 +46,7 @@ namespace CSM.Commands.Handler.Buildings
                 }
             }
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

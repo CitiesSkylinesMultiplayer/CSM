@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Parks
     {
         protected override void Handle(ParkReleaseCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             DistrictManager.instance.ReleasePark(command.ParkId);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

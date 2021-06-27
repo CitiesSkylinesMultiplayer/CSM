@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Roads
     {
         protected override void Handle(RoadSetPriorityCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             NetManager.instance.SetPriorityRoad(command.SegmentId, command.Priority).MoveNext();
 
             InstanceID instance = InfoPanelHelper.GetInstanceID(typeof(RoadWorldInfoPanel), out WorldInfoPanel panel);
@@ -22,7 +22,7 @@ namespace CSM.Commands.Handler.Roads
                 });
             }
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

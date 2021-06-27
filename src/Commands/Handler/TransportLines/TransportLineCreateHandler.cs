@@ -17,7 +17,7 @@ namespace CSM.Commands.Handler.TransportLines
             tool.m_prefab = PrefabCollection<TransportInfo>.GetPrefab(command.Prefab);
             ReflectionHelper.SetAttr(tool, "m_building", command.Building);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             int mode = ReflectionHelper.GetEnumValue(typeof(TransportTool).GetNestedType("Mode", ReflectionHelper.AllAccessFlags), "NewLine");
             ReflectionHelper.SetAttr(tool, "m_mode", mode);
@@ -26,7 +26,7 @@ namespace CSM.Commands.Handler.TransportLines
             IEnumerator newLine = (IEnumerator)ReflectionHelper.Call(tool, "NewLine");
             newLine.MoveNext();
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ArrayHandler.StopApplying();
         }

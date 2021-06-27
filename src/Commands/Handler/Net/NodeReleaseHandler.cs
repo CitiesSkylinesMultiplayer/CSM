@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Net
     {
         protected override void Handle(NodeReleaseCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             NetManager.instance.ReleaseNode(command.NodeId);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

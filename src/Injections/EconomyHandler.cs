@@ -15,7 +15,7 @@ namespace CSM.Injections
     {
         public static void Prefix(int index, int amount, int interest, int length)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new EconomyTakeLoanCommand()
@@ -36,7 +36,7 @@ namespace CSM.Injections
         {
             Loan[] loans = ReflectionHelper.GetAttr<Loan[]>(EconomyManager.instance, "m_loans");
 
-            if (IgnoreHelper.Instance.IsIgnored() || index >= loans.Length)
+            if (IgnoreHelper.IsIgnored() || index >= loans.Length)
                 return;
 
             int availMoney = EconomyManager.instance.PeekResource(Resource.LoanAmount, loans[index].m_amountLeft);
@@ -55,7 +55,7 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new EconomyBailoutCommand()
@@ -71,7 +71,7 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new EconomyBailoutCommand()
@@ -88,7 +88,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ItemClass.Service service, ItemClass.SubService subService, int budget, bool night, out bool __state)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
             {
                 // Needed to prevent the postfix from recursively called methods from running
                 __state = false;
@@ -105,15 +105,15 @@ namespace CSM.Injections
                 Night = night
             });
 
-            IgnoreHelper.Instance.StartIgnore("SetBudget");
+            IgnoreHelper.StartIgnore("SetBudget");
         }
 
         public static void Postfix(ref bool __state)
         {
-            if (!__state || IgnoreHelper.Instance.IsIgnored("SetBudget"))
+            if (!__state || IgnoreHelper.IsIgnored("SetBudget"))
                 return;
 
-            IgnoreHelper.Instance.EndIgnore("SetBudget");
+            IgnoreHelper.EndIgnore("SetBudget");
         }
     }
 
@@ -124,7 +124,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ItemClass.Service service, ItemClass.SubService subService, ItemClass.Level level, int rate, out bool __state)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
             {
                 // Needed to prevent the postfix from recursively called methods from running
                 __state = false;
@@ -141,15 +141,15 @@ namespace CSM.Injections
                 Rate = rate
             });
 
-            IgnoreHelper.Instance.StartIgnore("SetTaxRate");
+            IgnoreHelper.StartIgnore("SetTaxRate");
         }
 
         public static void Postfix(ref bool __state)
         {
-            if (!__state || IgnoreHelper.Instance.IsIgnored("SetTaxRate"))
+            if (!__state || IgnoreHelper.IsIgnored("SetTaxRate"))
                 return;
 
-            IgnoreHelper.Instance.EndIgnore("SetTaxRate");
+            IgnoreHelper.EndIgnore("SetTaxRate");
         }
     }
 

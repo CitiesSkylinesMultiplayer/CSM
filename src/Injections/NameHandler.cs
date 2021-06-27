@@ -14,7 +14,7 @@ namespace CSM.Injections
     {
         public static bool CanRun(object instance, bool state)
         {
-            if (IgnoreHelper.Instance.IsIgnored() || !state)
+            if (IgnoreHelper.IsIgnored() || !state)
                 return false;
 
             return ReflectionHelper.GetAttr<bool>(instance, "$current");
@@ -235,7 +235,7 @@ namespace CSM.Injections
 
         public static void Postfix(ushort eventID, string name, bool __result, ref bool __state)
         {
-            if (IgnoreHelper.Instance.IsIgnored() || !__state)
+            if (IgnoreHelper.IsIgnored() || !__state)
                 return;
 
             if (!__result)
@@ -376,7 +376,7 @@ namespace CSM.Injections
 
         public static void Postfix(string ___name, ref bool __state)
         {
-            if (IgnoreHelper.Instance.IsIgnored() || !__state)
+            if (IgnoreHelper.IsIgnored() || !__state)
                 return;
 
             Command.SendToAll(new ChangeCityNameCommand

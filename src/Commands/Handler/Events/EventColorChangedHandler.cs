@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Events
     {
         protected override void Handle(EventColorChangedCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             ref EventData eventData = ref EventManager.instance.m_events.m_buffer[command.Event];
             eventData.Info.m_eventAI.SetColor(command.Event, ref eventData, command.Color);
@@ -50,7 +50,7 @@ namespace CSM.Commands.Handler.Events
                 }
             }
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

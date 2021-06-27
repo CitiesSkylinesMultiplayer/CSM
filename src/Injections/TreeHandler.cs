@@ -13,7 +13,7 @@ namespace CSM.Injections
     {
         public static void Postfix(bool __result, ref uint tree, Vector3 position, bool single)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (__result)
@@ -37,7 +37,7 @@ namespace CSM.Injections
     {
         public static void Postfix(uint tree, Vector3 position)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new TreeMoveCommand
@@ -54,7 +54,7 @@ namespace CSM.Injections
     {
         public static void Prefix(uint tree)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new TreeReleaseCommand

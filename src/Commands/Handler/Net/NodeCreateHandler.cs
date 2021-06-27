@@ -9,7 +9,7 @@ namespace CSM.Commands.Handler.Net
     {
         protected override void Handle(NodeCreateCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
@@ -23,7 +23,7 @@ namespace CSM.Commands.Handler.Net
                 out ushort _, out ushort _, out int _, out int _);
 
             ArrayHandler.StopApplying();
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

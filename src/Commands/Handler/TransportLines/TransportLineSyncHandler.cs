@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.TransportLines
         {
             TransportTool tool = ToolSimulator.GetTool<TransportTool>(command.SenderId);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             if (command.UpdateLines)
             {
@@ -23,7 +23,7 @@ namespace CSM.Commands.Handler.TransportLines
                 TransportManager.instance.m_lines.m_buffer[(int)tempLine].UpdatePaths(tempLine);
             }
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);
             ReflectionHelper.SetAttr(tool, "m_fixedPlatform", command.FixedPlatform);

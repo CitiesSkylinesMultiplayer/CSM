@@ -11,14 +11,14 @@ namespace CSM.Commands.Handler.Buildings
         {
             BuildingInfo info = PrefabCollection<BuildingInfo>.GetPrefab(command.InfoIndex);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
 
             BuildingManager.instance.CreateBuilding(out _, ref SimulationManager.instance.m_randomizer, info,
                 command.Position, command.Angle, command.Length, SimulationManager.instance.m_currentBuildIndex++);
 
             ArrayHandler.StopApplying();
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

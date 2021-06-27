@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineChangeColorCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             TransportManager.instance.SetLineColor(command.LineId, command.Color).MoveNext();
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

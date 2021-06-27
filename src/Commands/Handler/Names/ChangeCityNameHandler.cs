@@ -12,7 +12,7 @@ namespace CSM.Commands.Handler.Names
 
         protected override void Handle(ChangeCityNameCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             // Update name internally
             CityInfoPanel.instance.SetCityName(command.Name).MoveNext();
@@ -30,7 +30,7 @@ namespace CSM.Commands.Handler.Names
                 Log.Warn("Bottom bar city name not found. Can't update name!");
             }                
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

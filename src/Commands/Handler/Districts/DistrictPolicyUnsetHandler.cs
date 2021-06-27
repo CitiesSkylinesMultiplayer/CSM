@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Districts
     {
         protected override void Handle(DistrictPolicyUnsetCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             DistrictManager.instance.UnsetDistrictPolicy(command.Policy, command.DistrictId);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

@@ -10,14 +10,14 @@ namespace CSM.Commands.Handler.Economy
     {
         protected override void Handle(EconomyBailoutCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             AddResource.DontAddResource = true;
 
             // Runs all the required accepted/rejected code
             UIView.library.Hide(typeof(BailoutPanel).Name, command.Accepted ? 1 : 0);
 
             AddResource.DontAddResource = false;
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

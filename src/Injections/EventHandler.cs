@@ -13,7 +13,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort eventID)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Command.SendToAll(new EventActivateCommand()
@@ -29,7 +29,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort eventID, ref EventData data, Color32 newColor, EventAI __instance)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             Type type = __instance.GetType();
@@ -53,7 +53,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort eventID, ref EventData data, int newBudget, EventAI __instance)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (__instance.GetSecurityBudget(eventID, ref data) == newBudget)
@@ -73,7 +73,7 @@ namespace CSM.Injections
     {
         public static void Prefix(ushort eventID, ref EventData data, int newPrice, EventAI __instance)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             // Event is 0, when it is set through the FestivalPanel for a certain band

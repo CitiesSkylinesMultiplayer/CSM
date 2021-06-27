@@ -16,7 +16,7 @@ namespace CSM.Injections
         {
             __state = new CallState();
 
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
             {
                 __state.valid = false;
                 return;
@@ -31,7 +31,7 @@ namespace CSM.Injections
             __state.valid = true;
             __state.SetControlPoints(startPoint, middlePoint, endPoint);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             ArrayHandler.StartCollecting();
         }
 
@@ -42,7 +42,7 @@ namespace CSM.Injections
                 return;
 
             ArrayHandler.StopCollecting();
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ushort prefab = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535);
 
@@ -115,12 +115,12 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
         }
 
         public static void Postfix()
         {
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 
@@ -134,7 +134,7 @@ namespace CSM.Injections
         /// <param name="data">The NetNode object</param>
         public static void Prefix(ushort node, ref NetNode data)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (data.m_flags != 0)
@@ -165,7 +165,7 @@ namespace CSM.Injections
         /// <param name="keepNodes">If adjacent nodes should also be released</param>
         public static void Prefix(ushort segment, ref NetSegment data, bool keepNodes)
         {
-            if (IgnoreHelper.Instance.IsIgnored())
+            if (IgnoreHelper.IsIgnored())
                 return;
 
             if (data.m_flags != 0)

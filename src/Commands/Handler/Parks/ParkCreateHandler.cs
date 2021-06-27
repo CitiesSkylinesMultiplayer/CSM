@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Parks
     {
         protected override void Handle(ParkCreateCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             DistrictManager.instance.CreatePark(out byte park, command.ParkType, command.ParkLevel);
 
             if (park != command.ParkId)
@@ -20,7 +20,7 @@ namespace CSM.Commands.Handler.Parks
             }
 
             DistrictManager.instance.m_parks.m_buffer[park].m_randomSeed = command.Seed;
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace CSM.Commands.Handler.Districts
     {
         protected override void Handle(DistrictCreateCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             DistrictManager.instance.CreateDistrict(out byte district);
 
             if (district != command.DistrictId)
@@ -20,7 +20,7 @@ namespace CSM.Commands.Handler.Districts
             }
 
             DistrictManager.instance.m_districts.m_buffer[district].m_randomSeed = command.Seed;
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace CSM.Injections
         public static void Prefix()
         {
             TerrainTool tool = ToolsModifierControl.GetTool<TerrainTool>();
-            if (!IgnoreHelper.Instance.IsIgnored() && ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_toolErrors") == ToolBase.ToolErrors.None)
+            if (!IgnoreHelper.IsIgnored() && ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_toolErrors") == ToolBase.ToolErrors.None)
             {
                 Command.SendToAll(new TerrainModificationCommand
                 {

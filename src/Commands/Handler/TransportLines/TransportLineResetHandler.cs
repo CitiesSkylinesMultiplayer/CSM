@@ -13,11 +13,11 @@ namespace CSM.Commands.Handler.TransportLines
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             ReflectionHelper.Call(tool, "ResetTool");
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ArrayHandler.StopApplying();
         }

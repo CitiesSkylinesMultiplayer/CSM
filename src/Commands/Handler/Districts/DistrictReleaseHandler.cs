@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Districts
     {
         protected override void Handle(DistrictReleaseCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             DistrictManager.instance.ReleaseDistrict(command.DistrictId);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

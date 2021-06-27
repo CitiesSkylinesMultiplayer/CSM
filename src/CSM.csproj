@@ -241,6 +241,7 @@
     <Compile Include="Helpers\SaveHelpers.cs" />
     <Compile Include="Helpers\ArrayXHelper.cs" />
     <Compile Include="Helpers\DLCHelper.cs" />
+    <Compile Include="Helpers\IgnoreHelper.cs" />
     <Compile Include="Helpers\InfoPanelHelper.cs" />
     <Compile Include="Helpers\SlowdownHelper.cs" />
     <Compile Include="Helpers\SpeedPauseHelper.cs" />

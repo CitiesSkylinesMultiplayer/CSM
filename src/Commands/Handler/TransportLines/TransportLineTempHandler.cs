@@ -15,11 +15,11 @@ namespace CSM.Commands.Handler.TransportLines
 
             TransportInfo info = PrefabCollection<TransportInfo>.GetPrefab(command.InfoIndex);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             ReflectionHelper.Call(tool, "EnsureTempLine", info, command.SourceLine, command.MoveIndex, command.AddIndex, command.AddPos, command.FixedPlatform);
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ArrayHandler.StopApplying();
         }

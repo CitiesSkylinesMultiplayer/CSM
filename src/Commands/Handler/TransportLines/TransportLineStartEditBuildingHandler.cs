@@ -16,12 +16,12 @@ namespace CSM.Commands.Handler.TransportLines
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
 
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             IEnumerator cancelPrevStop = (IEnumerator)ReflectionHelper.Call(tool, "StartEditingBuildingLine", info, command.Building);
             cancelPrevStop.MoveNext();
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
 
             ArrayHandler.StopApplying();
         }

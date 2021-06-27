@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Trees
     {
         protected override void Handle(TreeMoveCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             TreeManager.instance.MoveTree(command.TreeId, command.Position);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

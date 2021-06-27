@@ -8,9 +8,9 @@ namespace CSM.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingRelocateCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
             BuildingManager.instance.RelocateBuilding(command.BuildingId, command.NewPosition, command.Angle);
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

@@ -8,13 +8,13 @@ namespace CSM.Commands.Handler.Districts
     {
         protected override void Handle(DistrictAreaModifyCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             DistrictTool.ApplyBrush(command.Layer, command.District, command.BrushRadius, command.StartPosition, command.EndPosition);
             DistrictManager.instance.NamesModified();
             DistrictManager.instance.ParkNamesModified();
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }

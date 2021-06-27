@@ -8,12 +8,12 @@ namespace CSM.Commands.Handler.Areas
     {
         protected override void Handle(UnlockAreaCommand command)
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.StartIgnore();
 
             int area = (command.Z * 5) + command.X; // Calculate the area index
             GameAreaManager.instance.UnlockArea(area);
 
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.EndIgnore();
         }
     }
 }
