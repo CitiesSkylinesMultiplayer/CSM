@@ -7,7 +7,7 @@ namespace CSM.API
     {
         private static Connection instance;
         public string name;
-        public Func<CommandBase, bool> SentToAll;
+        public Func<CommandBase, bool> SentToAll, SendToServer;
 
         public static Connection Instance
         {
@@ -22,9 +22,10 @@ namespace CSM.API
             }
         }
 
-        public bool ConnectToCSM(Func<CommandBase, bool> SendToAllFunction)
+        public bool ConnectToCSM(Func<CommandBase, bool> SentToAll, Func<CommandBase, bool> SendToServer)
         {
-            SentToAll = SendToAllFunction;
+            this.SentToAll = SentToAll;
+            this.SendToServer = SendToServer;
             return true;
         }
     }

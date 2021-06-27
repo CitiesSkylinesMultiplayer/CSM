@@ -21,7 +21,7 @@ namespace CSM.Mods
                 Connection connectionInstance = (Connection) handler
                     .GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null, null);
 
-                if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll))
+                if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll, SendToServer))
                     Log.Info("Mod connected: " + connectionInstance.name);
                 else if (connectionInstance != null)
                     Log.Warn("Mod failed to connect: " + connectionInstance.name);
@@ -33,6 +33,11 @@ namespace CSM.Mods
         public bool SendToAll(CommandBase command)
         {
             Command.SendToAll(command);
+            return false;
+        }
+        public bool SendToServer(CommandBase command)
+        {
+            Command.SendToServer(command);
             return false;
         }
     }
