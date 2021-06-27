@@ -4,7 +4,7 @@ using CSM.Commands;
 
 namespace CSM.Util
 {
-    public class Serializer
+    public static class Serializer
     {
         /// <summary>
         ///     Serializes the command into a byte array for sending over the network.
