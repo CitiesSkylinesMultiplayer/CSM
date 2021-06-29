@@ -65,7 +65,7 @@ namespace CSM.Injections
 
         public static MethodBase TargetMethod()
         {
-            return typeof(NetTool).GetMethod("CreateNode", new Type[]
+            return typeof(NetManager).GetMethod("CreateNode", new Type[]
             {
                 typeof(NetInfo), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint),
                 typeof(NetTool.ControlPoint),

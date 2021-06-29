@@ -40,6 +40,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\assemblies\ColossalManaged.dll</HintPath>
     </Reference>
+    <Reference Include="CSM.API, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSM.API\bin\Release\CSM.API.dll</HintPath>
+    </Reference>
     <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\assemblies\ICities.dll</HintPath>
@@ -313,12 +317,6 @@
     <PackageReference Include="protobuf-net">
       <Version>2.4.6</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CSM.API\CSM.API.csproj">
-      <Project>{ab27eacd-b9a9-42bc-bf8a-3b25aabff6ca}</Project>
-      <Name>CSM.API</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
