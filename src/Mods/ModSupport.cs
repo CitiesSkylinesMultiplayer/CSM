@@ -18,8 +18,7 @@ namespace CSM.Mods
 
             foreach (var handler in handlers)
             {
-                Connection connectionInstance = (Connection) handler
-                    .GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null, null);
+                Connection connectionInstance = (Connection)Activator.CreateInstance(handler);
 
                 if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll, SendToServer))
                     Log.Info("Mod connected: " + connectionInstance.name);
