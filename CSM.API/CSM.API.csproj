@@ -50,6 +50,7 @@
     <Compile Include="Networking\Player.cs" />
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
