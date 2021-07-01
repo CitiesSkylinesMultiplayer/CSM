@@ -1,7 +1,7 @@
-﻿using api.Commands;
+﻿using CSM.API.Commands;
 using System;
 
-namespace api
+namespace CSM.API
 {
     public class Connection
     {
