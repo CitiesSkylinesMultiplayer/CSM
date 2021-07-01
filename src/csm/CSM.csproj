@@ -37,7 +37,7 @@
     <SteamPath Condition="! Exists ('$(SteamPath)')">$(Registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)</SteamPath>
     <CSPath>$(SteamPath)\steamapps\common\Cities_Skylines</CSPath>
     <MangedDLLPath>$(CSPath)\Cities_Data\Managed</MangedDLLPath>
-    <MangedDLLPath Condition="!  Exists ('$(MangedDLLPath)')">..\dependencies</MangedDLLPath>
+    <MangedDLLPath Condition="!  Exists ('$(MangedDLLPath)')">..\..\assemblies</MangedDLLPath>
     <UnityPath>$(MSBuildExtensionsPath64)\..\Unity\</UnityPath>
     <UnityPath Condition="! Exists ('$(UnityPath)')">..\Unity\</UnityPath>
   </PropertyGroup>
