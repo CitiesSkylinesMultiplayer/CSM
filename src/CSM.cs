@@ -12,7 +12,6 @@ namespace CSM
     public class CSM : ICities.IUserMod
     {
         private Harmony _harmony;
-        private ModSupport modSupport;
 
         public static Settings Settings;
 
@@ -35,8 +34,6 @@ namespace CSM
                 Log.Info("Successfully patched Cities: Skylines!");
 
                 Log.Info("Adding!");
-                modSupport = new ModSupport();
-                modSupport.registerCommandSenders();
             }
             catch (Exception ex)
             {

@@ -11,11 +11,13 @@ using CSM.API.Networking.Status;
 using CSM.Commands.Handler.Game;
 using CSM.Helpers;
 using Object = UnityEngine.Object;
+using CSM.Mods;
 
 namespace CSM.Extensions
 {
     public class LoadingExtension : LoadingExtensionBase
     {
+        private ModSupport modSupport;
         public override void OnReleased()
         {
             // Stop everything
@@ -51,6 +53,10 @@ namespace CSM.Extensions
                 panel.DisplayReleaseNotes();
                 CSM.Settings.LastSeenReleaseNotes.value = strVersion;
             }
+
+            //Registers all other mods which implement the API
+            modSupport = new ModSupport();
+            modSupport.registerCommandSenders();
         }
 
         private void ResetData()
@@ -92,6 +98,10 @@ namespace CSM.Extensions
                 UIComponent clientJoinPanel = UIView.GetAView().FindUIComponent("MPClientJoinPanel");
                 if (clientJoinPanel)
                     Object.Destroy(clientJoinPanel);
+
+                //Destroys all the connections made to external mods
+                modSupport.destroyConnections();
+                modSupport = null;
             }
             catch (NullReferenceException)
             {

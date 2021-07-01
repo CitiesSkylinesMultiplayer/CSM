@@ -11,9 +11,10 @@ namespace CSM.Mods
 {
     class ModSupport
     {
-
+        List<Connection> connectedMods;
         public void registerCommandSenders()
         {
+            connectedMods = new List<Connection>();
             IEnumerable<Type> handlers = ReflectionHelper.FindClassesInMods(typeof(Connection));
 
             foreach (var handler in handlers)
@@ -21,12 +22,22 @@ namespace CSM.Mods
                 Connection connectionInstance = (Connection)Activator.CreateInstance(handler);
 
                 if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll, SendToServer))
+                {
                     Log.Info("Mod connected: " + connectionInstance.name);
+                    connectedMods.Add(connectionInstance);
+                }
                 else if (connectionInstance != null)
                     Log.Warn("Mod failed to connect: " + connectionInstance.name);
                 else
                     Log.Warn("Mod failed to instanciate.");
             }
+        }
+
+        public void destroyConnections()
+        {
+            connectedMods.Clear();
+            connectedMods.TrimExcess();
+            connectedMods = null;
         }
 
         public bool SendToAll(CommandBase command)
