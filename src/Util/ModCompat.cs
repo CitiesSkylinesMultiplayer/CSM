@@ -1,6 +1,6 @@
-using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Plugins;
+using System.Linq;
 
 namespace CSM.Util
 {

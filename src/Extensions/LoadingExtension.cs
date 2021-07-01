@@ -1,17 +1,17 @@
 ﻿using ColossalFramework.UI;
+using CSM.API.Networking.Status;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
+using CSM.Commands.Handler.Game;
+using CSM.Helpers;
+using CSM.Injections;
+using CSM.Mods;
 using CSM.Networking;
 using CSM.Panels;
-using CSM.Injections;
 using ICities;
 using System;
 using System.Reflection;
-using CSM.API.Networking.Status;
-using CSM.Commands.Handler.Game;
-using CSM.Helpers;
 using Object = UnityEngine.Object;
-using CSM.Mods;
 
 namespace CSM.Extensions
 {
@@ -100,7 +100,7 @@ namespace CSM.Extensions
                     Object.Destroy(clientJoinPanel);
 
                 //Destroys all the connections made to external mods
-                modSupport.destroyConnections();
+                modSupport.DestroyConnections();
                 modSupport = null;
             }
             catch (NullReferenceException)

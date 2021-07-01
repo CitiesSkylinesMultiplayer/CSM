@@ -1,9 +1,9 @@
 ﻿using CSM.Commands;
+using CSM.Helpers;
 using CSM.Injections;
 using CSM.Networking;
 using ICities;
 using System;
-using CSM.Helpers;
 
 namespace CSM.Extensions
 {

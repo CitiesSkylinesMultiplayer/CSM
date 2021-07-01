@@ -1,11 +1,9 @@
-using System;
-using System.Globalization;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Util;
+using System;
 using System.Linq;
 using System.Reflection;
-using CSM.Networking;
 using UnityEngine;
 
 namespace CSM.Panels

@@ -1,11 +1,11 @@
 ﻿using ColossalFramework.Threading;
 using ColossalFramework.UI;
+using CSM.API.Networking.Status;
 using CSM.Networking.Config;
 using CSM.Panels;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using CSM.API.Networking.Status;
 
 namespace CSM.Networking
 {

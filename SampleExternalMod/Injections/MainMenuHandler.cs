@@ -1,7 +1,6 @@
 ﻿using CSM.Helpers;
 using HarmonyLib;
 using NLog;
-using SampleExternalMod.Commands;
 
 namespace SampleExternalMod.Injections
 {
@@ -13,12 +12,13 @@ namespace SampleExternalMod.Injections
 
         public static void Postfix(bool __result, ref byte district)
         {
-            _logger.Info("Doing something");
-            // CSMConnection.Instance.SentToAll(new TestCommand()
-            // {
-            //     testing = "Heyyyy"
-            // });
+            /*_logger.Info("Doing something");
+             CSMConnection.Instance.SentToAll(new TestCommand()
+             {
+                 testing = "Heyyyy"
+             });
             _logger.Info(IgnoreHelper.Instance.IsIgnored());
+            */
         }
     }
 }

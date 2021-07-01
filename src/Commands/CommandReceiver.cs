@@ -1,10 +1,10 @@
-﻿using System.IO;
-using CSM.API.Commands;
+﻿using CSM.API.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Commands.Handler.Internal;
 using CSM.Networking;
 using CSM.Util;
 using LiteNetLib;
+using System.IO;
 
 namespace CSM.Commands
 {

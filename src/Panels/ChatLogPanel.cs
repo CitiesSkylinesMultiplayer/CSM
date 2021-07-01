@@ -1,4 +1,6 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
+using CSM.API.Networking.Status;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
@@ -9,8 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using ColossalFramework;
-using CSM.API.Networking.Status;
 using UnityEngine;
 
 namespace CSM.Panels

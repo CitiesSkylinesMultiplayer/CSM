@@ -1,7 +1,7 @@
-using System;
 using CSM.Panels;
 using HarmonyLib;
 using ICities;
+using System;
 
 namespace CSM.Injections
 {

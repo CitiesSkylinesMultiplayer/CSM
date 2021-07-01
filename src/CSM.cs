@@ -1,5 +1,4 @@
 ﻿using CSM.Injections;
-using CSM.Mods;
 using CSM.Panels;
 using CSM.Util;
 using HarmonyLib;

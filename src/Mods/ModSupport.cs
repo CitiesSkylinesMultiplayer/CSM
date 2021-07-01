@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using CSM.API;
+﻿using CSM.API;
 using CSM.API.Commands;
 using CSM.Commands;
 using CSM.Helpers;
 using CSM.Util;
+using System;
+using System.Collections.Generic;
 
 namespace CSM.Mods
 {
@@ -33,7 +32,7 @@ namespace CSM.Mods
             }
         }
 
-        public void destroyConnections()
+        public void DestroyConnections()
         {
             connectedMods.Clear();
             connectedMods.TrimExcess();

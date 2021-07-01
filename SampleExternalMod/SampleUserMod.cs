@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using ICities;
 using NLog;
+using System;
+using System.Reflection;
 
 namespace SampleExternalMod
 {

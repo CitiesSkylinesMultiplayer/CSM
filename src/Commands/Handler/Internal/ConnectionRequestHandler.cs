@@ -1,8 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
-using CSM.API.Commands;
+﻿using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.Commands.Data.Internal;
@@ -10,6 +6,10 @@ using CSM.Helpers;
 using CSM.Networking;
 using CSM.Util;
 using LiteNetLib;
+using System;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace CSM.Commands.Handler.Internal
 {

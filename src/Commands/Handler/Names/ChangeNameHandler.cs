@@ -1,9 +1,9 @@
 ﻿using ColossalFramework.UI;
+using CSM.API.Commands;
 using CSM.Commands.Data.Names;
 using CSM.Helpers;
 using CSM.Util;
 using System;
-using CSM.API.Commands;
 
 namespace CSM.Commands.Handler.Names
 {

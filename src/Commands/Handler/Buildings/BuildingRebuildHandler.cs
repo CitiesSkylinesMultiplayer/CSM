@@ -1,8 +1,8 @@
-using System;
 using CSM.API.Commands;
 using CSM.Commands.Data.Buildings;
 using CSM.Helpers;
 using CSM.Injections;
+using System;
 
 namespace CSM.Commands.Handler.Buildings
 {

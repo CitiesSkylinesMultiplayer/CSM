@@ -1,5 +1,8 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Plugins;
+using CSM.API.Commands;
+using CSM.API.Networking;
+using CSM.API.Networking.Status;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
@@ -13,9 +16,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using CSM.API.Commands;
-using CSM.API.Networking;
-using CSM.API.Networking.Status;
 
 namespace CSM.Networking
 {

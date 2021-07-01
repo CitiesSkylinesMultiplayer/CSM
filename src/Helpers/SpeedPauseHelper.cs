@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using CSM.API.Commands;
 using CSM.API.Networking.Status;
 using CSM.Commands;
@@ -9,6 +7,8 @@ using CSM.Commands.Handler.Internal;
 using CSM.Networking;
 using CSM.Panels;
 using CSM.Util;
+using System;
+using System.Linq;
 using UnityEngine;
 
 namespace CSM.Helpers

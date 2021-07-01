@@ -1,5 +1,5 @@
-﻿using System;
-using CSM.API.Networking;
+﻿using CSM.API.Networking;
+using System;
 
 namespace CSM.API.Commands
 {
