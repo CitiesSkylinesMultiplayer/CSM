@@ -1,12 +1,12 @@
-﻿using CSM.API.Commands;
+﻿using api.Commands;
 using System;
 
-namespace CSM.API
+namespace api
 {
     public class Connection
     {
         private static Connection instance;
-        public string name;
+        public string name { get; set; }
         public Func<CommandBase, bool> SentToAll, SendToServer;
 
         public static Connection Instance

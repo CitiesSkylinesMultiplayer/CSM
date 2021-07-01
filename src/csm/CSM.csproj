@@ -40,9 +40,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\assemblies\ColossalManaged.dll</HintPath>
     </Reference>
-    <Reference Include="CSM.API, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="CSM.API, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CSM.API\bin\Release\CSM.API.dll</HintPath>
+      <HintPath>..\api\bin\Release\CSM.API.dll</HintPath>
     </Reference>
     <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
