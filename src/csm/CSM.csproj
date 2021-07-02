@@ -258,6 +258,7 @@
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
     <Compile Include="Injections\ChatHandler.cs" />
+    <Compile Include="Injections\CitizenHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\EventHandler.cs" />
     <Compile Include="Injections\ICameraHandler.cs" />
