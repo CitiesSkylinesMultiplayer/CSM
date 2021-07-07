@@ -324,4 +324,7 @@
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('linux'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('osx'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
+  </PropertyGroup>
 </Project>
