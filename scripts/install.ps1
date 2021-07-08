@@ -44,9 +44,10 @@ New-Item -ItemType directory -Path $ModDirectory | Out-Null
 Copy-Item -Path "LiteNetLib.dll"        -Destination "$($ModDirectory)$($Sep)LiteNetLib.dll" -Force
 Copy-Item -Path "protobuf-net.dll"      -Destination "$($ModDirectory)$($Sep)protobuf-net.dll" -Force
 Copy-Item -Path "CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
+Copy-Item -Path "CSM.Proto.dll"         -Destination "$($ModDirectory)$($Sep)CSM.Proto.dll" -Force
 Copy-Item -Path "Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
 Copy-Item -Path "System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
 Copy-Item -Path "0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force
-Copy-Item -Path "NLog.dll"         	-Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
+Copy-Item -Path "NLog.dll"         		-Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
 
 Write-Host "Mod is now installed, open Cities Skylines and enable the mod."
