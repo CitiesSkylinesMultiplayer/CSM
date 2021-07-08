@@ -72,6 +72,16 @@ namespace CSM.Helpers
             return obj.GetType().GetProperty(property, AllAccessFlags)?.GetValue(obj, null);
         }
 
+        public static T GetField<T>(object obj, string field)
+        {
+            return (T)GetField(obj, field);
+        }
+
+        public static object GetField(object obj, string field)
+        {
+            return obj.GetType().GetField(field, AllAccessFlags)?.GetValue(obj);
+        }
+
         public static MethodBase GetIteratorTargetMethod(Type container, string itName, out Type iteratorType)
         {
             iteratorType = container.GetNestedType(itName, AllAccessFlags);
