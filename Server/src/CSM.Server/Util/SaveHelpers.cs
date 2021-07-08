@@ -8,7 +8,7 @@ namespace CSM.Server.Util
 {
     public class SaveHelpers
     {
-        private const string WorldFileName = "world.crp";
+        public const string WorldFileName = "world.crp";
 
         internal static bool WorldFileExists()
         {

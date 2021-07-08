@@ -57,6 +57,14 @@ namespace CSM.Networking
             if (Status == ServerStatus.Running)
                 StopServer();
 
+            // Check if the world file exists.
+            // TODO: Move this to a config file or something.
+            if (!SaveHelpers.WorldFileExists())
+            {
+                Log.Error("World file does not exists, to start the server you must copy a save file to the root directory and name it " + SaveHelpers.WorldFileName);
+                return false;
+            }
+
             // Set the config
             Config = serverConfig;
 
