@@ -8,14 +8,21 @@ namespace CSM.Server.Util
 {
     public class SaveHelpers
     {
+        private const string WorldFileName = "world.crp";
+
+        internal static bool WorldFileExists()
+        {
+            return File.Exists(WorldFileName);
+        }
+
         internal static byte[] GetWorldFile()
         {
-            return File.ReadAllBytes("world.crp");
+            return File.ReadAllBytes(WorldFileName);
         }
 
         internal static void SaveWorkFile(byte[] world)
         {
-            File.WriteAllBytes("world.crp", world);
+            File.WriteAllBytes(WorldFileName, world);
         }
     }
 }
