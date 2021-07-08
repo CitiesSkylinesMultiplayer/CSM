@@ -15,7 +15,7 @@ namespace CSM.Commands
     {
         private static readonly Dictionary<Type, CommandHandler> _cmdMapping = new Dictionary<Type, CommandHandler>();
 
-        public static TypeModel Model { get; private set; }
+        public static TypeModel Model => CommandProto.Model;
 
         /// <summary>
         ///     This method is used to send a command to a connected client.
@@ -141,43 +141,12 @@ namespace CSM.Commands
                   .Where(t => !t.IsAbstract)
                   .ToArray();
 
-                // Create a protobuf model
-                RuntimeTypeModel model = RuntimeTypeModel.Create();
-
-                // Set type surrogates
-                //model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
-                //model[typeof(NetTool.ControlPoint)].SetSurrogate(typeof(ControlPointSurrogate));
-
-                // Add Quaternion Surrogate
-                //model[typeof(Quaternion)].SetSurrogate(typeof(QuaternionSurrogate));
-
-                // Add Color Surrogate
-                //model[typeof(Color)].SetSurrogate(typeof(ColorSurrogate));
-
-                // Add base command to the protobuf model with all attributes
-                model.Add(typeof(CommandBase), true);
-                MetaType baseCmd = model[typeof(CommandBase)];
-
-                // Lowest id of the subclasses
-                int id = 100;
-
                 // Create instances of the handlers, initialize mappings and register command subclasses in the protobuf model
                 foreach (Type type in handlers)
                 {
                     CommandHandler handler = (CommandHandler)Activator.CreateInstance(type);
                     _cmdMapping.Add(handler.GetDataType(), handler);
-
-                    // Add subtype to the protobuf model with all attributes
-                    baseCmd.AddSubType(id, handler.GetDataType());
-                    model.Add(handler.GetDataType(), true);
-
-                    id++;
                 }
-
-                // Compile the protobuf model
-                model.CompileInPlace();
-
-                Model = model;
             }
             catch (Exception ex)
             {

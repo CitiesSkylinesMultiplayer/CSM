@@ -4,6 +4,7 @@ using CSM.Commands.Handler.Internal;
 using CSM.Networking;
 using CSM.Server.Util;
 using LiteNetLib;
+using System;
 using System.IO;
 
 namespace CSM.Commands
@@ -21,9 +22,14 @@ namespace CSM.Commands
         {
             Parse(reader, out CommandHandler handler, out CommandBase cmd);
 
+            if (cmd == null)
+            {
+                return true;
+            }
+
             if (handler == null)
             {
-                return false;
+                return true;
             }
 
             // Handle connection request as special case
@@ -61,12 +67,19 @@ namespace CSM.Commands
         {
             cmd = Deserialize(reader.GetRemainingBytes());
 
+            if (cmd == null)
+            {
+                handler = null;
+                cmd = null;
+                return;
+            }
+
             Log.Debug($"Received {cmd.GetType().Name}");
 
             handler = Command.GetCommandHandler(cmd.GetType());
             if (handler == null)
             {
-                Log.Error($"Command {cmd.GetType().Name} not found!");
+                //Log.Error($"Command {cmd.GetType().Name} not found!");
                 return;
             }
         }
@@ -78,14 +91,21 @@ namespace CSM.Commands
         /// <returns>The deserialized command.</returns>
         private static CommandBase Deserialize(byte[] message)
         {
-            CommandBase result;
-
-            using (MemoryStream stream = new MemoryStream(message))
+            try
             {
-                result = (CommandBase)Command.Model.Deserialize(stream, null, typeof(CommandBase));
-            }
+                CommandBase result;
 
-            return result;
+                using (MemoryStream stream = new MemoryStream(message))
+                {
+                    result = (CommandBase)Command.Model.Deserialize(stream, null, typeof(CommandBase));
+                }
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

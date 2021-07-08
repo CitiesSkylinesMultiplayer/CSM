@@ -26,7 +26,7 @@ namespace CSM.Commands
         /// <param name="command">A received command</param>
         public static void StartTransaction(CommandBase command)
         {
-            if (Command.GetCommandHandler(command.GetType()).TransactionCmd)
+            if (Command.GetCommandHandler(command.GetType())?.TransactionCmd ?? true)
             {
                 _sendStarted = true;
             }

@@ -19,7 +19,7 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.PlayerList.Remove(command.Username);
 
             TransactionHandler.ClearTransactions(command.ClientId);
-            ToolSimulator.RemoveSender(command.ClientId);
+            //ToolSimulator.RemoveSender(command.ClientId);
         }
 
         public override void OnClientDisconnect(Player player)

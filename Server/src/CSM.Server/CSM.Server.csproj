@@ -17,6 +17,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\CSM.Proto\CSM.Proto.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp">
+		  <HintPath>..\..\..\assemblies\Assembly-CSharp.dll</HintPath>
+		</Reference>
 		<Reference Include="ColossalManaged">
 			<HintPath>..\..\..\assemblies\ColossalManaged.dll</HintPath>
 		</Reference>

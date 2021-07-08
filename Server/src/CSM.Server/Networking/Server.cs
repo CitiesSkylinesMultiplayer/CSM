@@ -24,13 +24,6 @@ namespace CSM.Networking
         // Connected clients
         public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
 
-        /// <summary>
-        ///     Get the Player object of the server host
-        /// </summary>
-        public Player HostPlayer { get { return _hostPlayer; } }
-        // The player instance for the host player
-        private Player _hostPlayer;
-
         // Config options for server
         public ServerConfig Config { get; private set; }
 
@@ -71,7 +64,7 @@ namespace CSM.Networking
             Log.Info($"Attempting to start server on port {Config.Port}...");
 
             // Attempt to start the server
-            bool result = _netServer.Start(Config.Port);
+            bool result = _netServer.Start(IPAddress.Any, IPAddress.IPv6Any, Config.Port);
 
             // If the server has not started, tell the user and return false.
             if (!result)
@@ -81,29 +74,24 @@ namespace CSM.Networking
                 return false;
             }
 
-            try
-            {
-                // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
-                NatDiscoverer nat = new NatDiscoverer();
-                CancellationTokenSource cts = new CancellationTokenSource();
-                cts.CancelAfter(5000);
+            //try
+            //{
+            //    // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
+            //    NatDiscoverer nat = new NatDiscoverer();
+            //    CancellationTokenSource cts = new CancellationTokenSource();
+            //    cts.CancelAfter(5000);
 
-                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
-                    Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
-            }
+            //    nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+            //        Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
+            //    ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
+            //}
 
             // Update the status
             Status = ServerStatus.Running;
-
-            // Initialize host player
-            _hostPlayer = new Player(Config.Username);
-            _hostPlayer.Status = ClientStatus.Connected;
-            MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
             // Update the console to let the user know the server is running
             Log.Info("The server has started.");
@@ -171,26 +159,24 @@ namespace CSM.Networking
         {
             try
             {
-                // Parse this message
                 bool relayOnServer = CommandReceiver.Parse(reader, peer);
+                if (!relayOnServer)
+                    return;
 
-                if (relayOnServer)
+                // Copy relevant message part (exclude protocol headers)
+                byte[] data = new byte[reader.UserDataSize];
+                Array.Copy(reader.RawData, reader.UserDataOffset, data, 0, reader.UserDataSize);
+
+                // Send this message to all other clients
+                List<NetPeer> peers = _netServer.ConnectedPeerList;
+                foreach (NetPeer client in peers)
                 {
-                    // Copy relevant message part (exclude protocol headers)
-                    byte[] data = new byte[reader.UserDataSize];
-                    Array.Copy(reader.RawData, reader.UserDataOffset, data, 0, reader.UserDataSize);
+                    // Don't send the message back to the client that sent it.
+                    if (client.Id == peer.Id)
+                        continue;
 
-                    // Send this message to all other clients
-                    List<NetPeer> peers = _netServer.ConnectedPeerList;
-                    foreach (NetPeer client in peers)
-                    {
-                        // Don't send the message back to the client that sent it.
-                        if (client.Id == peer.Id)
-                            continue;
-
-                        // Send the message so the other client can stay in sync
-                        client.Send(data, DeliveryMethod.ReliableOrdered);
-                    }
+                    // Send the message so the other client can stay in sync
+                    client.Send(data, DeliveryMethod.ReliableOrdered);
                 }
             }
             catch (Exception ex)
@@ -269,10 +255,7 @@ namespace CSM.Networking
         /// </summary>
         public Player GetPlayerByUsername(string username)
         {
-            if (username == HostPlayer.Username)
-                return HostPlayer;
-            else
-                return ConnectedPlayers.Single(z => z.Value.Username == username).Value;
+            return ConnectedPlayers.Single(z => z.Value.Username == username).Value;
         }
     }
 }

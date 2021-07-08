@@ -29,7 +29,7 @@ namespace CSM.Commands.Handler.Internal
             Log.Info("Received connection request.");
 
             string joiningVersion = command.GameVersion;
-            string appVersion = "";// BuildConfig.applicationVersion;
+            string appVersion = "1.13";// BuildConfig.applicationVersion;
 
             MatchVersionString(ref joiningVersion);
             MatchVersionString(ref appVersion);
@@ -160,7 +160,7 @@ namespace CSM.Commands.Handler.Internal
             // See SpeedPauseHelper::StateReached()
             //if (SimulationManager.instance.SimulationPaused && SpeedPauseHelper.IsStable())
             //{
-            //    AllGamesBlocked();
+            AllGamesBlocked();
             //}
         }
 
@@ -171,24 +171,10 @@ namespace CSM.Commands.Handler.Internal
 
             new Thread(() =>
             {
-                // Wait to get all remaining packets processed, because unprocessed packets
-                // before saving may end in an desynced game for the joining client
-                Thread.Sleep(2000);
-
-                // Create game save in the main thread
-                //AsyncAction action = SimulationManager.instance.AddAction(SaveHelpers.SaveServerLevel);
-
-                // Wait until the save action is queued and the game is saved
-                //while (!action.completed || SaveHelpers.IsSaving())
-                //{
-                //    Thread.Sleep(10);
-                //}
-
                 Command.SendToClient(newPlayer, new WorldTransferCommand
                 {
                     World = SaveHelpers.GetWorldFile()
                 });
-
                 newPlayer.Status = ClientStatus.Loading;
             }).Start();
         }
