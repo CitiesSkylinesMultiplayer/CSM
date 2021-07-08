@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31320.298
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM", "src\CSM.csproj", "{63933537-DA87-4026-A44C-382298FBB399}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM.Server", "Server\src\CSM.Server\CSM.Server.csproj", "{2885126B-CB52-4DBB-A7A8-A0E99A5CBD00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSM.Server", "Server\src\CSM.Server\CSM.Server.csproj", "{2885126B-CB52-4DBB-A7A8-A0E99A5CBD00}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSM.Proto", "CSM.Proto\CSM.Proto.csproj", "{AEB40133-A9A2-463D-8189-83AF45CC76FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2885126B-CB52-4DBB-A7A8-A0E99A5CBD00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2885126B-CB52-4DBB-A7A8-A0E99A5CBD00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2885126B-CB52-4DBB-A7A8-A0E99A5CBD00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB40133-A9A2-463D-8189-83AF45CC76FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB40133-A9A2-463D-8189-83AF45CC76FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB40133-A9A2-463D-8189-83AF45CC76FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB40133-A9A2-463D-8189-83AF45CC76FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
