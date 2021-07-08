@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="protobuf-net" Version="2.4.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="Assembly-CSharp">
+	    <HintPath>..\assemblies\Assembly-CSharp.dll</HintPath>
+	  </Reference>
+	  <Reference Include="ColossalManaged">
+	    <HintPath>..\assemblies\ColossalManaged.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine">
+	    <HintPath>..\assemblies\UnityEngine.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+</Project>
