@@ -36,6 +36,6 @@ namespace CSM.Commands.Data.Internal
         ///     when DLCs of the client and server don't match.
         /// </summary>
         [ProtoMember(4)]
-        public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
+        public int DLCBitMask { get; set; }
     }
 }

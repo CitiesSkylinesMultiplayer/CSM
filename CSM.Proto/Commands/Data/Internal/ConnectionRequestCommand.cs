@@ -51,6 +51,6 @@ namespace CSM.Commands.Data.Internal
         ///     BitMask containing the installed DLCs of the client
         /// </summary>
         [ProtoMember(6)]
-        public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
+        public int DLCBitMask { get; set; }
     }
 }

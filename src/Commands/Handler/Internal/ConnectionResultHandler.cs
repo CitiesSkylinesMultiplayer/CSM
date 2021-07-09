@@ -37,7 +37,7 @@ namespace CSM.Commands.Handler.Internal
                 MultiplayerManager.Instance.CurrentClient.Disconnect();
                 if (command.Reason.Contains("DLC")) // No other way to detect if we should display the box
                 {
-                    DLCHelper.DLCComparison compare = DLCHelper.Compare(command.DLCBitMask, DLCHelper.GetOwnedDLCs());
+                    DLCHelper.DLCComparison compare = DLCHelper.Compare((SteamHelper.DLC_BitMask)command.DLCBitMask, DLCHelper.GetOwnedDLCs());
 
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {

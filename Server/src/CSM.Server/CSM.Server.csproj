@@ -6,11 +6,24 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Commands\Handler\Game\**" />
+	  <EmbeddedResource Remove="Commands\Handler\Game\**" />
+	  <None Remove="Commands\Handler\Game\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Remove="Networking\Client.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Include="Commands\Handler\Game\SpeedPauseReachedHandler.cs" />
+	  <Compile Include="Commands\Handler\Game\SpeedPauseRequestHandler.cs" />
+	  <Compile Include="Commands\Handler\Game\SpeedPauseResponseHandler.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="LiteNetLib" Version="0.9.2.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="NLog" Version="4.7.2" />
 		<PackageReference Include="protobuf-net" Version="2.4.6" />
 		<PackageReference Include="Open.Nat" Version="2.1.0" />
@@ -18,18 +31,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\CSM.Proto\CSM.Proto.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="Assembly-CSharp">
-		  <HintPath>..\..\..\assemblies\Assembly-CSharp.dll</HintPath>
-		</Reference>
-		<Reference Include="ColossalManaged">
-			<HintPath>..\..\..\assemblies\ColossalManaged.dll</HintPath>
-		</Reference>
-		<Reference Include="UnityEngine">
-		  <HintPath>..\..\..\assemblies\UnityEngine.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 
 </Project>

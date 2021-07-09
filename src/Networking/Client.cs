@@ -252,7 +252,7 @@ namespace CSM.Networking
                 ModVersion = versionString,
                 Password = Config.Password,
                 Username = Config.Username,
-                DLCBitMask = DLCHelper.GetOwnedDLCs()
+                DLCBitMask = (int)DLCHelper.GetOwnedDLCs()
             };
 
             Log.Info("Sending connection request to server...");
