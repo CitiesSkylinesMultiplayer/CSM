@@ -3,7 +3,6 @@ using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Server.Util;
 using LiteNetLib;
-using Open.Nat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,21 +82,21 @@ namespace CSM.Networking
                 return false;
             }
 
-            try
-            {
-                // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
-                NatDiscoverer nat = new NatDiscoverer();
-                CancellationTokenSource cts = new CancellationTokenSource();
-                cts.CancelAfter(5000);
+            //try
+            //{
+            //    // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
+            //    NatDiscoverer nat = new NatDiscoverer();
+            //    CancellationTokenSource cts = new CancellationTokenSource();
+            //    cts.CancelAfter(5000);
 
-                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
-                    Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
-            }
+            //    nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+            //        Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
+            //    ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
+            //}
 
             // Update the status
             Status = ServerStatus.Running;

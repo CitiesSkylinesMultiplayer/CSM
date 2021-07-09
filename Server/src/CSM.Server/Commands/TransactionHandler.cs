@@ -71,18 +71,18 @@ namespace CSM.Commands
         {
             foreach (Tuple<CommandHandler, CommandBase, int> transaction in _receivedTransactions)
             {
-                if (transaction.Var3 != sender)
+                if (transaction.Item3 != sender)
                 {
                     continue;
                 }
 
                 try
                 {
-                    transaction.Var1.Parse(transaction.Var2);
+                    transaction.Item1.Parse(transaction.Item2);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Exception while parsing {transaction.Var2.GetType().Name}", ex);
+                    Log.Error($"Exception while parsing {transaction.Item2.GetType().Name}", ex);
                 }
             }
 
@@ -95,7 +95,7 @@ namespace CSM.Commands
         /// <param name="clientId">The sender's client id.</param>
         public static void ClearTransactions(int clientId)
         {
-            _receivedTransactions.RemoveAll(tuple => tuple.Var3 == clientId);
+            _receivedTransactions.RemoveAll(tuple => tuple.Item3 == clientId);
         }
 
         /// <summary>
