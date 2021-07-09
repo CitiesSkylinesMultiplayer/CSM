@@ -159,6 +159,13 @@ namespace CSM.Networking
             _netServer.PollEvents();
         }
 
+        public bool HasAnyEventsToProcess()
+        {
+            return _netServer.UnsyncedEvents;
+        }
+
+        public int UpdateTime => _netServer.UpdateTime;
+
         /// <summary>
         ///     When we get a message from a client, we handle the message here
         ///     and perform any necessary tasks.
