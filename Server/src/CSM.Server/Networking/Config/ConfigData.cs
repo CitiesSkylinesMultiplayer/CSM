@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using UnityEngine;
 
 namespace CSM.Networking.Config
 {
@@ -18,7 +17,7 @@ namespace CSM.Networking.Config
 
             try
             {
-                config = JsonUtility.FromJson<T>(File.ReadAllText(filePath));
+                config = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath));
                 return true;
             }
             catch
@@ -38,7 +37,7 @@ namespace CSM.Networking.Config
             }
             try
             {
-                File.WriteAllText(filePath, JsonUtility.ToJson(config, true));
+                File.WriteAllText(filePath, Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
             }
             catch { return; }
         }

@@ -1,6 +1,8 @@
-﻿using CSM.Commands.Data.Internal;
+﻿using CSM.Commands.Data.Game;
+using CSM.Commands.Data.Internal;
 using CSM.Commands.Handler;
 using CSM.Commands.Handler.Internal;
+using CSM.Helpers;
 using CSM.Networking;
 using CSM.Server.Util;
 using LiteNetLib;
@@ -37,6 +39,12 @@ namespace CSM.Commands
             {
                 ((ConnectionRequestHandler)handler).HandleOnServer((ConnectionRequestCommand)cmd, peer);
                 return false;
+            }
+
+            // Intercept response command for the time
+            if(cmd is SpeedPauseResponseCommand speedPauseResponseCommand)
+            {
+                SpeedPauseHelper.SetCurrentTime(speedPauseResponseCommand.CurrentTime);
             }
 
             // Make sure we know about the connected client on the server

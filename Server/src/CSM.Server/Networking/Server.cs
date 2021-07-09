@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CSM.Networking
 {
@@ -20,7 +21,7 @@ namespace CSM.Networking
     {
         // The server
         private LiteNetLib.NetManager _netServer;
-        
+
         // Connected clients
         public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
 

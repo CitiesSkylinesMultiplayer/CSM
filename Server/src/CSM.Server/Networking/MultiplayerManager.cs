@@ -1,6 +1,4 @@
-﻿using ColossalFramework.Threading;
-using ColossalFramework.UI;
-using CSM.Networking.Config;
+﻿using CSM.Networking.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,18 +74,6 @@ namespace CSM.Networking
             if (!GameBlocked)
                 return;
             GameBlocked = false;
-        }
-
-        private static void QueueMainThread(Action action)
-        {
-            if (Dispatcher.currentSafe == ThreadHelper.dispatcher)
-            {
-                action();
-            }
-            else
-            {
-                ThreadHelper.dispatcher.Dispatch(action);
-            }
         }
 
         private static MultiplayerManager _multiplayerInstance;

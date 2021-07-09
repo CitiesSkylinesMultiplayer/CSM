@@ -1,4 +1,5 @@
-﻿using CSM.Networking;
+﻿using CSM.Helpers;
+using CSM.Networking;
 using CSM.Networking.Config;
 using CSM.Server.Util;
 using System;
@@ -23,8 +24,10 @@ namespace CSM.Server
                     Console.WriteLine("Could not start server.");
                 }
             });
+
             while (true)
             {
+                SpeedPauseHelper.SimulationStep();
                 MultiplayerManager.Instance.ProcessEvents();
                 Thread.Sleep(15);
             }
