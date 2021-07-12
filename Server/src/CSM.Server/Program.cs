@@ -15,33 +15,23 @@ namespace CSM.Server
         static async Task Main(string[] args)
         {
             Log.Initialize(true);
-
-            var stoppingTokenSource = new CancellationTokenSource();
-            var host = CreateHostBuilder(args);
-
-            var serverConfig = new ServerConfig()
-            {   
-            };
-
-            MultiplayerManager.Instance.StartGameServer(serverConfig, (success) =>
-            {
-                if (!success)
-                {
-                    Log.Error("Could not start server.");
-                    stoppingTokenSource.Cancel();
-                }
-            });
-
-            await host.RunConsoleAsync(stoppingTokenSource.Token);
+            var host = CreateHostBuilder(args).Build();
+            await host.RunAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
             => Host.CreateDefaultBuilder(args)
-                   .ConfigureServices(ConfigureServices);
+                   .AddCSMServer();
+    }
 
-        private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
-        {
-            services.AddHostedService<UpdateLoopService>();
-        }
+    public static class HostBuilderExtensions
+    {
+
+        public static IHostBuilder AddCSMServer(this IHostBuilder builder) => builder
+            .ConfigureServices(services =>
+            {
+                services.AddHostedService<MultiplayerService>();
+                services.AddHostedService<UpdateLoopService>();
+            });
     }
 }
