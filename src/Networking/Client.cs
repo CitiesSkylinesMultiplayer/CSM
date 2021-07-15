@@ -25,7 +25,7 @@ namespace CSM.Networking
     {
         // The client
         private readonly LiteNetLib.NetManager _netClient;
-        
+
         /// <summary>
         ///     Configuration for the client
         /// </summary>
@@ -53,6 +53,7 @@ namespace CSM.Networking
         public string ConnectionMessage { get; set; } = "Unknown error";
 
         private bool MainMenuEventProcessing = false;
+        private AutoResetEvent _connectedEvent = new AutoResetEvent(false);
 
         public Client()
         {
@@ -133,30 +134,18 @@ namespace CSM.Networking
             // We need to wait in a loop for 30 seconds (waiting 500ms each time)
             // while we wait for a successful connection (Status = Connected) or a
             // failed connection (Status = Disconnected).
-            Stopwatch waitWatch = new Stopwatch();
-            waitWatch.Start();
-
-            // Try connect for 30 seconds
-            while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
+            bool success = _connectedEvent.WaitOne(TimeSpan.FromSeconds(30));
+            if (success)
             {
-                // If we connect, exit the loop and return true
-                if (Status == ClientStatus.Connected || Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
-                {
-                    Log.Info("Client has connected.");
-                    return true;
-                }
+                Log.Info("Client has connected.");
+                return true;
+            }
 
-                // The client cannot connect for some reason, the ConnectionMessage
-                // variable will contain why.
-                if (Status == ClientStatus.Disconnected)
-                {
-                    Log.Warn("Client disconnected while in connecting loop.");
-                    Disconnect(); // make sure we are fully disconnected
-                    return false;
-                }
-
-                // Wait 250ms
-                Thread.Sleep(250);
+            if (Status == ClientStatus.Disconnected)
+            {
+                Log.Warn("Client disconnected while in connecting loop.");
+                Disconnect(); // make sure we are fully disconnected
+                return false;
             }
 
             // We have timed out
@@ -192,6 +181,14 @@ namespace CSM.Networking
             }
 
             Log.Info("Disconnected from server");
+        }
+
+        public void HandleConnected(int clientId)
+        {
+            ClientPlayer = new Player();
+            Status = ClientStatus.Downloading;
+            ClientId = clientId;
+            _connectedEvent.Set();
         }
 
         public void SendToServer(CommandBase message)
@@ -311,7 +308,7 @@ namespace CSM.Networking
         {
             Log.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
         }
-        
+
         private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
         {
             ClientPlayer.Latency = latency;
