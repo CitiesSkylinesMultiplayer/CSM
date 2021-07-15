@@ -87,7 +87,7 @@ namespace CSM.Commands
             handler = Command.GetCommandHandler(cmd.GetType());
             if (handler == null)
             {
-                //Log.Error($"Command {cmd.GetType().Name} not found!");
+                Log.Error($"Command Handler {cmd.GetType().Name} not found!");
                 return;
             }
         }

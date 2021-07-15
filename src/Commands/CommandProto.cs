@@ -1,4 +1,5 @@
 ﻿using CSM.Models;
+using CSM.Util;
 using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace CSM.Commands
         static CommandProto()
         {
             // Get all CommandHandler subclasses in the CSM.Commands.Handler namespace
-            Type[] handlers = typeof(CommandProto).Assembly.GetTypes()
+            Type[] commands = typeof(CommandProto).Assembly.GetTypes()
               .Where(t => t.Namespace != null)
               .Where(t => t.Namespace.StartsWith("CSM.Commands", StringComparison.Ordinal))
               .Where(t => t.IsSubclassOf(typeof(CommandBase)))
@@ -50,7 +51,7 @@ namespace CSM.Commands
             int id = 100;
 
             // Create instances of the handlers, initialize mappings and register command subclasses in the protobuf model
-            foreach (Type type in handlers)
+            foreach (Type type in commands)
             {
                 // Add subtype to the protobuf model with all attributes
                 var fixedCommandAttribute = type.GetCustomAttributes(typeof(FixedCommandAttribute), true).OfType<FixedCommandAttribute>().FirstOrDefault();
