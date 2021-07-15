@@ -8,7 +8,7 @@ namespace CSM.Commands.Data.Game
     /// Sent by:
     /// - SpeedPauseHelper
     [ProtoContract]
-    [FixedCommand(90017)]
+    [FixedCommand(80002)]
     public class SpeedPauseRequestCommand : CommandBase
     {
         /// <summary>
