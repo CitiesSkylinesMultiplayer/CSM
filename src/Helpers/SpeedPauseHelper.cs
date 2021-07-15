@@ -67,7 +67,9 @@ namespace CSM.Helpers
             bool allowNegotiation = false;
 
             // If game is blocked or client is connecting
-            if (MultiplayerManager.Instance.GameBlocked || !MultiplayerManager.Instance.IsConnected())
+            if (MultiplayerManager.Instance.GameBlocked ||
+               (MultiplayerManager.Instance.IsClientOrHost() &&
+                MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected))
             {
                 // Pause the game if it is not yet paused (on the server) and thus trigger the pause negotiation (PauseRequest)
                 if (!SimulationManager.instance.SimulationPaused &&

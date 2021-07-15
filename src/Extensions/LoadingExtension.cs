@@ -30,7 +30,7 @@ namespace CSM.Extensions
 
             ResetData();
 
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (MultiplayerManager.Instance.IsClientOrHost())
             {
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
                 Command.SendToServer(new ClientLevelLoadedCommand());
