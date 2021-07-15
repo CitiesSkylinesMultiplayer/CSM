@@ -192,16 +192,7 @@ namespace CSM.Networking
                 Array.Copy(reader.RawData, reader.UserDataOffset, data, 0, reader.UserDataSize);
 
                 // Send this message to all other clients
-                List<NetPeer> peers = _netServer.ConnectedPeerList;
-                foreach (NetPeer client in peers)
-                {
-                    // Don't send the message back to the client that sent it.
-                    if (client.Id == peer.Id)
-                        continue;
-
-                    // Send the message so the other client can stay in sync
-                    client.Send(data, DeliveryMethod.ReliableOrdered);
-                }
+                _netServer.SendToAll(data, deliveryMethod, peer);
             }
             catch (Exception ex)
             {
