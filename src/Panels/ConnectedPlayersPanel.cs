@@ -81,7 +81,7 @@ namespace CSM.Panels
                 int playerOffset = -30;
 
                 // Enable Host to see and kick all players
-                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+                if (MultiplayerManager.Instance.IsServer())
                 {
                     // List all the players
                     foreach (string player in MultiplayerManager.Instance.PlayerList)
@@ -104,7 +104,7 @@ namespace CSM.Panels
                     }
                 }
                 // Enable Client to see all players
-                else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+                else if (MultiplayerManager.Instance.IsClientOrHost())
                 {
                     // List all the players
                     foreach (string player in MultiplayerManager.Instance.PlayerList)

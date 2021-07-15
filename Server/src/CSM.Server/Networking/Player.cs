@@ -11,6 +11,8 @@ namespace CSM.Networking
 
         public long Latency { get; set; }
 
+        public bool IsHost { get; set; }
+
         public ClientStatus Status { get; set; }
 
         public Player(NetPeer peer, string username)

@@ -103,11 +103,11 @@ namespace CSM.Commands
         /// <param name="command">The command to send.</param>
         public static void SendToAll(CommandBase command)
         {
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (MultiplayerManager.Instance.IsClientOrHost())
             {
                 SendToServer(command);
             }
-            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            else if (MultiplayerManager.Instance.IsServer())
             {
                 SendToClients(command);
             }
@@ -183,6 +183,7 @@ namespace CSM.Commands
                 {
                     CommandHandler handler = (CommandHandler)Activator.CreateInstance(type);
                     _cmdMapping.Add(handler.GetDataType(), handler);
+                    Log.Debug($"Added {type.Name} for {handler.GetDataType().Name}");
                 }
             }
             catch (Exception ex)

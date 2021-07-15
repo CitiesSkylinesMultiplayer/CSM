@@ -1,4 +1,5 @@
 ﻿using CSM.Commands;
+using CSM.Commands.Data.Internal;
 using CSM.Networking.Config;
 using CSM.Networking.Status;
 using CSM.Server.Util;
@@ -245,6 +246,8 @@ namespace CSM.Networking
             ChatLogPanel.PrintGameMessage($"Player {player.Username} has connected!");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
             Command.HandleClientConnect(player);
+
+            ElectHost();
         }
 
         public void HandlePlayerDisconnect(Player player)
@@ -254,6 +257,30 @@ namespace CSM.Networking
             Command.HandleClientDisconnect(player);
             TransactionHandler.ClearTransactions(player.NetPeer.Id);
             //ToolSimulator.RemoveSender(player.NetPeer.Id);
+
+            ElectHost();
+        }
+
+        public void ElectHost()
+        {
+            if (this.ConnectedPlayers.Count == 0)
+                return;
+
+            var nextPlayerInList = this.ConnectedPlayers.First().Value;
+            ElectPlayerAsHost(nextPlayerInList);
+        }
+
+        private void ElectPlayerAsHost(Player player)
+        {
+            if (player.IsHost)
+                return;
+
+            Log.Debug($"Electing {player.Username} as host");
+            player.IsHost = true;
+            Command.SendToClient(player, new ElectHostCommand()
+            {
+                Username = player.Username
+            });
         }
 
         /// <summary>

@@ -34,7 +34,8 @@ namespace CSM.Extensions
                         break;
                     }
 
-                case MultiplayerRole.Server: //Sends the UI data of the different types of Demand
+                case MultiplayerRole.Host: //Sends the UI data of the different types of Demand
+                case MultiplayerRole.Server: 
                     {
                         int ResidentialDemand = Singleton<ZoneManager>.instance.m_residentialDemand;
                         int CommercialDemand = Singleton<ZoneManager>.instance.m_commercialDemand;

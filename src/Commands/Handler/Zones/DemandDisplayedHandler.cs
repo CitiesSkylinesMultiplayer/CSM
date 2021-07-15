@@ -8,7 +8,7 @@ namespace CSM.Commands.Handler.Zones
         protected override void Handle(DemandDisplayedCommand command)
         {
             // Don't handle on server
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            if (MultiplayerManager.Instance.IsServerOrHost())
                 return;
 
             ZoneManager.instance.m_residentialDemand = command.ResidentialDemand;
