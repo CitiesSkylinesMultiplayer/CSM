@@ -13,8 +13,4 @@
 		<PackageReference Include="protobuf-net" Version="2.4.6" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\CSM.Proto\CSM.Proto.csproj" />
-	</ItemGroup>
-
 </Project>
