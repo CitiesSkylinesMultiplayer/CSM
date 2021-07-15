@@ -138,7 +138,10 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            _netServer.SendToAll(message.Serialize(), DeliveryMethod.ReliableOrdered);
+            if (Command.GetCommandHandler(message.GetType()).Reliable)
+                _netServer.SendToAll(message.Serialize(), DeliveryMethod.ReliableUnordered);
+            else
+                _netServer.SendToAll(message.Serialize(), DeliveryMethod.Sequenced);
 
             Log.Debug($"Sending {message.GetType().Name} to all clients");
         }
@@ -151,7 +154,10 @@ namespace CSM.Networking
             if (Status != ServerStatus.Running)
                 return;
 
-            peer.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
+            if (Command.GetCommandHandler(message.GetType()).Reliable)
+                peer.Send(message.Serialize(), DeliveryMethod.ReliableUnordered);
+            else
+                peer.Send(message.Serialize(), DeliveryMethod.Sequenced);
 
             Log.Debug($"Sending {message.GetType().Name} to client at {peer.EndPoint.Address}:{peer.EndPoint.Port}");
         }
@@ -191,7 +197,7 @@ namespace CSM.Networking
                             continue;
 
                         // Send the message so the other client can stay in sync
-                        client.Send(data, DeliveryMethod.ReliableOrdered);
+                        client.Send(data, deliveryMethod);
                     }
                 }
             }

@@ -15,6 +15,11 @@ namespace CSM.Commands.Handler
         /// </summary>
         public bool TransactionCmd { get; protected set; } = true;
 
+        /// <summary>
+        ///     If this is true, ...
+        /// </summary>
+        public bool Reliable { get; protected set; } = true;
+
         public abstract Type GetDataType();
 
         public abstract void Parse(CommandBase message);

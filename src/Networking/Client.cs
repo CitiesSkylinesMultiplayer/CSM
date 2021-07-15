@@ -14,6 +14,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CSM.Networking
 {
@@ -205,7 +206,10 @@ namespace CSM.Networking
 
             Log.Debug($"Sending {message.GetType().Name} to server");
 
-            server.Send(message.Serialize(), DeliveryMethod.ReliableOrdered);
+            if (Command.GetCommandHandler(message.GetType()).Reliable)
+                server.Send(message.Serialize(), DeliveryMethod.ReliableUnordered);
+            else
+                server.Send(message.Serialize(), DeliveryMethod.Sequenced);
         }
 
         /// <summary>
