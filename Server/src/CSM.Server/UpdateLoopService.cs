@@ -1,4 +1,5 @@
-﻿using CSM.Helpers;
+﻿using CSM.Commands;
+using CSM.Helpers;
 using CSM.Networking;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
@@ -15,10 +16,9 @@ namespace CSM.Server
             {
                 SpeedPauseHelper.SimulationStep();
                 MultiplayerManager.Instance.ProcessEvents();
+                TransactionHandler.FinishSend();
 
-                // Keep processing events while there is anything in the queue
-                if(!MultiplayerManager.Instance.CurrentServer.HasAnyEventsToProcess())
-                    await Task.Delay(MultiplayerManager.Instance.CurrentServer.UpdateTime);
+                await Task.Delay(MultiplayerManager.Instance.CurrentServer.UpdateTime);
             }
         }
     }
