@@ -29,6 +29,7 @@ namespace CSM.Commands.Handler.Internal
                 Username = player.Username,
                 ClientId = player.NetPeer.Id
             });
+            MultiplayerManager.Instance.CurrentServer.ElectHost();
         }
     }
 }
