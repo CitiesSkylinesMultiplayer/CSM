@@ -101,6 +101,7 @@
     <Compile Include="Commands\Data\Game\SpeedPauseRequestCommand.cs" />
     <Compile Include="Commands\Data\Game\SpeedPauseResponseCommand.cs" />
     <Compile Include="Commands\Data\Internal\ChatMessageCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ElectHostCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientConnectCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientDisconnectCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
@@ -330,6 +331,6 @@
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('osx'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
   </PropertyGroup>
 </Project>
