@@ -12,7 +12,7 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
-    [string]$OutputDirectory = "..\src\bin\Release",
+    [string]$OutputDirectory = "..\src\csm\bin\Release",
     [string]$ModDirectory = "Default"
  )
 
@@ -145,6 +145,7 @@ If ($Build)
         Write-Host "Using MSBuild at: $msbuild"
     }
 
+    & $msbuild "..\CSM.sln" /restore /t:CSM_API /p:Configuration=Release /p:Platform="Any CPU" 
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
     If ($LastExitCode -ne 0)
     {
@@ -174,6 +175,7 @@ If ($Install)
     Copy-Item -Path "$($OutputDirectory)$($Sep)LiteNetLib.dll"        -Destination "$($ModDirectory)$($Sep)LiteNetLib.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)protobuf-net.dll"      -Destination "$($ModDirectory)$($Sep)protobuf-net.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.API.dll"           -Destination "$($ModDirectory)$($Sep)CSM.API.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force

@@ -1,10 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM", "src\CSM.csproj", "{63933537-DA87-4026-A44C-382298FBB399}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM", "src\csm\CSM.csproj", "{63933537-DA87-4026-A44C-382298FBB399}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM.API", "src\api\CSM.API.csproj", "{AB27EACD-B9A9-42BC-BF8A-3B25AABFF6CA}"
+EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +18,10 @@ Global
 		{63933537-DA87-4026-A44C-382298FBB399}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63933537-DA87-4026-A44C-382298FBB399}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63933537-DA87-4026-A44C-382298FBB399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB27EACD-B9A9-42BC-BF8A-3B25AABFF6CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB27EACD-B9A9-42BC-BF8A-3B25AABFF6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB27EACD-B9A9-42BC-BF8A-3B25AABFF6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB27EACD-B9A9-42BC-BF8A-3B25AABFF6CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
