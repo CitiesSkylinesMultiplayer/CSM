@@ -20,6 +20,6 @@ namespace CSM.Commands.Data.TransportLines
         ///     The prefab info index of the new vehicle.
         /// </summary>
         [ProtoMember(2)]
-        public uint Vehicle;
+        public uint? Vehicle;
     }
 }

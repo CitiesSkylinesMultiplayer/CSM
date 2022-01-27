@@ -11,7 +11,11 @@ namespace CSM.Commands.Handler.TransportLines
 
             // Use ref because otherwise the TransportLine struct(!) would be copied
             ref TransportLine line = ref TransportManager.instance.m_lines.m_buffer[command.LineId];
-            VehicleInfo vehicle = PrefabCollection<VehicleInfo>.GetPrefab(command.Vehicle);
+
+            VehicleInfo vehicle = null;
+            if (command.Vehicle.HasValue) {
+                vehicle = PrefabCollection<VehicleInfo>.GetPrefab(command.Vehicle.Value);
+            }
 
             ReflectionHelper.Call(line, "ReplaceVehicles", command.LineId, vehicle);
 
