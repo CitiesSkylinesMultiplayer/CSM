@@ -109,7 +109,7 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("sync", "Redownloads the entire save", (command) =>
                 {
-                    if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+                    if (MultiplayerManager.Instance.IsClientOrHost())
                     {
                         if (MultiplayerManager.Instance.GameBlocked)
                         {
@@ -474,11 +474,11 @@ namespace CSM.Panels
             // Get the player name
             string playerName = "Local";
 
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (MultiplayerManager.Instance.IsClientOrHost())
             {
                 playerName = MultiplayerManager.Instance.CurrentClient.Config.Username;
             }
-            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            else if (MultiplayerManager.Instance.IsServer())
             {
                 playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
             }

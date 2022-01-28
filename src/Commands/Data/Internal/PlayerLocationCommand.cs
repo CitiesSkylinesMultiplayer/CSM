@@ -9,6 +9,7 @@ namespace CSM.Commands.Data.Internal
     /// Sent by:
     /// - ICameraHandler
     [ProtoContract]
+    [FixedCommand(90012)]
     public class PlayerLocationCommand : CommandBase
     {
         /// <summary>

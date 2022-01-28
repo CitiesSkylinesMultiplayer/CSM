@@ -26,9 +26,7 @@ namespace CSM.Commands.Handler.Internal
             {
                 // Log and set that we are connected.
                 Log.Info("Successfully connected to server. Downloading world...");
-                MultiplayerManager.Instance.CurrentClient.ClientPlayer = new Player();
-                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Downloading;
-                MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
+                MultiplayerManager.Instance.CurrentClient.HandleConnected(command.ClientId);
             }
             else
             {
@@ -37,7 +35,7 @@ namespace CSM.Commands.Handler.Internal
                 MultiplayerManager.Instance.CurrentClient.Disconnect();
                 if (command.Reason.Contains("DLC")) // No other way to detect if we should display the box
                 {
-                    DLCHelper.DLCComparison compare = DLCHelper.Compare(command.DLCBitMask, DLCHelper.GetOwnedDLCs());
+                    DLCHelper.DLCComparison compare = DLCHelper.Compare((SteamHelper.DLC_BitMask)command.DLCBitMask, DLCHelper.GetOwnedDLCs());
 
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {

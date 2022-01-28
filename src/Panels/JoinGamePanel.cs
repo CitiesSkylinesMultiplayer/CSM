@@ -138,7 +138,7 @@ namespace CSM.Panels
                 return;
             }
 
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            if (MultiplayerManager.Instance.IsServer())
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Already Running Server";

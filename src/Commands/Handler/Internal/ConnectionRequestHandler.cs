@@ -99,7 +99,7 @@ namespace CSM.Commands.Handler.Internal
                 {
                     Success = false,
                     Reason = "DLCs don't match",
-                    DLCBitMask = dlcMask
+                    DLCBitMask = (int)dlcMask
                 });
                 return;
             }
@@ -119,7 +119,7 @@ namespace CSM.Commands.Handler.Internal
                 {
                     Success = false,
                     Reason = "A client is already joining",
-                    DLCBitMask = dlcMask
+                    DLCBitMask = (int)dlcMask
                 });
                 return;
             }

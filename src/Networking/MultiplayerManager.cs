@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using CSM.Networking.Status;
+using CSM.Util;
 
 namespace CSM.Networking
 {
@@ -34,11 +35,28 @@ namespace CSM.Networking
 
         public bool GameBlocked { get; private set; } = false;
 
+        public bool IsClient() => CurrentRole == MultiplayerRole.Client;
+        public bool IsClientOrHost() => CurrentRole == MultiplayerRole.Client || CurrentRole == MultiplayerRole.Host;
+        public bool IsServer() => CurrentRole == MultiplayerRole.Server;
+        public bool IsServerOrHost() => CurrentRole == MultiplayerRole.Server || CurrentRole == MultiplayerRole.Host;
+
+        public void ElectAsHost()
+        {
+            SetRole(MultiplayerRole.Host);
+        }
+
+        private void SetRole(MultiplayerRole role)
+        {
+            Log.Debug($"Current role changed to {role}");
+            CurrentRole = role;
+        }
+
         public void ProcessEvents()
         {
             switch (CurrentRole)
             {
                 case MultiplayerRole.Client:
+                case MultiplayerRole.Host:
                     CurrentClient.ProcessEvents();
                     break;
 
@@ -65,7 +83,7 @@ namespace CSM.Networking
         /// <param name="callback">This callback returns if the connection was successful.</param>
         public void ConnectToServer(string ipAddress, int port, string username, string password, Action<bool> callback)
         {
-            if (CurrentRole == MultiplayerRole.Server)
+            if (IsServer())
             {
                 callback.Invoke(false);
                 return;
@@ -77,7 +95,7 @@ namespace CSM.Networking
                 bool isConnected = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password));
 
                 // Set the current role
-                CurrentRole = isConnected ? MultiplayerRole.Client : MultiplayerRole.None;
+                SetRole(isConnected ? MultiplayerRole.Client : MultiplayerRole.None);
 
                 // Return the status
                 callback.Invoke(isConnected);
@@ -91,7 +109,7 @@ namespace CSM.Networking
         /// <param name="callback">This callback returns if the server was started successfully.</param>
         public void StartGameServer(ServerConfig config, Action<bool> callback)
         {
-            if (CurrentRole == MultiplayerRole.Client)
+            if (IsClientOrHost())
             {
                 callback.Invoke(false);
                 return;
@@ -103,7 +121,7 @@ namespace CSM.Networking
                 bool isConnected = CurrentServer.StartServer(config);
 
                 // Set the current role
-                CurrentRole = isConnected ? MultiplayerRole.Server : MultiplayerRole.None;
+                SetRole(isConnected ? MultiplayerRole.Server : MultiplayerRole.None);
 
                 callback.Invoke(isConnected);
             }).Start();
@@ -116,6 +134,7 @@ namespace CSM.Networking
         {
             switch (CurrentRole)
             {
+                case MultiplayerRole.Host:
                 case MultiplayerRole.Client:
                     CurrentClient.Disconnect();
                     ChatLogPanel.PrintGameMessage("Disconnected from server.");
@@ -126,13 +145,12 @@ namespace CSM.Networking
                     ChatLogPanel.PrintGameMessage("Server stopped.");
                     break;
             }
-            CurrentRole = MultiplayerRole.None;
+            SetRole(MultiplayerRole.None);
         }
 
         public bool IsConnected()
         {
-            return CurrentRole == MultiplayerRole.Server || (CurrentRole == MultiplayerRole.Client &&
-                                                             CurrentClient.Status == ClientStatus.Connected);
+            return IsServer() || (IsClientOrHost() && CurrentClient.Status == ClientStatus.Connected);
         }
 
         public void BlockGameReSync()
@@ -226,6 +244,13 @@ namespace CSM.Networking
         ///     The game is acting as a server, it will send out updates to all connected
         ///     clients and receive information about the game from the clients.
         /// </summary>
-        Server
+        Server,
+
+        /// <summary>
+        ///     The game is connect to a server and must broadcast
+        ///     it's update to the server and update internal values
+        ///     from the server.
+        /// </summary>
+        Host
     }
 }

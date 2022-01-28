@@ -68,12 +68,12 @@ namespace CSM.Helpers
 
             // If game is blocked or client is connecting
             if (MultiplayerManager.Instance.GameBlocked ||
-               (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client && 
+               (MultiplayerManager.Instance.IsClientOrHost() &&
                 MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected))
             {
                 // Pause the game if it is not yet paused (on the server) and thus trigger the pause negotiation (PauseRequest)
                 if (!SimulationManager.instance.SimulationPaused &&
-                    MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+                    MultiplayerManager.Instance.IsServer())
                 {
                     // Only request pause when the state is stable (so no warning message is shown to the user)
                     if (IsStable())
@@ -375,6 +375,7 @@ namespace CSM.Helpers
             switch (MultiplayerManager.Instance.CurrentRole)
             {
                 case MultiplayerRole.Client:
+                case MultiplayerRole.Host:
                     numClients = -1;
                     break;
                 case MultiplayerRole.Server:
@@ -431,7 +432,7 @@ namespace CSM.Helpers
         /// <returns>The maximum network latency.</returns>
         private static long GetMaximumLatency()
         {
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (MultiplayerManager.Instance.IsClientOrHost())
             {
                 return MultiplayerManager.Instance.CurrentClient.ClientPlayer.Latency;
             }
@@ -455,7 +456,7 @@ namespace CSM.Helpers
         /// <returns>The minimum network latency.</returns>
         private static long GetMinimumLatency()
         {
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            if (MultiplayerManager.Instance.IsClientOrHost())
             {
                 return MultiplayerManager.Instance.CurrentClient.ClientPlayer.Latency;
             }
@@ -495,7 +496,7 @@ namespace CSM.Helpers
         {
             if (_rand == null)
             {
-                if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Client)
+                if (!MultiplayerManager.Instance.IsClient())
                 {
                     _rand = new System.Random();
                 }

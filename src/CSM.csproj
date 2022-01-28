@@ -63,7 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandProto.cs" />
     <Compile Include="Commands\CommandReceiver.cs" />
+    <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\Areas\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingChangeProductionRateCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingCreateCommand.cs" />
@@ -75,8 +77,15 @@
     <Compile Include="Commands\Data\Buildings\BuildingSetTollPriceCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetTransferReasonCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingToolCreateCommand.cs" />
-    <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
+    <Compile Include="Commands\Data\CommandBase.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictAreaModifyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictCityPolicyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictCityPolicyUnsetCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictCreateCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictPolicyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictPolicyUnsetCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictReleaseCommand.cs" />
     <Compile Include="Commands\Data\Economy\EconomyBailoutCommand.cs" />
     <Compile Include="Commands\Data\Economy\EconomyPayLoanCommand.cs" />
     <Compile Include="Commands\Data\Economy\EconomyResourceCommand.cs" />
@@ -89,25 +98,19 @@
     <Compile Include="Commands\Data\Events\EventSetSecurityBudgetCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetTicketPriceCommand.cs" />
     <Compile Include="Commands\Data\Game\SpeedPauseReachedCommand.cs" />
-    <Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
-    <Compile Include="Commands\Data\Internal\ClientLevelLoadedCommand.cs" />
-    <Compile Include="Commands\Data\Internal\PlayerLocationCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictAreaModifyCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictCityPolicyCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictCityPolicyUnsetCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictCreateCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictPolicyCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictPolicyUnsetCommand.cs" />
-    <Compile Include="Commands\Data\Districts\DistrictReleaseCommand.cs" />
-    <Compile Include="Commands\Data\Game\SpeedPauseResponseCommand.cs" />
     <Compile Include="Commands\Data\Game\SpeedPauseRequestCommand.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseResponseCommand.cs" />
     <Compile Include="Commands\Data\Internal\ChatMessageCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ElectHostCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientConnectCommand.cs" />
     <Compile Include="Commands\Data\Internal\ClientDisconnectCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientLevelLoadedCommand.cs" />
     <Compile Include="Commands\Data\Internal\ConnectionRequestCommand.cs" />
     <Compile Include="Commands\Data\Internal\ConnectionResultCommand.cs" />
     <Compile Include="Commands\Data\Internal\FinishTransactionCommand.cs" />
     <Compile Include="Commands\Data\Internal\PlayerListCommand.cs" />
+    <Compile Include="Commands\Data\Internal\PlayerLocationCommand.cs" />
     <Compile Include="Commands\Data\Internal\RequestWorldTransferCommand.cs" />
     <Compile Include="Commands\Data\Internal\SlowdownCommand.cs" />
     <Compile Include="Commands\Data\Internal\WorldTransferCommand.cs" />
@@ -117,7 +120,6 @@
     <Compile Include="Commands\Data\Net\NodeReleaseCommand.cs" />
     <Compile Include="Commands\Data\Net\SegmentReleaseCommand.cs" />
     <Compile Include="Commands\Data\Net\SegmentSeedUpdateCommand.cs" />
-    <Compile Include="Commands\Data\CommandBase.cs" />
     <Compile Include="Commands\Data\Parks\ParkCreateCommand.cs" />
     <Compile Include="Commands\Data\Parks\ParkReleaseCommand.cs" />
     <Compile Include="Commands\Data\Props\PropCreateCommand.cs" />
@@ -131,8 +133,8 @@
     <Compile Include="Commands\Data\TransportLines\TransportLineCancelPrevStopCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineChangeActiveCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineChangeColorCommand.cs" />
-    <Compile Include="Commands\Data\TransportLines\TransportLineChangeVehicleCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineChangeSliderCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeVehicleCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineCreateCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineInitCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineMoveStopCommand.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="Commands\Data\Weather\WeatherCommand.cs" />
     <Compile Include="Commands\Data\Zones\DemandDisplayedCommand.cs" />
     <Compile Include="Commands\Data\Zones\ZoneUpdateCommand.cs" />
+    <Compile Include="Commands\FixedCommandAttribute.cs" />
     <Compile Include="Commands\Handler\Areas\UnlockAreaHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingChangeProductionRateHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingCreateHandler.cs" />
@@ -262,6 +265,7 @@
     <Compile Include="Injections\PropHandler.cs" />
     <Compile Include="Injections\RoadHandler.cs" />
     <Compile Include="Injections\SpeedPauseHandler.cs" />
+    <Compile Include="Injections\SaveGameHandler.cs" />
     <Compile Include="Injections\TickLoopHandler.cs" />
     <Compile Include="Injections\TerrainHandler.cs" />
     <Compile Include="Injections\TransportHandler.cs" />
@@ -271,8 +275,8 @@
     <Compile Include="Helpers\UiHelper.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Models\ColorSurrogate.cs" />
-    <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\ControlPointSurrogate.cs" />
+    <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Networking\Client.cs" />
     <Compile Include="Networking\Config\ClientConfig.cs" />
@@ -318,10 +322,15 @@
       <Version>2.4.6</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('windows'))">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('linux'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
     <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('osx'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
   </PropertyGroup>
 </Project>

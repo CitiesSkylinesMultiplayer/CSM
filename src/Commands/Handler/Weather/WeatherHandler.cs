@@ -8,7 +8,7 @@ namespace CSM.Commands.Handler.Weather
     {
         protected override void Handle(WeatherCommand command)
         {
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            if (MultiplayerManager.Instance.IsServerOrHost())
                 return;
 
             IgnoreHelper.StartIgnore();

@@ -8,6 +8,7 @@ namespace CSM.Commands.Data.Internal
     /// Sent by:
     /// - TickLoopHandler
     [ProtoContract]
+    [FixedCommand(90014)]
     public class SlowdownCommand : CommandBase
     {
         /// <summary>

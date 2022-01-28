@@ -11,6 +11,7 @@ namespace CSM.Commands.Handler.Internal
         public PlayerLocationHandler()
         {
             TransactionCmd = false;
+            Reliable = false;
         }
 
         protected override void Handle(PlayerLocationCommand command)

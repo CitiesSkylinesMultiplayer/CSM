@@ -97,13 +97,13 @@ namespace CSM.Panels
         /// </summary>
         public void RefreshState()
         {
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            if (MultiplayerManager.Instance.IsServer())
             {
                 Show(_serverManageButton);
 
                 _disconnectButton.text = "Stop server";
             }
-            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            else if (MultiplayerManager.Instance.IsClientOrHost())
             {
                 Hide(_serverManageButton);
 

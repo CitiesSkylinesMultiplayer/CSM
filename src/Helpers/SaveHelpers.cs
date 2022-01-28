@@ -1,5 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Packaging;
+using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Util;
 using System.IO;
@@ -22,6 +23,19 @@ namespace CSM.Helpers
             if (sp != null)
             {
                 sp.SaveGame(SYNC_NAME);
+            }
+        }
+
+        public static void WaitUntilSaved()
+        {
+            SavePanel sp = UIView.library.Get<SavePanel>("SavePanel");
+            if (sp != null)
+            {
+                var task = ReflectionHelper.GetField<Task>(sp, "m_PackageSaveTask");
+                if(task != null)
+                {
+                    task.Wait();
+                }
             }
         }
 

@@ -47,6 +47,6 @@ Copy-Item -Path "CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM
 Copy-Item -Path "Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
 Copy-Item -Path "System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
 Copy-Item -Path "0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force
-Copy-Item -Path "NLog.dll"         	-Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
+Copy-Item -Path "NLog.dll"         		-Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
 
 Write-Host "Mod is now installed, open Cities Skylines and enable the mod."
