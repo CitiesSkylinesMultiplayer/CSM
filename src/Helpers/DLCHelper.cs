@@ -6,9 +6,9 @@ namespace CSM.Helpers
                                                               SteamHelper.DLC_BitMask.RadioStation2 |
                                                               SteamHelper.DLC_BitMask.RadioStation3 |
                                                               SteamHelper.DLC_BitMask.RadioStation4 |
-                                                              SteamHelper.DLC_BitMask.RadioStation5 |
-                                                              SteamHelper.DLC_BitMask.RadioStation6 |
-                                                              SteamHelper.DLC_BitMask.RadioStation7;
+                                                              SteamHelper.DLC_BitMask.RadioStation5;
+                                                              // Only need to check 1 - 5 as others are
+                                                              // in BitMask2 which we ignore completely.
 
         private static SteamHelper.DLC_BitMask RemoveRadioStations(SteamHelper.DLC_BitMask bitmask)
         {
