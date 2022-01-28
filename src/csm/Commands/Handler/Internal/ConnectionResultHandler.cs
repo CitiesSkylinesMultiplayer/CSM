@@ -1,9 +1,13 @@
-﻿using ColossalFramework.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ColossalFramework.Threading;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
+using CSM.Mods;
 using CSM.Networking;
 using CSM.Panels;
 using CSM.Util;
@@ -45,6 +49,20 @@ namespace CSM.Commands.Handler.Internal
                     {
                         MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
                         panel.DisplayDlcMessage(compare);
+                    });
+                }
+                else if (command.Reason.Contains("Mods"))
+                {
+                    List<string> clientMods = ModSupport.Instance.ConnectModNames;
+                    List<string> serverMods = command.Mods;
+
+                    IEnumerable<string> clientNotServer = clientMods.Where(mod => !serverMods.Contains(mod));
+                    IEnumerable<string> serverNotClient = serverMods.Where(mod => !clientMods.Contains(mod));
+
+                    ThreadHelper.dispatcher.Dispatch(() =>
+                    {
+                        MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                        panel.DisplayModsMessage(serverNotClient, clientNotServer);
                     });
                 }
             }

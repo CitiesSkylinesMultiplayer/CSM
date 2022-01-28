@@ -1,6 +1,9 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
+using CSM.API;
+using CSM.API.Commands;
+using CSM.API.Helpers;
 using CSM.Helpers;
 using CSM.Networking;
 using CSM.Panels;

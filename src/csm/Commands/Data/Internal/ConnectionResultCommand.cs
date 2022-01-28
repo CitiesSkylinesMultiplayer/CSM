@@ -1,4 +1,5 @@
-﻿using CSM.API.Commands;
+﻿using System.Collections.Generic;
+using CSM.API.Commands;
 using ProtoBuf;
 
 namespace CSM.Commands.Data.Internal
@@ -38,5 +39,12 @@ namespace CSM.Commands.Data.Internal
         /// </summary>
         [ProtoMember(4)]
         public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
+        
+        /// <summary>
+        ///     Contains the list of loaded mod connections for comparison,
+        ///     when mods of the client and server don't match.
+        /// </summary>
+        [ProtoMember(5)]
+        public List<string> Mods { get; set; }
     }
 }

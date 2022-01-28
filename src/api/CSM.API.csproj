@@ -43,10 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chat.cs" />
+    <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Helpers\IgnoreHelper.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Networking\Player.cs" />
     <Compile Include="Networking\Status\ClientStatus.cs" />
     <Compile Include="Networking\Status\ServerStatus.cs" />

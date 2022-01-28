@@ -1,3 +1,4 @@
+using CSM.API;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Util;
@@ -47,7 +48,7 @@ namespace CSM.Helpers
             if (dropped > 0)
             {
                 Log.Debug($"{dropped} dropped frames!");
-                Command.SendToAll(new SlowdownCommand()
+                CommandInternal.Instance.SendToAll(new SlowdownCommand()
                 {
                     DroppedFrames = dropped
                 });

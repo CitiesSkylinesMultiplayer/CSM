@@ -16,7 +16,7 @@ namespace CSM.Commands.Handler.Internal
         public override void OnClientConnect(Player player)
         {
             // Send current player list
-            Command.SendToClient(player, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
+            CommandInternal.Instance.SendToClient(player, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
         }
     }
 }

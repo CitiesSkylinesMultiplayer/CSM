@@ -1,7 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
 using CSM.API.Networking.Status;
-using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
 using CSM.Helpers;
@@ -11,6 +10,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using CSM.API;
+using CSM.API.Commands;
+using CSM.API.Helpers;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -20,12 +22,12 @@ namespace CSM.Panels
     ///     to other players and view important events such as server startup and
     ///     connections.
     /// </summary>
-    public class ChatLogPanel : UIPanel
+    public class ChatLogPanel: UIPanel, IChat
     {
         private UILabel _messageBox;
         private UILabel _title;
         private UITextField _chatText;
-        private static UITextField _chatTextChirper;
+        private UITextField _chatTextChirper;
         private UIResizeHandle _resize;
         private UIScrollablePanel _scrollablepanel;
         private UIScrollbar _scrollbar;
@@ -37,17 +39,12 @@ namespace CSM.Panels
 
         private float _timeoutCounter;
 
-        private static bool UseChirper => CSM.Settings.UseChirper;
-
-        public enum MessageType
-        {
-            Normal,
-            Warning,
-            Error
-        }
+        private bool UseChirper => CSM.Settings.UseChirper;
 
         public ChatLogPanel()
         {
+            Chat.Instance = this;
+
             if (UseChirper)
             {
                 isVisible = false;
@@ -455,7 +452,7 @@ namespace CSM.Panels
                 ChatCommand command = _chatCommands.Find(x => x.Command == text.TrimStart('/'));
                 if (command == null)
                 {
-                    PrintGameMessage(MessageType.Warning, $"'{text.TrimStart('/')}' is not a valid command.");
+                    PrintGameMessage(Chat.MessageType.Warning, $"'{text.TrimStart('/')}' is not a valid command.");
                     return;
                 }
 
@@ -510,9 +507,9 @@ namespace CSM.Panels
         ///     Prints a game message to the ChatLogPanel and Chirper with MessageType.NORMAL.
         /// </summary>
         /// <param name="msg">The message.</param>
-        public static void PrintGameMessage(string msg)
+        public void PrintGameMessage(string msg)
         {
-            PrintGameMessage(MessageType.Normal, msg);
+            PrintGameMessage(Chat.MessageType.Normal, msg);
         }
 
         /// <summary>
@@ -520,7 +517,7 @@ namespace CSM.Panels
         /// </summary>
         /// <param name="type">The message type.</param>
         /// <param name="msg">The message.</param>
-        public static void PrintGameMessage(MessageType type, string msg)
+        public void PrintGameMessage(Chat.MessageType type, string msg)
         {
             PrintMessage("CSM", msg);
         }
@@ -530,12 +527,12 @@ namespace CSM.Panels
         /// </summary>
         /// <param name="username">The name of the sending user.</param>
         /// <param name="msg">The message.</param>
-        public static void PrintChatMessage(string username, string msg)
+        public void PrintChatMessage(string username, string msg)
         {
             PrintMessage(username, msg);
         }
 
-        private static void PrintMessage(string sender, string msg)
+        private void PrintMessage(string sender, string msg)
         {
             try
             {
@@ -591,7 +588,7 @@ namespace CSM.Panels
             }
         }
 
-        public static void HideChirpText()
+        public void HideChirpText()
         {
             _chatTextChirper.Hide();
         }

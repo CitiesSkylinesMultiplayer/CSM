@@ -16,6 +16,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using CSM.API;
+using CSM.BaseGame.Helpers;
+using CSM.Mods;
 
 namespace CSM.Networking
 {
@@ -122,7 +125,7 @@ namespace CSM.Networking
             {
                 ConnectionMessage = "Failed to connect.";
                 Log.Error($"Failed to connect to {Config.HostAddress}:{Config.Port}", ex);
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, $"Failed to connect: {ex.Message}");
+                Chat.Instance.PrintGameMessage(Chat.MessageType.Error, $"Failed to connect: {ex.Message}");
                 Disconnect();
                 return false;
             }
@@ -254,7 +257,8 @@ namespace CSM.Networking
                 ModVersion = versionString,
                 Password = Config.Password,
                 Username = Config.Username,
-                DLCBitMask = DLCHelper.GetOwnedDLCs()
+                DLCBitMask = DLCHelper.GetOwnedDLCs(),
+                Mods = ModSupport.Instance.ConnectModNames
             };
 
             Log.Info("Sending connection request to server...");
@@ -276,19 +280,19 @@ namespace CSM.Networking
                 switch (disconnectInfo.Reason)
                 {
                     case DisconnectReason.Timeout:
-                        ChatLogPanel.PrintGameMessage("Disconnected: Timed out!");
+                        Chat.Instance.PrintGameMessage("Disconnected: Timed out!");
                         break;
 
                     case DisconnectReason.DisconnectPeerCalled:
-                        ChatLogPanel.PrintGameMessage("Disconnected!");
+                        Chat.Instance.PrintGameMessage("Disconnected!");
                         break;
 
                     case DisconnectReason.RemoteConnectionClose:
-                        ChatLogPanel.PrintGameMessage("Disconnected: Server closed!");
+                        Chat.Instance.PrintGameMessage("Disconnected: Server closed!");
                         break;
 
                     default:
-                        ChatLogPanel.PrintGameMessage($"Disconnected: Connection lost ({disconnectInfo.Reason})!");
+                        Chat.Instance.PrintGameMessage($"Disconnected: Connection lost ({disconnectInfo.Reason})!");
                         break;
                 }
             }

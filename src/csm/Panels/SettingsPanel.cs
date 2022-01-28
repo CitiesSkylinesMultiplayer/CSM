@@ -1,4 +1,6 @@
 ﻿using ColossalFramework.UI;
+using CSM.API;
+using CSM.Mods;
 using CSM.Util;
 using ICities;
 
@@ -25,8 +27,11 @@ namespace CSM.Panels
 
             var advancedGroup = helper.AddGroup("Advanced");
 
-            UICheckBox cb = (UICheckBox)advancedGroup.AddCheckbox("Enable debug logging (requires game restart)", settings.DebugLogging.value,
-                c => { settings.DebugLogging.value = c; });
+            UICheckBox cb = (UICheckBox)advancedGroup.AddCheckbox("Enable debug logging", settings.DebugLogging.value,
+                c => {
+                    settings.DebugLogging.value = c;
+                    Log.Instance.LogDebug = c;
+                });
             cb.tooltip = "Note: This may cause excessive logging and slow down the game!";
 
             advancedGroup.AddButton("Show Release Notes", () =>

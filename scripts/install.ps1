@@ -45,9 +45,10 @@ Copy-Item -Path "LiteNetLib.dll"        -Destination "$($ModDirectory)$($Sep)Lit
 Copy-Item -Path "protobuf-net.dll"      -Destination "$($ModDirectory)$($Sep)protobuf-net.dll" -Force
 Copy-Item -Path "CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
 Copy-Item -Path "CSM.API.dll"           -Destination "$($ModDirectory)$($Sep)CSM.API.dll" -Force
+Copy-Item -Path "CSM.BaseGame.dll"      -Destination "$($ModDirectory)$($Sep)CSM.BaseGame.dll" -Force
+Copy-Item -Path "CSM.TMPE.dll"          -Destination "$($ModDirectory)$($Sep)CSM.TMPE.dll" -Force
 Copy-Item -Path "Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
 Copy-Item -Path "System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
-Copy-Item -Path "0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force
-Copy-Item -Path "NLog.dll"         	-Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
+Copy-Item -Path "CitiesHarmony.API.dll" -Destination "$($ModDirectory)$($Sep)CitiesHarmony.API.dll" -Force
 
 Write-Host "Mod is now installed, open Cities Skylines and enable the mod."

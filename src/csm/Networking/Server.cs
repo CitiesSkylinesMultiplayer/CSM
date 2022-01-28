@@ -14,6 +14,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using CSM.API;
+using CSM.BaseGame.Helpers;
 
 namespace CSM.Networking
 {
@@ -98,7 +100,7 @@ namespace CSM.Networking
             catch (Exception e)
             {
                 Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
+                Chat.Instance.PrintGameMessage(Chat.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
             }
 
             // Update the status
@@ -111,7 +113,7 @@ namespace CSM.Networking
 
             // Update the console to let the user know the server is running
             Log.Info("The server has started.");
-            ChatLogPanel.PrintGameMessage("The server has started.");
+            Chat.Instance.PrintGameMessage("The server has started.");
             return true;
         }
 
@@ -199,7 +201,7 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                ChatLogPanel.PrintGameMessage(ChatLogPanel.MessageType.Error, "Error while parsing command. See log.");
+                Chat.Instance.PrintGameMessage(Chat.MessageType.Error, "Error while parsing command. See log.");
                 Log.Error($"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:", ex);
             }
         }
@@ -222,15 +224,15 @@ namespace CSM.Networking
             switch (disconnectInfo.Reason)
             {
                 case DisconnectReason.RemoteConnectionClose:
-                    ChatLogPanel.PrintGameMessage($"Player {player.Username} disconnected!");
+                    Chat.Instance.PrintGameMessage($"Player {player.Username} disconnected!");
                     break;
 
                 case DisconnectReason.Timeout:
-                    ChatLogPanel.PrintGameMessage($"Player {player.Username} timed out!");
+                    Chat.Instance.PrintGameMessage($"Player {player.Username} timed out!");
                     break;
 
                 default:
-                    ChatLogPanel.PrintGameMessage($"Player {player.Username} lost connection!");
+                    Chat.Instance.PrintGameMessage($"Player {player.Username} lost connection!");
                     break;
             }
 
@@ -245,16 +247,16 @@ namespace CSM.Networking
         public void HandlePlayerConnect(Player player)
         {
             Log.Info($"Player {player.Username} has connected!");
-            ChatLogPanel.PrintGameMessage($"Player {player.Username} has connected!");
+            Chat.Instance.PrintGameMessage($"Player {player.Username} has connected!");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
-            Command.HandleClientConnect(player);
+            CommandInternal.Instance.HandleClientConnect(player);
         }
 
         public void HandlePlayerDisconnect(Player player)
         {
             MultiplayerManager.Instance.PlayerList.Remove(player.Username);
             this.ConnectedPlayers.Remove(player.NetPeer.Id);
-            Command.HandleClientDisconnect(player);
+            CommandInternal.Instance.HandleClientDisconnect(player);
             TransactionHandler.ClearTransactions(player.NetPeer.Id);
             ToolSimulator.RemoveSender(player.NetPeer.Id);
         }

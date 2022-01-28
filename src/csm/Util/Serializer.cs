@@ -16,7 +16,7 @@ namespace CSM.Util
 
             using (MemoryStream stream = new MemoryStream())
             {
-                Command.Model.Serialize(stream, cmd);
+                CommandInternal.Instance.Model.Serialize(stream, cmd);
                 result = stream.ToArray();
             }
 

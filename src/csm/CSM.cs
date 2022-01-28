@@ -1,53 +1,58 @@
 ﻿using CSM.Injections;
 using CSM.Panels;
 using CSM.Util;
-using HarmonyLib;
 using ICities;
 using System;
-using System.Reflection;
+using CitiesHarmony.API;
+using CSM.API;
+using CSM.Commands;
+using CSM.Mods;
 
 namespace CSM
 {
-    public class CSM : ICities.IUserMod
+    public class CSM : IUserMod
     {
-        private Harmony _harmony;
-
         public static Settings Settings;
 
         public CSM()
         {
             // Setup the correct logging configuration
             Settings = new Settings();
-            Log.Initialize(Settings.DebugLogging.value);
+            Log.Instance.LogDebug = Settings.DebugLogging.value;
 
             ModCompat.Init();
+
+            CommandInternal.Instance = new CommandInternal();
         }
 
         public void OnEnabled()
         {
-            try
-            {
-                Log.Info("Attempting to patch Cities: Skylines using Harmony...");
-                _harmony = new Harmony("com.citiesskylinesmultiplayer");
-                _harmony.PatchAll(Assembly.GetExecutingAssembly());
-                Log.Info("Successfully patched Cities: Skylines!");
+            Log.Info("Attempting to patch Cities: Skylines using Harmony...");
+            HarmonyHelper.DoOnHarmonyReady(() => {
+                try
+                {
+                    Patcher.PatchAll();
+                    Log.Info("Successfully patched Cities: Skylines!");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Patching failed", ex);
+                }
+                // Registers all other mods which implement the API
+                ModSupport.Instance.Init();
+                // Setup join button
+                MainMenuHandler.CreateOrUpdateJoinGameButton();
 
-                Log.Info("Adding!");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Patching failed", ex);
-            }
-
-            MainMenuHandler.CreateOrUpdateJoinGameButton();
-
-            Log.Info("Construction Complete!");
+                Log.Info("Construction Complete!");
+            });
         }
 
         public void OnDisabled()
         {
             Log.Info("Unpatching Harmony...");
-            _harmony.UnpatchAll();
+            if (HarmonyHelper.IsHarmonyInstalled) Patcher.UnpatchAll();
+            // Destroys all the connections made to external mods
+            ModSupport.Instance.DestroyConnections();
             Log.Info("Destruction complete!");
         }
 

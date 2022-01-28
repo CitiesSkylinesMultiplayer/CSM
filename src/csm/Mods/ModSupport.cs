@@ -1,53 +1,74 @@
 ﻿using CSM.API;
-using CSM.API.Commands;
-using CSM.Commands;
 using CSM.Helpers;
 using CSM.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ColossalFramework;
+using ColossalFramework.Plugins;
+using CSM.Commands;
 
 namespace CSM.Mods
 {
-    class ModSupport
+    internal class ModSupport
     {
-        List<Connection> connectedMods;
-        public void registerCommandSenders()
-        {
-            connectedMods = new List<Connection>();
-            IEnumerable<Type> handlers = ReflectionHelper.FindClassesInMods(typeof(Connection));
+        private static ModSupport _instance;
+        public static ModSupport Instance => _instance ?? (_instance = new ModSupport());
 
-            foreach (var handler in handlers)
+        public List<Connection> ConnectedMods { get; } = new List<Connection>();
+
+        public List<string> ConnectModNames
+        {
+            get
+            {
+                return ConnectedMods.Select(connection => connection.Name).ToList();
+            }
+        }
+
+        public void Init()
+        {
+            Singleton<PluginManager>.instance.eventPluginsChanged += LoadModConnections;
+            Singleton<PluginManager>.instance.eventPluginsStateChanged += LoadModConnections;
+        }
+
+        private void LoadModConnections()
+        {
+            ConnectedMods.Clear();
+            IEnumerable<Type> handlers = AssemblyHelper.FindClassesInMods(typeof(Connection));
+
+            foreach (Type handler in handlers)
             {
                 Connection connectionInstance = (Connection)Activator.CreateInstance(handler);
 
-                if (connectionInstance != null && connectionInstance.ConnectToCSM(SendToAll, SendToServer))
+                if (connectionInstance != null)
                 {
-                    Log.Info("Mod connected: " + connectionInstance.name);
-                    connectedMods.Add(connectionInstance);
+                    if (connectionInstance.Enabled)
+                    {
+                        Log.Info($"Mod connected: {connectionInstance.Name}");
+                        ConnectedMods.Add(connectionInstance);
+                    }
+                    else
+                    {
+                        Log.Debug($"Mod support for {connectionInstance.Name} found but not enabled.");
+                    }
                 }
-                else if (connectionInstance != null)
-                    Log.Warn("Mod failed to connect: " + connectionInstance.name);
                 else
-                    Log.Warn("Mod failed to instanciate.");
+                {
+                    Log.Warn("Mod failed to instantiate.");
+                }
             }
+
+            // Refresh data model
+            CommandInternal.Instance.RefreshModel();
         }
 
         public void DestroyConnections()
         {
-            connectedMods.Clear();
-            connectedMods.TrimExcess();
-            connectedMods = null;
-        }
-
-        public bool SendToAll(CommandBase command)
-        {
-            Command.SendToAll(command);
-            return false;
-        }
-        public bool SendToServer(CommandBase command)
-        {
-            Command.SendToServer(command);
-            return false;
+            ConnectedMods.Clear();
+            ConnectedMods.TrimExcess();
+            
+            Singleton<PluginManager>.instance.eventPluginsChanged -= LoadModConnections;
+            Singleton<PluginManager>.instance.eventPluginsStateChanged -= LoadModConnections;
         }
     }
 }

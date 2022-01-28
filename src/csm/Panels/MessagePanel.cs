@@ -2,8 +2,10 @@ using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CSM.API;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -118,6 +120,35 @@ namespace CSM.Panels
             Show(true);
 
             Log.Info("DLCs don't match:\n" + message);
+        }
+
+        public void DisplayModsMessage(IEnumerable<string> serverNotClient, IEnumerable<string> clientNotServer)
+        {
+            SetTitle("Mod Mismatch");
+
+            string message = "Your installed mods don't match with the server's\n\n";
+            string[] notClient = serverNotClient.ToArray();
+            if (notClient.Length > 0)
+            {
+                message += "You are missing the following mods\n";
+                message += string.Join("\n", notClient);
+                message += "\n\n";
+            }
+
+            string[] notServer = clientNotServer.ToArray();
+            if (notServer.Length > 0)
+            {
+                message += "The server doesn't have the following mods:\n";
+                message += string.Join("\n", notServer);
+            }
+
+            message += "\n\nYou can enable/disable mods from the content\n manager in the main menu.";
+
+            SetMessage(message);
+
+            Show(true);
+
+            Log.Info("Mods don't match:\n" + message);
         }
 
         public void DisplayReleaseNotes()

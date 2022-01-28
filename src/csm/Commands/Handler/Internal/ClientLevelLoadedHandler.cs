@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler.Internal
         {
             Player P = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId];
             P.Status = ClientStatus.Connected;
-            Command.SendToOtherClients(new ClientJoiningCommand
+            CommandInternal.Instance.SendToOtherClients(new ClientJoiningCommand
             {
                 JoiningFinished = true,
                 JoiningUsername = P.Username

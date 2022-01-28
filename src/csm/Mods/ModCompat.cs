@@ -1,0 +1,52 @@
+using System.Linq;
+using ColossalFramework;
+using ColossalFramework.Plugins;
+
+namespace CSM.Mods
+{
+    public static class ModCompat
+    {
+        private static readonly string[] _disableChirperNames = { "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper", "ChirpRemover.ChirpRemover" };
+        public static bool HasDisableChirperMod {
+            get
+            {
+                if (!_hasDisableChirperMod.HasValue)
+                {
+                    foreach (PluginManager.PluginInfo info in Singleton<PluginManager>.instance.GetPluginsInfo())
+                    {
+                        if (info.isEnabled && _disableChirperNames.Contains(info.userModInstance.ToString()))
+                        {
+                            _hasDisableChirperMod = true;
+                            break;
+                        }
+                    }
+
+                    if (!_hasDisableChirperMod.HasValue)
+                    {
+                        _hasDisableChirperMod = false;
+                    }
+                }
+
+                return _hasDisableChirperMod.Value;
+            }
+        }
+
+        private static bool? _hasDisableChirperMod;
+
+
+        /// <summary>
+        ///     Register event handlers to clear caches when mods or mod states were changed
+        /// </summary>
+        public static void Init()
+        {
+            Singleton<PluginManager>.instance.eventPluginsChanged += () =>
+            {
+                _hasDisableChirperMod = null;
+            };
+            Singleton<PluginManager>.instance.eventPluginsStateChanged += () =>
+            {
+                _hasDisableChirperMod = null;
+            };
+        }
+    }
+}

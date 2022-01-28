@@ -1,45 +1,39 @@
-﻿using HarmonyLib;
-using ICities;
+﻿using ICities;
 using NLog;
 using System;
-using System.Reflection;
+using CitiesHarmony.API;
 
 namespace SampleExternalMod
 {
     public class SampleUserMod : IUserMod
     {
         private static readonly Logger _logger = LogManager.GetLogger("CSM");
-        private Harmony _harmony;
 
-        public string Name
-        {
-            get { return "Sample External Mod"; }
-        }
+        public string Name => "Sample External Mod";
 
-        public string Description
-        {
-            get { return "Adds Nothing"; }
-        }
+        public string Description => "Adds Nothing";
 
         public void OnEnabled()
         {
-            try
+            HarmonyHelper.DoOnHarmonyReady(() =>
             {
-                _harmony = new Harmony("com.mytest");
-                _harmony.PatchAll(Assembly.GetExecutingAssembly());
-            }
-            catch (Exception)
-            {
-                _logger.Info("[TEST] Patching failed");
-            }
+                try
+                {
+                    Patcher.PatchAll();
 
-            _logger.Info("[TEST] Construction Complete!");
+                    _logger.Info("[TEST] Construction Complete!");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "[TEST] Patching failed");
+                }
+            });
         }
 
         public void OnDisabled()
         {
             _logger.Info("[TEST] Unpatching Harmony...");
-            _harmony.UnpatchAll();
+            if (HarmonyHelper.IsHarmonyInstalled) Patcher.UnpatchAll();
             _logger.Info("[TEST] Destruction complete!");
         }
     }

@@ -1,4 +1,4 @@
-﻿using CSM.Commands;
+﻿using CSM.API.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Networking;
 using CSM.Panels;

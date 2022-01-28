@@ -4,20 +4,20 @@ using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Commands.Handler.Game;
 using CSM.Helpers;
-using CSM.Injections;
 using CSM.Mods;
 using CSM.Networking;
 using CSM.Panels;
 using ICities;
 using System;
 using System.Reflection;
+using CSM.API.Commands;
+using CSM.Injections;
 using Object = UnityEngine.Object;
 
 namespace CSM.Extensions
 {
     public class LoadingExtension : LoadingExtensionBase
     {
-        private ModSupport modSupport;
         public override void OnReleased()
         {
             // Stop everything
@@ -35,7 +35,7 @@ namespace CSM.Extensions
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
             {
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
-                Command.SendToServer(new ClientLevelLoadedCommand());
+                CommandInternal.Instance.SendToServer(new ClientLevelLoadedCommand());
             }
 
             // Add the chat log
@@ -53,10 +53,6 @@ namespace CSM.Extensions
                 panel.DisplayReleaseNotes();
                 CSM.Settings.LastSeenReleaseNotes.value = strVersion;
             }
-
-            //Registers all other mods which implement the API
-            modSupport = new ModSupport();
-            modSupport.registerCommandSenders();
         }
 
         private void ResetData()
@@ -98,10 +94,6 @@ namespace CSM.Extensions
                 UIComponent clientJoinPanel = UIView.GetAView().FindUIComponent("MPClientJoinPanel");
                 if (clientJoinPanel)
                     Object.Destroy(clientJoinPanel);
-
-                //Destroys all the connections made to external mods
-                modSupport.DestroyConnections();
-                modSupport = null;
             }
             catch (NullReferenceException)
             {

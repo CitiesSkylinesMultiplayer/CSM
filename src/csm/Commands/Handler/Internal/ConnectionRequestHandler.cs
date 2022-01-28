@@ -7,9 +7,13 @@ using CSM.Networking;
 using CSM.Util;
 using LiteNetLib;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
+using CSM.API;
+using CSM.Mods;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -41,7 +45,7 @@ namespace CSM.Commands.Handler.Internal
             if (joiningVersion != appVersion)
             {
                 Log.Info($"Connection rejected: Game versions {joiningVersion} (client) and {appVersion} (server) differ.");
-                Command.SendToClient(peer, new ConnectionResultCommand
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = $"Client and server have different game versions. Client: {joiningVersion}, Server: {appVersion}."
@@ -56,7 +60,7 @@ namespace CSM.Commands.Handler.Internal
             if (command.ModVersion != versionString)
             {
                 Log.Info($"Connection rejected: Mod versions {command.ModVersion} (client) and {versionString} (server) differ.");
-                Command.SendToClient(peer, new ConnectionResultCommand
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = $"Client and server have different CSM Mod versions. Client: {command.ModVersion}, Server: {versionString}."
@@ -69,7 +73,7 @@ namespace CSM.Commands.Handler.Internal
             if (hasExistingPlayer)
             {
                 Log.Info($"Connection rejected: Username {command.Username} already in use.");
-                Command.SendToClient(peer, new ConnectionResultCommand
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = "This username is already in use."
@@ -83,7 +87,7 @@ namespace CSM.Commands.Handler.Internal
                 if (command.Password != MultiplayerManager.Instance.CurrentServer.Config.Password)
                 {
                     Log.Warn("Connection rejected: Invalid password provided!");
-                    Command.SendToClient(peer, new ConnectionResultCommand
+                    CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                     {
                         Success = false,
                         Reason = "Invalid password for this server."
@@ -97,7 +101,7 @@ namespace CSM.Commands.Handler.Internal
             if (!command.DLCBitMask.Equals(dlcMask))
             {
                 Log.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
-                Command.SendToClient(peer, new ConnectionResultCommand
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = "DLCs don't match",
@@ -106,22 +110,28 @@ namespace CSM.Commands.Handler.Internal
                 return;
             }
 
-            // Check that no other player is currently connecting
-            bool clientJoining = false;
-            foreach (Player p in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
+            List<string> mods = ModSupport.Instance.ConnectModNames;
+            if (!command.Mods.SequenceEqual(mods))
             {
-                if (p.Status != ClientStatus.Connected)
-                {
-                    clientJoining = true;
-                }
-            }
-            if (clientJoining)
-            {
-                Command.SendToClient(peer, new ConnectionResultCommand
+                Log.Info($"Connection rejected: List of mods {string.Join("\n", command.Mods.ToArray())} (client) and {string.Join("\n", mods.ToArray())} (server) differ.");
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
-                    Reason = "A client is already joining",
-                    DLCBitMask = dlcMask
+                    Reason = "Mods don't match",
+                    Mods = mods
+                });
+                return;
+            }
+
+            // Check that no other player is currently connecting
+            bool clientJoining = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values.Any(p => p.Status != ClientStatus.Connected);
+            if (clientJoining)
+            {
+                Log.Info("Connection rejected: A client is already joining.");
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "A client is already joining"
                 });
                 return;
             }
@@ -131,7 +141,7 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
             // Send the result command
-            Command.SendToClient(peer, new ConnectionResultCommand
+            CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
             {
                 Success = true,
                 ClientId = peer.Id
@@ -149,7 +159,7 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.BlockGame(newPlayer.Username);
 
             // Inform other clients about the joining client
-            Command.SendToOtherClients(new ClientJoiningCommand
+            CommandInternal.Instance.SendToOtherClients(new ClientJoiningCommand
             {
                 JoiningFinished = false,
                 JoiningUsername = newPlayer.Username
@@ -187,7 +197,7 @@ namespace CSM.Commands.Handler.Internal
                     Thread.Sleep(10);
                 }
 
-                Command.SendToClient(newPlayer, new WorldTransferCommand
+                CommandInternal.Instance.SendToClient(newPlayer, new WorldTransferCommand
                 {
                     World = SaveHelpers.GetWorldFile()
                 });

@@ -1,8 +1,8 @@
-﻿using CSM.API.Commands;
+﻿using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.Commands.Data.Internal;
 using CSM.Networking;
-using CSM.Panels;
 using CSM.Util;
 
 namespace CSM.Commands.Handler.Internal
@@ -17,7 +17,11 @@ namespace CSM.Commands.Handler.Internal
         protected override void Handle(ClientConnectCommand command)
         {
             Log.Info($"Player {command.Username} has connected!");
-            ChatLogPanel.PrintGameMessage($"Player {command.Username} has connected!");
+            // When connecting, chat is not initialized yet so we need to ignore this first message
+            if (Chat.Instance != null)
+            {
+                Chat.Instance.PrintGameMessage($"Player {command.Username} has connected!");
+            }
 
             MultiplayerManager.Instance.PlayerList.Add(command.Username);
         }

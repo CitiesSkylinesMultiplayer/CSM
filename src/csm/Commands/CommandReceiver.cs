@@ -5,6 +5,7 @@ using CSM.Networking;
 using CSM.Util;
 using LiteNetLib;
 using System.IO;
+using CSM.API;
 
 namespace CSM.Commands
 {
@@ -63,7 +64,7 @@ namespace CSM.Commands
 
             Log.Debug($"Received {cmd.GetType().Name}");
 
-            handler = Command.GetCommandHandler(cmd.GetType());
+            handler = CommandInternal.Instance.GetCommandHandler(cmd.GetType());
             if (handler == null)
             {
                 Log.Error($"Command {cmd.GetType().Name} not found!");
@@ -82,7 +83,7 @@ namespace CSM.Commands
 
             using (MemoryStream stream = new MemoryStream(message))
             {
-                result = (CommandBase)Command.Model.Deserialize(stream, null, typeof(CommandBase));
+                result = (CommandBase)CommandInternal.Instance.Model.Deserialize(stream, null, typeof(CommandBase));
             }
 
             return result;

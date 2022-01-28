@@ -2,6 +2,7 @@ using CSM.Panels;
 using HarmonyLib;
 using ICities;
 using System;
+using CSM.API;
 
 namespace CSM.Injections
 {
@@ -11,7 +12,7 @@ namespace CSM.Injections
     {
         public static void Prefix()
         {
-            ChatLogPanel.HideChirpText();
+            ((ChatLogPanel) Chat.Instance).HideChirpText();
         }
     }
 

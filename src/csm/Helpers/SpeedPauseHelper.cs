@@ -9,6 +9,8 @@ using CSM.Panels;
 using CSM.Util;
 using System;
 using System.Linq;
+using CSM.API;
+using CSM.API.Helpers;
 using UnityEngine;
 
 namespace CSM.Helpers
@@ -170,7 +172,7 @@ namespace CSM.Helpers
             }
             else
             {
-                ChatLogPanel.PrintGameMessage("Please wait until all players have reached the same play/pause state and speed!");
+                Chat.Instance.PrintGameMessage("Please wait until all players have reached the same play/pause state and speed!");
                 Log.Info($"[SpeedPauseHelper] (Pause: {pause}, Speed: {speed}) requested, but state was {_state}");
             }
         }

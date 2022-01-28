@@ -1,4 +1,5 @@
-﻿using CSM.API.Commands;
+﻿using System.Collections.Generic;
+using CSM.API.Commands;
 using ProtoBuf;
 
 namespace CSM.Commands.Data.Internal
@@ -53,5 +54,11 @@ namespace CSM.Commands.Data.Internal
         /// </summary>
         [ProtoMember(6)]
         public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
+        
+        /// <summary>
+        ///     A list of mods with multiplayer support that were loaded.
+        /// </summary>
+        [ProtoMember(7)]
+        public List<string> Mods { get; set; }
     }
 }

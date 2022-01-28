@@ -1,6 +1,6 @@
-﻿using CSM.API.Commands;
+﻿using CSM.API;
+using CSM.API.Commands;
 using CSM.Commands.Data.Internal;
-using CSM.Panels;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -13,7 +13,7 @@ namespace CSM.Commands.Handler.Internal
 
         protected override void Handle(ChatMessageCommand command)
         {
-            ChatLogPanel.PrintChatMessage(command.Username, command.Message);
+            Chat.Instance.PrintChatMessage(command.Username, command.Message);
         }
     }
 }

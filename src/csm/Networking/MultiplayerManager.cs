@@ -6,6 +6,8 @@ using CSM.Panels;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using CSM.API;
+using CSM.API.Commands;
 
 namespace CSM.Networking
 {
@@ -19,7 +21,17 @@ namespace CSM.Networking
         /// <summary>
         ///     The current role of the game.
         /// </summary>
-        public MultiplayerRole CurrentRole { get; private set; }
+        public MultiplayerRole CurrentRole
+        {
+            get => _currentRole;
+            private set
+            {
+                _currentRole = value;
+                Command.CurrentRole = value;
+            }
+        }
+
+        private MultiplayerRole _currentRole;
 
         /// <summary>
         ///     The current game server (Use only when this game acts as server!)
@@ -117,12 +129,12 @@ namespace CSM.Networking
             {
                 case MultiplayerRole.Client:
                     CurrentClient.Disconnect();
-                    ChatLogPanel.PrintGameMessage("Disconnected from server.");
+                    Chat.Instance.PrintGameMessage("Disconnected from server.");
                     break;
 
                 case MultiplayerRole.Server:
                     CurrentServer.StopServer();
-                    ChatLogPanel.PrintGameMessage("Server stopped.");
+                    Chat.Instance.PrintGameMessage("Server stopped.");
                     break;
             }
             CurrentRole = MultiplayerRole.None;
@@ -200,31 +212,5 @@ namespace CSM.Networking
 
         private static MultiplayerManager _multiplayerInstance;
         public static MultiplayerManager Instance => _multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());
-    }
-
-    /// <summary>
-    ///     What state our game is in.
-    /// </summary>
-    public enum MultiplayerRole
-    {
-        /// <summary>
-        ///     The game is not connected to a server acting
-        ///     as a server. In this state we leave all game mechanics
-        ///     alone.
-        /// </summary>
-        None,
-
-        /// <summary>
-        ///     The game is connect to a server and must broadcast
-        ///     it's update to the server and update internal values
-        ///     from the server.
-        /// </summary>
-        Client,
-
-        /// <summary>
-        ///     The game is acting as a server, it will send out updates to all connected
-        ///     clients and receive information about the game from the clients.
-        /// </summary>
-        Server
     }
 }

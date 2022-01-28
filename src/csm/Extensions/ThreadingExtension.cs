@@ -1,9 +1,10 @@
 ﻿using CSM.Commands;
 using CSM.Helpers;
-using CSM.Injections;
 using CSM.Networking;
 using ICities;
 using System;
+using CSM.API.Commands;
+using CSM.BaseGame.Injections;
 
 namespace CSM.Extensions
 {

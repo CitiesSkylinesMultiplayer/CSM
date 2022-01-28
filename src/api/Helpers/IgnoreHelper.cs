@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CSM.Helpers
+namespace CSM.API.Helpers
 {
     /// <summary>
     ///     Helper class for keeping track if the injection handlers should ignore
@@ -11,8 +11,8 @@ namespace CSM.Helpers
     {
         public static IgnoreHelper Instance = new IgnoreHelper();
 
-        private int IgnoreAll = 0;
-        private readonly HashSet<string> Exceptions = new HashSet<string>();
+        private int _ignoreAll = 0;
+        private readonly HashSet<string> _exceptions = new HashSet<string>();
 
         /// <summary>
         ///     Starts the ignore mode where the injection handlers
@@ -20,7 +20,7 @@ namespace CSM.Helpers
         /// </summary>
         public void StartIgnore()
         {
-            IgnoreAll++;
+            _ignoreAll++;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace CSM.Helpers
         public void StartIgnore(string except)
         {
             StartIgnore();
-            Exceptions.Add(except);
+            _exceptions.Add(except);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace CSM.Helpers
         /// </summary>
         public void EndIgnore()
         {
-            IgnoreAll = Math.Max(IgnoreAll - 1, 0);
+            _ignoreAll = Math.Max(_ignoreAll - 1, 0);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace CSM.Helpers
         public void EndIgnore(string except)
         {
             EndIgnore();
-            Exceptions.Remove(except);
+            _exceptions.Remove(except);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace CSM.Helpers
         /// <returns>If the calls should be ignored.</returns>
         public bool IsIgnored()
         {
-            return IgnoreAll > 0;
+            return _ignoreAll > 0;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace CSM.Helpers
         /// <returns>If the calls should be ignored.</returns>
         public bool IsIgnored(string action)
         {
-            return IsIgnored() && !Exceptions.Contains(action);
+            return IsIgnored() && !_exceptions.Contains(action);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CSM.Helpers;
-using HarmonyLib;
+﻿using HarmonyLib;
 using NLog;
 
 namespace SampleExternalMod.Injections

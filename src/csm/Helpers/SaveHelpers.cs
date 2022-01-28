@@ -3,6 +3,8 @@ using ColossalFramework.Packaging;
 using ColossalFramework.UI;
 using CSM.Util;
 using System.IO;
+using CSM.API;
+using CSM.API.Helpers;
 
 namespace CSM.Helpers
 {

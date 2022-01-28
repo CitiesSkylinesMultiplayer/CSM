@@ -1,9 +1,9 @@
-﻿using CSM.API.Commands;
+﻿using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Networking;
+using CSM.BaseGame.Helpers;
 using CSM.Commands.Data.Internal;
-using CSM.Helpers;
 using CSM.Networking;
-using CSM.Panels;
 using CSM.Util;
 
 namespace CSM.Commands.Handler.Internal
@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler.Internal
         protected override void Handle(ClientDisconnectCommand command)
         {
             Log.Info($"Player {command.Username} has disconnected!");
-            ChatLogPanel.PrintGameMessage($"Player {command.Username} has disconnected!");
+            Chat.Instance.PrintGameMessage($"Player {command.Username} has disconnected!");
 
             MultiplayerManager.Instance.PlayerList.Remove(command.Username);
 

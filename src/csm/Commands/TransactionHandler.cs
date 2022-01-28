@@ -4,6 +4,7 @@ using CSM.Container;
 using CSM.Util;
 using System;
 using System.Collections.Generic;
+using CSM.API;
 
 namespace CSM.Commands
 {
@@ -26,7 +27,7 @@ namespace CSM.Commands
         /// <param name="command">A received command</param>
         public static void StartTransaction(CommandBase command)
         {
-            if (Command.GetCommandHandler(command.GetType()).TransactionCmd)
+            if (CommandInternal.Instance.GetCommandHandler(command.GetType()).TransactionCmd)
             {
                 _sendStarted = true;
             }
@@ -39,7 +40,7 @@ namespace CSM.Commands
         {
             if (_sendStarted)
             {
-                Command.SendToAll(new FinishTransactionCommand());
+                CommandInternal.Instance.SendToAll(new FinishTransactionCommand());
                 _sendStarted = false;
             }
         }
