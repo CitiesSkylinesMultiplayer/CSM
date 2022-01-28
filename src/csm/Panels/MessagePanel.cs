@@ -127,18 +127,11 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             $"Last Update: April 4, 2021\n\n" +
-                             "- UI Changes:\n" +
-                             "  - The Chirper is now used as the chat\n" +
-                             "    (The old chat can still be enabled in the settings)\n" +
-                             "  - The multiplayer menu can now be found\n" +
-                             "    in the pause menu\n" +
-                             "  - Added this release notes panel\n\n" +
+                             $"Last Update: January 28th, 2022\n\n" +
                              "- Fixes:\n" +
-                             "  - Tried to fix issue with not being able to change\n" +
-                             "    the speed or pause state (Please tell us on Discord\n" +
-                             "    if the problems are now solved for you!).\n";
-
+                             "  - Support Airports Update. Note\n" +
+                             "    that not all new features are" +
+                             "    supported for now!\n";
             SetMessage(message);
 
             Show(true);

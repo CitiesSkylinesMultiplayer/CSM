@@ -14,6 +14,7 @@ param (
     [switch]$Install = $false,
     [string]$OutputDirectory = "..\src\csm\bin\Release",
     [string]$ModDirectory = "Default"
+    [string]$GameDirectory = ""
  )
 
 # Functions
@@ -96,7 +97,14 @@ If ($Update)
     Write-Host "[CSM Update Script] Please Note: This may break the mod if any major game changes have occured."
 
     # Get the steam directory
-    $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory. For example, for Windows, 'C:\Program Files\Steam\steamapps\common\Cities_Skylines' for Steam or 'C:\Program Files\Epic Games\CitiesSkylines' for Epic Games." 
+    If ($GameDirectory -eq "")
+    {
+        $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory. For example, for Windows, 'C:\Program Files\Steam\steamapps\common\Cities_Skylines' for Steam or 'C:\Program Files\Epic Games\CitiesSkylines' for Epic Games." 
+    }
+    Else 
+    {
+        Write-Host "[CSM Update Script] Game directory: $($GameDirectory)"
+    }
 
     If ($IsMacOS)
     {

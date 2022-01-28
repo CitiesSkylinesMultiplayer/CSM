@@ -763,41 +763,19 @@ namespace CSM.Injections
     [HarmonyPatch("ReplaceVehicles")]
     public class ReplaceVehicles
     {
-        public static VehicleInfo randomGen = null;
-
-        public static void Prefix()
-        {
-            randomGen = null;
-        }
-
         public static void Postfix(ushort lineID, VehicleInfo info)
         {
             if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
-            if (info == null)
-            {
-                if (randomGen == null)
-                    return;
-
-                info = randomGen;
-            }
+            // TODO: When info is null, random vehicle gets generated on spawn
+            // To be in sync, we need to sync the randomization!
 
             Command.SendToAll(new TransportLineChangeVehicleCommand()
             {
                 LineId = lineID,
                 Vehicle = (uint)info.m_prefabDataIndex
             });
-        }
-    }
-
-    [HarmonyPatch(typeof(TransportLine))]
-    [HarmonyPatch("GetRandomVehicleInfo")]
-    public class GetRandomVehicleInfo
-    {
-        public static void Postfix(VehicleInfo __result)
-        {
-            ReplaceVehicles.randomGen = __result;
         }
     }
 }
