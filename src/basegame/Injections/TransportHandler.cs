@@ -770,11 +770,16 @@ namespace CSM.BaseGame.Injections
 
             // TODO: When info is null, random vehicle gets generated on spawn
             // To be in sync, we need to sync the randomization!
+            uint? vehicle = null;
+            if (info != null)
+            {
+                vehicle = (uint) info.m_prefabDataIndex;
+            }
 
             Command.SendToAll(new TransportLineChangeVehicleCommand()
             {
                 LineId = lineID,
-                Vehicle = (uint)info.m_prefabDataIndex
+                Vehicle = vehicle
             });
         }
     }

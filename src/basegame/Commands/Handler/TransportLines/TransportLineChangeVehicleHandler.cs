@@ -1,3 +1,4 @@
+using System;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.TransportLines;
@@ -18,7 +19,7 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
                 vehicle = PrefabCollection<VehicleInfo>.GetPrefab(command.Vehicle.Value);
             }
 
-            ReflectionHelper.Call(line, "ReplaceVehicles", command.LineId, vehicle);
+            ReflectionHelper.Call(line, "ReplaceVehicles", new [] { typeof(ushort), typeof(VehicleInfo) }, command.LineId, vehicle);
 
             IgnoreHelper.Instance.EndIgnore();
         }

@@ -44,9 +44,24 @@ namespace CSM.API.Helpers
             return (T) Call(obj, name, param);
         }
 
+        /// <summary>
+        ///     Call a method through reflection.
+        ///     This method infers parameter types, if
+        ///     you need to pass null, use the Call method
+        ///     with explicit parameter types.
+        /// </summary>
+        /// <param name="obj">The object to call the method on.</param>
+        /// <param name="name">The name of the method.</param>
+        /// <param name="param">The non-null parameters.</param>
+        /// <returns>The return value.</returns>
         public static object Call(object obj, string name, params object[] param)
         {
-            return obj.GetType().GetMethod(name, AllAccessFlags, null, param.Select(p => p.GetType()).ToArray(), null)
+            return Call(obj, name, param.Select(p => p.GetType()).ToArray(), param);
+        }
+
+        public static object Call(object obj, string name, Type[] types, params object[] param)
+        {
+            return obj.GetType().GetMethod(name, AllAccessFlags, null, types, null)
                 ?.Invoke(obj, param);
         }
 
