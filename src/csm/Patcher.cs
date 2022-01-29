@@ -5,17 +5,17 @@ namespace CSM
 {
     public static class Patcher
     {
-        private static Harmony _harmony;
+        private const string HarmonyPatchID = "com.citiesskylinesmultiplayer";
 
         public static void PatchAll()
         {
-            _harmony = new Harmony("com.citiesskylinesmultiplayer");
-            _harmony.PatchAll(Assembly.GetExecutingAssembly());
+            Harmony harmony = new Harmony(HarmonyPatchID);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
         public static void UnpatchAll()
         {
-            _harmony.UnpatchAll("com.citiesskylinesmultiplayer");
+            new Harmony(HarmonyPatchID).UnpatchAll(HarmonyPatchID);
         }
     }
 }

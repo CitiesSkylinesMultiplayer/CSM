@@ -7,7 +7,7 @@ namespace CSM.BaseGame
 {
     public class BaseGameConnection : Connection
     {
-        private readonly Harmony _harmony;
+        private const string HarmonyPatchID = "com.citiesskylinesmultiplayer.basegame";
 
         public BaseGameConnection()
         {
@@ -15,8 +15,8 @@ namespace CSM.BaseGame
             Enabled = true;
             try
             {
-                _harmony = new Harmony("com.citiesskylinesmultiplayer.basegame");
-                _harmony.PatchAll(Assembly.GetExecutingAssembly());
+                Harmony harmony = new Harmony(HarmonyPatchID);
+                harmony.PatchAll(Assembly.GetExecutingAssembly());
             }
             catch (Exception)
             {
@@ -26,7 +26,7 @@ namespace CSM.BaseGame
 
         ~BaseGameConnection()
         {
-            _harmony.UnpatchAll("com.citiesskylinesmultiplayer.basegame");
+            new Harmony(HarmonyPatchID).UnpatchAll(HarmonyPatchID);
         }
     }
 }
