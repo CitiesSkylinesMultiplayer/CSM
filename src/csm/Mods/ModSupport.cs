@@ -38,6 +38,11 @@ namespace CSM.Mods
 
             foreach (Type handler in handlers)
             {
+                if (handler.IsAbstract)
+                {
+                    continue;
+                }
+
                 Connection connectionInstance = (Connection)Activator.CreateInstance(handler);
 
                 if (connectionInstance != null)

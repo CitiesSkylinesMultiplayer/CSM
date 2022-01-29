@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace CSM.API
 {
-    public class Connection
+    public abstract class Connection
     {
         public string Name { get; protected set; }
         
