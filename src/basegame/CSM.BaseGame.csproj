@@ -108,6 +108,7 @@
     <Compile Include="Commands\Data\Props\PropReleaseCommand.cs" />
     <Compile Include="Commands\Data\Roads\RoadSetPriorityCommand.cs" />
     <Compile Include="Commands\Data\Roads\RoadSettingsCommand.cs" />
+    <Compile Include="Commands\Data\Terrain\SoilTradeCommand.cs" />
     <Compile Include="Commands\Data\Terrain\TerrainModificationCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineAddStopCommand.cs" />
     <Compile Include="Commands\Data\TransportLines\TransportLineCancelMoveStopCommand.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Commands\Handler\Props\PropReleaseHandler.cs" />
     <Compile Include="Commands\Handler\Roads\RoadSetPriorityHandler.cs" />
     <Compile Include="Commands\Handler\Roads\RoadSettingsHandler.cs" />
+    <Compile Include="Commands\Handler\Terrain\SoilTradeHandler.cs" />
     <Compile Include="Commands\Handler\Terrain\TerrainModificationHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineAddStopHandler.cs" />
     <Compile Include="Commands\Handler\TransportLines\TransportLineCancelMoveStopHandler.cs" />

@@ -30,4 +30,22 @@ namespace CSM.BaseGame.Injections
             }
         }
     }
+
+    [HarmonyPatch(typeof(TerrainManager))]
+    [HarmonyPatch("DirtBuffer", MethodType.Setter)]
+    public class SoilChanged
+    {
+        public static void Postfix(int ___m_dirtBuffer)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                return;
+            }
+
+            Command.SendToAll(new SoilTradeCommand
+            {
+                DirtBuffer = ___m_dirtBuffer
+            });
+        }
+    }
 }
