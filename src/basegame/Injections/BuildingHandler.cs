@@ -398,4 +398,29 @@ namespace CSM.BaseGame.Injections
             });
         }
     }
+
+    [HarmonyPatch(typeof(PlayerBuildingAI))]
+    [HarmonyPatch("ReplaceVehicles")]
+    public class ReplaceServiceVehicles
+    {
+        public static void Postfix(ushort buildingId, VehicleInfo info)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+                return;
+
+            // TODO: When info is null, random vehicle gets generated on spawn
+            // To be in sync, we need to sync the randomization!
+            uint? vehicle = null;
+            if (info != null)
+            {
+                vehicle = (uint) info.m_prefabDataIndex;
+            }
+
+            Command.SendToAll(new ServiceBuildingChangeVehicleCommand()
+            {
+                BuildingId = buildingId,
+                Vehicle = vehicle
+            });
+        }
+    }
 }

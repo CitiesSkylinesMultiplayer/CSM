@@ -77,6 +77,7 @@
     <Compile Include="Commands\Data\Buildings\BuildingSetTransferReasonCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingToolCreateCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\ServiceBuildingChangeVehicleCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictAreaModifyCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictCityPolicyCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictCityPolicyUnsetCommand.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Commands\Handler\Buildings\BuildingSetTransferReasonHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingToolCreateHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingUpgradeHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\TransportLineChangeVehicleHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictAreaModifyHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictCityPolicyHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictCityPolicyUnsetHandler.cs" />
