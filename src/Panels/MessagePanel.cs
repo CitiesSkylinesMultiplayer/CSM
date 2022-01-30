@@ -1,7 +1,11 @@
+using System;
+using System.Globalization;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Util;
 using System.Linq;
+using System.Reflection;
+using CSM.Networking;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -22,17 +26,15 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 255);
 
-            // Grab the view for calculating width and height of game
-            UIView view = UIView.GetAView();
-
             // Center this window in the game
-            relativePosition = new Vector3(view.fixedWidth / 2.0f - 225.0f, view.fixedHeight / 2.0f - 200.0f);
+            relativePosition = new Vector3(Screen.width / 2.0f - 225.0f, Screen.height / 2.0f - 200.0f);
 
             width = 450;
             height = 500;
 
             // Title Label
-            _titleLabel = this.CreateTitleLabel(_title, new Vector2(150, -20));
+            _titleLabel = this.CreateTitleLabel("", new Vector2(150, -20));
+            SetTitle(_title);
 
             // Mismatch message content
             _messageLabel = AddUIComponent<UILabel>();
@@ -45,28 +47,56 @@ namespace CSM.Panels
             _closeButton.eventClicked += (component, param) => Hide();
         }
 
+        private void SetTitle(string title)
+        {
+            _title = title;
+
+            if (_titleLabel)
+            {
+                _titleLabel.text = title;
+                Vector3 pos = _titleLabel.position;
+                pos.x = (width - _titleLabel.width) / 2;
+                _titleLabel.position = pos;
+            }
+        }
+
+        private void SetMessage(string message)
+        {
+            _message = message;
+
+            if (_messageLabel)
+                _messageLabel.text = message;
+        }
+
         public void DisplayContentWarning()
         {
-            _title = "Warning";
-            if (_titleLabel)
-                _titleLabel.text = _title;
+            SetTitle("Warning");
 
-            _message = "Playing with other mods or DLCs is\n" +
+            const string message = "Playing with other mods or DLCs is\n" +
                        "currently not officially supported.\n\n" +
                        "Try to disable them if you encounter\n" +
                        "any issues.";
 
-            if (_messageLabel)
-                _messageLabel.text = _message;
+            SetMessage(message);
 
             Show(true);
         }
 
+        private string GetDlcName(DLCPanelNew panel, SteamHelper.DLC dlc)
+        {
+            string dlcName = panel.FindLocalizedDLCName(dlc);
+            if (string.IsNullOrEmpty(dlcName))
+            {
+                // Default to enum item name
+                dlcName = dlc.ToString();
+            }
+
+            return dlcName;
+        }
+
         public void DisplayDlcMessage(DLCHelper.DLCComparison compare)
         {
-            _title = "DLC Mismatch";
-            if (_titleLabel)
-                _titleLabel.text = _title;
+            SetTitle("DLC Mismatch");
 
             DLCPanelNew dlcPanel = FindObjectOfType<DLCPanelNew>();
 
@@ -74,25 +104,39 @@ namespace CSM.Panels
             if (compare.ClientMissing != SteamHelper.DLC_BitMask.None)
             {
                 message += "You are missing the following DLCs:\n";
-                message += string.Join("\n", compare.ClientMissing.DLCs().Select(dlc => dlcPanel.FindLocalizedDLCName(dlc)).ToArray());
+                message += string.Join("\n", compare.ClientMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
                 message += "\n\n";
             }
             if (compare.ServerMissing != SteamHelper.DLC_BitMask.None)
             {
                 message += "The server doesn't have the following DLCs:\n";
-                message += string.Join("\n", compare.ServerMissing.DLCs().Select(dlc => dlcPanel.FindLocalizedDLCName(dlc)).ToArray());
+                message += string.Join("\n", compare.ServerMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
             }
 
             message += "\n\nDLCs can be enabled/disabled via checkbox in Steam.";
 
-            _message = message;
-
-            if (_messageLabel)
-                _messageLabel.text = message;
+            SetMessage(message);
 
             Show(true);
 
             Log.Info("DLCs don't match:\n" + message);
+        }
+
+        public void DisplayReleaseNotes()
+        {
+            SetTitle("Release Notes - Multiplayer (CSM)");
+
+            Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
+
+            string message = $"Version {version.Major}.{version.Minor}\n" +
+                             $"Last Update: January 28th, 2022\n\n" +
+                             "- Fixes:\n" +
+                             "  - Support Airports Update. Note\n" +
+                             "    that not all new features are" +
+                             "    supported for now!\n";
+            SetMessage(message);
+
+            Show(true);
         }
     }
 }

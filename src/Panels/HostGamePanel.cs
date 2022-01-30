@@ -44,7 +44,7 @@ namespace CSM.Panels
             UIView view = UIView.GetAView();
 
             // Center this window in the game
-            relativePosition = new Vector3(view.fixedWidth / 2.0f - 180.0f, view.fixedHeight / 2.0f - 300f);
+            relativePosition = new Vector3(Screen.width / 2.0f - 180.0f, Screen.height / 2.0f - 250.0f);
 
             width = 360;
             height = 600;
@@ -114,6 +114,15 @@ namespace CSM.Panels
             {
                 _passwordField.isPasswordField = !_passwordBox.isChecked;
             };
+        }
+
+        public override void Update()
+        {
+            // Check if escape is pressed and panel is visible.
+            if (isVisible && Input.GetKeyDown(KeyCode.Escape))
+            {
+                isVisible = false;
+            }
         }
 
         private void RequestIPs()

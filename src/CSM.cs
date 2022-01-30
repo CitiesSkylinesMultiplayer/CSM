@@ -12,13 +12,15 @@ namespace CSM
     {
         private Harmony _harmony;
 
-        private readonly Settings _settings;
+        public static Settings Settings;
 
         public CSM()
         {
             // Setup the correct logging configuration
-            _settings = new Settings();
-            Log.Initialize(_settings.DebugLogging.value);
+            Settings = new Settings();
+            Log.Initialize(Settings.DebugLogging.value);
+
+            ModCompat.Init();
         }
 
         public void OnEnabled()
@@ -47,7 +49,7 @@ namespace CSM
             Log.Info("Destruction complete!");
         }
 
-        public void OnSettingsUI(UIHelperBase helper) => SettingsPanel.Build(helper, _settings);
+        public void OnSettingsUI(UIHelperBase helper) => SettingsPanel.Build(helper, Settings);
 
         public string Name => "Cities: Skylines Multiplayer";
 
