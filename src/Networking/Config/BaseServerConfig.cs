@@ -4,7 +4,7 @@
     ///     This class contains configuration for the game server.
     /// </summary>
     [System.Serializable]
-    public class ServerConfig : BaseServerConfig
+    public class BaseServerConfig
     {
         /// <summary>
         ///      Creates a new configuration for the game server.
@@ -13,18 +13,33 @@
         /// <param name="username">The user name for the hosting player.</param>
         /// <param name="password">The optional password for this server.</param>
         /// <param name="maxPlayers">The maximum amount of players that can connect to the server.</param>
-        public ServerConfig(int port, string username, string password, int maxPlayers) : base(port, password, maxPlayers)
+        public BaseServerConfig(int port, string password, int maxPlayers)
         {
-            Username = username;
+            Port = port;
+            Password = password;
+            MaxPlayers = maxPlayers;
         }
 
-        public ServerConfig() : base()
+        public BaseServerConfig()
         {
-            Username = "";
+            Port = 4230;
+            Password = "";
+            MaxPlayers = 0;
         }
+
         /// <summary>
-        ///     Gets the user name for the player hosting the server.
+        ///     Gets the port that this server will run on.
         /// </summary>
-        public string Username;
+        public int Port;
+
+        /// <summary>
+        ///     Gets the maximum amount of players that can connect to this server.
+        /// </summary>
+        public int MaxPlayers;
+
+        /// <summary>
+        ///     Gets the optional server password.
+        /// </summary>
+        public string Password;
     }
 }
