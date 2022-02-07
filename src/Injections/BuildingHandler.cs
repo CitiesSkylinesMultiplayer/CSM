@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using ColossalFramework;
 
 namespace CSM.Injections
 {
@@ -395,6 +396,41 @@ namespace CSM.Injections
             {
                 Building = buildingID,
                 Historical = historical
+            });
+        }
+    }
+
+    [HarmonyPatch(typeof(BuildingManager))]
+    [HarmonyPatch("UpdateFlags")]
+    public class UpgradeFlags
+    {
+        public static void Prefix(ushort building, ref Building.Flags changeMask, out bool __state)
+        {
+            if (IgnoreHelper.IsIgnored())
+            {
+                __state = false;
+                return;
+            }
+
+            __state = true;
+
+
+            ArrayHandler.StartCollecting();
+            IgnoreHelper.StartIgnore();
+        }
+
+        public static void Postfix(ushort building, ref Building.Flags changeMask, ref bool __state)
+        {
+            if (!__state)
+                return;
+
+            IgnoreHelper.EndIgnore();
+            ArrayHandler.StopCollecting();
+
+            Command.SendToAll(new BuildingUpdateFlagsCommand()
+            {
+                Building = building,
+                ChangeMask = changeMask
             });
         }
     }
