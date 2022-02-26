@@ -1,5 +1,6 @@
-using CSM.Commands.Data.Game;
+using CSM.Commands.Data.Disasters;
 using CSM.Helpers;
+using ICities;
 
 namespace CSM.Commands.Handler.Disasters
 {
@@ -25,7 +26,7 @@ namespace CSM.Commands.Handler.Disasters
             };
 
             ushort local = DisasterManager.instance.m_DisasterWrapper.CreateDisaster(settings);
-            DisablerHelper.receiveCreate(command.ClientId, command.Id, local);
+            DisasterHelper.receiveCreate(command.ClientId, command.Id, local);
             IgnoreHelper.EndIgnore();
         }
     }

@@ -4,6 +4,7 @@ using CSM.Networking;
 using ICities;
 using System;
 using CSM.Helpers;
+using CSM.Commands.Data.Disasters;
 
 namespace CSM.Extensions
 {

@@ -1,4 +1,5 @@
 ﻿using ProtoBuf;
+using ICities;
 
 namespace CSM.Commands.Data.Disasters
 {

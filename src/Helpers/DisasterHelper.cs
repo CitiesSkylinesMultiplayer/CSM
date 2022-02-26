@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace CSM.Helpers
 {
     public static class DisasterHelper
@@ -5,27 +7,27 @@ namespace CSM.Helpers
 
         private static Dictionary<int, DisasterClient> disasterClientMap = new Dictionary<int, DisasterClient>();
 
-        public static void receiveCreate(int client, ushort server, ushort client)
+        public static void receiveCreate(int id, ushort server, ushort client)
         {
-            if (!disasterClientMap.ContainsKey(client))
+            if (!disasterClientMap.ContainsKey(id))
             {
-                disasterClientMap.Add(client, new DisasterClient());
+                disasterClientMap.Add(id, new DisasterClient());
             }
 
-            DisasterClient client = disasterClientMap[client];
-            client.add(server, client);
+            DisasterClient disaster = disasterClientMap[id];
+            disaster.add(server, client);
         }
 
         public static ushort getLocal(int client, ushort server)
         {
-            DisasterClient client = disasterClientMap[client];
-            return client.convertServerToLocal(server);
+            DisasterClient disaster = disasterClientMap[client];
+            return disaster.convertServerToLocal(server);
         }
 
-        public static class DisasterClient
+        public class DisasterClient
         {
-            private IDictionary<ushort, ushort> localToServerMap = new IDictionary<ushort, ushort>();
-            private IDictionary<ushort, ushort> serverToLocalMap = new IDictionary<ushort, ushort>();
+            private IDictionary<ushort, ushort> localToServerMap = new Dictionary<ushort, ushort>();
+            private IDictionary<ushort, ushort> serverToLocalMap = new Dictionary<ushort, ushort>();
 
             public ushort convertServerToLocal(ushort data)
             {
