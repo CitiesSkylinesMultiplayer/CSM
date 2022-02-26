@@ -3,10 +3,10 @@
 namespace CSM.Commands.Data.Disasters
 {
     /// <summary>
-    ///     Sent when a loan has been paid back.
+    ///     Sent when a natural disaster is created
     /// </summary>
     /// Sent by:
-    /// - EconomyHandler
+    /// - DisasterExtension
     [ProtoContract]
     public class DisasterCreateCommand : CommandBase
     {
