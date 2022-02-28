@@ -1,4 +1,5 @@
 using CSM.API;
+using ICities;
 
 namespace CSM.BaseGame
 {
@@ -8,6 +9,17 @@ namespace CSM.BaseGame
         {
             Name = "Cities: Skylines";
             Enabled = true;
+            CommandAssemblies.Add(typeof(BaseGameConnection).Assembly);
+        }
+
+        public override void RegisterHandlers(LoadMode mode)
+        {
+            Patcher.PatchAll();
+        }
+
+        public override void UnregisterHandlers()
+        {
+            Patcher.UnpatchAll();
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Plugins;
 using CSM.Commands;
+using ICities;
 
 namespace CSM.Mods
 {
@@ -65,6 +66,22 @@ namespace CSM.Mods
 
             // Refresh data model
             CommandInternal.Instance.RefreshModel();
+        }
+
+        public void OnLevelLoaded(LoadMode mode)
+        {
+            foreach (Connection mod in ConnectedMods)
+            {
+                mod.RegisterHandlers(mode);
+            }
+        }
+
+        public void OnLevelUnloading()
+        {
+            foreach (Connection mod in ConnectedMods)
+            {
+                mod.UnregisterHandlers();
+            }
         }
 
         public void DestroyConnections()

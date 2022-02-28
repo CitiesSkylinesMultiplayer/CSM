@@ -1,15 +1,13 @@
 ﻿using CSM.API.Commands;
-using NLog;
+using SampleExternalMod.Commands.Data;
 
-namespace SampleExternalMod.Commands
+namespace SampleExternalMod.Commands.Handlers
 {
     public class TestHandler : CommandHandler<TestCommand>
     {
-        private static readonly Logger _logger = LogManager.GetLogger("CSM");
-
         protected override void Handle(TestCommand command)
         {
-            _logger.Info(command.testing);
+            // Handle command
         }
     }
 }

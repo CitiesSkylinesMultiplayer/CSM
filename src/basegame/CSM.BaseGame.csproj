@@ -207,7 +207,6 @@
     <Compile Include="Commands\Handler\Zones\ZoneUpdateHandler.cs" />
     <Compile Include="Extensions\AreaExtension.cs" />
     <Compile Include="Extensions\DemandExtension.cs" />
-    <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Helpers\ArrayXHelper.cs" />
     <Compile Include="Helpers\InfoPanelHelper.cs" />
     <Compile Include="Helpers\ToolSimulator.cs" />
@@ -225,6 +224,7 @@
     <Compile Include="Injections\TreeHandler.cs" />
     <Compile Include="Injections\WeatherHandler.cs" />
     <Compile Include="Injections\ZoneHandler.cs" />
+    <Compile Include="Patcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

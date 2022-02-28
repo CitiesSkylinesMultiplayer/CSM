@@ -1,7 +1,7 @@
 ﻿using CSM.API.Commands;
 using ProtoBuf;
 
-namespace SampleExternalMod.Commands
+namespace SampleExternalMod.Commands.Data
 {
     /// <summary>
     ///     This command is called when a player buys a new area.

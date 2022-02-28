@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Plugins;
@@ -9,9 +10,7 @@ namespace CSM.Helpers
 {
     public static class AssemblyHelper
     {
-        private static readonly List<string> _csmPackageNames = new List<string> { "CSM", "CSM.BaseGame" };
-
-        public static List<Assembly> GetEnabledAssemblies()
+        private static IEnumerable<Assembly> GetEnabledAssemblies()
         {
             List<Assembly> assemblies = new List<Assembly>();
             foreach (PluginManager.PluginInfo info in Singleton<PluginManager>.instance.GetPluginsInfo())
@@ -31,35 +30,21 @@ namespace CSM.Helpers
         /// </summary>
         public static IEnumerable<Type> FindClassesInMods(Type typeToSearchFor)
         {
-            foreach (Assembly assembly in GetEnabledAssemblies())
-            {
-                IEnumerable<Type> handlers = FindImplementationsInAssembly(assembly, typeToSearchFor);
-                foreach (Type handler in handlers)
-                {
-                    yield return handler;
-                }
-            }
+            return GetEnabledAssemblies().SelectMany(assembly => FindImplementationsInAssembly(assembly, typeToSearchFor));
         }
 
         /// <summary>
         /// Searches CSM Assembly in the current AppDomain for class definitions that implement the given Type.
-        /// Some default assemblies will be skipped to improve performance since. Check @IgnoredAssemblies.
         /// </summary>
         public static IEnumerable<Type> FindClassesInCSM(Type typeToSearchFor)
         {
-            foreach (Assembly assembly in GetEnabledAssemblies())
+            // Only use own assembly, others have to be registered as mods
+            Assembly assembly = typeof(CSM).Assembly;
+
+            IEnumerable<Type> handlers = FindImplementationsInAssembly(assembly, typeToSearchFor);
+            foreach (Type handler in handlers)
             {
-                string assemblyName = assembly.GetName().Name;
-
-                // Skip any assemblies outside of CSM.
-                if (!_csmPackageNames.Contains(assemblyName))
-                    continue;
-
-                IEnumerable<Type> handlers = FindImplementationsInAssembly(assembly, typeToSearchFor);
-                foreach (Type handler in handlers)
-                {
-                    yield return handler;
-                }
+                yield return handler;
             }
         }
 

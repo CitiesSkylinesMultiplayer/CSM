@@ -30,6 +30,8 @@ namespace CSM.Extensions
         {
             base.OnLevelLoaded(mode);
 
+            ModSupport.Instance.OnLevelLoaded(mode);
+
             ResetData();
 
             if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
@@ -73,6 +75,8 @@ namespace CSM.Extensions
         public override void OnLevelUnloading()
         {
             base.OnLevelUnloading();
+
+            ModSupport.Instance.OnLevelUnloading();
 
             //Code below destroys any created UI from the screen.
             try

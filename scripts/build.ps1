@@ -153,7 +153,6 @@ If ($Build)
         Write-Host "Using MSBuild at: $msbuild"
     }
 
-    & $msbuild "..\CSM.sln" /restore /t:CSM_TMPE /p:Configuration=Release /p:Platform="Any CPU"
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU"
     If ($LastExitCode -ne 0)
     {
@@ -185,7 +184,6 @@ If ($Install)
     Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.API.dll"           -Destination "$($ModDirectory)$($Sep)CSM.API.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.BaseGame.dll"      -Destination "$($ModDirectory)$($Sep)CSM.BaseGame.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)../../../mod-tmpe/bin/Release$($Sep)CSM.TMPE.dll"        -Destination "$($ModDirectory)$($Sep)CSM.TMPE.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)CitiesHarmony.API.dll" -Destination "$($ModDirectory)$($Sep)CitiesHarmony.API.dll" -Force

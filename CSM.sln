@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM.API", "src\api\CSM.API.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM.BaseGame", "src\basegame\CSM.BaseGame.csproj", "{BFC8DE00-F495-4388-9E36-F1471F8ED578}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSM.TMPE", "src\mod-tmpe\CSM.TMPE.csproj", "{BCE9606C-3AEA-444F-9954-A2C6661DDC57}"
-EndProject
 
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
