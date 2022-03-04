@@ -252,7 +252,7 @@ namespace CSM.Panels
             UIView view = UIView.GetAView();
 
             // Center this window in the game
-            relativePosition = new Vector3(10.0f, view.fixedHeight - 440.0f);
+            relativePosition = new Vector3(10.0f, view.GetScreenResolution().y - 440.0f);
 
             width = 500;
             height = 310;

@@ -14,6 +14,7 @@ namespace SampleExternalMod
             //bool modLoaded = Singleton<PluginManager>.instance.GetPluginsInfo().Any(info => info.isEnabled && info.name.Equals("SampleExternalMod"));
             //if (!modLoaded) return;
 
+            ModClass = typeof(SampleUserMod);
             Enabled = true;
 
             // Add Assembly to scan for command handlers

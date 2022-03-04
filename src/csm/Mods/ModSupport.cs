@@ -1,10 +1,10 @@
 ﻿using CSM.API;
 using CSM.Helpers;
-using CSM.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using ColossalFramework;
+using ColossalFramework.Packaging;
 using ColossalFramework.Plugins;
 using CSM.Commands;
 using ICities;
@@ -18,16 +18,41 @@ namespace CSM.Mods
 
         public List<Connection> ConnectedMods { get; } = new List<Connection>();
 
-        public List<string> ConnectModNames
+        public List<string> RequiredModsForSync
         {
             get
             {
-                return ConnectedMods.Select(connection => connection.Name).ToList();
+                return ConnectedNonClientModNames
+                    .Concat(Singleton<PluginManager>.instance.GetPluginsInfo()
+                      .Where(plugin => plugin.isEnabled && plugin.isBuiltin).Select(plugin => plugin.name))
+                    .Concat(AssetNames).ToList();
+            }
+        }
+
+        private IEnumerable<string> ConnectedNonClientModNames
+        {
+            get
+            {
+                return ConnectedMods.Where(connection =>
+                    connection.ModClass == null
+                ).Select(connection => connection.Name).ToList();
+            }
+        }
+
+        private static IEnumerable<string> AssetNames
+        {
+            get
+            {
+                return PackageManager.FilterAssets(UserAssetType.CustomAssetMetaData)
+                    .Where(asset => asset.isEnabled)
+                    .Select(asset => new EntryData(asset))
+                    .Select(entry => entry.entryName.Split('(')[0].Trim());
             }
         }
 
         public void Init()
         {
+            LoadModConnections();
             Singleton<PluginManager>.instance.eventPluginsChanged += LoadModConnections;
             Singleton<PluginManager>.instance.eventPluginsStateChanged += LoadModConnections;
         }

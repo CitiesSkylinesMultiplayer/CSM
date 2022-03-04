@@ -10,6 +10,7 @@ namespace CSM.BaseGame
             Name = "Cities: Skylines";
             Enabled = true;
             CommandAssemblies.Add(typeof(BaseGameConnection).Assembly);
+            ModClass = null; // Explicitly null in this case (this is not a mod)
         }
 
         public override void RegisterHandlers(LoadMode mode)

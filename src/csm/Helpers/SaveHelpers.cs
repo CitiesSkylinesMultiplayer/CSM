@@ -3,6 +3,7 @@ using ColossalFramework.Packaging;
 using ColossalFramework.UI;
 using CSM.Util;
 using System.IO;
+using ColossalFramework.Threading;
 using CSM.API;
 using CSM.API.Helpers;
 
@@ -80,7 +81,9 @@ namespace CSM.Helpers
 
             // Load the level
             Log.Info("Telling the loading manager to load the level");
-            Singleton<LoadingManager>.instance.LoadLevel(metaData.assetRef, "Game", "InGame", simulation, false);
+            ThreadHelper.dispatcher.Dispatch(() =>
+                Singleton<LoadingManager>.instance.LoadLevel(metaData.assetRef, "Game", "InGame", simulation)
+            );
         }
     }
 }

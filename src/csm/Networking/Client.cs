@@ -258,7 +258,7 @@ namespace CSM.Networking
                 Password = Config.Password,
                 Username = Config.Username,
                 DLCBitMask = DLCHelper.GetOwnedDLCs(),
-                Mods = ModSupport.Instance.ConnectModNames
+                Mods = ModSupport.Instance.RequiredModsForSync
             };
 
             Log.Info("Sending connection request to server...");

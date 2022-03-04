@@ -23,11 +23,9 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Center this window in the game
-            relativePosition = new Vector3(Screen.width / 2.0f - 180.0f, Screen.height / 2.0f - 240.0f);
-
             width = 360;
             height = 445;
+            relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
             UILabel title = this.CreateTitleLabel("Manage Server", new Vector2(100, -20));

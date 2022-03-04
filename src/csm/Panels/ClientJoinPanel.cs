@@ -27,14 +27,14 @@ namespace CSM.Panels
 
             relativePosition = new Vector3(0, 0);
 
-            width = Screen.width;
-            height = Screen.height;
+            width = GetUIView().GetScreenResolution().x;
+            height = GetUIView().GetScreenResolution().y;
 
             // Connecting Status
             _statusLabel = this.CreateTitleLabel("", new Vector2(0, 0));
 
-            // Canel button only while first join
-            _cancelButton = this.CreateButton("Cancel", new Vector2((Screen.width / 2f) - 170f, -(Screen.height / 2f) - 60f));
+            // Cancel button only while first join
+            _cancelButton = this.CreateButton("Cancel", new Vector2((width / 2f) - 170f, -(height / 2f) - 60f));
             _cancelButton.eventClick += OnCancelButtonClick;
             _cancelButton.isVisible = false;
         }
@@ -46,18 +46,11 @@ namespace CSM.Panels
             Focus();
         }
 
-        public void HidePanel(bool RemoveFromUI = false)
-        {
-            isVisible = false;
-            if (RemoveFromUI)
-                RemoveUIComponent(this);
-        }
-
         private void OnCancelButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
             MultiplayerManager.Instance.CurrentClient.Disconnect();
             MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
-            HidePanel(true);
+            isVisible = false;
         }
 
         private void UpdateText()

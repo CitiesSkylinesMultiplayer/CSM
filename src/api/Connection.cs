@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using ICities;
 
@@ -8,8 +9,7 @@ namespace CSM.API
     {
         /// <summary>
         ///     The name of this mod support instance.
-        ///     Used for checking compatibility to other players
-        ///     as well as showing error messages.
+        ///     Used for displaying messages to the user.
         /// </summary>
         public string Name { get; protected set; }
 
@@ -19,6 +19,13 @@ namespace CSM.API
         ///     the command handlers are registered.
         /// </summary>
         public bool Enabled { get; protected set; }
+
+        /// <summary>
+        ///     The class type of the supported mod.
+        ///     This has to be set if Enabled is true.
+        ///     It is used for detecting compatibility.
+        /// </summary>
+        public Type ModClass { get; protected set; }
 
         /// <summary>
         ///     A list of assemblies to search for command handlers.

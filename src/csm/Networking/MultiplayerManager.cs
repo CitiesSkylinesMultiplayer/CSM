@@ -183,7 +183,7 @@ namespace CSM.Networking
                 GameBlocked = true;
         }
 
-        public void UnblockGame(bool RemoveFromUI = false)
+        public void UnblockGame()
         {
             if (!GameBlocked)
                 return;
@@ -192,7 +192,7 @@ namespace CSM.Networking
                 ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
                 if (clientJoinPanel != null)
                 {
-                    clientJoinPanel.HidePanel(RemoveFromUI);
+                    clientJoinPanel.Hide();
                 }
             });
             GameBlocked = false;

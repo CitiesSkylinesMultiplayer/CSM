@@ -5,6 +5,7 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.Helpers;
+using CSM.Mods;
 using CSM.Networking;
 using CSM.Panels;
 using CSM.Util;
@@ -72,8 +73,7 @@ namespace CSM.Injections
                         PanelManager.TogglePanel<HostGamePanel>();
 
                         // Display warning if DLCs or other mods are enabled
-                        if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None ||
-                            Singleton<PluginManager>.instance.enabledModCount > 1)
+                        if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None)
                         {
                             MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
                             msgPanel.DisplayContentWarning();

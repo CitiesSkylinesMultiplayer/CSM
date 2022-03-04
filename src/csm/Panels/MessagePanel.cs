@@ -26,11 +26,9 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 255);
 
-            // Center this window in the game
-            relativePosition = new Vector3(Screen.width / 2.0f - 225.0f, Screen.height / 2.0f - 200.0f);
-
             width = 450;
             height = 500;
+            relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
             _titleLabel = this.CreateTitleLabel("", new Vector2(150, -20));
@@ -72,7 +70,7 @@ namespace CSM.Panels
         {
             SetTitle("Warning");
 
-            const string message = "Playing with other mods or DLCs is\n" +
+            const string message = "Playing with DLCs is\n" +
                        "currently not officially supported.\n\n" +
                        "Try to disable them if you encounter\n" +
                        "any issues.";
@@ -131,7 +129,7 @@ namespace CSM.Panels
             if (notClient.Length > 0)
             {
                 message += "You are missing the following mods\n";
-                message += string.Join("\n", notClient);
+                message += "- " + string.Join("\n- ", notClient);
                 message += "\n\n";
             }
 
@@ -139,7 +137,7 @@ namespace CSM.Panels
             if (notServer.Length > 0)
             {
                 message += "The server doesn't have the following mods:\n";
-                message += string.Join("\n", notServer);
+                message += "- " + string.Join("\n- ", notServer);
             }
 
             message += "\n\nYou can enable/disable mods from the content\n manager in the main menu.";

@@ -27,7 +27,7 @@ namespace CSM.Commands.Handler.Internal
 
                 SaveHelpers.LoadLevel(command.World);
 
-                MultiplayerManager.Instance.UnblockGame(true);
+                MultiplayerManager.Instance.UnblockGame();
 
                 // See LoadingExtension for events after level loaded
             }

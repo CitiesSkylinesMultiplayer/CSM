@@ -1,4 +1,6 @@
-﻿using ColossalFramework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ColossalFramework;
 using ColossalFramework.PlatformServices;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
@@ -6,7 +8,9 @@ using CSM.Helpers;
 using CSM.Networking;
 using CSM.Networking.Config;
 using System.Threading;
+using CSM.API;
 using CSM.API.Commands;
+using CSM.Mods;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -32,7 +36,7 @@ namespace CSM.Panels
 
         public override void Start()
         {
-            _hasRemembered = ConfigData.Load<ServerConfig>(ref _serverConfig, ConfigData.ServerFile);
+            _hasRemembered = ConfigData.Load(ref _serverConfig, ConfigData.ServerFile);
 
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
@@ -40,14 +44,9 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Grab the view for calculating width and height of game
-            UIView view = UIView.GetAView();
-
-            // Center this window in the game
-            relativePosition = new Vector3(Screen.width / 2.0f - 180.0f, Screen.height / 2.0f - 250.0f);
-
             width = 360;
             height = 580;
+            relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
             this.CreateTitleLabel("Host Server", new Vector2(120, -20));
@@ -110,6 +109,8 @@ namespace CSM.Panels
             {
                 _passwordField.isPasswordField = !_passwordBox.isChecked;
             };
+
+            ModCompat.BuildModInfo(this);
         }
 
         public override void Update()

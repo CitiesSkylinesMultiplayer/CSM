@@ -25,11 +25,9 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 250);
 
-            // Center this window in the game
-            relativePosition = new Vector3(Screen.width / 2.0f - 180.0f, Screen.height / 2.0f - 100.0f);
-
             width = 360;
             height = 320;
+            relativePosition = PanelManager.GetCenterPosition(this);
 
             // Handle visible change events
             eventVisibilityChanged += (component, visible) =>

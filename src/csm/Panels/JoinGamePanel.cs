@@ -1,8 +1,10 @@
 ﻿using ColossalFramework.PlatformServices;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.Helpers;
+using CSM.Mods;
 using CSM.Networking;
 using CSM.Networking.Config;
 using UnityEngine;
@@ -31,7 +33,7 @@ namespace CSM.Panels
 
         public override void Start()
         {
-            _hasRemembered = ConfigData.Load<ClientConfig>(ref _clientConfig, ConfigData.ClientFile);
+            _hasRemembered = ConfigData.Load(ref _clientConfig, ConfigData.ClientFile);
 
             // Activates the dragging of the window
             AddUIComponent(typeof(UIDragHandle));
@@ -39,11 +41,9 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 255);
 
-            // Center this window in the game
-            relativePosition = new Vector3(Screen.width / 2.0f - 180.0f, Screen.height / 2.0f - 250.0f);
-
             width = 360;
             height = 585;
+            relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
             this.CreateTitleLabel("Connect to Server", new Vector2(80, -20));
@@ -99,13 +99,22 @@ namespace CSM.Panels
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
-                RemoveUIComponent(this);
                 MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
             };
 
             _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -420));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+
+            ModCompat.BuildModInfo(this);
+
+            eventVisibilityChanged += (comp, visible) =>
+            {
+                if (visible)
+                {
+                    ModCompat.BuildModInfo(this);
+                }
+            };
         }
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)

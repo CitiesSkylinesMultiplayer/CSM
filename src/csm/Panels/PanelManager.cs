@@ -1,4 +1,6 @@
 using ColossalFramework.UI;
+using CSM.API;
+using UnityEngine;
 
 namespace CSM.Panels
 {
@@ -39,6 +41,15 @@ namespace CSM.Panels
             panel.Focus();
 
             return panel;
+        }
+
+        public static Vector3 GetCenterPosition(UIPanel panel)
+        {
+            UIView view = panel.GetUIView();
+            float actualWidth = view.GetScreenResolution().x;
+            float actualHeight = view.GetScreenResolution().y;
+            return new Vector3(actualWidth  / 2.0f - panel.width  / 2.0f,
+                               actualHeight / 2.0f - panel.height / 2.0f);
         }
     }
 }

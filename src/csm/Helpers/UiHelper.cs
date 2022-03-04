@@ -113,6 +113,12 @@ namespace CSM.Helpers
             return checkBox;
         }
 
+        public static void Remove(this UIComponent uiComponent)
+        {
+            uiComponent.parent.RemoveUIComponent(uiComponent);
+            Object.DestroyImmediate(uiComponent.gameObject);
+        }
+
         // Sourced from : https://github.com/SamsamTS/CS-MoveIt/blob/master/MoveIt/GUI/UIUtils.cs
         // I found their code after I started this class, the below atlas feature is quite neat!
 
