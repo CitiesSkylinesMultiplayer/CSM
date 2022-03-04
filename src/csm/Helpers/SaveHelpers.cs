@@ -1,9 +1,8 @@
-﻿using ColossalFramework;
+﻿using System.IO;
+using ColossalFramework;
 using ColossalFramework.Packaging;
-using ColossalFramework.UI;
-using CSM.Util;
-using System.IO;
 using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using CSM.API;
 using CSM.API.Helpers;
 

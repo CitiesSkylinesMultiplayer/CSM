@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ICities;
 
 namespace CSM.API
 {
@@ -39,8 +38,7 @@ namespace CSM.API
         ///     This method can for example be used to setup Harmony patches.
         ///     If will be called in the LevelLoaded handler of the LoadingExtension.
         /// </summary>
-        /// <param name="mode">The load mode of the game (See Cities LoadingExtension).</param>
-        public abstract void RegisterHandlers(LoadMode mode);
+        public abstract void RegisterHandlers();
 
         /// <summary>
         ///     Unregister all previously registered handlers.

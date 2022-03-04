@@ -10,7 +10,6 @@ using CSM.Helpers;
 using CSM.Mods;
 using CSM.Networking;
 using CSM.Panels;
-using CSM.Util;
 
 namespace CSM.Commands.Handler.Internal
 {

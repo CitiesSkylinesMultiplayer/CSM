@@ -1,23 +1,21 @@
+using System;
+using System.Linq;
+using CSM.API;
 using CSM.API.Commands;
+using CSM.API.Helpers;
 using CSM.API.Networking.Status;
-using CSM.Commands;
 using CSM.Commands.Data.Game;
 using CSM.Commands.Handler.Game;
 using CSM.Commands.Handler.Internal;
 using CSM.Networking;
-using CSM.Panels;
-using CSM.Util;
-using System;
-using System.Linq;
-using CSM.API;
-using CSM.API.Helpers;
 using UnityEngine;
+using Random = System.Random;
 
 namespace CSM.Helpers
 {
     public static class SpeedPauseHelper
     {
-        private static System.Random _rand;
+        private static Random _rand;
 
         // Current state of the state machine
         private static SpeedPauseState _state;
@@ -500,11 +498,11 @@ namespace CSM.Helpers
             {
                 if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Client)
                 {
-                    _rand = new System.Random();
+                    _rand = new Random();
                 }
                 else
                 {
-                    _rand = new System.Random(MultiplayerManager.Instance.CurrentClient.ClientId);
+                    _rand = new Random(MultiplayerManager.Instance.CurrentClient.ClientId);
                 }
             }
         }

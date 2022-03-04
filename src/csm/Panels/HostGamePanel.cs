@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Threading;
 using ColossalFramework;
 using ColossalFramework.PlatformServices;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
+using CSM.API.Commands;
 using CSM.Helpers;
+using CSM.Mods;
 using CSM.Networking;
 using CSM.Networking.Config;
-using System.Threading;
-using CSM.API;
-using CSM.API.Commands;
-using CSM.Mods;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -144,7 +142,7 @@ namespace CSM.Panels
         /// </summary>
         private void OnCreateServerClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            _serverConfig = new ServerConfig(System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0);
+            _serverConfig = new ServerConfig(Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0);
             ConfigData.Save<ServerConfig>(ref _serverConfig, ConfigData.ServerFile, _rememberBox.isChecked);
 
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);

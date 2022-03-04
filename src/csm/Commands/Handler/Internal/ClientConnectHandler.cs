@@ -3,7 +3,6 @@ using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.Commands.Data.Internal;
 using CSM.Networking;
-using CSM.Util;
 
 namespace CSM.Commands.Handler.Internal
 {

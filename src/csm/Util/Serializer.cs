@@ -1,6 +1,6 @@
-﻿using CSM.API.Commands;
+﻿using System.IO;
+using CSM.API.Commands;
 using CSM.Commands;
-using System.IO;
 
 namespace CSM.Util
 {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Plugins;
-using CSM.Util;
 
 namespace CSM.Helpers
 {

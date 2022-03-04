@@ -1,7 +1,6 @@
 ﻿using ColossalFramework.UI;
 using CSM.API;
 using CSM.Mods;
-using CSM.Util;
 using ICities;
 
 namespace CSM.Panels

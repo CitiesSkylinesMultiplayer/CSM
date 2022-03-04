@@ -1,8 +1,8 @@
-﻿using ColossalFramework.UI;
+﻿using System.Collections.Generic;
+using ColossalFramework.UI;
+using CSM.API.Commands;
 using CSM.Helpers;
 using CSM.Networking;
-using System.Collections.Generic;
-using CSM.API.Commands;
 using UnityEngine;
 
 namespace CSM.Panels

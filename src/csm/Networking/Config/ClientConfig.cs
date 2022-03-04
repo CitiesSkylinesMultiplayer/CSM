@@ -1,9 +1,11 @@
-﻿namespace CSM.Networking.Config
+﻿using System;
+
+namespace CSM.Networking.Config
 {
     /// <summary>
     ///     This class contains configuration for the game client.
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class ClientConfig
     {
         /// <summary>

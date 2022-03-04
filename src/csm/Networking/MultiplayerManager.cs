@@ -1,13 +1,13 @@
-﻿using ColossalFramework.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using ColossalFramework.Threading;
 using ColossalFramework.UI;
+using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Networking.Status;
 using CSM.Networking.Config;
 using CSM.Panels;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using CSM.API;
-using CSM.API.Commands;
 
 namespace CSM.Networking
 {

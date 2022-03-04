@@ -1,6 +1,6 @@
+using System.Threading;
 using CSM.Helpers;
 using HarmonyLib;
-using System.Threading;
 
 namespace CSM.Injections
 {

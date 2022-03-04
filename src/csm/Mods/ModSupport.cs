@@ -95,9 +95,10 @@ namespace CSM.Mods
 
         public void OnLevelLoaded(LoadMode mode)
         {
+            // TODO: Decide by mode if the function should be called
             foreach (Connection mod in ConnectedMods)
             {
-                mod.RegisterHandlers(mode);
+                mod.RegisterHandlers();
             }
         }
 

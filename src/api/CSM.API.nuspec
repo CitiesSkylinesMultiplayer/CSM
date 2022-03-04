@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>CitiesSkylinesMultiplayer.API</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/CitiesSkylinesMultiplayer/CSM</projectUrl>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
+    <tags>CSM.API CSM</tags>
+    <dependencies>
+      <group targetFramework="net35">
+        <dependency id="LiteNetLib" version="0.9.2.2" />
+        <dependency id="protobuf-net" version="2.4.6" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

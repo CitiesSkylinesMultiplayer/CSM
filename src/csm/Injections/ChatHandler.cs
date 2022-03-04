@@ -1,8 +1,8 @@
+using System;
+using CSM.API;
 using CSM.Panels;
 using HarmonyLib;
 using ICities;
-using System;
-using CSM.API;
 
 namespace CSM.Injections
 {

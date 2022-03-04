@@ -13,7 +13,7 @@ namespace CSM.BaseGame
             ModClass = null; // Explicitly null in this case (this is not a mod)
         }
 
-        public override void RegisterHandlers(LoadMode mode)
+        public override void RegisterHandlers()
         {
             Patcher.PatchAll();
         }
