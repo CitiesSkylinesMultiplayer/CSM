@@ -1,7 +1,7 @@
-﻿using ColossalFramework.PlatformServices;
+﻿using System;
+using ColossalFramework.PlatformServices;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
-using CSM.API;
 using CSM.API.Commands;
 using CSM.Helpers;
 using CSM.Mods;
@@ -119,7 +119,7 @@ namespace CSM.Panels
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            _clientConfig = new ClientConfig(_ipAddressField.text, System.Int32.Parse(_portField.text), _usernameField.text, _passwordField.text);
+            _clientConfig = new ClientConfig(_ipAddressField.text, Int32.Parse(_portField.text), _usernameField.text, _passwordField.text);
             ConfigData.Save(ref _clientConfig, ConfigData.ClientFile, _rememberBox.isChecked);
 
             MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();

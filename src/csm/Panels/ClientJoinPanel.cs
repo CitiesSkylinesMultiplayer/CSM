@@ -1,8 +1,8 @@
-﻿using ColossalFramework.Threading;
+﻿using System.Threading;
+using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.Helpers;
 using CSM.Networking;
-using System.Threading;
 using UnityEngine;
 
 namespace CSM.Panels

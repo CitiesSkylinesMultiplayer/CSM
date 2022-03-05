@@ -21,7 +21,7 @@ namespace SampleExternalMod
             CommandAssemblies.Add(typeof(SampleExternalModSupport).Assembly);
         }
 
-        public override void RegisterHandlers(LoadMode mode)
+        public override void RegisterHandlers()
         {
             // Register any handlers/patches
             Patcher.PatchAll();
