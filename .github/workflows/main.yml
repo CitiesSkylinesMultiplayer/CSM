@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # Run this on windows
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
