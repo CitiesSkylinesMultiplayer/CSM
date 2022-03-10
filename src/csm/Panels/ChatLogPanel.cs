@@ -30,9 +30,6 @@ namespace CSM.Panels
         private UITextField _chatTextChirper;
         private UIResizeHandle _resize;
         private UIScrollablePanel _scrollablepanel;
-        private UIScrollbar _scrollbar;
-        private UISlicedSprite _trackingsprite;
-        private UISlicedSprite _trackingthumb;
         private UIDragHandle _draghandle;
 
         private readonly List<ChatCommand> _chatCommands;
@@ -40,6 +37,33 @@ namespace CSM.Panels
         private float _timeoutCounter;
 
         private bool UseChirper => CSM.Settings.UseChirper;
+
+        private UITextField ChatTextChirper {
+            get
+            {
+                if (_chatTextChirper)
+                {
+                    return _chatTextChirper;
+                }
+                _chatTextChirper = (UITextField) ChirpPanel.instance.component.AddUIComponent(typeof(UITextField));
+                _chatTextChirper.width = 350;
+                _chatTextChirper.height = 30;
+                _chatTextChirper.position = new Vector2(15, -155);
+                _chatTextChirper.atlas = UiHelpers.GetAtlas("Ingame");
+                _chatTextChirper.normalBgSprite = "TextFieldPanelHovered";
+                _chatTextChirper.builtinKeyNavigation = true;
+                _chatTextChirper.isInteractive = true;
+                _chatTextChirper.readOnly = false;
+                _chatTextChirper.horizontalAlignment = UIHorizontalAlignment.Left;
+                _chatTextChirper.eventKeyDown += OnChatKeyDown;
+                _chatTextChirper.textColor = new Color32(0, 0, 0, 255);
+                _chatTextChirper.padding = new RectOffset(6, 6, 6, 6);
+                _chatTextChirper.selectionSprite = "EmptySprite";
+                _chatTextChirper.name = "ChatLogChirperChatText";
+                _chatTextChirper.isVisible = false;
+                return _chatTextChirper;
+            }
+        }
 
         public ChatLogPanel()
         {
@@ -103,7 +127,7 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("open-log", "Opens the multiplayer log.", (command) =>
                 {
-                    Process.Start(Path.GetFullPath(".") + "/multiplayer-logs/log-current.txt");
+                    Process.Start(Log.Instance.CurrentLogFile);
                 }),
                 new ChatCommand("sync", "Redownloads the entire save", (command) =>
                 {
@@ -152,9 +176,9 @@ namespace CSM.Panels
                     if (UseChirper)
                     {
                         // Prefix chat input.
-                        _chatTextChirper.text = "/";
+                        ChatTextChirper.text = "/";
                         // Move the cursor to the end of field.
-                        _chatTextChirper.MoveToEnd();
+                        ChatTextChirper.MoveToEnd();
                     }
                     else
                     {
@@ -183,8 +207,8 @@ namespace CSM.Panels
         {
             if (UseChirper)
             {
-                _chatTextChirper.Show();
-                _chatTextChirper.Focus();
+                ChatTextChirper.Show();
+                ChatTextChirper.Focus();
                 if (ChirpPanel.instance.isShowing)
                 {
                     // Don't close Chirper automatically if already open
@@ -193,12 +217,12 @@ namespace CSM.Panels
                 else
                 {
                     ChirpPanel.instance.Show(0);
-                    Vector3 posInit = _chatTextChirper.position;
+                    Vector3 posInit = ChatTextChirper.position;
                     posInit.y = -45f;
-                    _chatTextChirper.position = posInit;
+                    ChatTextChirper.position = posInit;
                     ValueAnimator.Animate("ChirpPanelChatX", val =>
                     {
-                        _chatTextChirper.width = val;
+                        ChatTextChirper.width = val;
                     }, new AnimatedFloat(25, 350, ChirpPanel.instance.m_ShowHideTime, ChirpPanel.instance.m_ShowEasingType), () =>
                     {
                         if (!ChirpPanel.instance.isShowing)
@@ -206,9 +230,9 @@ namespace CSM.Panels
 
                         ValueAnimator.Animate("ChirpPanelChatY", val =>
                         {
-                            Vector3 pos = _chatTextChirper.position;
+                            Vector3 pos = ChatTextChirper.position;
                             pos.y = val;
-                            _chatTextChirper.position = pos;
+                            ChatTextChirper.position = pos;
                         }, new AnimatedFloat(-45f, -155, ChirpPanel.instance.m_ShowHideTime, ChirpPanel.instance.m_ShowEasingType));
                     });
                 }
@@ -297,42 +321,7 @@ namespace CSM.Panels
             _messageBox.name = "ChatLogPanelMessageBox";
 
             // Add scrollbar component
-            _scrollbar = AddUIComponent<UIScrollbar>();
-            _scrollbar.name = "Scrollbar";
-            _scrollbar.width = 20f;
-            _scrollbar.height = _scrollablepanel.height;
-            _scrollbar.orientation = UIOrientation.Vertical;
-            _scrollbar.pivot = UIPivotPoint.TopLeft;
-            _scrollbar.position = new Vector2(480, -30);
-            _scrollbar.minValue = 0;
-            _scrollbar.value = 0;
-            _scrollbar.incrementAmount = 50;
-            _scrollbar.name = "ChatLogPanelScrollBar";
-
-            // Add scrollbar background sprite component
-            _trackingsprite = _scrollbar.AddUIComponent<UISlicedSprite>();
-            _trackingsprite.position = new Vector2(0, 0);
-            _trackingsprite.autoSize = true;
-            _trackingsprite.size = _trackingsprite.parent.size;
-            _trackingsprite.fillDirection = UIFillDirection.Vertical;
-            _trackingsprite.spriteName = "ScrollbarTrack";
-            _trackingsprite.name = "ChatLogPanelTrack";
-            _scrollbar.trackObject = _trackingsprite;
-            _scrollbar.trackObject.height = _scrollbar.height;
-
-            // Add scrollbar thumb component
-            _trackingthumb = _scrollbar.AddUIComponent<UISlicedSprite>();
-            _trackingthumb.position = new Vector2(0, 0);
-            _trackingthumb.fillDirection = UIFillDirection.Vertical;
-            _trackingthumb.autoSize = true;
-            _trackingthumb.width = _trackingthumb.parent.width - 8;
-            _trackingthumb.spriteName = "ScrollbarThumb";
-            _trackingthumb.name = "ChatLogPanelThumb";
-
-            _scrollbar.thumbObject = _trackingthumb;
-            _scrollbar.isVisible = true;
-            _scrollbar.isEnabled = true;
-            _scrollablepanel.verticalScrollbar = _scrollbar;
+            this.AddScrollbar(_scrollablepanel);
 
             // Add text field component (used for inputting)
             _chatText = (UITextField)AddUIComponent(typeof(UITextField));
@@ -351,28 +340,6 @@ namespace CSM.Panels
             _chatText.selectionSprite = "EmptySprite";
             _chatText.name = "ChatLogPanelChatText";
 
-            // Add chirper input field
-            _chatTextChirper = (UITextField) ChirpPanel.instance.component.AddUIComponent(typeof(UITextField));
-            _chatTextChirper.width = 350;
-            _chatTextChirper.height = 30;
-            _chatTextChirper.position = new Vector2(15, -155);
-            _chatTextChirper.atlas = UiHelpers.GetAtlas("Ingame");
-            _chatTextChirper.normalBgSprite = "TextFieldPanelHovered";
-            _chatTextChirper.builtinKeyNavigation = true;
-            _chatTextChirper.isInteractive = true;
-            _chatTextChirper.readOnly = false;
-            _chatTextChirper.horizontalAlignment = UIHorizontalAlignment.Left;
-            _chatTextChirper.eventKeyDown += OnChatKeyDown;
-            _chatTextChirper.textColor = new Color32(0, 0, 0, 255);
-            _chatTextChirper.padding = new RectOffset(6, 6, 6, 6);
-            _chatTextChirper.selectionSprite = "EmptySprite";
-            _chatTextChirper.name = "ChatLogChirperChatText";
-
-            if (UseChirper)
-            {
-                _chatTextChirper.isVisible = false;
-            }
-
             WelcomeChatMessage();
 
             // Add resizable adjustments
@@ -382,16 +349,20 @@ namespace CSM.Panels
                 _scrollablepanel.height = (height - 70);
                 _messageBox.width = (width - 30);
                 _chatText.width = width;
-                _scrollbar.height = _scrollablepanel.height;
-                _trackingsprite.size = _trackingsprite.parent.size;
                 _chatText.position = new Vector3(0, (-height + 30));
                 _resize.position = new Vector2((width - 20), (-height + 10));
-                _scrollbar.position = new Vector2((width - 20), (-30));
+
+                UIScrollbar uiScrollbar = Find<UIScrollbar>("PanelScrollBar");
+                UISlicedSprite trackingSprite = Find<UISlicedSprite>("PanelTrack");
+
+                uiScrollbar.height = _scrollablepanel.height;
+                trackingSprite.size = trackingSprite.parent.size;
+                uiScrollbar.position = new Vector2(width - 20, -30);
             };
 
             base.Start();
         }
-        
+
         private void OnChatKeyDown(UIComponent component, UIKeyEventParameter eventParam)
         {
             // Reset chat timeout
@@ -402,7 +373,7 @@ namespace CSM.Panels
             {
                 eventParam.Use();
 
-                string text = UseChirper ? _chatTextChirper.text : _chatText.text;
+                string text = UseChirper ? ChatTextChirper.text : _chatText.text;
 
                 if (string.IsNullOrEmpty(text))
                 {
@@ -413,8 +384,8 @@ namespace CSM.Panels
 
                 if (UseChirper)
                 {
-                    _chatTextChirper.text = string.Empty;
-                    _chatTextChirper.Hide();
+                    ChatTextChirper.text = string.Empty;
+                    ChatTextChirper.Hide();
                     ReflectionHelper.SetAttr(ChirpPanel.instance, "m_Timeout", 6f);
                 }
                 else
@@ -430,9 +401,9 @@ namespace CSM.Panels
 
                 if (UseChirper)
                 {
-                    _chatTextChirper.text = string.Empty;
+                    ChatTextChirper.text = string.Empty;
                     ChirpPanel.instance.Hide();
-                    _chatTextChirper.Hide();
+                    ChatTextChirper.Hide();
                 }
                 else
                 {
@@ -566,9 +537,9 @@ namespace CSM.Panels
                         {
                             // Check if the thumb is at the bottom of the scrollbar for autoscrolling
                             UIScrollbar scrollBar =
-                                UIView.GetAView().FindUIComponent<UIScrollbar>("ChatLogPanelScrollBar");
+                                UIView.GetAView().FindUIComponent<UIScrollbar>("PanelScrollBar");
                             UISlicedSprite thumb =
-                                UIView.GetAView().FindUIComponent<UISlicedSprite>("ChatLogPanelThumb");
+                                UIView.GetAView().FindUIComponent<UISlicedSprite>("PanelThumb");
                             float size = (thumb.relativePosition.y + thumb.size.y);
                             bool autoScroll = Math.Abs(size - scrollBar.height) < 0.2f;
 
@@ -590,7 +561,7 @@ namespace CSM.Panels
 
         public void HideChirpText()
         {
-            _chatTextChirper.Hide();
+            ChatTextChirper.Hide();
         }
     }
 }

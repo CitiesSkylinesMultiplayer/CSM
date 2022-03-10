@@ -1,5 +1,6 @@
 ﻿using System;
 using CitiesHarmony.API;
+using ColossalFramework.IO;
 using CSM.API;
 using CSM.Commands;
 using CSM.Injections;
@@ -16,6 +17,8 @@ namespace CSM
         public CSM()
         {
             // Setup the correct logging configuration
+            Log.Instance = new Log(DataLocation.localApplicationData);
+
             Settings = new Settings();
             Log.Instance.LogDebug = Settings.DebugLogging.value;
 

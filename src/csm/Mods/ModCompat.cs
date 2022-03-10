@@ -125,7 +125,7 @@ namespace CSM.Mods
 
         public static void BuildModInfo(UIPanel panel)
         {
-            UIComponent modInfoPanel = panel.Find("modInfoPanel");
+            UIScrollablePanel modInfoPanel = panel.Find<UIScrollablePanel>("modInfoPanel");
             if (modInfoPanel != null)
             {
                 modInfoPanel.Remove();
@@ -142,7 +142,10 @@ namespace CSM.Mods
             modInfoPanel.name = "modInfoPanel";
             modInfoPanel.width = 340;
             modInfoPanel.height = 500;
+            modInfoPanel.clipChildren = true;
             modInfoPanel.position = new Vector2(370, -60);
+
+            panel.AddScrollbar(modInfoPanel);
 
             panel.width = 720;
             modInfoPanel.CreateLabel("Mod Support", new Vector2(0, 0), 340, 20);

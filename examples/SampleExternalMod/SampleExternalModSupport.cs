@@ -1,5 +1,4 @@
 ﻿using CSM.API;
-using ICities;
 
 namespace SampleExternalMod
 {

@@ -33,10 +33,19 @@ namespace CSM.Panels
             _titleLabel = this.CreateTitleLabel("", new Vector2(150, -20));
             SetTitle(_title);
 
+            UIScrollablePanel messagePanel = AddUIComponent<UIScrollablePanel>();
+            messagePanel.name = "innerMessagePanel";
+            messagePanel.width = 430;
+            messagePanel.height = 310;
+            messagePanel.clipChildren = true;
+            messagePanel.position = new Vector2(10, -70);
+
             // Mismatch message content
-            _messageLabel = AddUIComponent<UILabel>();
+            _messageLabel = messagePanel.AddUIComponent<UILabel>();
             _messageLabel.text = _message;
-            _messageLabel.position = new Vector2(10, -70);
+            _messageLabel.position = new Vector2(10, 0);
+
+            this.AddScrollbar(messagePanel);
 
             // Close button
             _closeButton = this.CreateButton("Close", new Vector2(60, -410));
@@ -127,7 +136,7 @@ namespace CSM.Panels
             string[] notClient = serverNotClient.ToArray();
             if (notClient.Length > 0)
             {
-                message += "You are missing the following mods\n";
+                message += "You are missing the following mods/assets:\n";
                 message += "- " + string.Join("\n- ", notClient);
                 message += "\n\n";
             }
@@ -135,7 +144,7 @@ namespace CSM.Panels
             string[] notServer = clientNotServer.ToArray();
             if (notServer.Length > 0)
             {
-                message += "The server doesn't have the following mods:\n";
+                message += "The server doesn't have the following mods/assets:\n";
                 message += "- " + string.Join("\n- ", notServer);
             }
 

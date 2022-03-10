@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Names;
@@ -392,11 +393,11 @@ namespace CSM.BaseGame.Injections
     }
 
     [HarmonyPatch(typeof(InfoPanel))]
-    [HarmonyPatch("Awake")]
+    [HarmonyPatch("Update")]
     public class InfoPanelAwake
     {
         // There doesn't seem to be any way to get the instance of the InfoPanel
-        // so we save it at the beginning
+        // so we save it when an instance function is called.
         public static void Postfix(InfoPanel __instance)
         {
             ChangeCityNameHandler.Panel = __instance;

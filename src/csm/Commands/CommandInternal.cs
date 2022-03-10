@@ -182,9 +182,9 @@ namespace CSM.Commands
                 // as for example the ConnectionRequest and ConnectionResult commands are used
                 // to determine the installed mods.
                 IEnumerable<Type> packets = AssemblyHelper.FindClassesInCSM(typeof(CommandHandler));
-                foreach (Connection connection in ModSupport.Instance.ConnectedMods)
+                foreach (Connection connection in ModSupport.Instance.ConnectedMods.OrderBy(mod => mod.Name))
                 {
-                    foreach (Assembly assembly in connection.CommandAssemblies)
+                    foreach (Assembly assembly in connection.CommandAssemblies.OrderBy(assembly => assembly.FullName))
                     {
                         packets = packets.Concat(AssemblyHelper.FindImplementationsInAssembly(assembly, typeof(CommandHandler)));
                     }

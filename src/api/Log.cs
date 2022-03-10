@@ -6,26 +6,28 @@ namespace CSM.API
 {
     public class Log
     {
-        private static readonly Log _instance;
-        
-        public static readonly Log Instance = _instance ?? (_instance = new Log());
+        public static Log Instance;
 
         public bool LogDebug { get; set; }
+        public readonly string CurrentLogFile;
 
         private const string Layout = "[{0}] [{1}] {2}\r\n";
         private const int KeepLogFiles = 5;
         private readonly FileStream _fileStream;
 
-        private Log()
+        public Log(string localApplicationData)
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd");
 
-            string filename = $"multiplayer-logs/log-{date}.txt";
+            string logDirectory = Path.Combine(localApplicationData, "multiplayer-logs/");
+            Directory.CreateDirectory(logDirectory);
+
+            CurrentLogFile = Path.Combine(logDirectory, $"log-{date}.txt");
+
+            _fileStream = File.Open(CurrentLogFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
 
             // Clean up old files
-            _fileStream = File.Open(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-            
-            string[] logFiles = Directory.GetFiles("multiplayer-logs", "log-*");
+            string[] logFiles = Directory.GetFiles(logDirectory, "log-*");
             for (int i = 0; i < logFiles.Length - KeepLogFiles; i++)
             {
                 File.Delete(logFiles[i]);
@@ -34,7 +36,7 @@ namespace CSM.API
 
         ~Log()
         {
-            _fileStream.Close();
+            _fileStream.Dispose();
         }
         
         private void Write(string message, string level)

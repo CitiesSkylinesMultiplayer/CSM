@@ -34,7 +34,7 @@ namespace CSM.Mods
             get
             {
                 return ConnectedMods.Where(connection =>
-                    connection.ModClass == null
+                    connection.ModClass != null
                 ).Select(connection => connection.Name).ToList();
             }
         }

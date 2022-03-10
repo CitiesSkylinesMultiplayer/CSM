@@ -113,6 +113,45 @@ namespace CSM.Helpers
             return checkBox;
         }
 
+        public static void AddScrollbar(this UIComponent uiComponent, UIScrollablePanel scrollablePanel)
+        {
+            UIScrollbar scrollbar = uiComponent.AddUIComponent<UIScrollbar>();
+            scrollbar.width = 20f;
+            scrollbar.height = scrollablePanel.height;
+            scrollbar.orientation = UIOrientation.Vertical;
+            scrollbar.pivot = UIPivotPoint.TopLeft;
+            scrollbar.position = scrollablePanel.position + new Vector3(scrollablePanel.width - 20, 0);
+            scrollbar.minValue = 0;
+            scrollbar.value = 0;
+            scrollbar.incrementAmount = 50;
+            scrollbar.name = "PanelScrollBar";
+
+            // Add scrollbar background sprite component
+            UISlicedSprite trackingSprite = scrollbar.AddUIComponent<UISlicedSprite>();
+            trackingSprite.position = new Vector2(0, 0);
+            trackingSprite.autoSize = true;
+            trackingSprite.size = trackingSprite.parent.size;
+            trackingSprite.fillDirection = UIFillDirection.Vertical;
+            trackingSprite.spriteName = "ScrollbarTrack";
+            trackingSprite.name = "PanelTrack";
+            scrollbar.trackObject = trackingSprite;
+            scrollbar.trackObject.height = scrollbar.height;
+
+            // Add scrollbar thumb component
+            UISlicedSprite trackingThumb = scrollbar.AddUIComponent<UISlicedSprite>();
+            trackingThumb.position = new Vector2(0, 0);
+            trackingThumb.fillDirection = UIFillDirection.Vertical;
+            trackingThumb.autoSize = true;
+            trackingThumb.width = trackingThumb.parent.width - 8;
+            trackingThumb.spriteName = "ScrollbarThumb";
+            trackingThumb.name = "PanelThumb";
+
+            scrollbar.thumbObject = trackingThumb;
+            scrollbar.isVisible = true;
+            scrollbar.isEnabled = true;
+            scrollablePanel.verticalScrollbar = scrollbar;
+        }
+
         public static void Remove(this UIComponent uiComponent)
         {
             uiComponent.parent.RemoveUIComponent(uiComponent);
