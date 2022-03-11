@@ -1,4 +1,3 @@
-﻿
 namespace CSM.Networking.Status
 {
     /// <summary>
