@@ -18,8 +18,13 @@ param (
  )
 
 # Functions
-Function Find-MsBuild([int] $MaxVersion = 2019)
+Function Find-MsBuild([int] $MaxVersion = 2020)
 {
+    $agent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
+    $ent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+    $pro2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\msbuild.exe"
+    $community2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\msbuild.exe"
+    
     $agent2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
     $ent2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
     $pro2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe"
@@ -34,6 +39,11 @@ Function Find-MsBuild([int] $MaxVersion = 2019)
     $fallback2013Path = "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
     $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 		
+    If ((2022 -le $MaxVersion) -And (Test-Path $agent2022Path)) { return $agent2022Path } 
+    If ((2022 -le $MaxVersion) -And (Test-Path $ent2022Path)) { return $ent2022Path } 
+    If ((2022 -le $MaxVersion) -And (Test-Path $pro2022Path)) { return $pro2022Path } 
+    If ((2022 -le $MaxVersion) -And (Test-Path $community2022Path)) { return $community2022Path }  
+    
     If ((2019 -le $MaxVersion) -And (Test-Path $agent2019Path)) { return $agent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $ent2019Path)) { return $ent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $pro2019Path)) { return $pro2019Path } 
