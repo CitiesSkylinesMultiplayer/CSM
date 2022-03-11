@@ -18,7 +18,7 @@ param (
  )
 
 # Functions
-Function Find-MsBuild([int] $MaxVersion = 2020)
+Function Find-MsBuild([int] $MaxVersion = 2022)
 {
     $agent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
     $ent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe"
