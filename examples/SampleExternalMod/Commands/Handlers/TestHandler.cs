@@ -1,4 +1,5 @@
-﻿using CSM.API.Commands;
+﻿using CSM.API;
+using CSM.API.Commands;
 using SampleExternalMod.Commands.Data;
 
 namespace SampleExternalMod.Commands.Handlers
@@ -8,6 +9,7 @@ namespace SampleExternalMod.Commands.Handlers
         protected override void Handle(TestCommand command)
         {
             // Handle command
+            Log.Info(command.testing);
         }
     }
 }
