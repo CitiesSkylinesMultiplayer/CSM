@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{bfc8de00-f495-4388-9e36-f1471f8ed578}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSM.BaseGame</RootNamespace>
+    <AssemblyName>CSM.BaseGame</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\ColossalManaged.dll</HintPath>
+    </Reference>
+    <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\ICities.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseGameConnection.cs" />
+    <Compile Include="Commands\Data\Areas\UnlockAreaCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingChangeProductionRateCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingCreateCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingRebuildCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingRelocateCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingRemoveCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingSetEmptyingFillingCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingSetHistoricalCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingSetTollPriceCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingSetTransferReasonCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingToolCreateCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\ServiceBuildingChangeVehicleCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictAreaModifyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictCityPolicyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictCityPolicyUnsetCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictCreateCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictPolicyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictPolicyUnsetCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomyBailoutCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomyPayLoanCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomyResourceCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomyResourcesCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomySetBudgetCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomySetTaxRateCommand.cs" />
+    <Compile Include="Commands\Data\Economy\EconomyTakeLoanCommand.cs" />
+    <Compile Include="Commands\Data\Events\EventActivateCommand.cs" />
+    <Compile Include="Commands\Data\Events\EventColorChangedCommand.cs" />
+    <Compile Include="Commands\Data\Events\EventSetSecurityBudgetCommand.cs" />
+    <Compile Include="Commands\Data\Events\EventSetTicketPriceCommand.cs" />
+    <Compile Include="Commands\Data\Names\ChangeCityNameCommand.cs" />
+    <Compile Include="Commands\Data\Names\ChangeNameCommand.cs" />
+    <Compile Include="Commands\Data\Net\NodeCreateCommand.cs" />
+    <Compile Include="Commands\Data\Net\NodeReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Net\SegmentReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Net\SegmentSeedUpdateCommand.cs" />
+    <Compile Include="Commands\Data\Parks\ParkCreateCommand.cs" />
+    <Compile Include="Commands\Data\Parks\ParkReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Props\PropCreateCommand.cs" />
+    <Compile Include="Commands\Data\Props\PropMoveCommand.cs" />
+    <Compile Include="Commands\Data\Props\PropReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Roads\RoadSetPriorityCommand.cs" />
+    <Compile Include="Commands\Data\Roads\RoadSettingsCommand.cs" />
+    <Compile Include="Commands\Data\Terrain\SoilTradeCommand.cs" />
+    <Compile Include="Commands\Data\Terrain\TerrainModificationCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineAddStopCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineCancelMoveStopCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineCancelPrevStopCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeActiveCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeColorCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeSliderCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineChangeVehicleCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineCreateCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineInitCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineMoveStopCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineMoveStopManCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineReleaseCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineRemoveStopCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineResetCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineStartEditBuildingCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineSyncCommand.cs" />
+    <Compile Include="Commands\Data\TransportLines\TransportLineTempCommand.cs" />
+    <Compile Include="Commands\Data\Trees\TreeCreateCommand.cs" />
+    <Compile Include="Commands\Data\Trees\TreeMoveCommand.cs" />
+    <Compile Include="Commands\Data\Trees\TreeReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Trees\TreeUpgradeSegmentCommand.cs" />
+    <Compile Include="Commands\Data\Weather\WeatherCommand.cs" />
+    <Compile Include="Commands\Data\Zones\DemandDisplayedCommand.cs" />
+    <Compile Include="Commands\Data\Zones\ZoneUpdateCommand.cs" />
+    <Compile Include="Commands\Handler\Areas\UnlockAreaHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingChangeProductionRateHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingRebuildHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingRelocateHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingRemoveHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingSetEmptyingFillingHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingSetHistoricalHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingSetTollPriceHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingSetTransferReasonHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingToolCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingUpgradeHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\TransportLineChangeVehicleHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictAreaModifyHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictCityPolicyHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictCityPolicyUnsetHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictPolicyHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictPolicyUnsetHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomyBailoutHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomyPayLoanHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomyResourceHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomyResourcesHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomySetBudgetHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomySetTaxRateHandler.cs" />
+    <Compile Include="Commands\Handler\Economy\EconomyTakeLoanHandler.cs" />
+    <Compile Include="Commands\Handler\Events\EventActivateHandler.cs" />
+    <Compile Include="Commands\Handler\Events\EventColorChangedHandler.cs" />
+    <Compile Include="Commands\Handler\Events\EventSetSecurityBudgetHandler.cs" />
+    <Compile Include="Commands\Handler\Events\EventSetTicketPriceHandler.cs" />
+    <Compile Include="Commands\Handler\Names\ChangeCityNameHandler.cs" />
+    <Compile Include="Commands\Handler\Names\ChangeNameHandler.cs" />
+    <Compile Include="Commands\Handler\Net\NodeCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Net\NodeReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Net\SegmentReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Net\SegmentSeedUpdateHandler.cs" />
+    <Compile Include="Commands\Handler\Parks\ParkCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Parks\ParkReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Props\PropCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Props\PropMoveHandler.cs" />
+    <Compile Include="Commands\Handler\Props\PropReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Roads\RoadSetPriorityHandler.cs" />
+    <Compile Include="Commands\Handler\Roads\RoadSettingsHandler.cs" />
+    <Compile Include="Commands\Handler\Terrain\SoilTradeHandler.cs" />
+    <Compile Include="Commands\Handler\Terrain\TerrainModificationHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineAddStopHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineCancelMoveStopHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineCancelPrevStopHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeActiveHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeColorHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeSliderHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineChangeVehicleHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineCreateHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineInitHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineMoveStopHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineMoveStopManHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineRemoveStopHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineResetHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineStartEditBuildingHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineSyncHandler.cs" />
+    <Compile Include="Commands\Handler\TransportLines\TransportLineTempHandler.cs" />
+    <Compile Include="Commands\Handler\Trees\TreeCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Trees\TreeMoveHandler.cs" />
+    <Compile Include="Commands\Handler\Trees\TreeReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Trees\TreeUpgradeSegmentHandler.cs" />
+    <Compile Include="Commands\Handler\Weather\WeatherHandler.cs" />
+    <Compile Include="Commands\Handler\Zones\DemandDisplayedHandler.cs" />
+    <Compile Include="Commands\Handler\Zones\ZoneUpdateHandler.cs" />
+    <Compile Include="Extensions\AreaExtension.cs" />
+    <Compile Include="Extensions\DemandExtension.cs" />
+    <Compile Include="Helpers\ArrayXHelper.cs" />
+    <Compile Include="Helpers\InfoPanelHelper.cs" />
+    <Compile Include="Helpers\ToolSimulator.cs" />
+    <Compile Include="Injections\ArrayHandler.cs" />
+    <Compile Include="Injections\BuildingHandler.cs" />
+    <Compile Include="Injections\DistrictHandler.cs" />
+    <Compile Include="Injections\EconomyHandler.cs" />
+    <Compile Include="Injections\EventHandler.cs" />
+    <Compile Include="Injections\NameHandler.cs" />
+    <Compile Include="Injections\NetHandler.cs" />
+    <Compile Include="Injections\PropHandler.cs" />
+    <Compile Include="Injections\RoadHandler.cs" />
+    <Compile Include="Injections\TerrainHandler.cs" />
+    <Compile Include="Injections\TransportHandler.cs" />
+    <Compile Include="Injections\TreeHandler.cs" />
+    <Compile Include="Injections\WeatherHandler.cs" />
+    <Compile Include="Injections\ZoneHandler.cs" />
+    <Compile Include="Patcher.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LiteNetLib">
+      <Version>0.9.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="CitiesHarmony.API">
+      <Version>2.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\api\CSM.API.csproj">
+      <Project>{ab27eacd-b9a9-42bc-bf8a-3b25aabff6ca}</Project>
+      <Name>CSM.API</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Data" />
+    <Folder Include="Commands\Handler" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -12,14 +12,19 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
-    [string]$OutputDirectory = "..\src\bin\Release",
+    [string]$OutputDirectory = "..\src\csm\bin\Release",
     [string]$ModDirectory = "Default",
     [string]$GameDirectory = ""
  )
 
 # Functions
-Function Find-MsBuild([int] $MaxVersion = 2019)
+Function Find-MsBuild([int] $MaxVersion = 2022)
 {
+    $agent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
+    $ent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+    $pro2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\msbuild.exe"
+    $community2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\msbuild.exe"
+    
     $agent2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
     $ent2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
     $pro2019Path = "$Env:programfiles (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe"
@@ -34,6 +39,11 @@ Function Find-MsBuild([int] $MaxVersion = 2019)
     $fallback2013Path = "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
     $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 		
+    If ((2022 -le $MaxVersion) -And (Test-Path $agent2022Path)) { return $agent2022Path } 
+    If ((2022 -le $MaxVersion) -And (Test-Path $ent2022Path)) { return $ent2022Path } 
+    If ((2022 -le $MaxVersion) -And (Test-Path $pro2022Path)) { return $pro2022Path } 
+    If ((2022 -le $MaxVersion) -And (Test-Path $community2022Path)) { return $community2022Path }  
+    
     If ((2019 -le $MaxVersion) -And (Test-Path $agent2019Path)) { return $agent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $ent2019Path)) { return $ent2019Path } 
     If ((2019 -le $MaxVersion) -And (Test-Path $pro2019Path)) { return $pro2019Path } 
@@ -153,7 +163,7 @@ If ($Build)
         Write-Host "Using MSBuild at: $msbuild"
     }
 
-    & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU" 
+    & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU"
     If ($LastExitCode -ne 0)
     {
         Write-Host "[CSM Build Script] Build failed!"
@@ -182,10 +192,11 @@ If ($Install)
     Copy-Item -Path "$($OutputDirectory)$($Sep)LiteNetLib.dll"        -Destination "$($ModDirectory)$($Sep)LiteNetLib.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)protobuf-net.dll"      -Destination "$($ModDirectory)$($Sep)protobuf-net.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.API.dll"           -Destination "$($ModDirectory)$($Sep)CSM.API.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.BaseGame.dll"      -Destination "$($ModDirectory)$($Sep)CSM.BaseGame.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
     Copy-Item -Path "$($OutputDirectory)$($Sep)System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)0Harmony.dll"          -Destination "$($ModDirectory)$($Sep)0Harmony.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)NLog.dll"          	  -Destination "$($ModDirectory)$($Sep)NLog.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)CitiesHarmony.API.dll" -Destination "$($ModDirectory)$($Sep)CitiesHarmony.API.dll" -Force
 
     # Done
     Write-Host "[CSM Install Script] Completed Copy"

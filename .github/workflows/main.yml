@@ -32,7 +32,7 @@ jobs:
     
     # Update the assembly versiob to match the csm version
     - name: Update Assembly Version
-      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -rootFolder Properties -filePattern AssemblyInfo.cs -assemblyVersion ${{ steps.csm_version.outputs.version }}.0.0 -assemblyFileVersion ${{ steps.csm_version.outputs.version }}.0.0"
+      run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -filePattern AssemblyInfo.cs -assemblyVersion ${{ steps.csm_version.outputs.version }}.0.0 -assemblyFileVersion ${{ steps.csm_version.outputs.version }}.0.0"
       working-directory: src
     
     # Download the assemblies required to build the mod
@@ -54,20 +54,20 @@ jobs:
     
     # Delete files only used for building
     - name: Delete unused artifacts
-      working-directory: src/bin/Release
+      working-directory: src/csm/bin/Release
       run: | 
         del Assembly-CSharp.dll
         del ColossalManaged.dll
         del ICities.dll
         del UnityEngine.dll
         del UnityEngine.UI.dll
-          
+
     # Publish artifacts
     - name: Upload mod DLLs
       uses: actions/upload-artifact@v2
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
-        path: src/bin/Release/*.dll
+        path: src/csm/bin/Release/*.dll
         
     # Publish install script
     - name: Upload install script
@@ -75,3 +75,15 @@ jobs:
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
         path: scripts/install.ps1
+
+    # Pack API package (Nuget)
+    - name: Build nuget API package
+      if: github.ref == 'refs/heads/master'
+      working-directory: src/api
+      run: nuget pack -Properties Configuration=Release -NonInteractive
+
+    # Publish API package (Nuget)
+    - name: Publish API package
+      if: github.ref == 'refs/heads/master'
+      working-directory: src/api
+      run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{secrets.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json

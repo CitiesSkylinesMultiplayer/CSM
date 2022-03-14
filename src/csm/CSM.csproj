@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{63933537-DA87-4026-A44C-382298FBB399}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSM</RootNamespace>
+    <AssemblyName>CSM</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\ColossalManaged.dll</HintPath>
+    </Reference>
+    <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\ICities.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\CommandReceiver.cs" />
+    <Compile Include="Commands\CommandInternal.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseReachedCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientLevelLoadedCommand.cs" />
+    <Compile Include="Commands\Data\Internal\PlayerLocationCommand.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseResponseCommand.cs" />
+    <Compile Include="Commands\Data\Game\SpeedPauseRequestCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ChatMessageCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientConnectCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ClientDisconnectCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ConnectionRequestCommand.cs" />
+    <Compile Include="Commands\Data\Internal\ConnectionResultCommand.cs" />
+    <Compile Include="Commands\Data\Internal\FinishTransactionCommand.cs" />
+    <Compile Include="Commands\Data\Internal\PlayerListCommand.cs" />
+    <Compile Include="Commands\Data\Internal\RequestWorldTransferCommand.cs" />
+    <Compile Include="Commands\Data\Internal\SlowdownCommand.cs" />
+    <Compile Include="Commands\Data\Internal\WorldTransferCommand.cs" />
+    <Compile Include="Commands\Handler\Game\SpeedPauseReachedHandler.cs" />
+    <Compile Include="Commands\Handler\Game\SpeedPauseResponseHandler.cs" />
+    <Compile Include="Commands\Handler\Game\SpeedPauseRequestHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ChatMessageHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ClientConnectHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ClientDisonnectHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ClientJoiningHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ClientLevelLoadedHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ConnectionRequestHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\ConnectionResultHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\FinishTransactionHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\PlayerListHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\PlayerLocationHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\RequestWorldTransferHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\SlowdownHandler.cs" />
+    <Compile Include="Commands\Handler\Internal\WorldTransferHandler.cs" />
+    <Compile Include="Container\ChatCommand.cs" />
+    <Compile Include="Container\ChirperMessage.cs" />
+    <Compile Include="Container\Tuple.cs" />
+    <Compile Include="Extensions\LoadingExtension.cs" />
+    <Compile Include="Extensions\ThreadingExtension.cs" />
+    <Compile Include="Helpers\AssemblyHelper.cs" />
+    <Compile Include="Helpers\SaveHelpers.cs" />
+    <Compile Include="Helpers\DLCHelper.cs" />
+    <Compile Include="Helpers\SlowdownHelper.cs" />
+    <Compile Include="Helpers\SpeedPauseHelper.cs" />
+    <Compile Include="Helpers\UiHelper.cs" />
+    <Compile Include="Injections\ChatHandler.cs" />
+    <Compile Include="Injections\ICameraHandler.cs" />
+    <Compile Include="Injections\MainMenuHandler.cs" />
+    <Compile Include="Injections\PauseMenuHandler.cs" />
+    <Compile Include="Injections\SpeedPauseHandler.cs" />
+    <Compile Include="Injections\TickLoopHandler.cs" />
+    <Compile Include="Models\ColorSurrogate.cs" />
+    <Compile Include="Models\QuaternionSurrogate.cs" />
+    <Compile Include="Models\ControlPointSurrogate.cs" />
+    <Compile Include="Models\Vector3Surrogate.cs" />
+    <Compile Include="Mods\ModCompat.cs" />
+    <Compile Include="Mods\ModSupport.cs" />
+    <Compile Include="Networking\Client.cs" />
+    <Compile Include="Networking\Config\ClientConfig.cs" />
+    <Compile Include="Networking\Config\ConfigData.cs" />
+    <Compile Include="Networking\Config\ServerConfig.cs" />
+    <Compile Include="Networking\IpAddress.cs" />
+    <Compile Include="Networking\MultiplayerManager.cs" />
+    <Compile Include="Networking\Server.cs" />
+    <Compile Include="Commands\TransactionHandler.cs" />
+    <Compile Include="Panels\ConnectedPlayersPanel.cs" />
+    <Compile Include="Panels\MessagePanel.cs" />
+    <Compile Include="Panels\PanelManager.cs" />
+    <Compile Include="Patcher.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Panels\ChatLogPanel.cs" />
+    <Compile Include="Panels\ClientJoinPanel.cs" />
+    <Compile Include="Panels\SettingsPanel.cs" />
+    <Compile Include="Panels\ConnectionPanel.cs" />
+    <Compile Include="Panels\ManageGamePanel.cs" />
+    <Compile Include="Panels\HostGamePanel.cs" />
+    <Compile Include="Panels\JoinGamePanel.cs" />
+    <Compile Include="CSM.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Serializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LiteNetLib">
+      <Version>0.9.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Open.Nat">
+      <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="protobuf-net">
+      <Version>2.4.6</Version>
+    </PackageReference>
+    <PackageReference Include="CitiesHarmony.API">
+      <Version>2.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\api\CSM.API.csproj">
+      <Project>{ab27eacd-b9a9-42bc-bf8a-3b25aabff6ca}</Project>
+      <Name>CSM.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\basegame\CSM.BaseGame.csproj">
+      <Project>{bfc8de00-f495-4388-9e36-f1471f8ed578}</Project>
+      <Name>CSM.BaseGame</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('windows'))">powershell -ExecutionPolicy Unrestricted -Command "$(SolutionDir)\scripts\build.ps1" -OutputDirectory $(TargetDir) -Install</PostBuildEvent>
+    <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('linux'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
+    <PostBuildEvent Condition="$([MSBuild]::IsOsPlatform('osx'))">pwsh "$(SolutionDir)scripts/build.ps1" -OutputDirectory "$(TargetDir)" -Install</PostBuildEvent>
+  </PropertyGroup>
+</Project>
