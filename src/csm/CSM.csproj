@@ -114,9 +114,14 @@
     <Compile Include="Injections\PauseMenuHandler.cs" />
     <Compile Include="Injections\SpeedPauseHandler.cs" />
     <Compile Include="Injections\TickLoopHandler.cs" />
+    <Compile Include="Injections\Tools\BuildingToolHandler.cs" />
+    <Compile Include="Injections\Tools\DefaultToolHandler.cs" />
+    <Compile Include="Injections\Tools\ToolManagerOverlayRenderer.cs" />
     <Compile Include="Models\ColorSurrogate.cs" />
     <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\ControlPointSurrogate.cs" />
+    <Compile Include="Models\InstanceIDSurrogate.cs" />
+    <Compile Include="Models\Segment3Surograte.cs" />
     <Compile Include="Models\Vector3Surrogate.cs" />
     <Compile Include="Mods\ModCompat.cs" />
     <Compile Include="Mods\ModSupport.cs" />

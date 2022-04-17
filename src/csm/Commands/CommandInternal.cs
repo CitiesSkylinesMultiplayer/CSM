@@ -10,6 +10,7 @@ using CSM.Helpers;
 using CSM.Models;
 using CSM.Mods;
 using CSM.Networking;
+using ColossalFramework.Math;
 using LiteNetLib;
 using ProtoBuf.Meta;
 using UnityEngine;
@@ -199,12 +200,15 @@ namespace CSM.Commands
                 // Set type surrogates
                 model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
                 model[typeof(NetTool.ControlPoint)].SetSurrogate(typeof(ControlPointSurrogate));
+                model[typeof(Segment3)].SetSurrogate(typeof(Segment3Surrogate));
 
                 // Add Quaternion Surrogate
                 model[typeof(Quaternion)].SetSurrogate(typeof(QuaternionSurrogate));
 
                 // Add Color Surrogate
                 model[typeof(Color)].SetSurrogate(typeof(ColorSurrogate));
+
+                model[typeof(InstanceID)].SetSurrogate(typeof(InstanceIDSurrogate));
 
                 // Add base command to the protobuf model with all attributes
                 model.Add(typeof(CommandBase), true);

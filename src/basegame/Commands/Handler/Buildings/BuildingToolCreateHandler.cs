@@ -36,6 +36,9 @@ namespace CSM.BaseGame.Commands.Handler.Buildings
 
             ReflectionHelper.Call<IEnumerator>(tool, "CreateBuilding")?.MoveNext();
 
+            ReflectionHelper.SetAttr(controller, "m_collidingDepth", 0);
+            controller.ClearColliding();
+
             ArrayHandler.StopApplying();
             IgnoreHelper.Instance.EndIgnore();
         }
