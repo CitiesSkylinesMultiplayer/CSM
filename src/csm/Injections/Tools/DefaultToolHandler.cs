@@ -78,11 +78,6 @@ namespace CSM.Injections.Tools
             
         }
 
-        public PlayerDefaultToolCommandHandler()
-        {
-            TransactionCmd = false;
-        }
-
         protected override void Handle(Command command)
         {
             if (!MultiplayerManager.Instance.IsConnected())

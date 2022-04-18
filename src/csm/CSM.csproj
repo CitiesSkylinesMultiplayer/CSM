@@ -117,6 +117,7 @@
     <Compile Include="Injections\Tools\BuildingToolHandler.cs" />
     <Compile Include="Injections\Tools\DefaultToolHandler.cs" />
     <Compile Include="Injections\Tools\ToolManagerOverlayRenderer.cs" />
+    <Compile Include="Injections\Tools\BaseToolHandler.cs" />
     <Compile Include="Models\ColorSurrogate.cs" />
     <Compile Include="Models\QuaternionSurrogate.cs" />
     <Compile Include="Models\ControlPointSurrogate.cs" />

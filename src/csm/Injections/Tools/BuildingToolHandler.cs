@@ -1,5 +1,3 @@
-using System.Xml.Serialization;
-using System.Collections.ObjectModel;
 using System;
 using CSM.API.Commands;
 using CSM.Networking;
@@ -39,7 +37,6 @@ namespace CSM.Injections.Tools
                 // Send info to all clients
                 var newCommand = new PlayerBuildingToolCommandHandler.Command
                 {
-                    PlayerName = playerName,
                     Prefab = (ushort)Mathf.Clamp(__instance.m_prefab.m_prefabDataIndex, 0, 65535),
                     Relocating = __instance.m_relocate,
                     Position = ___m_cachedPosition,
@@ -56,64 +53,46 @@ namespace CSM.Injections.Tools
         }    
     }
 
-    public class PlayerBuildingToolCommandHandler : CommandHandler<PlayerBuildingToolCommandHandler.Command>
+    public class PlayerBuildingToolCommandHandler : BaseToolCommandHandler<PlayerBuildingToolCommandHandler.Command, BuildingTool>
     {
 
         [ProtoContract]
         public class Command : CommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
-            public string PlayerName { get; set; }
-            [ProtoMember(2)]
             public ushort Prefab { get; set; }
-            [ProtoMember(3)]
+            [ProtoMember(2)]
             public int Relocating { get; set; }
-            [ProtoMember(4)]
+            [ProtoMember(3)]
             public Vector3 Position { get; set; }
-            [ProtoMember(5)]
+            [ProtoMember(4)]
             public float Angle { get; set; }
-            [ProtoMember(6)]
+            [ProtoMember(5)]
             public Segment3 Segment { get; set; }
-            [ProtoMember(7)]
+            [ProtoMember(6)]
             public int Elevation { get; set; }
 
 
             public bool Equals(Command other)
             {
-                return object.Equals(this.PlayerName, other.PlayerName) &&
-                object.Equals(this.Prefab, other.Prefab) &&
+                return object.Equals(this.Prefab, other.Prefab) &&
                 object.Equals(this.Relocating, other.Relocating) &&
                 object.Equals(this.Position, other.Position) &&
-                object.Equals(this.Segment, other.Segment) &&
                 object.Equals(this.Angle, other.Angle) &&
+                object.Equals(this.Segment, other.Segment) &&
                 object.Equals(this.Elevation, other.Elevation);
             }
             
         }
 
-        public PlayerBuildingToolCommandHandler()
-        {
-            TransactionCmd = false;
-        }
-
-        protected override void Handle(Command command)
-        {
-            if (!MultiplayerManager.Instance.IsConnected())
-            {
-                // Ignore packets while not connected
-                return;
-            }
-            var buildingTool = ToolSimulator.GetTool<BuildingTool>(command.SenderId);
-
+        protected override void Configure(BuildingTool tool, Command command) {
             BuildingInfo prefab = PrefabCollection<BuildingInfo>.GetPrefab(command.Prefab);
-
-            ReflectionHelper.SetAttr(buildingTool, "m_prefab", prefab);
-            ReflectionHelper.SetAttr(buildingTool, "m_relocate", command.Relocating);
-            ReflectionHelper.SetAttr(buildingTool, "m_cachedPosition", command.Position);
-            ReflectionHelper.SetAttr(buildingTool, "m_cachedAngle", command.Angle);
-            ReflectionHelper.SetAttr(buildingTool, "m_cachedSegment", command.Segment);
-            ReflectionHelper.SetAttr(buildingTool, "m_elevation", command.Elevation);
-            
+            ReflectionHelper.SetAttr(tool, "m_prefab", prefab);
+            ReflectionHelper.SetAttr(tool, "m_relocate", command.Relocating);
+            ReflectionHelper.SetAttr(tool, "m_cachedPosition", command.Position);
+            ReflectionHelper.SetAttr(tool, "m_cachedAngle", command.Angle);
+            ReflectionHelper.SetAttr(tool, "m_cachedSegment", command.Segment);
+            ReflectionHelper.SetAttr(tool, "m_elevation", command.Elevation);
         }
     }
 
