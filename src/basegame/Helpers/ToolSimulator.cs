@@ -63,6 +63,15 @@ namespace CSM.BaseGame.Helpers
                 ReflectionHelper.SetAttr(netTool, "m_helperLineTimer", new Dictionary<int, NetTool.HelperLineTimer>());
                 ReflectionHelper.SetAttr(netTool, "m_overlayBuildings", new HashSet<ushort>());
             }
+            if (tool is ZoneTool zoneTool) {  
+                // See ZoneTool::Awake              
+                ReflectionHelper.SetAttr(zoneTool, "m_closeSegments",  new ushort[16]);
+                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer1",  new ulong[64]);
+                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer2",  new ulong[64]);
+                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer3",  new ulong[64]);
+                // ReflectionHelper.SetAttr(zoneTool, "m_fillPositions",  new FastList<ZoneTool.FillPos>());
+                ReflectionHelper.SetAttr(zoneTool, "m_dataLock",  new object());
+            }
 
             controller.m_validColor = PLAYER_COLORS[(sender + PLAYER_COLORS.Length) % PLAYER_COLORS.Length];
 
