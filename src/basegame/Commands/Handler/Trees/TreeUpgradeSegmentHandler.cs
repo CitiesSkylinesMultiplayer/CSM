@@ -3,6 +3,7 @@ using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Trees;
 using CSM.BaseGame.Helpers;
+using ColossalFramework;
 
 namespace CSM.BaseGame.Commands.Handler.Trees
 {
@@ -12,7 +13,7 @@ namespace CSM.BaseGame.Commands.Handler.Trees
         {
             TreeInfo prefab = PrefabCollection<TreeInfo>.GetPrefab(command.Prefab);
 
-            TreeTool tool = ToolSimulator.GetTool<TreeTool>(command.SenderId);
+            TreeTool tool = Singleton<ToolSimulator>.instance.GetTool<TreeTool>(command.SenderId);
             ReflectionHelper.SetAttr(tool, "m_upgradedSegments", new HashSet<ushort>());
             ReflectionHelper.SetAttr(tool, "m_placementErrors", ToolBase.ToolErrors.None);
 

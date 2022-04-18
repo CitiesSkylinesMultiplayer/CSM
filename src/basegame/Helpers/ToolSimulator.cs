@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using CSM.API.Helpers;
 using UnityEngine;
+using ColossalFramework;
 
 namespace CSM.BaseGame.Helpers
 {
-    public static class ToolSimulator
+    public class ToolSimulator: Singleton<ToolSimulator>
     {
-        private static readonly Dictionary<int, ToolBase> _currentTools = new Dictionary<int, ToolBase>();
+        private Dictionary<int, ToolBase> _currentTools = new Dictionary<int, ToolBase>();
 
-        private static readonly Color[] PLAYER_COLORS = new Color[6];
+        private static Color[] PLAYER_COLORS = new Color[6];
 
         static ToolSimulator() {
             for(int i = 0; i < PLAYER_COLORS.Length; i++) {
@@ -18,11 +19,11 @@ namespace CSM.BaseGame.Helpers
             }
         }
 
-        public static ICollection<ToolBase> GetTools() {
+        public ICollection<ToolBase> GetTools() {
             return _currentTools.Values;
         }
 
-        public static T GetTool<T>(int sender) where T : ToolBase
+        public T GetTool<T>(int sender) where T : ToolBase
         {
             ToolBase tool;
             if (_currentTools.ContainsKey(sender))
@@ -50,18 +51,18 @@ namespace CSM.BaseGame.Helpers
             ReflectionHelper.SetAttr(controller, "m_collidingBuildings2", new ulong[768]);
             ReflectionHelper.SetAttr(controller, "m_collidingDepth", 0);
 
-            controller.m_validColor = PLAYER_COLORS[sender % PLAYER_COLORS.Length];
+            controller.m_validColor = PLAYER_COLORS[(sender + PLAYER_COLORS.Length) % PLAYER_COLORS.Length];
 
             _currentTools[sender] = tool;
             return (T)tool;
         }
 
-        public static void RemoveSender(int sender)
+        public void RemoveSender(int sender)
         {
             _currentTools.Remove(sender);
         }
 
-        public static void Clear()
+        public void Clear()
         {
             _currentTools.Clear();
         }

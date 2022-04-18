@@ -91,7 +91,7 @@ namespace CSM.Injections.Tools
                 return;
             }
 
-            var defaultTool = ToolSimulator.GetTool<DefaultTool>(command.SenderId);
+            var defaultTool = Singleton<ToolSimulator>.instance.GetTool<DefaultTool>(command.SenderId);
             ReflectionHelper.SetAttr(defaultTool, "m_hoveredInstance", command.HoveredInstanceID);
             ReflectionHelper.SetAttr(defaultTool, "m_hoveredInstance2", command.HoveredInstanceID2);
             ReflectionHelper.SetAttr(defaultTool, "m_subHoverIndex", command.SubIndex);

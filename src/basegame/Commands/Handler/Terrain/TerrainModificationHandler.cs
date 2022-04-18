@@ -2,6 +2,7 @@
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Terrain;
 using CSM.BaseGame.Helpers;
+using ColossalFramework;
 
 namespace CSM.BaseGame.Commands.Handler.Terrain
 {
@@ -9,7 +10,7 @@ namespace CSM.BaseGame.Commands.Handler.Terrain
     {
         protected override void Handle(TerrainModificationCommand command)
         {
-            TerrainTool tool = ToolSimulator.GetTool<TerrainTool>(command.SenderId);
+            TerrainTool tool = Singleton<ToolSimulator>.instance.GetTool<TerrainTool>(command.SenderId);
 
             // Apply data from command
             command.BrushData.CopyTo(ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController").BrushData, 0);

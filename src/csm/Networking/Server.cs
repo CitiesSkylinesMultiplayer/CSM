@@ -14,6 +14,7 @@ using CSM.Networking.Config;
 using CSM.Util;
 using LiteNetLib;
 using Open.Nat;
+using ColossalFramework;
 
 namespace CSM.Networking
 {
@@ -182,7 +183,7 @@ namespace CSM.Networking
 
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
-            ToolSimulator.Clear();
+            Singleton<ToolSimulator>.instance.Clear();
 
             Log.Info("Server stopped.");
         }
@@ -312,7 +313,7 @@ namespace CSM.Networking
             this.ConnectedPlayers.Remove(player.NetPeer.Id);
             CommandInternal.Instance.HandleClientDisconnect(player);
             TransactionHandler.ClearTransactions(player.NetPeer.Id);
-            ToolSimulator.RemoveSender(player.NetPeer.Id);
+            Singleton<ToolSimulator>.instance.RemoveSender(player.NetPeer.Id);
         }
 
         /// <summary>

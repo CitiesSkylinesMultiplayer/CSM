@@ -183,7 +183,7 @@ namespace CSM.Networking
             _netClient.Stop();
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
-            ToolSimulator.Clear();
+            Singleton<ToolSimulator>.instance.Clear();
 
             if (needsUnload)
             {

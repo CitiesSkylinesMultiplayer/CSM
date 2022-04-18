@@ -4,6 +4,7 @@ using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.TransportLines;
 using CSM.BaseGame.Helpers;
 using CSM.BaseGame.Injections;
+using ColossalFramework;
 
 namespace CSM.BaseGame.Commands.Handler.TransportLines
 {
@@ -11,7 +12,7 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineCreateCommand command)
         {
-            TransportTool tool = ToolSimulator.GetTool<TransportTool>(command.SenderId);
+            TransportTool tool = Singleton<ToolSimulator>.instance.GetTool<TransportTool>(command.SenderId);
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
 

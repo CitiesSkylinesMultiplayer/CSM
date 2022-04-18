@@ -16,13 +16,13 @@ namespace CSM.Injections.Tools
     public class PlayerToolManager: Singleton<PlayerToolManager>, IPlayerToolRenderer {
 
         public void RenderGeometry(RenderManager.CameraInfo cameraInfo) {
-            foreach (var simulatedTool in ToolSimulator.GetTools()) {
+            foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
                 simulatedTool.RenderGeometry(cameraInfo);
             }
         }
 
         public void RenderOverlay(RenderManager.CameraInfo cameraInfo) {
-            foreach (var simulatedTool in ToolSimulator.GetTools()) {
+            foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
                 simulatedTool.RenderOverlay(cameraInfo);
             }
         }
