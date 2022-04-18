@@ -51,6 +51,19 @@ namespace CSM.BaseGame.Helpers
             ReflectionHelper.SetAttr(controller, "m_collidingBuildings2", new ulong[768]);
             ReflectionHelper.SetAttr(controller, "m_collidingDepth", 0);
 
+            if(tool is NetTool netTool) {
+                // See NetTool::Awake
+                ReflectionHelper.SetAttr(netTool, "m_bulldozerTool", new BulldozeTool());
+                ReflectionHelper.SetAttr(netTool, "m_controlPoints", new NetTool.ControlPoint[3]);
+                ReflectionHelper.SetAttr(netTool, "m_cachedControlPoints", new NetTool.ControlPoint[3]);
+                ReflectionHelper.SetAttr(netTool, "m_closeSegments", new ushort[16]);
+                ReflectionHelper.SetAttr(netTool, "m_cacheLock", new object());
+                ReflectionHelper.SetAttr(netTool, "m_upgradedSegments", new HashSet<ushort>());
+                ReflectionHelper.SetAttr(netTool, "m_tempUpgraded", new FastList<ushort>());
+                ReflectionHelper.SetAttr(netTool, "m_helperLineTimer", new Dictionary<int, NetTool.HelperLineTimer>());
+                ReflectionHelper.SetAttr(netTool, "m_overlayBuildings", new HashSet<ushort>());
+            }
+
             controller.m_validColor = PLAYER_COLORS[(sender + PLAYER_COLORS.Length) % PLAYER_COLORS.Length];
 
             _currentTools[sender] = tool;
