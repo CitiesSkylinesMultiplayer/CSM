@@ -80,7 +80,7 @@ namespace CSM.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_lastEditLine", command.LastEditLine);
             ReflectionHelper.SetAttr(tool, "m_hoverStopIndex", command.HoverStopIndex);
             ReflectionHelper.SetAttr(tool, "m_hoverSegmentIndex", command.HoverSegmentIndex);
-            ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);            
+            ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);
         }
     }
 

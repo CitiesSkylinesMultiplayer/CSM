@@ -82,7 +82,15 @@ namespace CSM.Injections.Tools
             tool.m_mode = (NetTool.Mode) Enum.GetValues(typeof(NetTool.Mode)).GetValue(command.Mode);
             ReflectionHelper.SetAttr(tool, "m_cachedControlPoints", command.ControlPoints);
             ReflectionHelper.SetAttr(tool, "m_cachedControlPointCount", command.ControlPointCount);
-            ReflectionHelper.SetAttr(tool, "m_upgradedSegments", new HashSet<ushort>(command.UpgradedSegments));
+
+            ushort[] segments;
+            if(command.UpgradedSegments != null) {
+                segments = command.UpgradedSegments;
+            } else {
+                segments = new ushort[0];
+            }
+
+            ReflectionHelper.SetAttr(tool, "m_upgradedSegments", new HashSet<ushort>(segments));
         }
     }
 
