@@ -74,7 +74,7 @@ namespace CSM.Injections.Tools
             
         }
 
-        protected override void Configure(NetTool tool, Command command) {
+        protected override void Configure(NetTool tool, ToolController toolController, Command command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
             NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(command.Prefab);

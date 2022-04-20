@@ -64,7 +64,7 @@ namespace CSM.Injections.Tools
             
         }
 
-        protected override void Configure(DefaultTool tool, Command command) {
+        protected override void Configure(DefaultTool tool, ToolController toolController, Command command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
             ReflectionHelper.SetAttr(tool, "m_hoverInstance", command.HoverInstanceID);

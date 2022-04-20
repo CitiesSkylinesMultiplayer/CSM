@@ -23,6 +23,11 @@ namespace CSM.BaseGame.Helpers
             return _currentTools.Values;
         }
 
+        public void GetToolAndController<Tool>(int sender, out Tool tool, out ToolController toolController) where Tool: ToolBase {
+            tool = this.GetTool<Tool>(sender);
+            toolController = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
+        }
+
         public T GetTool<T>(int sender) where T : ToolBase
         {
             ToolBase tool;

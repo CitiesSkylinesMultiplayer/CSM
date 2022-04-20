@@ -74,7 +74,7 @@ namespace CSM.Injections.Tools
             
         }
 
-        protected override void Configure(BuildingTool tool, Command command) {
+        protected override void Configure(BuildingTool tool, ToolController toolController, Command command) {
             BuildingInfo prefab = PrefabCollection<BuildingInfo>.GetPrefab(command.Prefab);
             ReflectionHelper.SetAttr(tool, "m_prefab", prefab);
             ReflectionHelper.SetAttr(tool, "m_relocate", command.Relocating);

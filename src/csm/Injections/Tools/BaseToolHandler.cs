@@ -21,12 +21,15 @@ namespace CSM.Injections.Tools
                 // Ignore packets while not connected
                 return;
             }
-            var buildingTool = Singleton<ToolSimulator>.instance.GetTool<Tool>(command.SenderId);
 
-            Configure(buildingTool, command);
+            Tool tool;
+            ToolController controller;
+            Singleton<ToolSimulator>.instance.GetToolAndController<Tool>(command.SenderId, out tool, out controller);
+
+            Configure(tool, controller, command);
             
         }
 
-        protected abstract void Configure(Tool tool, Command command);
+        protected abstract void Configure(Tool tool, ToolController toolController, Command command);
     }
 }

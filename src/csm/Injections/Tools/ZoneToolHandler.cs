@@ -98,7 +98,7 @@ namespace CSM.Injections.Tools
             
         }
 
-        protected override void Configure(ZoneTool tool, Command command) {
+        protected override void Configure(ZoneTool tool, ToolController toolController, Command command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
             tool.m_zone = (ItemClass.Zone) Enum.GetValues(typeof(ItemClass.Zone)).GetValue(command.Zone);

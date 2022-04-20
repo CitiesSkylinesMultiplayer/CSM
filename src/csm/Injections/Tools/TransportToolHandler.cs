@@ -74,7 +74,7 @@ namespace CSM.Injections.Tools
             
         }
 
-        protected override void Configure(TransportTool tool, Command command) {
+        protected override void Configure(TransportTool tool, ToolController toolController, Command command) {
             // TODO: somehow force the rendering to occur even when clients aren't viewing the transport layer
             tool.m_prefab = PrefabCollection<TransportInfo>.GetPrefab(command.TransportInfo);
             ReflectionHelper.SetAttr(tool, "m_lastEditLine", command.LastEditLine);
