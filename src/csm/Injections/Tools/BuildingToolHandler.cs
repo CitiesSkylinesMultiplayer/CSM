@@ -21,18 +21,7 @@ namespace CSM.Injections.Tools
 
         public static void Postfix(BuildingTool __instance, Vector3 ___m_cachedPosition, float ___m_cachedAngle, int ___m_elevation, Segment3 ___m_cachedSegment)
         {
-            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) { 
-
-                // Set the correct playerName if our currentRole is SERVER, else use the CurrentClient Username
-                string playerName;
-                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-                {
-                    playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
-                }
-                else
-                {
-                    playerName = MultiplayerManager.Instance.CurrentClient.Config.Username;
-                }
+            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
 
                 // Send info to all clients
                 var newCommand = new PlayerBuildingToolCommandHandler.Command
@@ -43,7 +32,7 @@ namespace CSM.Injections.Tools
                     Angle = ___m_cachedAngle,
                     Segment = ___m_cachedSegment,
                     Elevation = ___m_elevation
-                };
+                };                
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
