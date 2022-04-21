@@ -11,7 +11,7 @@ namespace CSM.Injections.Tools
     [HarmonyPatch("EndRenderingImpl")]
     public class ToolManagerGeometryRenderer {
         
-        public static void Postfix(RenderManager.CameraInfo cameraInfo)
+        public static void Prefix(RenderManager.CameraInfo cameraInfo)
         {
             foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
                 simulatedTool.RenderGeometry(cameraInfo);
@@ -24,7 +24,7 @@ namespace CSM.Injections.Tools
     [HarmonyPatch("EndOverlayImpl")]
     public class ToolManagerOverlayRenderer {
         
-        public static void Postfix(RenderManager.CameraInfo cameraInfo)
+        public static void Prefix(RenderManager.CameraInfo cameraInfo)
         {
             // the NetTool uses static fields to share guidelines between render and simulation loops
             // unsetting the static field here will prevent any NetTools from clients also rendering the
