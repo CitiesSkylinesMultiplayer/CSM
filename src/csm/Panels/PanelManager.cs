@@ -45,8 +45,8 @@ namespace CSM.Panels
         public static Vector3 GetCenterPosition(UIPanel panel)
         {
             UIView view = panel.GetUIView();
-            float actualWidth = view.GetScreenResolution().x;
-            float actualHeight = view.GetScreenResolution().y;
+            float actualWidth = view.GetScreenResolution().x / view.scale;
+            float actualHeight = view.GetScreenResolution().y / view.scale;
             return new Vector3(actualWidth  / 2.0f - panel.width  / 2.0f,
                                actualHeight / 2.0f - panel.height / 2.0f);
         }
