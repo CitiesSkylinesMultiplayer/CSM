@@ -210,6 +210,18 @@ namespace CSM.Networking
             }
         }
 
+        public string CurrentUsername() {
+            
+            if (CurrentRole == MultiplayerRole.Server)
+            {
+                return CurrentServer.Config.Username;
+            }
+            else
+            {
+                return CurrentClient.Config.Username;
+            }
+        }
+
         private static MultiplayerManager _multiplayerInstance;
         public static MultiplayerManager Instance => _multiplayerInstance ?? (_multiplayerInstance = new MultiplayerManager());
     }

@@ -30,11 +30,16 @@ namespace CSM.Injections.Tools
                 {
                     Mode = (uint)  __instance.m_mode,
                     MousePosition = ___m_mousePosition,
-                    BrushSize = __instance.m_brushSize
+                    BrushSize = __instance.m_brushSize,
+                    CursorWorldPosition = ___m_mousePosition,
+                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
+                }
+                if(ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerTerrainToolCommandHandler.Command)).Parse(newCommand);
                 }
 
             }
@@ -45,7 +50,7 @@ namespace CSM.Injections.Tools
     {
 
         [ProtoContract]
-        public class Command : CommandBase, IEquatable<Command>
+        public class Command : ToolCommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
             public uint Mode { get; set; }
@@ -59,7 +64,8 @@ namespace CSM.Injections.Tools
 
             public bool Equals(Command other)
             {
-                return object.Equals(this.Mode, other.Mode) &&
+                return base.Equals(other) &&
+                object.Equals(this.Mode, other.Mode) &&
                 object.Equals(this.MousePosition, other.MousePosition) &&
                 object.Equals(this.BrushSize, other.BrushSize);
             }
@@ -71,6 +77,19 @@ namespace CSM.Injections.Tools
             tool.m_mode = (TerrainTool.Mode) Enum.GetValues(typeof(TerrainTool.Mode)).GetValue(command.Mode);
 	        toolController.SetBrush(tool.m_brush, command.MousePosition, command.BrushSize);
         }
+
+        protected override CursorInfo GetCursorInfo(TerrainTool tool)
+        {
+            switch(tool.m_mode) {
+                case TerrainTool.Mode.Shift: return tool.m_shiftCursor;
+                case TerrainTool.Mode.Level: return tool.m_levelCursor;
+                case TerrainTool.Mode.Slope: return tool.m_slopeCursor;
+                case TerrainTool.Mode.Soften: return tool.m_softenCursor;
+            }
+            return null;
+        }
+
+        
     }
 
     

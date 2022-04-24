@@ -31,11 +31,17 @@ namespace CSM.Injections.Tools
                     Position = ___m_cachedPosition,
                     Angle = ___m_cachedAngle,
                     Segment = ___m_cachedSegment,
-                    Elevation = ___m_elevation
+                    Elevation = ___m_elevation,
+                    CursorWorldPosition = ___m_cachedPosition,
+                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };                
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
+                }
+
+                if(ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerBuildingToolCommandHandler.Command)).Parse(newCommand);
                 }
 
             }
@@ -46,7 +52,7 @@ namespace CSM.Injections.Tools
     {
 
         [ProtoContract]
-        public class Command : CommandBase, IEquatable<Command>
+        public class Command : ToolCommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
             public ushort Prefab { get; set; }
@@ -64,7 +70,8 @@ namespace CSM.Injections.Tools
 
             public bool Equals(Command other)
             {
-                return object.Equals(this.Prefab, other.Prefab) &&
+                return base.Equals(other) &&
+                object.Equals(this.Prefab, other.Prefab) &&
                 object.Equals(this.Relocating, other.Relocating) &&
                 object.Equals(this.Position, other.Position) &&
                 object.Equals(this.Angle, other.Angle) &&
@@ -82,6 +89,11 @@ namespace CSM.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_cachedAngle", command.Angle);
             ReflectionHelper.SetAttr(tool, "m_cachedSegment", command.Segment);
             ReflectionHelper.SetAttr(tool, "m_elevation", command.Elevation);
+        }
+
+        protected override CursorInfo GetCursorInfo(BuildingTool tool)
+        {
+            return tool.m_buildCursor;
         }
     }
 

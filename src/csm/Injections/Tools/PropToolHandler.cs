@@ -32,11 +32,16 @@ namespace CSM.Injections.Tools
                     Mode = (int) __instance.m_mode,
                     Position = ___m_cachedPosition,
                     Angle = ___m_cachedAngle,
-                    RandomizerSeed = ___m_randomizer.seed
+                    RandomizerSeed = ___m_randomizer.seed,
+                    CursorWorldPosition = ___m_cachedPosition,
+                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
+                }
+                if(ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerPropToolCommandHandler.Command)).Parse(newCommand);
                 }
 
             }
@@ -47,7 +52,7 @@ namespace CSM.Injections.Tools
     {
 
         [ProtoContract]
-        public class Command : CommandBase, IEquatable<Command>
+        public class Command : ToolCommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
             public uint Prop { get; set; }
@@ -65,7 +70,8 @@ namespace CSM.Injections.Tools
 
             public bool Equals(Command other)
             {
-                return object.Equals(this.Prop, other.Prop) &&
+                return base.Equals(other) &&
+                object.Equals(this.Prop, other.Prop) &&
                 object.Equals(this.Mode, other.Mode) &&
                 object.Equals(this.Position, other.Position) &&
                 object.Equals(this.Angle, other.Angle) &&
@@ -84,6 +90,11 @@ namespace CSM.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_cachedAngle", command.Angle);
             ReflectionHelper.SetAttr(tool, "m_randomizer", new Randomizer(command.RandomizerSeed));
             
+        }
+
+        protected override CursorInfo GetCursorInfo(PropTool tool)
+        {
+            return tool.m_buildCursor;
         }
     }
 

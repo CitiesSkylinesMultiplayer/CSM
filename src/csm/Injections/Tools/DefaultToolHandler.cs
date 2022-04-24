@@ -20,20 +20,26 @@ namespace CSM.Injections.Tools
 
         private static PlayerDefaultToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(DefaultTool __instance, InstanceID ___m_hoverInstance, InstanceID ___m_hoverInstance2, int ___m_subHoverIndex)
+        public static void Postfix(DefaultTool __instance, InstanceID ___m_hoverInstance, InstanceID ___m_hoverInstance2, int ___m_subHoverIndex, Vector3 ___m_mousePosition)
         {
 
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
-
                 var newCommand = new PlayerDefaultToolCommandHandler.Command
-                    {
-                        HoverInstanceID = ___m_hoverInstance,
-                        HoverInstanceID2 = ___m_hoverInstance2,
-                        SubIndex = ___m_subHoverIndex
-                    };
+                {
+                    HoverInstanceID = ___m_hoverInstance,
+                    HoverInstanceID2 = ___m_hoverInstance2,
+                    SubIndex = ___m_subHoverIndex,
+                    CursorWorldPosition = ___m_mousePosition,
+                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
+                };
+                newCommand.SenderId += 1;
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
+                }
+
+                if(ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerDefaultToolCommandHandler.Command)).Parse(newCommand);
                 }
             }
         }    
@@ -43,7 +49,7 @@ namespace CSM.Injections.Tools
     {
 
         [ProtoContract]
-        public class Command : CommandBase, IEquatable<Command>
+        public class Command : ToolCommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
             public InstanceID HoverInstanceID { get; set; }
@@ -69,7 +75,12 @@ namespace CSM.Injections.Tools
             // These fields here are the important ones to transmit between game sessions
             ReflectionHelper.SetAttr(tool, "m_hoverInstance", command.HoverInstanceID);
             ReflectionHelper.SetAttr(tool, "m_hoverInstance2", command.HoverInstanceID2);
-            ReflectionHelper.SetAttr(tool, "m_subHoverIndex", command.SubIndex);
+            ReflectionHelper.SetAttr(tool, "m_subHoverIndex", command.SubIndex);            
+        }
+
+        protected override CursorInfo GetCursorInfo(DefaultTool tool)
+        {
+            return tool.m_cursor;
         }
     }
 

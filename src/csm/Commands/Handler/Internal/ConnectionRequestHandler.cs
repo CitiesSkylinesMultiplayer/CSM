@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -110,7 +110,12 @@ namespace CSM.Commands.Handler.Internal
             }
 
             List<string> mods = ModSupport.Instance.RequiredModsForSync;
-            if (!command.Mods.SequenceEqual(mods))
+
+            HashSet<string> modsSet = new HashSet<string>(mods);
+            modsSet.SymmetricExceptWith(command.Mods);
+
+            // if modsSet contains anything then there are mods that one client has that the other doesn't
+            if (modsSet.Count > 0)
             {
                 Log.Info($"Connection rejected: List of mods [{string.Join(", ", command.Mods.ToArray())}] (client) and [{string.Join(", ", mods.ToArray())}] (server) differ.");
                 CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand

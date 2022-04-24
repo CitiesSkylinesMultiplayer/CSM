@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -152,6 +152,10 @@ namespace CSM.Panels
                     {
                         PrintGameMessage("You are the server");
                     }
+                }),
+                new ChatCommand("test", "Tests tool sync", (command) =>
+                {
+                    Injections.Tools.ToolSimulatorCursorManager.test = true;
                 })
             };
         }

@@ -114,6 +114,7 @@
     <Compile Include="Injections\PauseMenuHandler.cs" />
     <Compile Include="Injections\SpeedPauseHandler.cs" />
     <Compile Include="Injections\TickLoopHandler.cs" />
+    <Compile Include="Injections\Tools\ToolCommandBase.cs" />
     <Compile Include="Injections\Tools\BuildingToolHandler.cs" />
     <Compile Include="Injections\Tools\DefaultToolHandler.cs" />
     <Compile Include="Injections\Tools\ToolManagerOverlayRenderer.cs" />

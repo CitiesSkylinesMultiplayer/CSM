@@ -39,11 +39,16 @@ namespace CSM.Injections.Tools
                     MousePosition = ___m_mousePosition,
                     StartDirection = ___m_startDirection,
                     MouseDirection = ___m_mouseDirection,
-                    FillBuffer2 = ___m_fillBuffer2
+                    FillBuffer2 = ___m_fillBuffer2,
+                    CursorWorldPosition = ___m_mousePosition,
+                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
+                }
+                if(ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerZoneToolCommandHandler.Command)).Parse(newCommand);
                 }
 
             }
@@ -54,7 +59,7 @@ namespace CSM.Injections.Tools
     {
 
         [ProtoContract]
-        public class Command : CommandBase, IEquatable<Command>
+        public class Command : ToolCommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
             public int Zone { get; set; }
@@ -83,7 +88,8 @@ namespace CSM.Injections.Tools
 
             public bool Equals(Command other)
             {
-                return object.Equals(this.Zone, other.Zone) &&
+                return base.Equals(other) &&
+                object.Equals(this.Zone, other.Zone) &&
                 object.Equals(this.Mode, other.Mode) &&
                 object.Equals(this.BrushSize, other.BrushSize) &&
                 object.Equals(this.Zoning, other.Zoning) &&
@@ -112,7 +118,16 @@ namespace CSM.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_startDirection", command.StartDirection);
             ReflectionHelper.SetAttr(tool, "m_mouseDirection", command.MouseDirection);
             ReflectionHelper.SetAttr(tool, "m_fillBuffer2", command.FillBuffer2);
+
             
+        }
+
+        protected override CursorInfo GetCursorInfo(ZoneTool tool)
+        {
+            if (tool.m_zoneCursors != null && (ItemClass.Zone)tool.m_zoneCursors.Length > tool.m_zone) {
+                return tool.m_zoneCursors[(int)tool.m_zone];
+            }
+            return null;
         }
     }
 

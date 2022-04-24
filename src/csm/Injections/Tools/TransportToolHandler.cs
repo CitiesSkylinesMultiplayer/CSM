@@ -32,11 +32,16 @@ namespace CSM.Injections.Tools
                     LastEditLine = ___m_lastEditLine,
                     HoverStopIndex = ___m_hoverStopIndex,
                     HoverSegmentIndex = ___m_hoverSegmentIndex,
-                    HitPosition = ___m_hitPosition
+                    HitPosition = ___m_hitPosition,
+                    CursorWorldPosition = ___m_hitPosition,
+                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
+                }
+                if(ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerTransportToolCommandHandler.Command)).Parse(newCommand);
                 }
 
             }
@@ -47,7 +52,7 @@ namespace CSM.Injections.Tools
     {
 
         [ProtoContract]
-        public class Command : CommandBase, IEquatable<Command>
+        public class Command : ToolCommandBase, IEquatable<Command>
         {
             [ProtoMember(1)]
             public uint TransportInfo { get; set; }
@@ -65,7 +70,8 @@ namespace CSM.Injections.Tools
 
             public bool Equals(Command other)
             {
-                return object.Equals(this.TransportInfo, other.TransportInfo) &&
+                return base.Equals(other) &&
+                object.Equals(this.TransportInfo, other.TransportInfo) &&
                 object.Equals(this.LastEditLine, other.LastEditLine) &&
                 object.Equals(this.HoverStopIndex, other.HoverStopIndex) &&
                 object.Equals(this.HoverSegmentIndex, other.HoverSegmentIndex) &&
@@ -81,6 +87,11 @@ namespace CSM.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_hoverStopIndex", command.HoverStopIndex);
             ReflectionHelper.SetAttr(tool, "m_hoverSegmentIndex", command.HoverSegmentIndex);
             ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);
+        }
+
+        protected override CursorInfo GetCursorInfo(TransportTool tool)
+        {
+            return null;
         }
     }
 
