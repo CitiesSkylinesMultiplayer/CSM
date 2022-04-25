@@ -3,19 +3,23 @@ using CSM.API.Commands;
 using ProtoBuf;
 using UnityEngine;
 
-[ProtoContract]
-public abstract class ToolCommandBase: CommandBase, IEquatable<ToolCommandBase> {
+namespace CSM.Injections.Tools {
 
-    [ProtoMember(1)]
-    public string PlayerName { get; set; }
-    [ProtoMember(2)]
-    public Vector3 CursorWorldPosition { get; set; }
+    [ProtoContract]
+    public abstract class ToolCommandBase: CommandBase, IEquatable<ToolCommandBase> {
 
-    public bool Equals(ToolCommandBase other)
-    {
-        return 
-        object.Equals(this.PlayerName, other.PlayerName) &&
-        object.Equals(this.CursorWorldPosition, other.CursorWorldPosition);
+        [ProtoMember(1)]
+        public string PlayerName { get; set; }
+        [ProtoMember(2)]
+        public Vector3 CursorWorldPosition { get; set; }
+
+        public bool Equals(ToolCommandBase other)
+        {
+            return 
+            object.Equals(this.PlayerName, other.PlayerName) &&
+            object.Equals(this.CursorWorldPosition, other.CursorWorldPosition);
+        }
+
     }
 
 }
