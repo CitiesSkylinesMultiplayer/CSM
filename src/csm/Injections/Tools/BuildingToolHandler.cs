@@ -17,7 +17,6 @@ namespace CSM.Injections.Tools
     public class BuildingToolHandler {
 
         private static PlayerBuildingToolCommandHandler.Command lastCommand;
-        // private static 
 
         public static void Postfix(BuildingTool __instance, Vector3 ___m_cachedPosition, float ___m_cachedAngle, int ___m_elevation, Segment3 ___m_cachedSegment)
         {

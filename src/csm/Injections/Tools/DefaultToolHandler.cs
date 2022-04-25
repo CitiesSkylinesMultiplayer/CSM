@@ -32,7 +32,6 @@ namespace CSM.Injections.Tools
                     CursorWorldPosition = ___m_mousePosition,
                     PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };
-                newCommand.SenderId += 1;
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
@@ -63,7 +62,8 @@ namespace CSM.Injections.Tools
             // TODO: transmit placement errors
             public bool Equals(Command other)
             {
-                return object.Equals(this.HoverInstanceID, other.HoverInstanceID) &&
+                return base.Equals(other) &&
+                object.Equals(this.HoverInstanceID, other.HoverInstanceID) &&
                 object.Equals(this.HoverInstanceID2, other.HoverInstanceID2) &&
                 object.Equals(this.SubIndex, other.SubIndex);
             }
