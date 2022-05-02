@@ -145,7 +145,7 @@ namespace CSM.Injections.Tools
         }
 
         public void SetCursor(CursorInfo cursorInfo) {
-            if(this.cursorInfo == null || this.cursorInfo.name != cursorInfo.name) {
+            if(cursorInfo != null && this.cursorInfo == null || this.cursorInfo.name != cursorInfo.name) {
                 this.cursorInfo = cursorInfo;
                 if(this.cursorImage) {
                     this.cursorImage.texture = cursorInfo.m_texture;
