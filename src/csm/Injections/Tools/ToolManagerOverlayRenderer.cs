@@ -14,8 +14,12 @@ namespace CSM.Injections.Tools
         public static void Prefix(RenderManager.CameraInfo cameraInfo)
         {
             foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
+                if(simulatedTool is TransportTool) {
+                    // TODO: fix transport tool rendering so the tool doesn't break when another client enters the tool
+                    continue;
+                }
                 simulatedTool.RenderGeometry(cameraInfo);
-            }        
+            }
         }
 
     }
@@ -37,6 +41,10 @@ namespace CSM.Injections.Tools
             // ReflectionHelper.SetAttr((NetTool)null, "m_directionArrowsBuffer", new FastList<NetTool.HelperDirection2>());
 
             foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
+                if(simulatedTool is TransportTool) {
+                    // TODO: fix transport tool rendering so the tool doesn't break when another client enters the tool
+                    continue;
+                }
                 simulatedTool.RenderOverlay(cameraInfo);
             }
 
