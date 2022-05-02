@@ -97,7 +97,7 @@ namespace CSM.BaseGame.Helpers
                 terrainTool.m_softenCursor = realTerrainTool.m_softenCursor;
             }
             if (tool is TransportTool transportTool) {  
-                // See ZoneTool::Awake
+                // See TransportTool::Awake
                 // transportTool.cursor = ToolsModifierControl.toolController.GetComponent<PropTool>().m_buildCursor ;
             }
             if (tool is PropTool propTool) {
@@ -105,6 +105,7 @@ namespace CSM.BaseGame.Helpers
                 propTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<PropTool>().m_buildCursor ;
             }
 
+            // pick a color out of the pre-generated array to be this players color from here on
             controller.m_validColor = PLAYER_COLORS[(sender + PLAYER_COLORS.Length) % PLAYER_COLORS.Length];
 
             _currentTools[sender] = tool;

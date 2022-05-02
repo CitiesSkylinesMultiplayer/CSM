@@ -116,6 +116,8 @@
     <Compile Include="Injections\TickLoopHandler.cs" />
     <Compile Include="Injections\Tools\ToolCommandBase.cs" />
     <Compile Include="Injections\Tools\BuildingToolHandler.cs" />
+    <Compile Include="Injections\Tools\ToolSimulatorCursorManager.cs" />
+    <Compile Include="Injections\Tools\PlayerCursorManager.cs" />
     <Compile Include="Injections\Tools\DefaultToolHandler.cs" />
     <Compile Include="Injections\Tools\ToolManagerOverlayRenderer.cs" />
     <Compile Include="Injections\Tools\BaseToolHandler.cs" />
