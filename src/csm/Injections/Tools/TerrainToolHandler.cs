@@ -21,9 +21,13 @@ namespace CSM.Injections.Tools
 
         private static PlayerTerrainToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(TerrainTool __instance, Vector3 ___m_mousePosition)
+        public static void Postfix(TerrainTool __instance, ToolController ___m_toolController, Vector3 ___m_mousePosition)
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
 
                 // Send info to all clients
                 var newCommand = new PlayerTerrainToolCommandHandler.Command

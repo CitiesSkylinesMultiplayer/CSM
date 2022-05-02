@@ -20,10 +20,15 @@ namespace CSM.Injections.Tools
 
         private static PlayerDefaultToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(DefaultTool __instance, InstanceID ___m_hoverInstance, InstanceID ___m_hoverInstance2, int ___m_subHoverIndex, Vector3 ___m_mousePosition)
+        public static void Postfix(DefaultTool __instance, ToolController ___m_toolController, InstanceID ___m_hoverInstance, InstanceID ___m_hoverInstance2, int ___m_subHoverIndex, Vector3 ___m_mousePosition)
         {
-
+            
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
+
                 var newCommand = new PlayerDefaultToolCommandHandler.Command
                 {
                     HoverInstanceID = ___m_hoverInstance,
@@ -75,7 +80,7 @@ namespace CSM.Injections.Tools
             // These fields here are the important ones to transmit between game sessions
             ReflectionHelper.SetAttr(tool, "m_hoverInstance", command.HoverInstanceID);
             ReflectionHelper.SetAttr(tool, "m_hoverInstance2", command.HoverInstanceID2);
-            ReflectionHelper.SetAttr(tool, "m_subHoverIndex", command.SubIndex);            
+            ReflectionHelper.SetAttr(tool, "m_subHoverIndex", command.SubIndex);
         }
 
         protected override CursorInfo GetCursorInfo(DefaultTool tool)

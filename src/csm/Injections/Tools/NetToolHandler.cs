@@ -22,9 +22,13 @@ namespace CSM.Injections.Tools
         private static PlayerNetToolCommandHandler.Command lastCommand;
         // private static 
 
-        public static void Postfix(NetTool __instance, NetTool.ControlPoint[] ___m_cachedControlPoints, int ___m_cachedControlPointCount, ushort[] ___m_upgradedSegments)
+        public static void Postfix(NetTool __instance, ToolController ___m_toolController, NetTool.ControlPoint[] ___m_cachedControlPoints, int ___m_cachedControlPointCount, ushort[] ___m_upgradedSegments)
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
 
                 // with the NetTool the world piosition of the cursor will match the current last control point base on the following logic
                 // See NetTool::OnToolUpdate

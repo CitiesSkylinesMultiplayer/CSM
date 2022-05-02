@@ -18,9 +18,13 @@ namespace CSM.Injections.Tools
 
         private static PlayerBuildingToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(BuildingTool __instance, Vector3 ___m_cachedPosition, float ___m_cachedAngle, int ___m_elevation, Segment3 ___m_cachedSegment)
+        public static void Postfix(BuildingTool __instance, ToolController ___m_toolController, Vector3 ___m_cachedPosition, float ___m_cachedAngle, int ___m_elevation, Segment3 ___m_cachedSegment)
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+                
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
 
                 // Send info to all clients
                 var newCommand = new PlayerBuildingToolCommandHandler.Command
@@ -33,7 +37,7 @@ namespace CSM.Injections.Tools
                     Elevation = ___m_elevation,
                     CursorWorldPosition = ___m_cachedPosition,
                     PlayerName = MultiplayerManager.Instance.CurrentUsername()
-                };                
+                };
                 if(!object.Equals(newCommand, lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
@@ -65,7 +69,6 @@ namespace CSM.Injections.Tools
             public Segment3 Segment { get; set; }
             [ProtoMember(6)]
             public int Elevation { get; set; }
-
 
             public bool Equals(Command other)
             {

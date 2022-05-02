@@ -21,10 +21,14 @@ namespace CSM.Injections.Tools
 
         private static PlayerZoneToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(ZoneTool __instance, bool ___m_zoning, bool ___m_dezoning, bool ___m_validPosition, Vector3 ___m_startPosition, 
+        public static void Postfix(ZoneTool __instance, ToolController ___m_toolController, bool ___m_zoning, bool ___m_dezoning, bool ___m_validPosition, Vector3 ___m_startPosition, 
         Vector3 ___m_mousePosition, Vector3 ___m_startDirection, Vector3 ___m_mouseDirection, ulong[] ___m_fillBuffer2)
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
 
                 // Send info to all clients
                 var newCommand = new PlayerZoneToolCommandHandler.Command

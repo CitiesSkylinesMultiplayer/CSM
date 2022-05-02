@@ -21,9 +21,13 @@ namespace CSM.Injections.Tools
 
         private static PlayerPropToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(PropTool __instance, PropInfo ___m_propInfo, Vector3 ___m_cachedPosition, float ___m_cachedAngle, Randomizer ___m_randomizer)
+        public static void Postfix(PropTool __instance, ToolController ___m_toolController, PropInfo ___m_propInfo, Vector3 ___m_cachedPosition, float ___m_cachedAngle, Randomizer ___m_randomizer)
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
 
                 // Send info to all clients
                 var newCommand = new PlayerPropToolCommandHandler.Command

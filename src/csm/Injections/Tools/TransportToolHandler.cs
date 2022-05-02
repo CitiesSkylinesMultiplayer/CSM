@@ -21,9 +21,13 @@ namespace CSM.Injections.Tools
 
         private static PlayerTransportToolCommandHandler.Command lastCommand;
 
-        public static void Postfix(TransportTool __instance, ushort ___m_lastEditLine, int ___m_hoverStopIndex, int ___m_hoverSegmentIndex, Vector3 ___m_hitPosition)
+        public static void Postfix(TransportTool __instance, ToolController ___m_toolController, ushort ___m_lastEditLine, int ___m_hoverStopIndex, int ___m_hoverSegmentIndex, Vector3 ___m_hitPosition)
         {
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+
+                if (___m_toolController != null && ___m_toolController.IsInsideUI) {
+                    return;
+                }
 
                 // Send info to all clients
                 var newCommand = new PlayerTransportToolCommandHandler.Command
