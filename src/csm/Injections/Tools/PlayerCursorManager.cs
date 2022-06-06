@@ -46,6 +46,13 @@ namespace CSM.Injections.Tools
 			    Vector2 screenSize = (!(ToolBase.fullscreenContainer != null)) ? uiview.GetScreenResolution() : ToolBase.fullscreenContainer.size;
                 Vector3 screenPosition = Camera.main.WorldToScreenPoint(cursorWorldPosition);
                 screenPosition /= uiview.inputScale;
+
+                // if the target is behind the camera then flip the screen position vector
+                // this will keep the cursor on the border of the screen while the player looks away from the target
+                if(screenPosition.z < 0) {
+                    screenPosition.Scale(-1 * Vector3.one);
+                }
+
                 Vector3 relativePosition = uiview.ScreenPointToGUI(screenPosition); // - ToolBase.extraInfoLabel.size * 0.5f;
 
                 this.playerNameLabel.textColor = Color.white;
