@@ -80,10 +80,10 @@ namespace CSM.BaseGame.Helpers
             }
             if (tool is ZoneTool zoneTool) {  
                 // See ZoneTool::Awake              
-                ReflectionHelper.SetAttr(zoneTool, "m_closeSegments",  new ushort[16]);
-                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer1",  new ulong[64]);
-                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer2",  new ulong[64]);
-                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer3",  new ulong[64]);
+                ReflectionHelper.SetAttr(zoneTool, "m_closeSegments", new ushort[16]);
+                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer1", new ulong[64]);
+                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer2", new ulong[64]);
+                ReflectionHelper.SetAttr(zoneTool, "m_fillBuffer3", new ulong[64]);
                 // ReflectionHelper.SetAttr(zoneTool, "m_fillPositions",  new FastList<ZoneTool.FillPos>());
                 ReflectionHelper.SetAttr(zoneTool, "m_dataLock",  new object());
                 zoneTool.m_zoneCursors = ToolsModifierControl.toolController.GetComponent<ZoneTool>().m_zoneCursors;
@@ -102,7 +102,21 @@ namespace CSM.BaseGame.Helpers
             }
             if (tool is PropTool propTool) {
                 // copy prop tool cursor across
-                propTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<PropTool>().m_buildCursor ;
+                propTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<PropTool>().m_buildCursor;
+            }
+            if (tool is TreeTool treeTool) {
+                // see TreeTool::Awake()
+                
+                // ReflectionHelper.SetAttr(treeTool, "m_randomizer", new Randomizer((int)DateTime.Now.Ticks));
+                ReflectionHelper.SetAttr(treeTool, "m_upgradedSegments", new HashSet<ushort>());
+                ReflectionHelper.SetAttr(treeTool, "m_tempUpgraded", new FastList<ushort>());
+
+                treeTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_buildCursor;
+                treeTool.m_upgradeCursor = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_upgradeCursor;
+            }
+            if (tool is BulldozeTool bulldozeTool) {
+                bulldozeTool.m_cursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_cursor;
+                bulldozeTool.m_undergroundCursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_undergroundCursor;
             }
 
             // pick a color out of the pre-generated array to be this players color from here on

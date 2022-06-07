@@ -26,10 +26,17 @@ namespace CSM.Injections.Tools
                     return;
                 }
 
+                ushort prefabId;
+                if(__instance.m_prefab != null) {
+                    prefabId = (ushort)Mathf.Clamp(__instance.m_prefab.m_prefabDataIndex, 0, 65535);
+                } else {
+                    prefabId = 0;
+                }
+
                 // Send info to all clients
                 var newCommand = new PlayerBuildingToolCommandHandler.Command
                 {
-                    Prefab = (ushort)Mathf.Clamp(__instance.m_prefab.m_prefabDataIndex, 0, 65535),
+                    Prefab = prefabId,
                     Relocating = __instance.m_relocate,
                     Position = ___m_cachedPosition,
                     Angle = ___m_cachedAngle,

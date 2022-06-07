@@ -35,6 +35,7 @@ namespace CSM.Injections.Tools
                     Mode = (uint)  __instance.m_mode,
                     MousePosition = ___m_mousePosition,
                     BrushSize = __instance.m_brushSize,
+                    BrushData = ___m_toolController.BrushData,
                     CursorWorldPosition = ___m_mousePosition,
                     PlayerName = MultiplayerManager.Instance.CurrentUsername()
                 };
@@ -62,6 +63,8 @@ namespace CSM.Injections.Tools
             public Vector3 MousePosition { get; set; }
             [ProtoMember(3)]
             public float BrushSize { get; set; }
+            [ProtoMember(4)]
+            public float[] BrushData { get; set; }
 
             // TODO: Transmit brush texture for clients to render. See TerrainTool::OnToolUpdate
             // TODO: Transmit placement errors
@@ -71,7 +74,8 @@ namespace CSM.Injections.Tools
                 return base.Equals(other) &&
                 object.Equals(this.Mode, other.Mode) &&
                 object.Equals(this.MousePosition, other.MousePosition) &&
-                object.Equals(this.BrushSize, other.BrushSize);
+                object.Equals(this.BrushSize, other.BrushSize) &&
+                object.Equals(this.BrushData, other.BrushData);
             }
             
         }
@@ -80,6 +84,7 @@ namespace CSM.Injections.Tools
             // The terrain tool uses to the tool controller to hold onto brush state and to render it
             tool.m_mode = (TerrainTool.Mode) Enum.GetValues(typeof(TerrainTool.Mode)).GetValue(command.Mode);
 	        toolController.SetBrush(tool.m_brush, command.MousePosition, command.BrushSize);
+            ReflectionHelper.SetAttr(toolController, "m_brushData", command.BrushData);
         }
 
         protected override CursorInfo GetCursorInfo(TerrainTool tool)

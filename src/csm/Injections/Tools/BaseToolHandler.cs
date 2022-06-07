@@ -23,8 +23,10 @@ namespace CSM.Injections.Tools
             Configure(tool, controller, command);
 
             var cursorView = Singleton<ToolSimulatorCursorManager>.instance.GetCursorView(command.SenderId);
-            cursorView.SetLabelContent(command);
-            cursorView.SetCursor(this.GetCursorInfo(tool));
+            if(cursorView) {
+                cursorView.SetLabelContent(command);
+                cursorView.SetCursor(this.GetCursorInfo(tool));
+            }
             
         }
 
