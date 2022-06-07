@@ -35,6 +35,12 @@ namespace CSM.Panels
                 });
             cb.tooltip = "Note: This may cause excessive logging and slow down the game!";
 
+            UICheckBox cb2 = (UICheckBox)advancedGroup.AddCheckbox("Skip mod compatibility checks", settings.SkipModCompatibilityChecks.value,
+                c => {
+                    settings.SkipModCompatibilityChecks.value = c;
+                });
+            cb2.tooltip = "Use this at your own risk! Only applies when hosting";
+
             advancedGroup.AddButton("Show Release Notes", () =>
             {
                 MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();

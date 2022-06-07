@@ -15,6 +15,7 @@ namespace CSM
         private const bool DefaultDebugLogging = false;
         private const bool DefaultUseChirper = true;
         private const bool DefaultPrintChirperMsgs = false;
+        private const bool DefaultSkipModCompatibilityChecks = false;
         private const string DefaultLastSeenReleaseNotes = "0.0";
 
         public readonly SavedBool DebugLogging =
@@ -41,5 +42,8 @@ namespace CSM
 
         public readonly SavedString LastSeenReleaseNotes =
             new SavedString(nameof(LastSeenReleaseNotes), SettingsFile, DefaultLastSeenReleaseNotes, true);
+
+        public readonly SavedBool SkipModCompatibilityChecks = 
+            new SavedBool(nameof(SkipModCompatibilityChecks), SettingsFile, DefaultSkipModCompatibilityChecks, true);
     }
 }

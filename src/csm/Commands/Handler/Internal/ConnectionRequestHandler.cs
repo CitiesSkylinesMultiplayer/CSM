@@ -115,7 +115,7 @@ namespace CSM.Commands.Handler.Internal
             modsSet.SymmetricExceptWith(command.Mods);
 
             // if modsSet contains anything then there are mods that one client has that the other doesn't
-            if (modsSet.Count > 0)
+            if (modsSet.Count > 0 && CSM.Settings.SkipModCompatibilityChecks.value == false)
             {
                 Log.Info($"Connection rejected: List of mods [{string.Join(", ", command.Mods.ToArray())}] (client) and [{string.Join(", ", mods.ToArray())}] (server) differ.");
                 CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
