@@ -1,12 +1,9 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using ColossalFramework;
 using ColossalFramework.UI;
-using CSM.API;
 using CSM.Helpers;
 using CSM.Networking;
-using CSM.Util;
 using UnityEngine;
 
 namespace CSM.Panels

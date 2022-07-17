@@ -130,7 +130,7 @@ namespace CSM.Networking
                     if (automaticSuccess)
                     {
                         message =
-                            "Port was forwarded automatically, but server is not reachable from the internet.";
+                            "It was tried to forward the port automatically, but the server is not reachable from the internet. Manual port forwarding is required.";
                     }
                     else
                     {

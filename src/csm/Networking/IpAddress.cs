@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.ServiceModel.Channels;
 using System.Text;
 using CSM.API;
 using CSM.Util;
