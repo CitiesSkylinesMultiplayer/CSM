@@ -43,6 +43,8 @@ namespace CSM.Networking
         /// </summary>
         public ServerStatus Status { get; private set; }
 
+        private bool automaticSuccess;
+
         public Server()
         {
             // Set up network items
@@ -94,12 +96,14 @@ namespace CSM.Networking
 
                 nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
                     Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
+                automaticSuccess = true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Log.Error($"Failed to automatically open port. Manual Port Forwarding is required: {e.Message}");
-                Chat.Instance.PrintGameMessage(Chat.MessageType.Error, "Failed to automatically open port. Manual port forwarding is required.");
+                automaticSuccess = false;
             }
+            
+            new Thread(CheckPort).Start();
 
             // Update the status
             Status = ServerStatus.Running;
@@ -111,8 +115,60 @@ namespace CSM.Networking
 
             // Update the console to let the user know the server is running
             Log.Info("The server has started.");
-            Chat.Instance.PrintGameMessage("The server has started.");
+            Chat.Instance.PrintGameMessage("The server has started. Checking if it is reachable from the internet...");
             return true;
+        }
+
+        private void CheckPort()
+        {
+            PortState state = IpAddress.CheckPort(Config.Port);
+            string message;
+            bool portOpen = false;
+            switch (state.status)
+            {
+                case HttpStatusCode.ServiceUnavailable: // Could not reach port
+                    if (automaticSuccess)
+                    {
+                        message =
+                            "Port was forwarded automatically, but server is not reachable from the internet.";
+                    }
+                    else
+                    {
+                        message =
+                            "Port could not be forwarded automatically and server is not reachable from the internet. Manual port forwarding is required.";
+                    }
+                    break;
+                case HttpStatusCode.OK: // Success
+                    portOpen = true;
+                    if (automaticSuccess)
+                    {
+                        message =
+                            "Port was forwarded automatically and server is reachable from the internet!";
+                    }
+                    else
+                    {
+                        message = "Server is reachable from the internet!";
+                    }
+                    break;
+                default: // Something failed
+                    if (automaticSuccess)
+                    {
+                        message = "Port was forwarded automatically, but couldn't be checked due to error: " +
+                                  state.message;
+                    }
+                    else
+                    {
+                        message = "Port could not be forwarded automatically, and couldn't be checked due to error: " +
+                                  state.message;
+                    }
+                    break;
+            }
+
+            if (!portOpen)
+            {
+                Log.Warn(message);
+            }
+            Chat.Instance.PrintGameMessage(portOpen ? Chat.MessageType.Normal : Chat.MessageType.Warning, message);
         }
 
         /// <summary>
