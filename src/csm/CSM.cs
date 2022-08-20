@@ -43,7 +43,7 @@ namespace CSM
                 // Registers all other mods which implement the API
                 ModSupport.Instance.Init();
                 // Setup join button
-                MainMenuHandler.CreateOrUpdateJoinGameButton();
+                MainMenuHandler.Init();
 
                 Log.Info("Construction Complete!");
             });

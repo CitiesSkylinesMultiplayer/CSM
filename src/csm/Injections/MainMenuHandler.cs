@@ -1,6 +1,11 @@
-﻿using ColossalFramework.UI;
+﻿using System;
+using System.Reflection;
+using System.Threading;
+using ColossalFramework.Threading;
+using ColossalFramework.UI;
 using CSM.API;
 using CSM.Panels;
+using CSM.Util;
 using HarmonyLib;
 using UnityEngine;
 
@@ -16,13 +21,54 @@ namespace CSM.Injections
         /// </summary>
         public static void Prefix()
         {
-            MainMenuHandler.CreateOrUpdateJoinGameButton();
+            MainMenuHandler.Init();
         }
     }
 
     public static class MainMenuHandler
     {
-        public static void CreateOrUpdateJoinGameButton()
+        public static void Init()
+        {
+            CreateOrUpdateJoinGameButton();
+            new Thread(() => CheckForUpdate(false)).Start();
+        }
+
+        public static void CheckForUpdate(bool alwaysShowInfo)
+        {
+            try
+            {
+                string latest = new CSMWebClient().DownloadString("http://api.citiesskylinesmultiplayer.com/api/version");
+                latest = latest.Substring(1);
+                string[] versionParts = latest.Split('.');
+                Version latestVersion = new Version(int.Parse(versionParts[0]), int.Parse(versionParts[1]));
+
+                Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
+                if (latestVersion > version)
+                {
+                    Log.Info(
+                        $"Update available! Current version: {version.Major}.{version.Minor} Latest version: {latestVersion.Major}.{latestVersion.Minor}");
+                    ThreadHelper.dispatcher.Dispatch(() =>
+                    {
+                        MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                        panel.DisplayUpdateAvailable(version, latestVersion);
+                    });
+                }
+                else if (alwaysShowInfo)
+                {
+                    ThreadHelper.dispatcher.Dispatch(() =>
+                    {
+                        MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                        panel.DisplayNoUpdateAvailable();
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn($"Failed to check for updates: {e.Message}");
+            }
+        }
+
+        private static void CreateOrUpdateJoinGameButton()
         {
             Log.Info("Creating join game button...");
 

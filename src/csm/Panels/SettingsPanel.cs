@@ -1,5 +1,7 @@
-﻿using ColossalFramework.UI;
+﻿using System.Threading;
+using ColossalFramework.UI;
 using CSM.API;
+using CSM.Injections;
 using CSM.Mods;
 using ICities;
 
@@ -37,6 +39,11 @@ namespace CSM.Panels
             {
                 MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
                 panel.DisplayReleaseNotes();
+            });
+
+            advancedGroup.AddButton("Check for updates", () =>
+            {
+                new Thread(() => MainMenuHandler.CheckForUpdate(true)).Start();
             });
         }
     }

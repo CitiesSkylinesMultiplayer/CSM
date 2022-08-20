@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.UI;
@@ -16,7 +17,8 @@ namespace CSM.Panels
         private string _title;
         private string _message;
 
-        private UIButton _closeButton;
+        private UIButton _closeButton, _githubButton;
+        private bool _githubShown = false;
 
         public override void Start()
         {
@@ -47,6 +49,14 @@ namespace CSM.Panels
 
             this.AddScrollbar(messagePanel);
 
+            // Github button
+            _githubButton = this.CreateButton("Open GitHub", new Vector2(60, -340));
+            _githubButton.eventClicked += (c, p) =>
+            {
+                Process.Start("https://github.com/CitiesSkylinesMultiplayer/CSM/releases");
+            };
+            _githubButton.isVisible = _githubShown;
+
             // Close button
             _closeButton = this.CreateButton("Close", new Vector2(60, -410));
 
@@ -72,6 +82,9 @@ namespace CSM.Panels
 
             if (_messageLabel)
                 _messageLabel.text = message;
+
+            if (_githubButton)
+                _githubButton.Hide();
         }
 
         public void DisplayContentWarning()
@@ -169,6 +182,40 @@ namespace CSM.Panels
                              "  - Support Airports Update. Note\n" +
                              "    that not all new features are" +
                              "    supported for now!\n";
+            SetMessage(message);
+
+            Show(true);
+        }
+
+        public void DisplayUpdateAvailable(Version current, Version latest)
+        {
+            SetTitle("CSM Update available!");
+
+            string message = "A new update of the Cities: Skylines Multiplayer\n" +
+                             "mod is available!\n\n" +
+                             $"Current Version: {current.Major}.{current.Minor}\n" +
+                             $"Latest Version: {latest.Major}.{latest.Minor}\n\n" +
+                             "When using the Steam Workshop, it should be\n" +
+                             "installed automatically (you may need to restart\n" +
+                             "your game). Otherwise you can download the\n" +
+                             "update from GitHub:\n\n" +
+                             "https://github.com/CitiesSkylinesMultiplayer/\n" +
+                             "CSM/releases";
+            SetMessage(message);
+
+            _githubShown = true;
+            if (_githubButton)
+                _githubButton.Show();
+
+            Show(true);
+        }
+
+        public void DisplayNoUpdateAvailable()
+        {
+            SetTitle("CSM is up to date");
+
+            string message = "There is no update for the Cities: Skylines\n" +
+                             "Multiplayer mod available.";
             SetMessage(message);
 
             Show(true);
