@@ -37,8 +37,8 @@ namespace CSM.Networking
                 //Create a new socket
                 using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
                 {
-                    //Connect to 8.8.8.8 (Google IP)
-                    socket.Connect("csm-check.kaenganxt.dev", 65530);
+                    //Connect to some server to non-listening port
+                    socket.Connect("api.citiesskylinesmultiplayer.com", 65530);
                     //Get the IPEndPoint
                     IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
                     //Get the IP Address (Internal) from the IPEndPoint
@@ -63,7 +63,7 @@ namespace CSM.Networking
             try
             {
                 //Get the External IP address from internet
-                _externalIp = new CSMWebClient().DownloadString("http://csm-check.kaenganxt.dev/api/ip");
+                _externalIp = new CSMWebClient().DownloadString("http://api.citiesskylinesmultiplayer.com/api/ip");
                 return _externalIp;
             }
             catch (Exception e)
@@ -79,7 +79,7 @@ namespace CSM.Networking
             CSMWebClient client = new CSMWebClient();
             try
             {
-                string answer = client.DownloadString("http://csm-check.kaenganxt.dev/api/check?port=" + port);
+                string answer = client.DownloadString("http://api.citiesskylinesmultiplayer.com/api/check?port=" + port);
                 return new PortState(answer, client.StatusCode());
             }
             catch (WebException e)

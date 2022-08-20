@@ -37,7 +37,7 @@ namespace CSM.Injections
         {
             try
             {
-                string latest = new CSMWebClient().DownloadString("http://csm-check.kaenganxt.dev/api/version");
+                string latest = new CSMWebClient().DownloadString("http://api.citiesskylinesmultiplayer.com/api/version");
                 latest = latest.Substring(1);
                 string[] versionParts = latest.Split('.');
                 Version latestVersion = new Version(int.Parse(versionParts[0]), int.Parse(versionParts[1]));
