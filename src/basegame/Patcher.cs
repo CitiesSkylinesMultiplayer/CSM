@@ -16,9 +16,9 @@ namespace CSM.BaseGame
                 harmony.PatchAll(typeof(BaseGameConnection).Assembly);
                 Log.Info("[CSM BaseGame] Patched!");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Log.Info("[CSM BaseGame] Patching failed");
+                Log.Error("[CSM BaseGame] Patching failed: ", e);
             }
         }
 
