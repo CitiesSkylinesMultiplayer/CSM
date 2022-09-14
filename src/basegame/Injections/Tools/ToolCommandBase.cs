@@ -3,7 +3,7 @@ using CSM.API.Commands;
 using ProtoBuf;
 using UnityEngine;
 
-namespace CSM.Injections.Tools {
+namespace CSM.BaseGame.Injections.Tools {
 
     [ProtoContract]
     public abstract class ToolCommandBase: CommandBase, IEquatable<ToolCommandBase> {
@@ -15,11 +15,9 @@ namespace CSM.Injections.Tools {
 
         public bool Equals(ToolCommandBase other)
         {
-            return 
-            object.Equals(this.PlayerName, other.PlayerName) &&
-            object.Equals(this.CursorWorldPosition, other.CursorWorldPosition);
+            return other != null &&
+                PlayerName == other.PlayerName &&
+                Equals(CursorWorldPosition, other.CursorWorldPosition);
         }
-
     }
-
 }

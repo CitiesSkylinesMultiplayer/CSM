@@ -1,4 +1,5 @@
 using ColossalFramework.UI;
+using CSM.API;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -21,6 +22,9 @@ namespace CSM.Panels
         {
             if (!_uiView)
                 _uiView = UIView.GetAView();
+
+            if (!_uiView)
+                return null; // No ui view available yet
 
             string name = typeof(T).Name;
             T panel = _uiView.FindUIComponent<T>(name);

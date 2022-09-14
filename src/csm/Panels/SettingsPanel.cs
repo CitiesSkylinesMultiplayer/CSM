@@ -44,7 +44,8 @@ namespace CSM.Panels
             advancedGroup.AddButton("Show Release Notes", () =>
             {
                 MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                panel.DisplayReleaseNotes();
+                if (panel)
+                    panel.DisplayReleaseNotes();
             });
 
             advancedGroup.AddButton("Check for updates", () =>

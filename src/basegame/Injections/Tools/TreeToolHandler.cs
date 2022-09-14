@@ -1,34 +1,31 @@
-using System.Collections.Generic;
 using System;
-using CSM.API.Commands;
-using CSM.Networking;
-using ICities;
 using ColossalFramework;
 using ColossalFramework.Math;
-using ProtoBuf;
-using HarmonyLib;
-using UnityEngine;
-using CSM.BaseGame.Helpers;
+using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Helpers;
+using HarmonyLib;
+using ProtoBuf;
+using UnityEngine;
 
-namespace CSM.Injections.Tools
+namespace CSM.BaseGame.Injections.Tools
 {
     [HarmonyPatch(typeof(TreeTool))]
     [HarmonyPatch("OnToolUpdate")]
     public class TreeToolHandler {
 
-        private static PlayerTreeToolCommandHandler.Command lastCommand;
+        private static PlayerTreeToolCommand lastCommand;
 
         public static void Postfix(TreeTool __instance, ToolController ___m_toolController, TreeInfo ___m_prefab, Vector3 ___m_cachedPosition, Randomizer ___m_randomizer, bool ___m_upgrading, ushort ___m_upgradeSegment, ushort[] ___m_upgradedSegments)
         {
-            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+            if (Command.CurrentRole != MultiplayerRole.None) {
 
                 if (___m_toolController != null && ___m_toolController.IsInsideUI) {
                     return;
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerTreeToolCommandHandler.Command
+                var newCommand = new PlayerTreeToolCommand
                 {                    
                     Tree = (uint)  ___m_prefab.m_prefabDataIndex,
                     Mode = (int) __instance.m_mode,
@@ -40,65 +37,64 @@ namespace CSM.Injections.Tools
                     BrushSize = __instance.m_brushSize,
                     BrushData = ___m_toolController.BrushData,
                     CursorWorldPosition = ___m_cachedPosition,
-                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
+                    PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if(!object.Equals(newCommand, lastCommand)) {
+                if (!newCommand.Equals(lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
                 if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerTreeToolCommandHandler.Command)).Parse(newCommand);
+                    Command.GetCommandHandler(typeof(PlayerTreeToolCommand)).Parse(newCommand);
                 }
 
             }
         }    
     }
-
-    public class PlayerTreeToolCommandHandler : BaseToolCommandHandler<PlayerTreeToolCommandHandler.Command, TreeTool>
+    
+    [ProtoContract]
+    public class PlayerTreeToolCommand : ToolCommandBase, IEquatable<PlayerTreeToolCommand>
     {
+        [ProtoMember(1)]
+        public uint Tree { get; set; }
+        [ProtoMember(2)]
+        public int Mode { get; set; }
+        [ProtoMember(3)]
+        public Vector3 Position { get; set; }
+        [ProtoMember(4)]
+        public ulong RandomizerSeed { get; set; }
+        [ProtoMember(5)]
+        public bool Upgrading { get; set; }
+        [ProtoMember(6)]
+        public ushort UpgradeSegment { get; set; }
+        [ProtoMember(7)]
+        public ushort[] UpgradedSegments { get; set; }
+        [ProtoMember(8)]
+        public float BrushSize { get; set; }
+        [ProtoMember(9)]
+        public float[] BrushData { get; set; }
 
-        [ProtoContract]
-        public class Command : ToolCommandBase, IEquatable<Command>
+        // TODO: Transmit brush info for clients to render. See TreeTool::OnToolUpdate
+        // TODO: Transmit placement errors
+
+        public bool Equals(PlayerTreeToolCommand other)
         {
-            [ProtoMember(1)]
-            public uint Tree { get; set; }
-            [ProtoMember(2)]
-            public int Mode { get; set; }
-            [ProtoMember(3)]
-            public Vector3 Position { get; set; }
-            [ProtoMember(4)]
-            public ulong RandomizerSeed { get; set; }
-            [ProtoMember(5)]
-            public bool Upgrading { get; set; }
-            [ProtoMember(6)]
-            public ushort UpgradeSegment { get; set; }
-            [ProtoMember(7)]
-            public ushort[] UpgradedSegments { get; set; }
-            [ProtoMember(8)]
-            public float BrushSize { get; set; }
-            [ProtoMember(9)]
-            public float[] BrushData { get; set; }
-
-            // TODO: Transmit brush info for clients to render. See TreeTool::OnToolUpdate
-            // TODO: Transmit placement errors
-
-            public bool Equals(Command other)
-            {
-                return base.Equals(other) &&
-                object.Equals(this.Tree, other.Tree) &&
-                object.Equals(this.Mode, other.Mode) &&
-                object.Equals(this.Position, other.Position) &&
-                object.Equals(this.RandomizerSeed, other.RandomizerSeed) &&
-                object.Equals(this.Upgrading, other.Upgrading) &&
-                object.Equals(this.UpgradeSegment, other.UpgradeSegment) &&
-                object.Equals(this.UpgradedSegments, other.UpgradedSegments) &&
-                object.Equals(this.BrushSize, other.BrushSize) &&
-                object.Equals(this.BrushData, other.BrushData);
-            }
-            
+            return base.Equals(other) &&
+                   object.Equals(this.Tree, other.Tree) &&
+                   object.Equals(this.Mode, other.Mode) &&
+                   object.Equals(this.Position, other.Position) &&
+                   object.Equals(this.RandomizerSeed, other.RandomizerSeed) &&
+                   object.Equals(this.Upgrading, other.Upgrading) &&
+                   object.Equals(this.UpgradeSegment, other.UpgradeSegment) &&
+                   object.Equals(this.UpgradedSegments, other.UpgradedSegments) &&
+                   object.Equals(this.BrushSize, other.BrushSize) &&
+                   object.Equals(this.BrushData, other.BrushData);
         }
+            
+    }
 
-        protected override void Configure(TreeTool tool, ToolController toolController, Command command) {
+    public class PlayerTreeToolCommandHandler : BaseToolCommandHandler<PlayerTreeToolCommand, TreeTool>
+    {
+        protected override void Configure(TreeTool tool, ToolController toolController, PlayerTreeToolCommand command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
             
@@ -123,6 +119,4 @@ namespace CSM.Injections.Tools
             return isUpgrading ? tool.m_upgradeCursor : tool.m_buildCursor;
         }
     }
-
-    
 }

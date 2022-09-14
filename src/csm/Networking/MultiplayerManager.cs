@@ -5,6 +5,7 @@ using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.API;
 using CSM.API.Commands;
+using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.Networking.Config;
 using CSM.Panels;
@@ -207,18 +208,6 @@ namespace CSM.Networking
             else
             {
                 ThreadHelper.dispatcher.Dispatch(action);
-            }
-        }
-
-        public string CurrentUsername() {
-            
-            if (CurrentRole == MultiplayerRole.Server)
-            {
-                return CurrentServer.Config.Username;
-            }
-            else
-            {
-                return CurrentClient.Config.Username;
             }
         }
 

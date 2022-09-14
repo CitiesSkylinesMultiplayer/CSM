@@ -48,14 +48,14 @@ namespace CSM.Injections
                     }
 
                     // Send info to all clients
-                    Command.SendToAll(new PlayerLocationCommand
+                    /*Command.SendToAll(new PlayerLocationCommand
                     {
                         PlayerName = playerName,
                         PlayerCameraPosition = _position,
                         PlayerCameraRotation = _rotation,
                         PlayerCameraHeight = __instance.m_currentHeight,
                         PlayerColor = JoinGamePanel.playerColor
-                    });
+                    });*/
                 }
             }
         }

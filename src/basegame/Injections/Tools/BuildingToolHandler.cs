@@ -1,26 +1,24 @@
 using System;
-using CSM.API.Commands;
-using CSM.Networking;
-using ICities;
 using ColossalFramework;
 using ColossalFramework.Math;
-using ProtoBuf;
-using HarmonyLib;
-using UnityEngine;
-using CSM.BaseGame.Helpers;
+using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Helpers;
+using HarmonyLib;
+using ProtoBuf;
+using UnityEngine;
 
-namespace CSM.Injections.Tools
+namespace CSM.BaseGame.Injections.Tools
 {
     [HarmonyPatch(typeof(BuildingTool))]
     [HarmonyPatch("OnToolLateUpdate")]
     public class BuildingToolHandler {
 
-        private static PlayerBuildingToolCommandHandler.Command lastCommand;
+        private static PlayerBuildingToolCommand lastCommand;
 
         public static void Postfix(BuildingTool __instance, ToolController ___m_toolController, Vector3 ___m_cachedPosition, float ___m_cachedAngle, int ___m_elevation, Segment3 ___m_cachedSegment)
         {
-            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+            if (Command.CurrentRole != MultiplayerRole.None) {
                 
                 if (___m_toolController != null && ___m_toolController.IsInsideUI) {
                     return;
@@ -34,7 +32,7 @@ namespace CSM.Injections.Tools
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerBuildingToolCommandHandler.Command
+                var newCommand = new PlayerBuildingToolCommand
                 {
                     Prefab = prefabId,
                     Relocating = __instance.m_relocate,
@@ -43,54 +41,53 @@ namespace CSM.Injections.Tools
                     Segment = ___m_cachedSegment,
                     Elevation = ___m_elevation,
                     CursorWorldPosition = ___m_cachedPosition,
-                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
+                    PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if(!object.Equals(newCommand, lastCommand)) {
+                if (!newCommand.Equals(lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
 
                 if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerBuildingToolCommandHandler.Command)).Parse(newCommand);
+                    Command.GetCommandHandler(typeof(PlayerBuildingToolCommand)).Parse(newCommand);
                 }
 
             }
         }    
     }
-
-    public class PlayerBuildingToolCommandHandler : BaseToolCommandHandler<PlayerBuildingToolCommandHandler.Command, BuildingTool>
+    
+    [ProtoContract]
+    public class PlayerBuildingToolCommand : ToolCommandBase, IEquatable<PlayerBuildingToolCommand>
     {
+        [ProtoMember(1)]
+        public ushort Prefab { get; set; }
+        [ProtoMember(2)]
+        public int Relocating { get; set; }
+        [ProtoMember(3)]
+        public Vector3 Position { get; set; }
+        [ProtoMember(4)]
+        public float Angle { get; set; }
+        [ProtoMember(5)]
+        public Segment3 Segment { get; set; }
+        [ProtoMember(6)]
+        public int Elevation { get; set; }
 
-        [ProtoContract]
-        public class Command : ToolCommandBase, IEquatable<Command>
+        public bool Equals(PlayerBuildingToolCommand other)
         {
-            [ProtoMember(1)]
-            public ushort Prefab { get; set; }
-            [ProtoMember(2)]
-            public int Relocating { get; set; }
-            [ProtoMember(3)]
-            public Vector3 Position { get; set; }
-            [ProtoMember(4)]
-            public float Angle { get; set; }
-            [ProtoMember(5)]
-            public Segment3 Segment { get; set; }
-            [ProtoMember(6)]
-            public int Elevation { get; set; }
-
-            public bool Equals(Command other)
-            {
-                return base.Equals(other) &&
-                object.Equals(this.Prefab, other.Prefab) &&
-                object.Equals(this.Relocating, other.Relocating) &&
-                object.Equals(this.Position, other.Position) &&
-                object.Equals(this.Angle, other.Angle) &&
-                object.Equals(this.Segment, other.Segment) &&
-                object.Equals(this.Elevation, other.Elevation);
-            }
-            
+            return base.Equals(other) &&
+                   object.Equals(this.Prefab, other.Prefab) &&
+                   object.Equals(this.Relocating, other.Relocating) &&
+                   object.Equals(this.Position, other.Position) &&
+                   object.Equals(this.Angle, other.Angle) &&
+                   object.Equals(this.Segment, other.Segment) &&
+                   object.Equals(this.Elevation, other.Elevation);
         }
+            
+    }
 
-        protected override void Configure(BuildingTool tool, ToolController toolController, Command command) {
+    public class PlayerBuildingToolCommandHandler : BaseToolCommandHandler<PlayerBuildingToolCommand, BuildingTool>
+    {
+        protected override void Configure(BuildingTool tool, ToolController toolController, PlayerBuildingToolCommand command) {
             BuildingInfo prefab = PrefabCollection<BuildingInfo>.GetPrefab(command.Prefab);
             ReflectionHelper.SetAttr(tool, "m_prefab", prefab);
             ReflectionHelper.SetAttr(tool, "m_relocate", command.Relocating);
@@ -105,6 +102,4 @@ namespace CSM.Injections.Tools
             return tool.m_buildCursor;
         }
     }
-
-    
 }

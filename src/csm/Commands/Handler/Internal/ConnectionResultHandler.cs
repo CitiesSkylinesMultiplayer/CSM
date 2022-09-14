@@ -47,7 +47,8 @@ namespace CSM.Commands.Handler.Internal
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {
                         MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                        panel.DisplayDlcMessage(compare);
+                        if (panel)
+                            panel.DisplayDlcMessage(compare);
                     });
                 }
                 else if (command.Reason.Contains("Mods"))
@@ -61,7 +62,8 @@ namespace CSM.Commands.Handler.Internal
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {
                         MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                        panel.DisplayModsMessage(serverNotClient, clientNotServer);
+                        if (panel)
+                            panel.DisplayModsMessage(serverNotClient, clientNotServer);
                     });
                 }
             }

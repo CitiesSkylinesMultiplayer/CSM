@@ -72,7 +72,8 @@ namespace CSM.Injections
                         if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None)
                         {
                             MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
-                            msgPanel.DisplayContentWarning();
+                            if (msgPanel)
+                                msgPanel.DisplayContentWarning();
                         }
                     }
                     else

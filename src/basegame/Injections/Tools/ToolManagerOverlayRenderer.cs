@@ -1,10 +1,8 @@
 using ColossalFramework;
-using System.Collections.Generic;
-using HarmonyLib;
 using CSM.BaseGame.Helpers;
-using CSM.API.Helpers;
+using HarmonyLib;
 
-namespace CSM.Injections.Tools
+namespace CSM.BaseGame.Injections.Tools
 {
 
     [HarmonyPatch(typeof(ToolManager))]

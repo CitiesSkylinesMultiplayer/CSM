@@ -6,12 +6,12 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.API.Networking.Status;
-using CSM.Injections.Tools;
 using CSM.Helpers;
 using CSM.Models;
 using CSM.Mods;
 using CSM.Networking;
 using ColossalFramework.Math;
+using CSM.BaseGame.Injections.Tools;
 using LiteNetLib;
 using ProtoBuf.Meta;
 using UnityEngine;
@@ -217,6 +217,7 @@ namespace CSM.Commands
 
                 // Lowest id of the subclasses
                 int id = 100;
+                int toolId = 100;
 
                 baseCmd.AddSubType(id++, typeof(ToolCommandBase));
                 model.Add(typeof(ToolCommandBase), true);
@@ -232,7 +233,7 @@ namespace CSM.Commands
                     // at each step register the class's MetaTypes is the ProtoBuff model
 
                     if(handler.GetDataType().IsSubclassOf(typeof(ToolCommandBase))) {
-                        baseToolCmd.AddSubType(id++, handler.GetDataType());
+                        baseToolCmd.AddSubType(toolId++, handler.GetDataType());
                     } else {
                         baseCmd.AddSubType(id++, handler.GetDataType());
                     }

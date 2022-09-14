@@ -1,36 +1,31 @@
-using System.Linq;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System;
-using CSM.API.Commands;
-using CSM.Networking;
-using ICities;
+using System.Collections.Generic;
 using ColossalFramework;
-using ColossalFramework.Math;
-using ProtoBuf;
-using HarmonyLib;
-using UnityEngine;
-using CSM.BaseGame.Helpers;
+using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Helpers;
+using HarmonyLib;
+using ProtoBuf;
+using UnityEngine;
 
-namespace CSM.Injections.Tools
+namespace CSM.BaseGame.Injections.Tools
 {
     [HarmonyPatch(typeof(NetTool))]
     [HarmonyPatch("OnToolLateUpdate")]
     public class NetToolHandler {
 
-        private static PlayerNetToolCommandHandler.Command lastCommand;
+        private static PlayerNetToolCommand lastCommand;
         // private static 
 
         public static void Postfix(NetTool __instance, ToolController ___m_toolController, NetTool.ControlPoint[] ___m_cachedControlPoints, int ___m_cachedControlPointCount, ushort[] ___m_upgradedSegments)
         {
-            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+            if (Command.CurrentRole != MultiplayerRole.None) {
 
                 if (___m_toolController != null && ___m_toolController.IsInsideUI) {
                     return;
                 }
 
-                // with the NetTool the world piosition of the cursor will match the current last control point base on the following logic
+                // with the NetTool the world position of the cursor will match the current last control point base on the following logic
                 // See NetTool::OnToolUpdate
                 Vector3 worldPosition;                
                 if (__instance.m_mode == NetTool.Mode.Upgrade && ___m_cachedControlPointCount >= 2)
@@ -43,7 +38,7 @@ namespace CSM.Injections.Tools
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerNetToolCommandHandler.Command
+                PlayerNetToolCommand newCommand = new PlayerNetToolCommand
                 {
                     Prefab = (ushort)Mathf.Clamp(__instance.m_prefab.m_prefabDataIndex, 0, 65535),
                     Mode = (int) __instance.m_mode,
@@ -51,52 +46,51 @@ namespace CSM.Injections.Tools
                     ControlPointCount = ___m_cachedControlPointCount,
                     UpgradedSegments = ___m_upgradedSegments,
                     CursorWorldPosition = worldPosition,
-                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
+                    PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if(!object.Equals(newCommand, lastCommand)) {
+                if (!newCommand.Equals(lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
-                if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerNetToolCommandHandler.Command)).Parse(newCommand);
+                if (ToolSimulatorCursorManager.ShouldTest()) {
+                    Command.GetCommandHandler(typeof(PlayerNetToolCommand)).Parse(newCommand);
                 }
 
             }
         }    
     }
-
-    public class PlayerNetToolCommandHandler : BaseToolCommandHandler<PlayerNetToolCommandHandler.Command, NetTool>
+    
+    [ProtoContract]
+    public class PlayerNetToolCommand : ToolCommandBase, IEquatable<PlayerNetToolCommand>
     {
+        [ProtoMember(1)]
+        public ushort Prefab { get; set; }
+        [ProtoMember(2)]
+        public int Mode { get; set; }
+        [ProtoMember(3)]
+        public NetTool.ControlPoint[] ControlPoints { get; set; } 
+        [ProtoMember(4)]
+        public int ControlPointCount { get; set; }
+        [ProtoMember(5)]
+        public ushort[] UpgradedSegments { get; set; }
 
-        [ProtoContract]
-        public class Command : ToolCommandBase, IEquatable<Command>
+        // TODO: Transmit errors
+
+        public bool Equals(PlayerNetToolCommand other)
         {
-            [ProtoMember(1)]
-            public ushort Prefab { get; set; }
-            [ProtoMember(2)]
-            public int Mode { get; set; }
-            [ProtoMember(3)]
-            public NetTool.ControlPoint[] ControlPoints { get; set; } 
-            [ProtoMember(4)]
-            public int ControlPointCount { get; set; }
-            [ProtoMember(5)]
-            public ushort[] UpgradedSegments { get; set; }
-
-            // TODO: Transmit errors
-
-            public bool Equals(Command other)
-            {
-                return base.Equals(other) &&
-                object.Equals(this.Prefab, other.Prefab) &&
-                object.Equals(this.Mode, other.Mode) &&
-                object.Equals(this.ControlPoints, other.ControlPoints) &&
-                object.Equals(this.ControlPointCount, other.ControlPointCount) &&
-                object.Equals(this.UpgradedSegments, other.UpgradedSegments);
-            }
-            
+            return base.Equals(other) &&
+                   object.Equals(this.Prefab, other.Prefab) &&
+                   object.Equals(this.Mode, other.Mode) &&
+                   object.Equals(this.ControlPoints, other.ControlPoints) &&
+                   object.Equals(this.ControlPointCount, other.ControlPointCount) &&
+                   object.Equals(this.UpgradedSegments, other.UpgradedSegments);
         }
+            
+    }
 
-        protected override void Configure(NetTool tool, ToolController toolController, Command command) {
+    public class PlayerNetToolCommandHandler : BaseToolCommandHandler<PlayerNetToolCommand, NetTool>
+    {
+        protected override void Configure(NetTool tool, ToolController toolController, PlayerNetToolCommand command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
             NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(command.Prefab);
@@ -126,6 +120,4 @@ namespace CSM.Injections.Tools
             }
         }
     }
-
-    
 }

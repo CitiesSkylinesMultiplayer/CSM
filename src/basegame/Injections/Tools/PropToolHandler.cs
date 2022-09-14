@@ -1,36 +1,31 @@
-using System.Linq;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System;
-using CSM.API.Commands;
-using CSM.Networking;
-using ICities;
 using ColossalFramework;
 using ColossalFramework.Math;
-using ProtoBuf;
-using HarmonyLib;
-using UnityEngine;
-using CSM.BaseGame.Helpers;
+using CSM.API;
+using CSM.API.Commands;
 using CSM.API.Helpers;
+using HarmonyLib;
+using ProtoBuf;
+using UnityEngine;
 
-namespace CSM.Injections.Tools
+namespace CSM.BaseGame.Injections.Tools
 {
     [HarmonyPatch(typeof(PropTool))]
     [HarmonyPatch("OnToolLateUpdate")]
     public class PropToolHandler {
 
-        private static PlayerPropToolCommandHandler.Command lastCommand;
+        private static PlayerPropToolCommand lastCommand;
 
         public static void Postfix(PropTool __instance, ToolController ___m_toolController, PropInfo ___m_propInfo, Vector3 ___m_cachedPosition, float ___m_cachedAngle, Randomizer ___m_randomizer)
         {
-            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None) {
+            if (Command.CurrentRole != MultiplayerRole.None) {
 
                 if (___m_toolController != null && ___m_toolController.IsInsideUI) {
                     return;
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerPropToolCommandHandler.Command
+                var newCommand = new PlayerPropToolCommand
                 {                    
                     Prop = (uint)  ___m_propInfo.m_prefabDataIndex,
                     Mode = (int) __instance.m_mode,
@@ -38,53 +33,52 @@ namespace CSM.Injections.Tools
                     Angle = ___m_cachedAngle,
                     RandomizerSeed = ___m_randomizer.seed,
                     CursorWorldPosition = ___m_cachedPosition,
-                    PlayerName = MultiplayerManager.Instance.CurrentUsername()
+                    PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if(!object.Equals(newCommand, lastCommand)) {
+                if (!newCommand.Equals(lastCommand)) {
                     lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
                 if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerPropToolCommandHandler.Command)).Parse(newCommand);
+                    Command.GetCommandHandler(typeof(PlayerPropToolCommand)).Parse(newCommand);
                 }
 
             }
         }    
     }
-
-    public class PlayerPropToolCommandHandler : BaseToolCommandHandler<PlayerPropToolCommandHandler.Command, PropTool>
+    
+    [ProtoContract]
+    public class PlayerPropToolCommand : ToolCommandBase, IEquatable<PlayerPropToolCommand>
     {
+        [ProtoMember(1)]
+        public uint Prop { get; set; }
+        [ProtoMember(2)]
+        public int Mode { get; set; }
+        [ProtoMember(3)]
+        public Vector3 Position { get; set; }
+        [ProtoMember(4)]
+        public float Angle { get; set; }
+        [ProtoMember(5)]
+        public ulong RandomizerSeed { get; set; }
 
-        [ProtoContract]
-        public class Command : ToolCommandBase, IEquatable<Command>
+        // TODO: Transmit brush info for clients to render. See PropTool::OnToolUpdate
+        // TODO: Transmit placement errors
+
+        public bool Equals(PlayerPropToolCommand other)
         {
-            [ProtoMember(1)]
-            public uint Prop { get; set; }
-            [ProtoMember(2)]
-            public int Mode { get; set; }
-            [ProtoMember(3)]
-            public Vector3 Position { get; set; }
-            [ProtoMember(4)]
-            public float Angle { get; set; }
-            [ProtoMember(5)]
-            public ulong RandomizerSeed { get; set; }
-
-            // TODO: Transmit brush info for clients to render. See PropTool::OnToolUpdate
-            // TODO: Transmit placement errors
-
-            public bool Equals(Command other)
-            {
-                return base.Equals(other) &&
-                object.Equals(this.Prop, other.Prop) &&
-                object.Equals(this.Mode, other.Mode) &&
-                object.Equals(this.Position, other.Position) &&
-                object.Equals(this.Angle, other.Angle) &&
-                object.Equals(this.RandomizerSeed, other.RandomizerSeed);
-            }
-            
+            return base.Equals(other) &&
+                   object.Equals(this.Prop, other.Prop) &&
+                   object.Equals(this.Mode, other.Mode) &&
+                   object.Equals(this.Position, other.Position) &&
+                   object.Equals(this.Angle, other.Angle) &&
+                   object.Equals(this.RandomizerSeed, other.RandomizerSeed);
         }
+            
+    }
 
-        protected override void Configure(PropTool tool, ToolController toolController, Command command) {
+    public class PlayerPropToolCommandHandler : BaseToolCommandHandler<PlayerPropToolCommand, PropTool>
+    {
+        protected override void Configure(PropTool tool, ToolController toolController, PlayerPropToolCommand command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
             
@@ -101,6 +95,4 @@ namespace CSM.Injections.Tools
             return tool.m_buildCursor;
         }
     }
-
-    
 }

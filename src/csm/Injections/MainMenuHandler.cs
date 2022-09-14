@@ -50,7 +50,8 @@ namespace CSM.Injections
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {
                         MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                        panel.DisplayUpdateAvailable(version, latestVersion);
+                        if (panel)
+                            panel.DisplayUpdateAvailable(version, latestVersion);
                     });
                 }
                 else if (alwaysShowInfo)
@@ -58,7 +59,8 @@ namespace CSM.Injections
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {
                         MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                        panel.DisplayNoUpdateAvailable();
+                        if (panel)
+                            panel.DisplayNoUpdateAvailable();
                     });
                 }
             }

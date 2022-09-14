@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +9,7 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.API.Networking.Status;
+using CSM.BaseGame.Injections.Tools;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
 using CSM.Helpers;
@@ -155,7 +156,7 @@ namespace CSM.Panels
                 }),
                 new ChatCommand("test", "Tests tool sync", (command) =>
                 {
-                    Injections.Tools.ToolSimulatorCursorManager.test = true;
+                    ToolSimulatorCursorManager.test = !ToolSimulatorCursorManager.test;
                 })
             };
         }
@@ -212,7 +213,15 @@ namespace CSM.Panels
             if (UseChirper)
             {
                 ChatTextChirper.Show();
-                ChatTextChirper.Focus();
+                try
+                {
+                    ChatTextChirper.Focus();
+                }
+                catch (Exception)
+                {
+                    // Sometimes throws an exception, no idea why...
+                }
+
                 if (ChirpPanel.instance.isShowing)
                 {
                     // Don't close Chirper automatically if already open
@@ -445,16 +454,7 @@ namespace CSM.Panels
             //}
 
             // Get the player name
-            string playerName = "Local";
-
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
-            {
-                playerName = MultiplayerManager.Instance.CurrentClient.Config.Username;
-            }
-            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
-            {
-                playerName = MultiplayerManager.Instance.CurrentServer.Config.Username;
-            }
+            string playerName = GetCurrentUsername();
 
             // Build and send this message
             ChatMessageCommand message = new ChatMessageCommand
@@ -505,6 +505,22 @@ namespace CSM.Panels
         public void PrintChatMessage(string username, string msg)
         {
             PrintMessage(username, msg);
+        }
+
+        public string GetCurrentUsername()
+        {
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            {
+                return MultiplayerManager.Instance.CurrentClient.Config.Username;
+            }
+            else if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server)
+            {
+                return MultiplayerManager.Instance.CurrentServer.Config.Username;
+            }
+            else
+            {
+                return "Local";
+            }
         }
 
         private void PrintMessage(string sender, string msg)
