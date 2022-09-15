@@ -53,7 +53,7 @@ namespace CSM.Commands.Handler.Internal
                 else if (command.Reason.Contains("Mods"))
                 {
                     List<string> clientMods = ModSupport.Instance.RequiredModsForSync;
-                    List<string> serverMods = command.Mods;
+                    List<string> serverMods = command.Mods ?? new List<string>();
 
                     IEnumerable<string> clientNotServer = clientMods.Where(mod => !serverMods.Contains(mod));
                     IEnumerable<string> serverNotClient = serverMods.Where(mod => !clientMods.Contains(mod));
