@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Grid Entertainment")]
 [assembly: AssemblyProduct("Cities: Skylines Multiplayer Mod API")]
-[assembly: AssemblyCopyright("Copyright © CSM 2021")]
+[assembly: AssemblyCopyright("Copyright © CSM Developers 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
