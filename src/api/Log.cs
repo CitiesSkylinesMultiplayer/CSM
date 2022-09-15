@@ -11,7 +11,7 @@ namespace CSM.API
         public bool LogDebug { get; set; }
         public readonly string CurrentLogFile;
 
-        private const string Layout = "[{0}] [{1}] {2}\r\n";
+        private const string Layout = "[{0}] [{1}] {2}";
         private const int KeepLogFiles = 5;
         private readonly FileStream _fileStream;
 
@@ -38,10 +38,12 @@ namespace CSM.API
         {
             _fileStream.Dispose();
         }
-        
+
         private void Write(string message, string level)
         {
             message = string.Format(Layout, DateTime.Now.ToString("HH:mm:ss.ffff"), level, message);
+            message += Environment.NewLine;
+
             byte[] info = new UTF8Encoding(true).GetBytes(message);
             _fileStream.Write(info, 0, info.Length);
             _fileStream.Flush();
