@@ -187,11 +187,8 @@ namespace CSM.Networking
 
             if (needsUnload)
             {
-                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
-                {
-                    // Go back to the main menu after disconnecting
-                    Singleton<LoadingManager>.instance.UnloadLevel();
-                });
+                // Go back to the main menu after disconnecting
+                Singleton<LoadingManager>.instance.UnloadLevel();
             }
 
             Log.Info("Disconnected from server");
