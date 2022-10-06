@@ -109,16 +109,17 @@ namespace CSM.Commands.Handler.Internal
                 return;
             }
 
-            List<string> mods = ModSupport.Instance.RequiredModsForSync;
-            List<string> clientMods = command.Mods ?? new List<string>();
-            if (!clientMods.SequenceEqual(mods))
+            List<string> serverMods = ModSupport.Instance.RequiredModsForSync.OrderBy(x => x).ToList();
+            List<string> clientMods = (command.Mods ?? new List<string>()).OrderBy(x => x).ToList();
+            
+            if (!clientMods.SequenceEqual(serverMods))
             {
-                Log.Info($"Connection rejected: List of mods [{string.Join(", ", clientMods.ToArray())}] (client) and [{string.Join(", ", mods.ToArray())}] (server) differ.");
+                Log.Info($"Connection rejected: List of mods [{string.Join(", ", clientMods.ToArray())}] (client) and [{string.Join(", ", serverMods.ToArray())}] (server) differ.");
                 CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = "Mods don't match",
-                    Mods = mods
+                    Mods = serverMods
                 });
                 return;
             }

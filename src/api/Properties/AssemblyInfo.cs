@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Cities: Skylines Multiplayer Mod API")]
 [assembly: AssemblyDescription("API for Multiplayer mod for Cities: Skylines")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Grid Entertainment")]
+[assembly: AssemblyCompany("CSM Developers")]
 [assembly: AssemblyProduct("Cities: Skylines Multiplayer Mod API")]
 [assembly: AssemblyCopyright("Copyright © CSM Developers 2022")]
 [assembly: AssemblyTrademark("")]
