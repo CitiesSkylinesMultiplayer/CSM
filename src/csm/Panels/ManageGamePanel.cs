@@ -18,7 +18,7 @@ namespace CSM.Panels
         private UIButton _closeButton;
 
         private int _portVal;
-        private string _localIpVal, _externalIpVal;
+        private string _localIpVal, _externalIpVal, _vpnIpVal;
 
         public override void Start()
         {
@@ -28,8 +28,10 @@ namespace CSM.Panels
             backgroundSprite = "GenericPanel";
             color = new Color32(110, 110, 110, 250);
 
+            _vpnIpVal = IpAddress.GetVPNIpAddress();
+
             width = 360;
-            height = 445;
+            height = _vpnIpVal == null ? 420 : 495;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
@@ -62,6 +64,8 @@ namespace CSM.Panels
             // External IP label
             this.CreateLabel("External IP:", new Vector2(10, -225));
 
+            _portState = this.CreateLabel("", new Vector2(140, -225));
+
             // External IP field
             _externalIpVal = IpAddress.GetExternalIpAddress();
             _externalIpField = this.CreateTextField(_externalIpVal, new Vector2(10, -250));
@@ -70,12 +74,23 @@ namespace CSM.Panels
             {
                 _externalIpField.text = _externalIpVal;
             };
-            
-            _portState = this.CreateLabel("", new Vector2(10, -310));
-            _portState.textAlignment = UIHorizontalAlignment.Center;
+
+            if (_vpnIpVal != null)
+            {
+                // VPN IP label
+                this.CreateLabel("Hamachi IP:", new Vector2(10, -300));
+
+                // VPN IP field
+                UITextField vpnIpField = this.CreateTextField(_vpnIpVal, new Vector2(10, -325));
+                vpnIpField.selectOnFocus = true;
+                vpnIpField.eventTextChanged += (ui, value) =>
+                {
+                    vpnIpField.text = _vpnIpVal;
+                };
+            }
 
             // Close this dialog
-            _closeButton = this.CreateButton("Close", new Vector2(10, -375));
+            _closeButton = this.CreateButton("Close", new Vector2(10, _vpnIpVal == null ? -340 : -415));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
