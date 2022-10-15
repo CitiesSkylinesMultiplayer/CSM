@@ -22,6 +22,7 @@ namespace CSM.Panels
 
         private UIButton _connectButton;
         private UIButton _closeButton;
+        private UIButton _troubleshootingButton;
 
         private UICheckBox _passwordBox;
         private UICheckBox _rememberBox;
@@ -106,6 +107,15 @@ namespace CSM.Panels
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
+            _troubleshootingButton = this.CreateButton("?", new Vector2(170, -420), 25, 20);
+            _troubleshootingButton.isVisible = false;
+            _troubleshootingButton.eventClick += (component, param) =>
+            {
+                MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                int.TryParse(_portField.text, out int port);
+                panel.DisplayTroubleshooting(false, port);
+            };
+
             ModCompat.BuildModInfo(this);
 
             eventVisibilityChanged += (comp, visible) =>
@@ -126,6 +136,7 @@ namespace CSM.Panels
 
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
             _connectionStatus.text = "Connecting...";
+            _troubleshootingButton.isVisible = false;
 
             if (string.IsNullOrEmpty(_portField.text) || string.IsNullOrEmpty(_ipAddressField.text))
             {
@@ -164,6 +175,10 @@ namespace CSM.Panels
                     {
                         _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                         _connectionStatus.text = MultiplayerManager.Instance.CurrentClient.ConnectionMessage;
+                        if (MultiplayerManager.Instance.CurrentClient.ShowTroubleshooting)
+                        {
+                            _troubleshootingButton.isVisible = true;
+                        }
                     }
                     else
                     {

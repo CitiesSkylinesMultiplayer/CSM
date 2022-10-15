@@ -55,6 +55,12 @@ namespace CSM.Networking
         /// </summary>
         public string ConnectionMessage { get; set; } = "Unknown error";
 
+        /// <summary>
+        ///     If the join game panel should show connection troubleshooting
+        ///     information.
+        /// </summary>
+        public bool ShowTroubleshooting { get; set; } = false;
+
         private bool MainMenuEventProcessing = false;
 
         public Client()
@@ -78,6 +84,7 @@ namespace CSM.Networking
         /// <returns>True if the client is connected to the server, false if not</returns>
         public bool Connect(ClientConfig clientConfig)
         {
+            ShowTroubleshooting = false;
             // Let the user know that we are trying to connect to a server
             Log.Info($"Attempting to connect to server at {clientConfig.HostAddress}:{clientConfig.Port}...");
 
@@ -123,6 +130,7 @@ namespace CSM.Networking
             catch (Exception ex)
             {
                 ConnectionMessage = "Failed to connect.";
+                ShowTroubleshooting = true;
                 Log.Error($"Failed to connect to {Config.HostAddress}:{Config.Port}", ex);
                 Chat.Instance.PrintGameMessage(Chat.MessageType.Error, $"Failed to connect: {ex.Message}");
                 Disconnect();
@@ -268,7 +276,10 @@ namespace CSM.Networking
         private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
         {
             if (Status == ClientStatus.Connecting)
+            {
                 ConnectionMessage = "Failed to connect!";
+                ShowTroubleshooting = true;
+            }
 
             // Log the error message
             Log.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");

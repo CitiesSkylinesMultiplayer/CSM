@@ -121,21 +121,29 @@ namespace CSM.Networking
 
         private void CheckPort()
         {
+            string vpnIp = IpAddress.GetVPNIpAddress();
             PortState state = IpAddress.CheckPort(Config.Port);
             string message;
             bool portOpen = false;
             switch (state.status)
             {
                 case HttpStatusCode.ServiceUnavailable: // Could not reach port
-                    if (automaticSuccess)
+                    if (vpnIp != null)
                     {
                         message =
-                            "It was tried to forward the port automatically, but the server is not reachable from the internet. Manual port forwarding is required.";
+                            "Server is not reachable from the internet. Players can connect over Hamachi using the IP address " +
+                            vpnIp;
+                        portOpen = true; // This is an OK state
+                    }
+                    else if (automaticSuccess)
+                    {
+                        message =
+                                "It was tried to forward the port automatically, but the server is not reachable from the internet. Manual port forwarding is required. See the \"Manage Server\" menu for more info.";
                     }
                     else
                     {
                         message =
-                            "Port could not be forwarded automatically and server is not reachable from the internet. Manual port forwarding is required.";
+                            "Port could not be forwarded automatically and server is not reachable from the internet. Manual port forwarding is required. See the \"Manage Server\" menu for more info.";
                     }
                     break;
                 case HttpStatusCode.OK: // Success
@@ -149,9 +157,20 @@ namespace CSM.Networking
                     {
                         message = "Server is reachable from the internet!";
                     }
+
+                    if (vpnIp != null)
+                    {
+                        message += " Players can also connect over Hamachi, although you don't need it.";
+                    }
                     break;
                 default: // Something failed
-                    if (automaticSuccess)
+                    if (vpnIp != null)
+                    {
+                        message =
+                            "Error while checking server port from the internet. Players should still be able to connect over the Hamachi IP address " +
+                            vpnIp;
+                    }
+                    else if (automaticSuccess)
                     {
                         message = "Port was forwarded automatically, but couldn't be checked due to error: " +
                                   state.message;
