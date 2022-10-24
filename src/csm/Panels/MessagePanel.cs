@@ -101,6 +101,18 @@ namespace CSM.Panels
             Show(true);
         }
 
+        public void DisplayInvalidApiServer()
+        {
+            SetTitle("Invalid API Server");
+
+            const string message = "The given API server could not be reached.\n" +
+                                   "The URL was not changed.";
+
+            SetMessage(message);
+
+            Show(true);
+        }
+
         private string GetDlcName(DLCPanelNew panel, SteamHelper.DLC dlc)
         {
             string dlcName = panel.FindLocalizedDLCName(dlc);

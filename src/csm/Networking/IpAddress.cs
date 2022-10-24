@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using CSM.API;
 using CSM.Util;
+using LiteNetLib;
 
 namespace CSM.Networking
 {
@@ -22,28 +24,17 @@ namespace CSM.Networking
 
     public static class IpAddress
     {
-        private static string _localIp;
-        private static string _externalIp;
-
         public static string GetLocalIpAddress()
         {
-            if (_localIp != null)
-            {
-                return _localIp;
-            }
-
             try
             {
                 //Create a new socket
                 using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
                 {
                     //Connect to some server to non-listening port
-                    socket.Connect("api.citiesskylinesmultiplayer.com", 65530);
-                    //Get the IPEndPoint
-                    IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                    socket.Connect(CSM.Settings.ApiServer, 65530);
                     //Get the IP Address (Internal) from the IPEndPoint
-                    _localIp = endPoint.Address.ToString();
-                    return _localIp;
+                    return socket.LocalEndPoint is IPEndPoint endPoint ? endPoint.Address.ToString() : "";
                 }
             }
             catch (Exception)
@@ -55,16 +46,10 @@ namespace CSM.Networking
 
         public static string GetExternalIpAddress()
         {
-            if (_externalIp != null)
-            {
-                return _externalIp;
-            }
-
             try
             {
                 //Get the External IP address from internet
-                _externalIp = new CSMWebClient().DownloadString("http://api.citiesskylinesmultiplayer.com/api/ip");
-                return _externalIp;
+                return new CSMWebClient().DownloadString($"http://{CSM.Settings.ApiServer}/api/ip");
             }
             catch (Exception e)
             {
@@ -79,7 +64,7 @@ namespace CSM.Networking
             CSMWebClient client = new CSMWebClient();
             try
             {
-                string answer = client.DownloadString("http://api.citiesskylinesmultiplayer.com/api/check?port=" + port);
+                string answer = client.DownloadString($"http://{CSM.Settings.ApiServer}/api/check?port=" + port);
                 return new PortState(answer, client.StatusCode());
             }
             catch (WebException e)
@@ -111,6 +96,11 @@ namespace CSM.Networking
             {
                 return new PortState(e.Message, HttpStatusCode.InternalServerError);
             }
+        }
+
+        public static IPAddress GetIpv4(string host)
+        {
+            return Dns.GetHostEntry(host).AddressList.FirstOrDefault(resolveAddress => resolveAddress.AddressFamily == AddressFamily.InterNetwork);
         }
     }
 }

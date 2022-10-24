@@ -12,6 +12,12 @@
         Disconnected,
 
         /// <summary>
+        ///     Before starting to actually connect, the global server
+        ///     is queried and NAT punchthrough is attempted.
+        /// </summary>
+        PreConnecting,
+
+        /// <summary>
         ///     The client is trying to connect to the server, this phase
         ///     can take up to 30 seconds.
         /// </summary>
@@ -33,6 +39,13 @@
         ///     The client is connected to the server and is
         ///     transmitting information.
         /// </summary>
-        Connected
+        Connected,
+
+        /// <summary>
+        ///     If the connection was rejected by the server.
+        ///     Special case to separate from "Disconnected" during
+        ///     connection attempts. If rejected, no other IPs need to be tried.
+        /// </summary>
+        Rejected
     }
 }

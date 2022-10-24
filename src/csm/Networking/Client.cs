@@ -55,13 +55,17 @@ namespace CSM.Networking
         /// </summary>
         public string ConnectionMessage { get; set; } = "Unknown error";
 
-        private bool MainMenuEventProcessing = false;
+        private bool _mainMenuEventProcessing = false;
 
         public Client()
         {
             // Set up network items
             EventBasedNetListener listener = new EventBasedNetListener();
-            _netClient = new LiteNetLib.NetManager(listener);
+            _netClient = new LiteNetLib.NetManager(listener)
+            {
+                NatPunchEnabled = true,
+                UnconnectedMessagesEnabled = true
+            };
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
@@ -81,21 +85,13 @@ namespace CSM.Networking
             // Let the user know that we are trying to connect to a server
             Log.Info($"Attempting to connect to server at {clientConfig.HostAddress}:{clientConfig.Port}...");
 
-            // if we are currently trying to connect, cancel
-            // and try again.
-            if (Status == ClientStatus.Connecting)
+            if (Status != ClientStatus.Disconnected)
             {
-                Log.Info("Current status is 'connecting', attempting to disconnect first.");
-                Disconnect();
+                Log.Warn("Current status is not disconnected, ignoring connection attempt.");
+                return false;
             }
 
-            // The client is already connected so we need to
-            // disconnect.
-            if (Status == ClientStatus.Connected)
-            {
-                Log.Info("Current status is 'connected', attempting to disconnect first.");
-                Disconnect();
-            }
+            Status = ClientStatus.PreConnecting;
 
             // Set the configuration
             Config = clientConfig;
@@ -107,25 +103,95 @@ namespace CSM.Networking
             if (!result)
             {
                 Log.Error("The client failed to start.");
-                ConnectionMessage = "The client failed to start.";
+                ConnectionMessage = "Client failed to start.";
                 Disconnect(); // make sure we are fully disconnected
                 return false;
             }
 
-            Log.Info("Set status to 'connecting'...");
+            return SetupHolePunching();
+        }
 
+        private bool SetupHolePunching()
+        {
+            // Given string to IP address (resolves domain names).
+            IPAddress resolvedAddress;
+            try
+            {
+                resolvedAddress = NetUtils.ResolveAddress(Config.HostAddress);
+            }
+            catch
+            {
+                ConnectionMessage = "Invalid server IP";
+                Disconnect(); // make sure we are fully disconnected
+                return false;
+            }
+
+            EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
+            Stopwatch timeoutWatch = new Stopwatch();
+
+            // Callback on for each possible IP address to connect to the server.
+            // Can potentially be called multiple times (local and public IP address).
+            natPunchListener.NatIntroductionSuccess += (point, type, token) =>
+            {
+                timeoutWatch.Stop();
+
+                if (Status == ClientStatus.PreConnecting)
+                {
+                    Log.Info($"Trying endpoint {point} after NAT hole punch...");
+                    bool success = DoConnect(point);
+                    if (!success)
+                    {
+                        Status = Status == ClientStatus.Rejected ? ClientStatus.Disconnected : ClientStatus.PreConnecting;
+                    }
+                }
+
+                timeoutWatch.Start();
+            };
+
+            // Register listener and send request to global server
+            _netClient.NatPunchModule.Init(natPunchListener);
+            _netClient.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), 4240), $"client_{resolvedAddress}");
+
+            timeoutWatch.Start();
+            // Wait for NatPunchModule responses.
+            // 5 seconds include only the time waiting for nat punch management.
+            // Connection attempts have their own timeout in the DoConnect method
+            // The waitWatch is paused during an connection attempt.
+            while (Status == ClientStatus.PreConnecting && timeoutWatch.Elapsed < TimeSpan.FromSeconds(5))
+            {
+                _netClient.NatPunchModule.PollEvents();
+                // Wait 50ms
+                Thread.Sleep(50);
+            }
+
+            if (Status == ClientStatus.PreConnecting) // If timeout, try exact given address
+            {
+                Log.Info($"No registered server on GS found, trying exact given address {resolvedAddress}:{Config.Port}...");
+                bool success = DoConnect(new IPEndPoint(resolvedAddress, Config.Port));
+                if (!success)
+                {
+                    Disconnect(); // Make sure we are fully disconnected
+                    return false;
+                }
+
+                return true;
+            }
+
+            return Status != ClientStatus.Disconnected;
+        }
+
+        private bool DoConnect(IPEndPoint point)
+        {
             // Try connect to server, update the status to say that
             // we are trying to connect.
             try
             {
-                _netClient.Connect(Config.HostAddress, Config.Port, "CSM");
+                _netClient.Connect(point, "CSM");
             }
             catch (Exception ex)
             {
                 ConnectionMessage = "Failed to connect.";
-                Log.Error($"Failed to connect to {Config.HostAddress}:{Config.Port}", ex);
-                Chat.Instance.PrintGameMessage(Chat.MessageType.Error, $"Failed to connect: {ex.Message}");
-                Disconnect();
+                Log.Error($"Failed to connect to {point.Address}:{point.Port} ", ex);
                 return false;
             }
 
@@ -140,7 +206,7 @@ namespace CSM.Networking
             waitWatch.Start();
 
             // Try connect for 30 seconds
-            while (waitWatch.Elapsed < TimeSpan.FromSeconds(30))
+            while (waitWatch.Elapsed < TimeSpan.FromSeconds(10))
             {
                 // If we connect, exit the loop and return true
                 if (Status == ClientStatus.Connected || Status == ClientStatus.Downloading || Status == ClientStatus.Loading)
@@ -154,7 +220,11 @@ namespace CSM.Networking
                 if (Status == ClientStatus.Disconnected)
                 {
                     Log.Warn("Client disconnected while in connecting loop.");
-                    Disconnect(); // make sure we are fully disconnected
+                    return false;
+                }
+
+                if (Status == ClientStatus.Rejected)
+                {
                     return false;
                 }
 
@@ -165,10 +235,21 @@ namespace CSM.Networking
             // We have timed out
             ConnectionMessage = "Could not connect to server, timed out.";
             Log.Warn("Connection timeout!");
+            Status = ClientStatus.PreConnecting;
 
-            // Did not connect
-            Disconnect(); // make sure we are fully disconnected
             return false;
+        }
+
+        /// <summary>
+        ///     Called when the connection was rejected by the server in the ConnectionResultCommand.
+        ///     This also means that the network connection was working properly, so we don't
+        ///     need to try any further network endpoints.
+        /// </summary>
+        public void ConnectRejected()
+        {
+            Status = ClientStatus.Rejected;
+            _netClient.Stop();
+            TransactionHandler.ClearTransactions();
         }
 
         /// <summary>
@@ -199,9 +280,9 @@ namespace CSM.Networking
 
         public void SendToServer(CommandBase message)
         {
-            if (Status == ClientStatus.Disconnected)
+            if (Status == ClientStatus.Disconnected || Status == ClientStatus.PreConnecting)
             {
-                Log.Error("Attempted to send message to server, but the client is disconnected");
+                Log.Error("Attempted to send message to server, but the client is not connected");
                 return;
             }
 
@@ -233,7 +314,7 @@ namespace CSM.Networking
             }
             catch (Exception ex)
             {
-                Log.Error($"Encountered an error while reading command from {peer.EndPoint.Address}:{peer.EndPoint.Port}:", ex);
+                Log.Error("Failed to handle command from server: ", ex);
             }
         }
 
@@ -272,7 +353,7 @@ namespace CSM.Networking
                 ConnectionMessage = "Failed to connect!";
 
             // Log the error message
-            Log.Info($"Disconnected from server. Message: {disconnectInfo.Reason}, Code: {disconnectInfo.SocketErrorCode}");
+            Log.Info($"Disconnected from server. Message: {disconnectInfo.Reason}");
 
             // Log the reason to the console if we are not in 'connecting' state
             if (Status == ClientStatus.Connected)
@@ -298,7 +379,7 @@ namespace CSM.Networking
             }
 
             // If we are connected, disconnect
-            if (Status != ClientStatus.Disconnected && Status != ClientStatus.Connecting)
+            if (Status == ClientStatus.Downloading || Status == ClientStatus.Loading || Status == ClientStatus.Connected)
                 MultiplayerManager.Instance.StopEverything();
 
             // In the case of ClientStatus.Connecting, this also ends the wait loop
@@ -311,7 +392,7 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
-            Log.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+            Log.Error($"Network error: {socketError}");
         }
         
         private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
@@ -321,11 +402,11 @@ namespace CSM.Networking
 
         public void StartMainMenuEventProcessor()
         {
-            if (MainMenuEventProcessing) return;
+            if (_mainMenuEventProcessing) return;
             new Thread(() =>
             {
-                MainMenuEventProcessing = true;
-                while (MainMenuEventProcessing)
+                _mainMenuEventProcessing = true;
+                while (_mainMenuEventProcessing)
                 {
                     // The threading extension is not yet loaded when at the main menu, so
                     // process the events and go on
@@ -338,7 +419,7 @@ namespace CSM.Networking
 
         public void StopMainMenuEventProcessor()
         {
-            MainMenuEventProcessing = false;
+            _mainMenuEventProcessing = false;
         }
     }
 }

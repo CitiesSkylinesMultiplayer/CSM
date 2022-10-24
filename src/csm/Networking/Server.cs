@@ -13,6 +13,7 @@ using CSM.Commands;
 using CSM.Networking.Config;
 using CSM.Util;
 using LiteNetLib;
+using LiteNetLib.Utils;
 using Open.Nat;
 
 namespace CSM.Networking
@@ -23,7 +24,10 @@ namespace CSM.Networking
     public class Server
     {
         // The server
-        private LiteNetLib.NetManager _netServer;
+        private readonly LiteNetLib.NetManager _netServer;
+
+        // Keep alive tick tracker
+        private int _keepAlive = 1;
         
         // Connected clients
         public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
@@ -49,7 +53,11 @@ namespace CSM.Networking
         {
             // Set up network items
             EventBasedNetListener listener = new EventBasedNetListener();
-            _netServer = new LiteNetLib.NetManager(listener);
+            _netServer = new LiteNetLib.NetManager(listener)
+            {
+                NatPunchEnabled = true,
+                UnconnectedMessagesEnabled = true
+            };
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
@@ -87,6 +95,10 @@ namespace CSM.Networking
                 return false;
             }
 
+            // First strategy for NAT traversal: Hole punching
+            SetupHolePunching();
+
+            // Second strategy for NAT traversal: Upnp
             try
             {
                 // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
@@ -117,6 +129,19 @@ namespace CSM.Networking
             Log.Info("The server has started.");
             Chat.Instance.PrintGameMessage("The server has started. Checking if it is reachable from the internet...");
             return true;
+        }
+
+        private void SetupHolePunching()
+        {
+            EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
+            natPunchListener.NatIntroductionSuccess += (point, type, token) =>
+            {
+                Log.Debug("Nat introduction from " + point);
+            };
+
+            _netServer.NatPunchModule.Init(natPunchListener);
+            // TODO: Implement server tokens
+            _netServer.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), 4240), "server_a1b2c3");
         }
 
         private void CheckPort()
@@ -220,7 +245,14 @@ namespace CSM.Networking
         public void ProcessEvents()
         {
             // Poll for new events
+            _netServer.NatPunchModule.PollEvents();
             _netServer.PollEvents();
+            // Send keepalive to GS
+            if (_keepAlive % (60 * 5) == 0)
+            {
+                _netServer.SendUnconnectedMessage(NetDataWriter.FromString("server_a1b2c3"), new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), 4240));
+            }
+            _keepAlive += 1;
         }
 
         /// <summary>
