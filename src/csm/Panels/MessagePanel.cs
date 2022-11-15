@@ -177,21 +177,11 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: September 15th, 2022\n\n" +
+                             "Last Update: November 15th, 2022\n\n" +
                              "- Features:\n" +
-                             "  - Support Plazas Update\n" +
-                             "  - Sync soil trade\n" +
-                             "  - Sync street tree upgrades\n" +
-                             "  - Sync changed service vehicles\n" +
-                             "  - Add check if server is\n" +
-                             "    reachable from the internet\n" +
-                             "  - Add check for updates\n" +
-                             "  - Add modding API\n" +
-                             "  - Assets and supported mods need to be\n" +
-                             "    equal to the server's when joining\n" +
+                             "  - Support Roads and Vehicles Update\n\n" +
                              " - Fixes:\n" +
-                             "  - Support more screen resolutions\n" +
-                             "  - Support LoadingScreenMod\n";
+                             "  - Ignore order of mods for compatibility\n";
             SetMessage(message);
 
             Show(true);
