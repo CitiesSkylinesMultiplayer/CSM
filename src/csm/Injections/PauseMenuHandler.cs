@@ -69,7 +69,7 @@ namespace CSM.Injections
                         PanelManager.TogglePanel<HostGamePanel>();
 
                         // Display warning if DLCs or other mods are enabled
-                        if (DLCHelper.GetOwnedDLCs() != SteamHelper.DLC_BitMask.None)
+                        if (DLCHelper.GetOwnedExpansions() != SteamHelper.ExpansionBitMask.None || DLCHelper.GetOwnedModderPacks() != SteamHelper.ModderPackBitMask.None)
                         {
                             MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
                             msgPanel.DisplayContentWarning();

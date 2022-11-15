@@ -120,16 +120,16 @@ namespace CSM.Panels
             DLCPanelNew dlcPanel = FindObjectOfType<DLCPanelNew>();
 
             string message = "Your DLCs don't match with the server's DLCs\n\n";
-            if (compare.ClientMissing != SteamHelper.DLC_BitMask.None)
+            if (compare.ClientMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ClientMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "You are missing the following DLCs:\n";
-                message += string.Join("\n", compare.ClientMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ClientMissingExpansions, compare.ClientMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
                 message += "\n\n";
             }
-            if (compare.ServerMissing != SteamHelper.DLC_BitMask.None)
+            if (compare.ServerMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ServerMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "The server doesn't have the following DLCs:\n";
-                message += string.Join("\n", compare.ServerMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ServerMissingExpansions, compare.ServerMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
             }
 
             message += "\n\nDLCs can be enabled/disabled via checkbox in Steam.";

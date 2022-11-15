@@ -95,16 +95,30 @@ namespace CSM.Commands.Handler.Internal
                 }
             }
 
-            SteamHelper.DLC_BitMask dlcMask = DLCHelper.GetOwnedDLCs();
+            SteamHelper.ExpansionBitMask expansionDlcMask = DLCHelper.GetOwnedExpansions();
+            SteamHelper.ModderPackBitMask modderPackDlcMask = DLCHelper.GetOwnedModderPacks();
             // Check both client have the same DLCs enabled
-            if (!command.DLCBitMask.Equals(dlcMask))
+            if (!command.ExpansionBitMask.Equals(expansionDlcMask))
             {
-                Log.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
+                Log.Info($"Connection rejected: DLC bit mask {command.ExpansionBitMask} + {command.ModderPackBitMask} (client) and {expansionDlcMask} + {modderPackDlcMask} (server) differ.");
                 CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = "DLCs don't match",
-                    DLCBitMask = dlcMask
+                    ExpansionBitMask = expansionDlcMask,
+                    ModderPackBitMask = modderPackDlcMask
+                });
+                return;
+            }
+            if (!command.ModderPackBitMask.Equals(modderPackDlcMask))
+            {
+                Log.Info($"Connection rejected: DLC bit mask {command.ExpansionBitMask} + {command.ModderPackBitMask} (client) and {expansionDlcMask} + {modderPackDlcMask} (server) differ.");
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "DLCs don't match",
+                    ExpansionBitMask = expansionDlcMask,
+                    ModderPackBitMask = modderPackDlcMask
                 });
                 return;
             }
