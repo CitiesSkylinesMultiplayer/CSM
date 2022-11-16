@@ -50,15 +50,21 @@ namespace CSM.Commands.Data.Internal
         public string GameVersion { get; set; }
 
         /// <summary>
-        ///     BitMask containing the installed DLCs of the client
+        ///     BitMask containing the installed expansions of the client
         /// </summary>
         [ProtoMember(6)]
-        public SteamHelper.DLC_BitMask DLCBitMask { get; set; }
+        public SteamHelper.ExpansionBitMask ExpansionBitMask { get; set; }
+
+        /// <summary>
+        ///     BitMask containing the installed modder packs of the client
+        /// </summary>
+        [ProtoMember(7)]
+        public SteamHelper.ModderPackBitMask ModderPackBitMask { get; set; }
         
         /// <summary>
         ///     A list of mods with multiplayer support that were loaded.
         /// </summary>
-        [ProtoMember(7)]
+        [ProtoMember(8)]
         public List<string> Mods { get; set; }
     }
 }

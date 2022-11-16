@@ -120,16 +120,16 @@ namespace CSM.Panels
             DLCPanelNew dlcPanel = FindObjectOfType<DLCPanelNew>();
 
             string message = "Your DLCs don't match with the server's DLCs\n\n";
-            if (compare.ClientMissing != SteamHelper.DLC_BitMask.None)
+            if (compare.ClientMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ClientMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "You are missing the following DLCs:\n";
-                message += string.Join("\n", compare.ClientMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ClientMissingExpansions, compare.ClientMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
                 message += "\n\n";
             }
-            if (compare.ServerMissing != SteamHelper.DLC_BitMask.None)
+            if (compare.ServerMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ServerMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "The server doesn't have the following DLCs:\n";
-                message += string.Join("\n", compare.ServerMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ServerMissingExpansions, compare.ServerMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
             }
 
             message += "\n\nDLCs can be enabled/disabled via checkbox in Steam.";
@@ -177,21 +177,11 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: September 15th, 2022\n\n" +
+                             "Last Update: November 15th, 2022\n\n" +
                              "- Features:\n" +
-                             "  - Support Plazas Update\n" +
-                             "  - Sync soil trade\n" +
-                             "  - Sync street tree upgrades\n" +
-                             "  - Sync changed service vehicles\n" +
-                             "  - Add check if server is\n" +
-                             "    reachable from the internet\n" +
-                             "  - Add check for updates\n" +
-                             "  - Add modding API\n" +
-                             "  - Assets and supported mods need to be\n" +
-                             "    equal to the server's when joining\n" +
+                             "  - Support Roads and Vehicles Update\n\n" +
                              " - Fixes:\n" +
-                             "  - Support more screen resolutions\n" +
-                             "  - Support LoadingScreenMod\n";
+                             "  - Ignore order of mods for compatibility\n";
             SetMessage(message);
 
             Show(true);

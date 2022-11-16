@@ -256,7 +256,8 @@ namespace CSM.Networking
                 ModVersion = versionString,
                 Password = Config.Password,
                 Username = Config.Username,
-                DLCBitMask = DLCHelper.GetOwnedDLCs(),
+                ExpansionBitMask = DLCHelper.GetOwnedExpansions(),
+                ModderPackBitMask = DLCHelper.GetOwnedModderPacks(),
                 Mods = ModSupport.Instance.RequiredModsForSync
             };
 
