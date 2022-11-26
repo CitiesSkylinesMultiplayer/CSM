@@ -59,6 +59,30 @@ namespace CSM.Networking
             }
         }
 
+        public static string GetVPNIpAddress()
+        {
+            try
+            {
+                //Create a new socket
+                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+                {
+                    // Try to connect to random address in 25.0.0.0/8 subnet used by Hamachi
+                    socket.Connect("25.0.0.0", 65530);
+                    // If local address used starts with 25., Hamachi is installed and active
+                    if (socket.LocalEndPoint is IPEndPoint endPoint && endPoint.Address.GetAddressBytes()[0] == 25)
+                    {
+                        return endPoint.Address.ToString();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return null;
+        }
+
         public static PortState CheckPort(int port)
         {
             CSMWebClient client = new CSMWebClient();

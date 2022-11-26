@@ -22,6 +22,7 @@ namespace CSM.Panels
         private UILabel _connectionStatus;
         private UILabel _localIp;
         private UILabel _externalIp;
+        private UILabel _vpnIp;
 
         private UIButton _createButton;
         private UIButton _closeButton;
@@ -43,7 +44,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             width = 360;
-            height = 580;
+            height = 600;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
@@ -81,9 +82,6 @@ namespace CSM.Panels
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
-            // Request IP addresses async
-            new Thread(RequestIPs).Start();
-
             // Create Local IP Label
             _localIp = this.CreateLabel("", new Vector2(10, -380));
             _localIp.textAlignment = UIHorizontalAlignment.Center;
@@ -92,12 +90,26 @@ namespace CSM.Panels
             _externalIp = this.CreateLabel("", new Vector2(10, -400));
             _externalIp.textAlignment = UIHorizontalAlignment.Center;
 
+            // Create VPN IP Label
+            _vpnIp = this.CreateLabel("", new Vector2(10, -420));
+            _vpnIp.textAlignment = UIHorizontalAlignment.Center;
+
+            // Request IP addresses async
+            new Thread(RequestIPs).Start();
+            this.eventVisibilityChanged += (component, visible) =>
+            {
+                if (visible)
+                {
+                    new Thread(RequestIPs).Start();
+                }
+            };
+
             // Create Server Button
-            _createButton = this.CreateButton("Create Server", new Vector2(10, -445));
+            _createButton = this.CreateButton("Create Server", new Vector2(10, -465));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -515));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -535));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -125,6 +137,7 @@ namespace CSM.Panels
             // Request ips
             string sLocalIp = IpAddress.GetLocalIpAddress();
             string sExternalIp = IpAddress.GetExternalIpAddress();
+            string sVpnIp = IpAddress.GetVPNIpAddress();
 
             // Change gui attributes in main thread
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
@@ -134,6 +147,16 @@ namespace CSM.Panels
 
                 _externalIp.textColor = sExternalIp.Equals("Not found") ? new Color32(255, 0, 0, 255) : new Color32(0, 255, 0, 255);
                 _externalIp.text = $"External IP: {sExternalIp}";
+
+                if (sVpnIp != null)
+                {
+                    _vpnIp.textColor = new Color32(0, 255, 0, 255);
+                    _vpnIp.text = $"Hamachi IP: {sVpnIp}";
+                }
+                else
+                {
+                    _vpnIp.text = "";
+                }
             });
         }
 
