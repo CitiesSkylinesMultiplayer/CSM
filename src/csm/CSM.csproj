@@ -102,6 +102,16 @@
     <Compile Include="Container\Tuple.cs" />
     <Compile Include="Extensions\LoadingExtension.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
+    <Compile Include="GS\Commands\ApiCommand.cs" />
+    <Compile Include="GS\Commands\CommandReceiver.cs" />
+    <Compile Include="GS\Commands\Data\ApiServer\ApiCommandBase.cs" />
+    <Compile Include="GS\Commands\Data\ApiServer\PortCheckRequestCommand.cs" />
+    <Compile Include="GS\Commands\Data\ApiServer\PortCheckResultCommand.cs" />
+    <Compile Include="GS\Commands\Data\ApiServer\ServerRegistrationCommand.cs" />
+    <Compile Include="GS\Commands\Handler\ApiServer\ApiCommandHandler.cs" />
+    <Compile Include="GS\Commands\Handler\ApiServer\PortCheckRequestHandler.cs" />
+    <Compile Include="GS\Commands\Handler\ApiServer\PortCheckResultHandler.cs" />
+    <Compile Include="GS\Commands\Handler\ApiServer\ServerRegistrationHandler.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\SaveHelpers.cs" />
     <Compile Include="Helpers\DLCHelper.cs" />

@@ -59,7 +59,7 @@ namespace CSM.Networking
         ///     If the join game panel should show connection troubleshooting
         ///     information.
         /// </summary>
-        public bool ShowTroubleshooting { get; set; } = false;
+        public bool ShowTroubleshooting { get; private set; } = false;
 
         private bool _mainMenuEventProcessing = false;
 
@@ -157,7 +157,7 @@ namespace CSM.Networking
 
             // Register listener and send request to global server
             _netClient.NatPunchModule.Init(natPunchListener);
-            _netClient.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), 4240), $"client_{resolvedAddress}");
+            _netClient.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), 4240), resolvedAddress.ToString());
 
             timeoutWatch.Start();
             // Wait for NatPunchModule responses.
@@ -207,13 +207,13 @@ namespace CSM.Networking
             Status = ClientStatus.Connecting;
             ClientId = 0;
 
-            // We need to wait in a loop for 30 seconds (waiting 500ms each time)
+            // We need to wait in a loop for 10 seconds (waiting 250ms each time)
             // while we wait for a successful connection (Status = Connected) or a
             // failed connection (Status = Disconnected).
             Stopwatch waitWatch = new Stopwatch();
             waitWatch.Start();
 
-            // Try connect for 30 seconds
+            // Try connect for 10 seconds
             while (waitWatch.Elapsed < TimeSpan.FromSeconds(10))
             {
                 // If we connect, exit the loop and return true

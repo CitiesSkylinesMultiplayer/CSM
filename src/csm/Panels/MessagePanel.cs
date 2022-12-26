@@ -257,7 +257,8 @@ namespace CSM.Panels
                 {
                     message += "\n\n   - Since Hamachi seems to be running,\n" +
                                "     players can also connect using your\n" +
-                               "     Hamachi IP.";
+                               "     Hamachi IP.\n" +
+                               "     Also check the Firewall in this case.";
                 }
                 else
                 {

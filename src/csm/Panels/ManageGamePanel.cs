@@ -1,7 +1,8 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using ColossalFramework;
 using ColossalFramework.UI;
+using CSM.GS.Commands;
+using CSM.GS.Commands.Data.ApiServer;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
@@ -117,6 +118,9 @@ namespace CSM.Panels
             _localIpVal = IpAddress.GetLocalIpAddress();
             _externalIpVal = IpAddress.GetExternalIpAddress();
 
+            // Check if port is reachable
+            ApiCommand.Instance.SendToApiServer(new PortCheckRequestCommand { Port = _portVal });
+
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
                 _localIpField.text = _localIpVal;
@@ -144,27 +148,33 @@ namespace CSM.Panels
                     _vpnIpField.text = _vpnIpVal;
                 }
             });
+        }
 
-            PortState state = IpAddress.CheckPort(_portVal);
+        public void SetPortState(PortCheckResultCommand res)
+        {
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                switch (state.status)
+                if (_portState == null)
+                    return;
+
+                switch (res.State)
                 {
-                    case HttpStatusCode.ServiceUnavailable: // Could not reach port
+                    case PortCheckResult.Unreachable:
                         _portState.text = "Port is not reachable!";
                         _portState.textColor = new Color32(255, 0, 0, 255);
-                        _portState.tooltip = state.message;
+                        _portState.tooltip = res.Message;
                         _troubleshootingButton.isVisible = true;
                         break;
-                    case HttpStatusCode.OK: // Success
+                    case PortCheckResult.Reachable:
                         _portState.text = "Port is reachable!";
                         _portState.textColor = new Color32(0, 255, 0, 255);
                         _portState.tooltip = "";
                         break;
-                    default: // Something failed
+                    case PortCheckResult.Error:
+                    default:
                         _portState.text = "Failed to check port";
                         _portState.textColor = new Color32(255, 0, 0, 255);
-                        _portState.tooltip = state.message;
+                        _portState.tooltip = res.Message;
                         break;
                 }
             });
