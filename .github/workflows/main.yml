@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-csm:
     # Run this on windows
     runs-on: windows-latest
 
@@ -87,3 +87,31 @@ jobs:
       if: github.ref == 'refs/heads/master'
       working-directory: src/api
       run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{secrets.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json
+
+  build-gs:
+    # Run this on windows
+    runs-on: windows-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    
+    - name: Build Docker Image
+      working-directory: src/gs
+      run: docker build -t ghcr.io/${{ env.OWNER_LC }}/apiserver:latest -t .
+
+    - name: Save docker image
+      run: docker save -o apiserver.tar ghcr.io/${{ env.OWNER_LC }}/apiserver:latest
+
+    - name: Login to docker registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      if: github.ref == 'refs/heads/master'
+      
+    - name: Push Docker Image
+      run: docker push ghcr.io/${{ env.OWNER_LC }}/apiserver:latest
+      if: github.ref == 'refs/heads/master'
+
+    - name: Upload Docker Image
+      uses: actions/upload-artifact@v3
+      with:
+        name: API Server Docker Image
+        path: apiserver.tar
