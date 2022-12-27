@@ -94,7 +94,13 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-    
+
+    - name: Set lower case owner name
+      run: |
+        echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+      env:
+        OWNER: '${{ github.repository_owner }}'
+
     - name: Build Docker Image
       working-directory: src/gs
       run: docker build -t ghcr.io/${{ env.OWNER_LC }}/apiserver:latest -t .
