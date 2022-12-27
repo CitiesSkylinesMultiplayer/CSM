@@ -97,7 +97,7 @@ jobs:
 
     - name: Build Docker Image
       working-directory: src/gs
-      run: docker build -t ghcr.io/citiesskylinesmultiplayer/apiserver:latest -t .
+      run: docker build -t ghcr.io/citiesskylinesmultiplayer/apiserver:latest .
 
     - name: Save docker image
       run: docker save -o apiserver.tar ghcr.io/citiesskylinesmultiplayer/apiserver:latest
