@@ -95,25 +95,19 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Set lower case owner name
-      run: |
-        echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-      env:
-        OWNER: '${{ github.repository_owner }}'
-
     - name: Build Docker Image
       working-directory: src/gs
-      run: docker build -t ghcr.io/${{ env.OWNER_LC }}/apiserver:latest -t .
+      run: docker build -t ghcr.io/citiesskylinesmultiplayer/apiserver:latest -t .
 
     - name: Save docker image
-      run: docker save -o apiserver.tar ghcr.io/${{ env.OWNER_LC }}/apiserver:latest
+      run: docker save -o apiserver.tar ghcr.io/citiesskylinesmultiplayer/apiserver:latest
 
     - name: Login to docker registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       if: github.ref == 'refs/heads/master'
       
     - name: Push Docker Image
-      run: docker push ghcr.io/${{ env.OWNER_LC }}/apiserver:latest
+      run: docker push ghcr.io/citiesskylinesmultiplayer/apiserver:latest
       if: github.ref == 'refs/heads/master'
 
     - name: Upload Docker Image
