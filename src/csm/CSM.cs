@@ -3,6 +3,7 @@ using CitiesHarmony.API;
 using ColossalFramework.IO;
 using CSM.API;
 using CSM.Commands;
+using CSM.GS.Commands;
 using CSM.Injections;
 using CSM.Mods;
 using CSM.Panels;
@@ -25,6 +26,8 @@ namespace CSM
             ModCompat.Init();
 
             CommandInternal.Instance = new CommandInternal();
+            ApiCommand.Instance = new ApiCommand();
+            ApiCommand.Instance.RefreshModel();
         }
 
         public void OnEnabled()

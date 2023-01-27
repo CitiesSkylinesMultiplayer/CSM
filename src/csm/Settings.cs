@@ -16,6 +16,7 @@ namespace CSM
         private const bool DefaultUseChirper = true;
         private const bool DefaultPrintChirperMsgs = false;
         private const string DefaultLastSeenReleaseNotes = "0.0";
+        private const string DefaultApiServer = "api.citiesskylinesmultiplayer.com";
 
         public readonly SavedBool DebugLogging =
             new SavedBool(nameof(DebugLogging), SettingsFile, DefaultDebugLogging, true);
@@ -41,5 +42,8 @@ namespace CSM
 
         public readonly SavedString LastSeenReleaseNotes =
             new SavedString(nameof(LastSeenReleaseNotes), SettingsFile, DefaultLastSeenReleaseNotes, true);
+
+        public readonly SavedString ApiServer =
+            new SavedString(nameof(ApiServer), SettingsFile, DefaultApiServer, true);
     }
 }

@@ -10,10 +10,13 @@ using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.BaseGame.Helpers;
 using CSM.Commands;
+using CSM.GS.Commands;
+using CSM.GS.Commands.Data.ApiServer;
 using CSM.Networking.Config;
 using CSM.Util;
 using LiteNetLib;
 using Open.Nat;
+using CommandReceiver = CSM.Commands.CommandReceiver;
 
 namespace CSM.Networking
 {
@@ -23,7 +26,10 @@ namespace CSM.Networking
     public class Server
     {
         // The server
-        private LiteNetLib.NetManager _netServer;
+        private readonly LiteNetLib.NetManager _netServer;
+
+        // Keep alive tick tracker
+        private int _keepAlive = 1;
         
         // Connected clients
         public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
@@ -43,16 +49,24 @@ namespace CSM.Networking
         /// </summary>
         public ServerStatus Status { get; private set; }
 
-        private bool automaticSuccess;
+        /// <summary>
+        ///     If the port was forwarded automatically.
+        /// </summary>
+        public bool AutomaticSuccess { get; private set; }
 
         public Server()
         {
             // Set up network items
             EventBasedNetListener listener = new EventBasedNetListener();
-            _netServer = new LiteNetLib.NetManager(listener);
+            _netServer = new LiteNetLib.NetManager(listener)
+            {
+                NatPunchEnabled = true,
+                UnconnectedMessagesEnabled = true
+            };
 
             // Listen to events
             listener.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
+            listener.NetworkReceiveUnconnectedEvent += ListenerOnNetworkReceiveUnconnectedEvent;
             listener.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             listener.PeerDisconnectedEvent += ListenerOnPeerDisconnectedEvent;
             listener.NetworkLatencyUpdateEvent += ListenerOnNetworkLatencyUpdateEvent;
@@ -87,6 +101,10 @@ namespace CSM.Networking
                 return false;
             }
 
+            // First strategy for NAT traversal: Hole punching
+            SetupHolePunching();
+
+            // Second strategy for NAT traversal: Upnp
             try
             {
                 // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
@@ -96,14 +114,15 @@ namespace CSM.Networking
 
                 nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
                     Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
-                automaticSuccess = true;
+                AutomaticSuccess = true;
             }
             catch (Exception)
             {
-                automaticSuccess = false;
+                AutomaticSuccess = false;
             }
-            
-            new Thread(CheckPort).Start();
+
+            // Check port forwarding status
+            SendToApiServer(new PortCheckRequestCommand { Port = Config.Port });
 
             // Update the status
             Status = ServerStatus.Running;
@@ -119,56 +138,27 @@ namespace CSM.Networking
             return true;
         }
 
-        private void CheckPort()
+        private void SetupHolePunching()
         {
-            PortState state = IpAddress.CheckPort(Config.Port);
-            string message;
-            bool portOpen = false;
-            switch (state.status)
+            EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
+            natPunchListener.NatIntroductionSuccess += (point, type, token) =>
             {
-                case HttpStatusCode.ServiceUnavailable: // Could not reach port
-                    if (automaticSuccess)
-                    {
-                        message =
-                            "It was tried to forward the port automatically, but the server is not reachable from the internet. Manual port forwarding is required.";
-                    }
-                    else
-                    {
-                        message =
-                            "Port could not be forwarded automatically and server is not reachable from the internet. Manual port forwarding is required.";
-                    }
-                    break;
-                case HttpStatusCode.OK: // Success
-                    portOpen = true;
-                    if (automaticSuccess)
-                    {
-                        message =
-                            "Port was forwarded automatically and server is reachable from the internet!";
-                    }
-                    else
-                    {
-                        message = "Server is reachable from the internet!";
-                    }
-                    break;
-                default: // Something failed
-                    if (automaticSuccess)
-                    {
-                        message = "Port was forwarded automatically, but couldn't be checked due to error: " +
-                                  state.message;
-                    }
-                    else
-                    {
-                        message = "Port could not be forwarded automatically, and couldn't be checked due to error: " +
-                                  state.message;
-                    }
-                    break;
-            }
+                Log.Debug("Nat introduction from " + point);
+            };
 
-            if (!portOpen)
+            _netServer.NatPunchModule.Init(natPunchListener);
+
+            // Register on server
+            string localIp = NetUtils.GetLocalIp(LocalAddrType.IPv4);
+            if (string.IsNullOrEmpty(localIp))
+                localIp = NetUtils.GetLocalIp(LocalAddrType.IPv6);
+
+            SendToApiServer(new ServerRegistrationCommand
             {
-                Log.Warn(message);
-            }
-            Chat.Instance.PrintGameMessage(portOpen ? Chat.MessageType.Normal : Chat.MessageType.Warning, message);
+                LocalIp = localIp,
+                LocalPort = Config.Port,
+                Token = "abc123" // TODO: Implement server tokens
+            });
         }
 
         /// <summary>
@@ -220,7 +210,57 @@ namespace CSM.Networking
         public void ProcessEvents()
         {
             // Poll for new events
+            _netServer.NatPunchModule.PollEvents();
             _netServer.PollEvents();
+            // Send keepalive to GS
+            if (_keepAlive % (60 * 5) == 0)
+            {
+                string localIp = NetUtils.GetLocalIp(LocalAddrType.IPv4);
+                if (string.IsNullOrEmpty(localIp))
+                    localIp = NetUtils.GetLocalIp(LocalAddrType.IPv6);
+
+                SendToApiServer(new ServerRegistrationCommand
+                {
+                    LocalIp = localIp,
+                    LocalPort = Config.Port,
+                    Token = "abc123" // TODO: Implement server tokens 
+                });
+            }
+            _keepAlive += 1;
+        }
+
+        /// <summary>
+        ///     Send a message to the API server
+        /// </summary>
+        /// <param name="message"></param>
+        public void SendToApiServer(ApiCommandBase message)
+        {
+            IPAddress apiServer = IpAddress.GetIpv4(CSM.Settings.ApiServer);
+            _netServer.SendUnconnectedMessage(ApiCommand.Serialize(message), new IPEndPoint(apiServer, 4240));
+            Log.Debug($"Sending {message.GetType().Name} to API server at {apiServer}:4240");
+        }
+
+        /// <summary>
+        ///     Receive messages from the API server.
+        /// </summary>
+        private void ListenerOnNetworkReceiveUnconnectedEvent(IPEndPoint from, NetPacketReader reader, UnconnectedMessageType type)
+        {
+            if (type != UnconnectedMessageType.BasicMessage)
+                return;
+
+            // Only allow responses from the API server
+            if (!Equals(from.Address, IpAddress.GetIpv4(CSM.Settings.ApiServer)))
+                return;
+
+            try
+            {
+                GS.Commands.CommandReceiver.Parse(reader);
+            }
+            catch (Exception ex)
+            {
+                Chat.Instance.PrintGameMessage(Chat.MessageType.Error, "Error while parsing unconnected message. See log.");
+                Log.Error($"Encountered an error while reading command from {from.Address}:{from.Port}:", ex);
+            }
         }
 
         /// <summary>

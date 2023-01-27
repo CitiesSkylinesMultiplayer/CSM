@@ -1,4 +1,4 @@
-﻿namespace CSM.API.Networking.Status
+﻿namespace CSM.GS
 {
     /// <summary>
     ///     Different client connection states
@@ -24,28 +24,9 @@
         Connecting,
 
         /// <summary>
-        ///     The client is connected and downloading the save game from
-        ///     the server
-        /// </summary>
-        Downloading,
-
-        /// <summary>
-        ///     The client is connected, has downloaded the save game from
-        ///     the server and now loads the level
-        /// </summary>
-        Loading,
-
-        /// <summary>
         ///     The client is connected to the server and is
         ///     transmitting information.
         /// </summary>
-        Connected,
-
-        /// <summary>
-        ///     If the connection was rejected by the server.
-        ///     Special case to separate from "Disconnected" during
-        ///     connection attempts. If rejected, no other IPs need to be tried.
-        /// </summary>
-        Rejected
+        Connected
     }
 }
