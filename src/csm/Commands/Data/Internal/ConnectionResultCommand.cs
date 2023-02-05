@@ -46,12 +46,19 @@ namespace CSM.Commands.Data.Internal
         /// </summary>
         [ProtoMember(5)]
         public SteamHelper.ModderPackBitMask ModderPackBitMask { get; set; }
-        
+
         /// <summary>
         ///     Contains the list of loaded mod connections for comparison,
         ///     when mods of the client and server don't match.
         /// </summary>
         [ProtoMember(6)]
         public List<string> Mods { get; set; }
+
+        /// <summary>
+        ///     The current server's token. Can be used by the client
+        ///     to provide information to the Steam Overlay.
+        /// </summary>
+        [ProtoMember(7)]
+        public string ServerToken { get; set; }
     }
 }

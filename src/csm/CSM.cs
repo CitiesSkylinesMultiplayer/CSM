@@ -1,9 +1,12 @@
 ﻿using System;
 using CitiesHarmony.API;
+using ColossalFramework;
 using ColossalFramework.IO;
+using ColossalFramework.Threading;
 using CSM.API;
 using CSM.Commands;
 using CSM.GS.Commands;
+using CSM.Helpers;
 using CSM.Injections;
 using CSM.Mods;
 using CSM.Panels;
@@ -14,6 +17,7 @@ namespace CSM
     public class CSM : IUserMod
     {
         public static Settings Settings;
+        public static bool IsSteamPresent { get; private set; }
 
         public CSM()
         {
@@ -48,6 +52,44 @@ namespace CSM
                 // Setup join button
                 MainMenuHandler.Init();
 
+                IsSteamPresent = SteamHelpers.Init();
+                if (IsSteamPresent)
+                {
+                    Log.Info("CSM is running in a steam context. Steam features will be enabled.");
+                }
+                else
+                {
+                    Log.Warn("CSM is not running in a steam context. Steam features will not be enabled.");
+                }
+
+                if (IsSteamPresent)
+                {
+                    if (Singleton<LoadingManager>.instance.m_loadingComplete)
+                    {
+                        // Already in-game
+                    }
+                    else if (Singleton<LoadingManager>.instance.m_currentlyLoading ||
+                            !Singleton<LoadingManager>.instance.LoadingAnimationComponent.AnimationLoaded)
+                    {
+                        // Game not yet loaded, queue command line check
+                        Singleton<LoadingManager>.instance.m_introLoaded += SteamHelpers.Instance.CheckCommandLineCallback;
+                    }
+                    else
+                    {
+                        // Game already loaded, we are in main menu, do command line check
+                        if (ThreadHelper.dispatcher == Dispatcher.currentSafe)
+                        {
+                            SteamHelpers.Instance.CheckCommandLine(true);
+                        }
+                        else
+                        {
+                            ThreadHelper.dispatcher.Dispatch(() =>
+                            {
+                                SteamHelpers.Instance.CheckCommandLine(true);
+                            });
+                        }
+                    }
+                }
                 Log.Info("Construction Complete!");
             });
         }
@@ -58,6 +100,7 @@ namespace CSM
             if (HarmonyHelper.IsHarmonyInstalled) Patcher.UnpatchAll();
             // Destroys all the connections made to external mods
             ModSupport.Instance.DestroyConnections();
+            if (IsSteamPresent) SteamHelpers.Instance.Shutdown();
             Log.Info("Destruction complete!");
         }
 

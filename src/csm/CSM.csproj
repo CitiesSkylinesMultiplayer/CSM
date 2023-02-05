@@ -117,6 +117,17 @@
 		<Compile Include="Helpers\DLCHelper.cs" />
 		<Compile Include="Helpers\SlowdownHelper.cs" />
 		<Compile Include="Helpers\SpeedPauseHelper.cs" />
+		<Compile Include="Helpers\SteamHelpers.cs" />
+		<Compile Include="Helpers\Steamworks\AccountID_t.cs" />
+		<Compile Include="Helpers\Steamworks\CallbackDispatcher.cs" />
+		<Compile Include="Helpers\Steamworks\CallbackIdentity.cs" />
+		<Compile Include="Helpers\Steamworks\CSteamID.cs" />
+		<Compile Include="Helpers\Steamworks\InteropHelp.cs" />
+		<Compile Include="Helpers\Steamworks\Packsize.cs" />
+		<Compile Include="Helpers\Steamworks\SteamAPICall_t.cs" />
+		<Compile Include="Helpers\Steamworks\SteamCallbacks.cs" />
+		<Compile Include="Helpers\Steamworks\SteamConstants.cs" />
+		<Compile Include="Helpers\Steamworks\SteamEnums.cs" />
 		<Compile Include="Helpers\UiHelper.cs" />
 		<Compile Include="Injections\ChatHandler.cs" />
 		<Compile Include="Injections\ICameraHandler.cs" />
@@ -180,6 +191,9 @@
 			<Project>{bfc8de00-f495-4388-9e36-f1471f8ed578}</Project>
 			<Name>CSM.BaseGame</Name>
 		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Helpers\Steamworks\LICENSE.txt" />
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 	<PropertyGroup>

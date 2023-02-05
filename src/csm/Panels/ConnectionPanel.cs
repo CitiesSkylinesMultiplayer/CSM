@@ -14,6 +14,8 @@ namespace CSM.Panels
 
         private UIButton _connectedPlayersButton;
 
+        private UIButton _inviteFriends;
+
         private UICheckBox _playerPointers;
         public static bool showPlayerPointers = false;
 
@@ -26,7 +28,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             width = 360;
-            height = 320;
+            height = CSM.IsSteamPresent ? 390 : 320;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Handle visible change events
@@ -50,9 +52,18 @@ namespace CSM.Panels
             // Connected Players window button
             _connectedPlayersButton = this.CreateButton("Player List", new Vector2(10, -200));
 
-            // Show Player Pointers
-            _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, -270));
+            if (CSM.IsSteamPresent)
+            {
+                // Connected Players window button
+                _inviteFriends = this.CreateButton("Invite Friends", new Vector2(10, -270));
+                _inviteFriends.eventClick += (component, param) =>
+                {
+                    SteamHelpers.Instance.OpenSteamOverlay("friends");
+                };
+            }
 
+            // Show Player Pointers
+            _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, CSM.IsSteamPresent ? -340 : -270));
 
             _playerPointers.eventClicked += (component, param) =>
             {

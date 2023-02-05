@@ -226,8 +226,8 @@ namespace CSM.Panels
         {
             SetTitle("CSM is up to date");
 
-            string message = "There is no update for the Cities: Skylines\n" +
-                             "Multiplayer mod available.";
+            const string message = "There is no update for the Cities: Skylines\n" +
+                                   "Multiplayer mod available.";
             SetMessage(message);
 
             Show(true);
@@ -296,6 +296,18 @@ namespace CSM.Panels
                           "     tool. Then you can connect using the\n" +
                           "     displayed IP address of the tool.";
             }
+
+            SetMessage(message);
+
+            Show(true);
+        }
+
+        public void DisplayJoiningNotAllowed()
+        {
+            SetTitle("Invalid State");
+
+            const string message = "You need to be in the main menu to join\n" +
+                                   "a server through the friend list.";
 
             SetMessage(message);
 

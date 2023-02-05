@@ -17,6 +17,7 @@ namespace CSM
         private const bool DefaultPrintChirperMsgs = false;
         private const string DefaultLastSeenReleaseNotes = "0.0";
         private const string DefaultApiServer = "api.citiesskylinesmultiplayer.com";
+        private const int DefaultApiServerPort = 4240;
 
         public readonly SavedBool DebugLogging =
             new SavedBool(nameof(DebugLogging), SettingsFile, DefaultDebugLogging, true);
@@ -45,5 +46,8 @@ namespace CSM
 
         public readonly SavedString ApiServer =
             new SavedString(nameof(ApiServer), SettingsFile, DefaultApiServer, true);
+
+        public readonly SavedInt ApiServerPort =
+            new SavedInt(nameof(ApiServerPort), SettingsFile, DefaultApiServerPort, true);
     }
 }

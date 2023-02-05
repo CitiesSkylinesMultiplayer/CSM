@@ -12,6 +12,7 @@ using CSM.BaseGame.Helpers;
 using CSM.Commands;
 using CSM.GS.Commands;
 using CSM.GS.Commands.Data.ApiServer;
+using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Util;
 using LiteNetLib;
@@ -48,6 +49,11 @@ namespace CSM.Networking
         ///     The current status of the server
         /// </summary>
         public ServerStatus Status { get; private set; }
+
+        /// <summary>
+        ///     The server token of the current server.
+        /// </summary>
+        public string ServerToken { get; private set; }
 
         /// <summary>
         ///     If the port was forwarded automatically.
@@ -101,6 +107,11 @@ namespace CSM.Networking
                 return false;
             }
 
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            ServerToken = new string(Enumerable.Repeat(chars, 20)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+
             // First strategy for NAT traversal: Hole punching
             SetupHolePunching();
 
@@ -132,6 +143,15 @@ namespace CSM.Networking
             _hostPlayer.Status = ClientStatus.Connected;
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
+            // Set the steam presence 'connect' key. This allows users to click "Join Game" within the steam overlay.
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.SetRichPresence("status", "Playing on a CSM server");
+                SteamHelpers.Instance.SetRichPresence("connect", "csm=" + ServerToken);
+                SteamHelpers.Instance.SetRichPresence("steam_player_group", ServerToken);
+                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", "1");
+            }
+
             // Update the console to let the user know the server is running
             Log.Info("The server has started.");
             Chat.Instance.PrintGameMessage("The server has started. Checking if it is reachable from the internet...");
@@ -157,7 +177,7 @@ namespace CSM.Networking
             {
                 LocalIp = localIp,
                 LocalPort = Config.Port,
-                Token = "abc123" // TODO: Implement server tokens
+                Token = ServerToken
             });
         }
 
@@ -173,6 +193,12 @@ namespace CSM.Networking
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
             ToolSimulator.Clear();
+
+            // Clear steam presence. This prevents users from clicking "Join Game".
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.ClearRichPresence();
+            }
 
             Log.Info("Server stopped.");
         }
@@ -223,7 +249,7 @@ namespace CSM.Networking
                 {
                     LocalIp = localIp,
                     LocalPort = Config.Port,
-                    Token = "abc123" // TODO: Implement server tokens 
+                    Token = ServerToken
                 });
             }
             _keepAlive += 1;
@@ -235,9 +261,18 @@ namespace CSM.Networking
         /// <param name="message"></param>
         public void SendToApiServer(ApiCommandBase message)
         {
-            IPAddress apiServer = IpAddress.GetIpv4(CSM.Settings.ApiServer);
-            _netServer.SendUnconnectedMessage(ApiCommand.Serialize(message), new IPEndPoint(apiServer, 4240));
-            Log.Debug($"Sending {message.GetType().Name} to API server at {apiServer}:4240");
+            try
+            {
+                IPAddress apiServer = IpAddress.GetIpv4(CSM.Settings.ApiServer);
+                _netServer.SendUnconnectedMessage(ApiCommand.Serialize(message),
+                    new IPEndPoint(apiServer, CSM.Settings.ApiServerPort));
+                Log.Debug(
+                    $"Sending {message.GetType().Name} to API server at {apiServer}:{CSM.Settings.ApiServerPort}");
+            }
+            catch (Exception e)
+            {
+                Log.Warn($"Could not send message to API server at {CSM.Settings.ApiServer}:{CSM.Settings.ApiServerPort}: {e}");
+            }
         }
 
         /// <summary>
@@ -248,12 +283,12 @@ namespace CSM.Networking
             if (type != UnconnectedMessageType.BasicMessage)
                 return;
 
-            // Only allow responses from the API server
-            if (!Equals(from.Address, IpAddress.GetIpv4(CSM.Settings.ApiServer)))
-                return;
-
             try
             {
+                // Only allow responses from the API server
+                if (!Equals(from.Address, IpAddress.GetIpv4(CSM.Settings.ApiServer)))
+                    return;
+
                 GS.Commands.CommandReceiver.Parse(reader);
             }
             catch (Exception ex)
@@ -344,6 +379,10 @@ namespace CSM.Networking
             Chat.Instance.PrintGameMessage($"Player {player.Username} has connected!");
             MultiplayerManager.Instance.PlayerList.Add(player.Username);
             CommandInternal.Instance.HandleClientConnect(player);
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", MultiplayerManager.Instance.PlayerList.Count.ToString());
+            }
         }
 
         public void HandlePlayerDisconnect(Player player)
@@ -353,6 +392,10 @@ namespace CSM.Networking
             CommandInternal.Instance.HandleClientDisconnect(player);
             TransactionHandler.ClearTransactions(player.NetPeer.Id);
             ToolSimulator.RemoveSender(player.NetPeer.Id);
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", MultiplayerManager.Instance.PlayerList.Count.ToString());
+            }
         }
 
         /// <summary>
