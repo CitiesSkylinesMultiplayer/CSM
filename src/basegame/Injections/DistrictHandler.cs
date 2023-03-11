@@ -32,17 +32,17 @@ namespace CSM.BaseGame.Injections
 
     [HarmonyPatch(typeof(DistrictTool))]
     [HarmonyPatch("ApplyBrush")]
-    [HarmonyPatch(new Type[] { typeof(DistrictTool.Layer), typeof(byte), typeof(float), typeof(Vector3), typeof(Vector3) })]
+    [HarmonyPatch(new Type[] { typeof(DistrictTool.Layer), typeof(byte), typeof(float), typeof(Vector3), typeof(Vector3), typeof(bool) })]
     public class ApplyBrush
     {
-        public static void Postfix(DistrictTool.Layer layer, byte district, float brushRadius, Vector3 startPosition, Vector3 endPosition)
+        public static void Postfix(DistrictTool.Layer layer, byte districtOrPark, float brushRadius, Vector3 startPosition, Vector3 endPosition)
         {
             if (!IgnoreHelper.Instance.IsIgnored())
             {
                 Command.SendToAll(new DistrictAreaModifyCommand
                 {
                     Layer = layer,
-                    District = district,
+                    District = districtOrPark,
                     BrushRadius = brushRadius,
                     StartPosition = startPosition,
                     EndPosition = endPosition

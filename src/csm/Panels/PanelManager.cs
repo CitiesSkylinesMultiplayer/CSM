@@ -1,5 +1,4 @@
 using ColossalFramework.UI;
-using CSM.API;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -7,6 +6,18 @@ namespace CSM.Panels
     public static class PanelManager
     {
         private static UIView _uiView;
+
+        public static T GetPanel<T>() where T : UIComponent
+        {
+            if (!_uiView)
+                _uiView = UIView.GetAView();
+
+            if (!_uiView)
+                return null; // No ui view available yet
+
+            string name = typeof(T).Name;
+            return _uiView.FindUIComponent<T>(name);
+        }
 
         public static T TogglePanel<T>() where T : UIComponent
         {
@@ -20,14 +31,7 @@ namespace CSM.Panels
 
         private static T ShowPanel<T>(bool toggle) where T : UIComponent
         {
-            if (!_uiView)
-                _uiView = UIView.GetAView();
-
-            if (!_uiView)
-                return null; // No ui view available yet
-
-            string name = typeof(T).Name;
-            T panel = _uiView.FindUIComponent<T>(name);
+            T panel = GetPanel<T>();
 
             if (panel)
             {
@@ -36,10 +40,14 @@ namespace CSM.Panels
                 else
                     panel.isVisible = true;
             }
-            else
+            else if (_uiView != null)
             {
                 panel = (T)_uiView.AddUIComponent(typeof(T));
-                panel.name = name;
+                panel.name = typeof(T).Name;
+            }
+            else
+            {
+                return null;
             }
             panel.Focus();
 

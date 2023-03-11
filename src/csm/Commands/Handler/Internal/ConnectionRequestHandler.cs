@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -95,34 +95,45 @@ namespace CSM.Commands.Handler.Internal
                 }
             }
 
-            SteamHelper.DLC_BitMask dlcMask = DLCHelper.GetOwnedDLCs();
+            SteamHelper.ExpansionBitMask expansionDlcMask = DLCHelper.GetOwnedExpansions();
+            SteamHelper.ModderPackBitMask modderPackDlcMask = DLCHelper.GetOwnedModderPacks();
             // Check both client have the same DLCs enabled
-            if (!command.DLCBitMask.Equals(dlcMask))
+            if (!command.ExpansionBitMask.Equals(expansionDlcMask))
             {
-                Log.Info($"Connection rejected: DLC bit mask {command.DLCBitMask} (client) and {dlcMask} (server) differ.");
+                Log.Info($"Connection rejected: DLC bit mask {command.ExpansionBitMask} + {command.ModderPackBitMask} (client) and {expansionDlcMask} + {modderPackDlcMask} (server) differ.");
                 CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = "DLCs don't match",
-                    DLCBitMask = dlcMask
+                    ExpansionBitMask = expansionDlcMask,
+                    ModderPackBitMask = modderPackDlcMask
+                });
+                return;
+            }
+            if (!command.ModderPackBitMask.Equals(modderPackDlcMask))
+            {
+                Log.Info($"Connection rejected: DLC bit mask {command.ExpansionBitMask} + {command.ModderPackBitMask} (client) and {expansionDlcMask} + {modderPackDlcMask} (server) differ.");
+                CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
+                {
+                    Success = false,
+                    Reason = "DLCs don't match",
+                    ExpansionBitMask = expansionDlcMask,
+                    ModderPackBitMask = modderPackDlcMask
                 });
                 return;
             }
 
-            List<string> mods = ModSupport.Instance.RequiredModsForSync;
+            List<string> serverMods = ModSupport.Instance.RequiredModsForSync.OrderBy(x => x).ToList();
+            List<string> clientMods = (command.Mods ?? new List<string>()).OrderBy(x => x).ToList();
 
-            HashSet<string> modsSet = new HashSet<string>(mods);
-            modsSet.SymmetricExceptWith(command.Mods);
-
-            // if modsSet contains anything then there are mods that one client has that the other doesn't
-            if (modsSet.Count > 0 && CSM.Settings.SkipModCompatibilityChecks.value == false)
+            if (!clientMods.SequenceEqual(serverMods) && !CSM.Settings.SkipModCompatibilityChecks.value == false)
             {
-                Log.Info($"Connection rejected: List of mods [{string.Join(", ", command.Mods.ToArray())}] (client) and [{string.Join(", ", mods.ToArray())}] (server) differ.");
+                Log.Info($"Connection rejected: List of mods [{string.Join(", ", clientMods.ToArray())}] (client) and [{string.Join(", ", serverMods.ToArray())}] (server) differ.");
                 CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
                 {
                     Success = false,
                     Reason = "Mods don't match",
-                    Mods = mods
+                    Mods = serverMods
                 });
                 return;
             }

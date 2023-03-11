@@ -83,6 +83,12 @@ namespace CSM.Networking
                 return;
             }
 
+            if (CurrentClient.Status != ClientStatus.Disconnected)
+            {
+                callback.Invoke(false);
+                return;
+            }
+
             new Thread(() =>
             {
                 // Try connect

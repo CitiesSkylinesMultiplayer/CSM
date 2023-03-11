@@ -39,10 +39,10 @@ namespace CSM.Commands.Handler.Internal
             {
                 Log.Info($"Could not connect: {command.Reason}");
                 MultiplayerManager.Instance.CurrentClient.ConnectionMessage = command.Reason;
-                MultiplayerManager.Instance.CurrentClient.Disconnect();
+                MultiplayerManager.Instance.CurrentClient.ConnectRejected();
                 if (command.Reason.Contains("DLC")) // No other way to detect if we should display the box
                 {
-                    DLCHelper.DLCComparison compare = DLCHelper.Compare(command.DLCBitMask, DLCHelper.GetOwnedDLCs());
+                    DLCHelper.DLCComparison compare = DLCHelper.Compare(command.ExpansionBitMask, DLCHelper.GetOwnedExpansions(), command.ModderPackBitMask, DLCHelper.GetOwnedModderPacks());
 
                     ThreadHelper.dispatcher.Dispatch(() =>
                     {
@@ -54,7 +54,7 @@ namespace CSM.Commands.Handler.Internal
                 else if (command.Reason.Contains("Mods"))
                 {
                     List<string> clientMods = ModSupport.Instance.RequiredModsForSync;
-                    List<string> serverMods = command.Mods;
+                    List<string> serverMods = command.Mods ?? new List<string>();
 
                     IEnumerable<string> clientNotServer = clientMods.Where(mod => !serverMods.Contains(mod));
                     IEnumerable<string> serverNotClient = serverMods.Where(mod => !clientMods.Contains(mod));

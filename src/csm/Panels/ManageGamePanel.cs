@@ -1,7 +1,8 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using ColossalFramework;
 using ColossalFramework.UI;
+using CSM.GS.Commands;
+using CSM.GS.Commands.Data.ApiServer;
 using CSM.Helpers;
 using CSM.Networking;
 using UnityEngine;
@@ -13,12 +14,15 @@ namespace CSM.Panels
         private UITextField _portField;
         private UITextField _localIpField;
         private UITextField _externalIpField;
+        private UITextField _vpnIpField;
+        private UILabel _vpnLabel;
         private UILabel _portState;
 
         private UIButton _closeButton;
+        private UIButton _troubleshootingButton;
 
         private int _portVal;
-        private string _localIpVal, _externalIpVal;
+        private string _localIpVal, _externalIpVal, _vpnIpVal;
 
         public override void Start()
         {
@@ -29,7 +33,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             width = 360;
-            height = 445;
+            height = 420;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
@@ -62,66 +66,115 @@ namespace CSM.Panels
             // External IP label
             this.CreateLabel("External IP:", new Vector2(10, -225));
 
+            _portState = this.CreateLabel("", new Vector2(120, -225));
+            _troubleshootingButton = this.CreateButton("?", new Vector2(325, -225), 25, 20);
+            _troubleshootingButton.isVisible = false;
+            _troubleshootingButton.eventClick += (component, param) =>
+            {
+                MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
+                panel.DisplayTroubleshooting(true, _portVal, _vpnIpVal != null);
+            };
+
             // External IP field
-            _externalIpVal = IpAddress.GetExternalIpAddress();
-            _externalIpField = this.CreateTextField(_externalIpVal, new Vector2(10, -250));
+            _externalIpField = this.CreateTextField("", new Vector2(10, -250));
             _externalIpField.selectOnFocus = true;
             _externalIpField.eventTextChanged += (ui, value) =>
             {
                 _externalIpField.text = _externalIpVal;
             };
-            
-            _portState = this.CreateLabel("", new Vector2(10, -310));
-            _portState.textAlignment = UIHorizontalAlignment.Center;
+
+            // VPN IP label
+            _vpnLabel = this.CreateLabel("Hamachi IP:", new Vector2(10, -300));
+            _vpnLabel.isVisible = false;
+            _vpnIpField = this.CreateTextField("", new Vector2(10, -325));
+            _vpnIpField.selectOnFocus = true;
+            _vpnIpField.isVisible = false;
+            _vpnIpField.eventTextChanged += (ui, value) =>
+            {
+                _vpnIpField.text = _vpnIpVal;
+            };
 
             // Close this dialog
-            _closeButton = this.CreateButton("Close", new Vector2(10, -375));
+            _closeButton = this.CreateButton("Close", new Vector2(10, _vpnIpVal == null ? -340 : -415));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
             };
 
-            new Thread(CheckPort).Start();
+            new Thread(UpdateWindow).Start();
 
             eventVisibilityChanged += (component, visible) =>
             {
                 if (!visible)
                     return;
 
-                _portVal = MultiplayerManager.Instance.CurrentServer.Config.Port;
-                _portField.text = _portVal.ToString();
-                new Thread(CheckPort).Start();
+                new Thread(UpdateWindow).Start();
             };
         }
 
-        private void CheckPort()
+        private void UpdateWindow()
         {
+            _vpnIpVal = IpAddress.GetVPNIpAddress();
+            _localIpVal = IpAddress.GetLocalIpAddress();
+            _externalIpVal = IpAddress.GetExternalIpAddress();
+
+            // Check if port is reachable
+            ApiCommand.Instance.SendToApiServer(new PortCheckRequestCommand { Port = _portVal });
+
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
+                _localIpField.text = _localIpVal;
+                _externalIpField.text = _externalIpVal;
+
                 _portState.text = "Checking port...";
                 _portState.textColor = new Color32(255, 255, 0, 255);
                 _portState.tooltip = "Checking if port is reachable from the internet...";
-            });
+                _troubleshootingButton.isVisible = false;
 
-            PortState state = IpAddress.CheckPort(_portVal);
+                _portVal = MultiplayerManager.Instance.CurrentServer.Config.Port;
+                _portField.text = _portVal.ToString();
+
+                height = _vpnIpVal == null ? 420 : 495;
+                _closeButton.position = new Vector2(10, _vpnIpVal == null ? -340 : -415);
+                if (_vpnIpVal == null)
+                {
+                    _vpnLabel.isVisible = false;
+                    _vpnIpField.isVisible = false;
+                }
+                else
+                {
+                    _vpnLabel.isVisible = true;
+                    _vpnIpField.isVisible = true;
+                    _vpnIpField.text = _vpnIpVal;
+                }
+            });
+        }
+
+        public void SetPortState(PortCheckResultCommand res)
+        {
             Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
             {
-                switch (state.status)
+                if (_portState == null)
+                    return;
+
+                switch (res.State)
                 {
-                    case HttpStatusCode.ServiceUnavailable: // Could not reach port
+                    case PortCheckResult.Unreachable:
                         _portState.text = "Port is not reachable!";
                         _portState.textColor = new Color32(255, 0, 0, 255);
-                        _portState.tooltip = state.message;
+                        _portState.tooltip = res.Message;
+                        _troubleshootingButton.isVisible = true;
                         break;
-                    case HttpStatusCode.OK: // Success
+                    case PortCheckResult.Reachable:
                         _portState.text = "Port is reachable!";
                         _portState.textColor = new Color32(0, 255, 0, 255);
                         _portState.tooltip = "";
                         break;
-                    default: // Something failed
+                    case PortCheckResult.Error:
+                    default:
                         _portState.text = "Failed to check port";
                         _portState.textColor = new Color32(255, 0, 0, 255);
-                        _portState.tooltip = state.message;
+                        _portState.tooltip = res.Message;
                         break;
                 }
             });

@@ -101,6 +101,18 @@ namespace CSM.Panels
             Show(true);
         }
 
+        public void DisplayInvalidApiServer()
+        {
+            SetTitle("Invalid API Server");
+
+            const string message = "The given API server could not be reached.\n" +
+                                   "The URL was not changed.";
+
+            SetMessage(message);
+
+            Show(true);
+        }
+
         private string GetDlcName(DLCPanelNew panel, SteamHelper.DLC dlc)
         {
             string dlcName = panel.FindLocalizedDLCName(dlc);
@@ -120,16 +132,16 @@ namespace CSM.Panels
             DLCPanelNew dlcPanel = FindObjectOfType<DLCPanelNew>();
 
             string message = "Your DLCs don't match with the server's DLCs\n\n";
-            if (compare.ClientMissing != SteamHelper.DLC_BitMask.None)
+            if (compare.ClientMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ClientMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "You are missing the following DLCs:\n";
-                message += string.Join("\n", compare.ClientMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ClientMissingExpansions, compare.ClientMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
                 message += "\n\n";
             }
-            if (compare.ServerMissing != SteamHelper.DLC_BitMask.None)
+            if (compare.ServerMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ServerMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "The server doesn't have the following DLCs:\n";
-                message += string.Join("\n", compare.ServerMissing.DLCs().Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ServerMissingExpansions, compare.ServerMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
             }
 
             message += "\n\nDLCs can be enabled/disabled via checkbox in Steam.";
@@ -177,11 +189,11 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             $"Last Update: January 28th, 2022\n\n" +
-                             "- Fixes:\n" +
-                             "  - Support Airports Update. Note\n" +
-                             "    that not all new features are" +
-                             "    supported for now!\n";
+                             "Last Update: November 15th, 2022\n\n" +
+                             "- Features:\n" +
+                             "  - Support Roads and Vehicles Update\n\n" +
+                             " - Fixes:\n" +
+                             "  - Ignore order of mods for compatibility\n";
             SetMessage(message);
 
             Show(true);
@@ -216,6 +228,75 @@ namespace CSM.Panels
 
             string message = "There is no update for the Cities: Skylines\n" +
                              "Multiplayer mod available.";
+            SetMessage(message);
+
+            Show(true);
+        }
+
+        public void DisplayTroubleshooting(bool isHost, int port=4230, bool hasVpn=false)
+        {
+            SetTitle("Troubleshooting");
+
+            string message;
+
+            if (isHost)
+            {
+                message = "When the port is not reachable, this can have\n" +
+                          "various reasons. You can try the following steps:\n\n" +
+                          "   - Forward the CSM port: You need to\n" +
+                          "     forward the port (" + port + " UDP)\n" +
+                          "     in your router. How this works depends on\n" +
+                          "     the router or internet provider.\n" +
+                          "   -> If it doesn't work yet, you might\n" +
+                          "     need to allow the port through the local\n" +
+                          "     Firewall (e.g. Windows Defender Firewall).\n" +
+                          "     You can find more info on the Internet.\n" +
+                          "   -> You can always check again if the\n" +
+                          "     port is working in the \"Manage Server\" menu.";
+                if (hasVpn)
+                {
+                    message += "\n\n   - Since Hamachi seems to be running,\n" +
+                               "     players can also connect using your\n" +
+                               "     Hamachi IP.\n" +
+                               "     Also check the Firewall in this case.";
+                }
+                else
+                {
+                    message += "\n\n   - Alternatively, you can use a VPN solution\n" +
+                               "     like Hamachi or ZeroTier.\n" +
+                               "     Follow the instructions of the respective\n" +
+                               "     tool. Then players can connect using the\n" +
+                               "     displayed IP address of the tool.\n" +
+                               "     You can then ignore any error messages\n" +
+                               "     regarding port forwarding.";
+                }
+            }
+            else
+            {
+                message = "When the \"Failed to connect\" message appears,\n" +
+                          "this can have various reasons. The hosting player\n" +
+                          "can try the following steps:\n\n" +
+                          "- Check if the port is reachable in the\n" +
+                          "  \"Manage Server\" menu\n" +
+                          "  - If yes, make sure you connect using the IP\n" +
+                          "    shown as \"External IP\" in that menu\n\n" +
+                          "- If not, you have two possibilities:\n" +
+                          "  1. Forward the CSM port: The hosting player\n" +
+                          "     needs to forward the port (" + port + " UDP)\n" +
+                          "     in their router. How this works depends on\n" +
+                          "     the router or internet provider.\n" +
+                          "   -> If it doesn't work yet, the host might\n" +
+                          "     need to allow the port through the local\n" +
+                          "     Firewall (e.g. Windows Defender Firewall).\n" +
+                          "     You can find more info on the Internet.\n" +
+                          "   -> The host can always check again if the\n" +
+                          "     port is working in the \"Manage Server\" menu.\n\n" +
+                          "  2. Use a VPN solution like Hamachi or ZeroTier.\n" +
+                          "     Follow the instructions of the respective\n" +
+                          "     tool. Then you can connect using the\n" +
+                          "     displayed IP address of the tool.";
+            }
+
             SetMessage(message);
 
             Show(true);

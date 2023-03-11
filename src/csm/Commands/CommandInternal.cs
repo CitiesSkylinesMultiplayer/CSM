@@ -94,7 +94,8 @@ namespace CSM.Commands
         /// <param name="command">The command to send.</param>
         public void SendToServer(CommandBase command)
         {
-            if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Disconnected)
+            if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Disconnected ||
+                MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.PreConnecting)
                 return;
 
             TransactionHandler.StartTransaction(command);
