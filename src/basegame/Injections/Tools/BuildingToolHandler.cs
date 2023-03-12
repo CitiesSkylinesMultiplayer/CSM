@@ -5,7 +5,6 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using HarmonyLib;
-using JetBrains.Annotations;
 using ProtoBuf;
 using UnityEngine;
 

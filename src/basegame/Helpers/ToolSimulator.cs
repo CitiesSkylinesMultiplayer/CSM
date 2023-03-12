@@ -11,11 +11,11 @@ namespace CSM.BaseGame.Helpers
     {
         private readonly Dictionary<int, ToolBase> _currentTools = new Dictionary<int, ToolBase>();
 
-        private static readonly Color[] _playerColors = new Color[6];
+        private static readonly Color[] _playerColors = new Color[5];
 
         static ToolSimulator() {
-            for(int i = 0; i < _playerColors.Length; i++) {
-                _playerColors[i] = Color.HSVToRGB(i / (float) _playerColors.Length, 0.8f, 1.0f);
+            for (int i = 0; i < _playerColors.Length; i++) {
+                _playerColors[i] = Color.HSVToRGB((i+1) / (float) 6, 0.8f, 1.0f);
                 _playerColors[i].a = 0.5f;
             }
         }
