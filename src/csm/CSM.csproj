@@ -68,7 +68,6 @@
 		<Compile Include="Commands\Data\Game\SpeedPauseReachedCommand.cs" />
 		<Compile Include="Commands\Data\Internal\ClientJoiningCommand.cs" />
 		<Compile Include="Commands\Data\Internal\ClientLevelLoadedCommand.cs" />
-		<Compile Include="Commands\Data\Internal\PlayerLocationCommand.cs" />
 		<Compile Include="Commands\Data\Game\SpeedPauseResponseCommand.cs" />
 		<Compile Include="Commands\Data\Game\SpeedPauseRequestCommand.cs" />
 		<Compile Include="Commands\Data\Internal\ChatMessageCommand.cs" />
@@ -93,7 +92,6 @@
 		<Compile Include="Commands\Handler\Internal\ConnectionResultHandler.cs" />
 		<Compile Include="Commands\Handler\Internal\FinishTransactionHandler.cs" />
 		<Compile Include="Commands\Handler\Internal\PlayerListHandler.cs" />
-		<Compile Include="Commands\Handler\Internal\PlayerLocationHandler.cs" />
 		<Compile Include="Commands\Handler\Internal\RequestWorldTransferHandler.cs" />
 		<Compile Include="Commands\Handler\Internal\SlowdownHandler.cs" />
 		<Compile Include="Commands\Handler\Internal\WorldTransferHandler.cs" />
@@ -119,7 +117,6 @@
 		<Compile Include="Helpers\SpeedPauseHelper.cs" />
 		<Compile Include="Helpers\UiHelper.cs" />
 		<Compile Include="Injections\ChatHandler.cs" />
-		<Compile Include="Injections\ICameraHandler.cs" />
 		<Compile Include="Injections\MainMenuHandler.cs" />
 		<Compile Include="Injections\PauseMenuHandler.cs" />
 		<Compile Include="Injections\SpeedPauseHandler.cs" />

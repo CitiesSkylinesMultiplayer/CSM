@@ -14,9 +14,6 @@ namespace CSM.Panels
 
         private UIButton _connectedPlayersButton;
 
-        private UICheckBox _playerPointers;
-        public static bool showPlayerPointers = false;
-
         public override void Start()
         {
             // Activates the dragging of the window
@@ -49,15 +46,6 @@ namespace CSM.Panels
 
             // Connected Players window button
             _connectedPlayersButton = this.CreateButton("Player List", new Vector2(10, -200));
-
-            // Show Player Pointers
-            _playerPointers = this.CreateCheckBox("Show Player Pointers", new Vector2(10, -270));
-
-
-            _playerPointers.eventClicked += (component, param) =>
-            {
-                showPlayerPointers = _playerPointers.isChecked;
-            };
 
             _disconnectButton.eventClick += (component, param) =>
             {

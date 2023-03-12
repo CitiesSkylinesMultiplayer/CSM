@@ -6,6 +6,11 @@ namespace CSM.BaseGame.Injections.Tools
 {
     public abstract class BaseToolCommandHandler<Cmd, Tool> : CommandHandler<Cmd> where Cmd: ToolCommandBase where Tool: ToolBase
     {
+        protected BaseToolCommandHandler()
+        {
+            TransactionCmd = false;
+        }
+
         protected override void Handle(Cmd command)
         {
             Singleton<ToolSimulator>.instance.GetToolAndController(command.SenderId, out Tool tool,
