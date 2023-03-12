@@ -1,19 +1,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
-using CSM.API;
 using UnityEngine;
 
 namespace CSM.BaseGame.Injections.Tools
 {
 
     public class ToolSimulatorCursorManager: Singleton<ToolSimulatorCursorManager> {
-
-        public static bool test;
-        public static bool ShouldTest() {
-            var result = test;
-            return result;
-        }
 
         private readonly Dictionary<int, PlayerCursorManager> _playerCursorViews = new Dictionary<int, PlayerCursorManager>();
 
@@ -28,6 +21,11 @@ namespace CSM.BaseGame.Injections.Tools
 
         public void RemoveCursorView(int sender) {
             _playerCursorViews.Remove(sender);
+        }
+
+        public void Clear()
+        {
+            _playerCursorViews.Clear();
         }
 
         private MethodInfo _rayCast;

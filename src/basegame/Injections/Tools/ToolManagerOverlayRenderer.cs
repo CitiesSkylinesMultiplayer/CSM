@@ -1,6 +1,8 @@
 using ColossalFramework;
+using CSM.API.Helpers;
 using CSM.BaseGame.Helpers;
 using HarmonyLib;
+using UnityEngine;
 
 namespace CSM.BaseGame.Injections.Tools
 {
@@ -11,7 +13,7 @@ namespace CSM.BaseGame.Injections.Tools
         
         public static void Prefix(RenderManager.CameraInfo cameraInfo)
         {
-            foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
+            foreach (ToolBase simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
                 if(simulatedTool is TransportTool) {
                     // TODO: fix transport tool rendering so the tool doesn't break when another client enters the tool
                     continue;
@@ -32,17 +34,25 @@ namespace CSM.BaseGame.Injections.Tools
             // unsetting the static field here will prevent any NetTools from clients also rendering the
             // guidelines again
 
-            var currentHelperLines = NetTool.m_helperLines;
+            FastList<NetTool.HelperLine> currentHelperLines = NetTool.m_helperLines;
             NetTool.m_helperLines = new FastList<NetTool.HelperLine>();
 
             // var currentDirectionArrows = ReflectionHelper.GetAttr((NetTool)null, "m_directionArrowsBuffer");
             // ReflectionHelper.SetAttr((NetTool)null, "m_directionArrowsBuffer", new FastList<NetTool.HelperDirection2>());
 
-            foreach (var simulatedTool in Singleton<ToolSimulator>.instance.GetTools()) {
-                if(simulatedTool is TransportTool) {
-                    // TODO: fix transport tool rendering so the tool doesn't break when another client enters the tool
-                    continue;
+            foreach (ToolBase simulatedTool in Singleton<ToolSimulator>.instance.GetTools())
+            {
+                switch (simulatedTool)
+                {
+                    case TransportTool _:
+                        // TODO: fix transport tool rendering so the tool doesn't break when another client enters the tool
+                        continue;
+                    case NetTool _:
+                        // Reset angle number
+                        ReflectionHelper.Call(simulatedTool, "ShowExtraInfo", new []{typeof(bool), typeof(string), typeof(Vector3)}, false, null, Vector3.zero);
+                        break;
                 }
+
                 simulatedTool.RenderOverlay(cameraInfo);
             }
 

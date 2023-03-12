@@ -13,7 +13,7 @@ namespace CSM.BaseGame.Injections.Tools
     [HarmonyPatch("SimulationStep")]
     public class TransportToolHandler {
 
-        private static PlayerTransportToolCommand lastCommand;
+        private static PlayerTransportToolCommand _lastCommand;
 
         public static void Postfix(TransportTool __instance, ToolController ___m_toolController, ushort ___m_lastEditLine, int ___m_hoverStopIndex,
             int ___m_hoverSegmentIndex, Vector3 ___m_hitPosition, Ray ___m_mouseRay, float ___m_mouseRayLength)
@@ -26,7 +26,7 @@ namespace CSM.BaseGame.Injections.Tools
                 Vector3 cursorPosition = Singleton<ToolSimulatorCursorManager>.instance.DoRaycast(___m_mouseRay, ___m_mouseRayLength);
 
                 // Send info to all clients
-                var newCommand = new PlayerTransportToolCommand
+                PlayerTransportToolCommand newCommand = new PlayerTransportToolCommand
                 {                    
                     TransportInfo = (uint)  __instance.m_prefab.m_prefabDataIndex,
                     LastEditLine = ___m_lastEditLine,
@@ -36,12 +36,9 @@ namespace CSM.BaseGame.Injections.Tools
                     CursorWorldPosition = cursorPosition,
                     PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if (!newCommand.Equals(lastCommand)) {
-                    lastCommand = newCommand;
+                if (!newCommand.Equals(_lastCommand)) {
+                    _lastCommand = newCommand;
                     Command.SendToAll(newCommand);
-                }
-                if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerTransportToolCommand)).Parse(newCommand);
                 }
             }
         }    
@@ -61,17 +58,16 @@ namespace CSM.BaseGame.Injections.Tools
         [ProtoMember(5)]
         public Vector3 HitPosition { get; set; }
 
-        // TODO: Transmit brush info for clients to render. See TransportTool::OnToolUpdate
         // TODO: Transmit placement errors
 
         public bool Equals(PlayerTransportToolCommand other)
         {
             return base.Equals(other) &&
-                   object.Equals(this.TransportInfo, other.TransportInfo) &&
-                   object.Equals(this.LastEditLine, other.LastEditLine) &&
-                   object.Equals(this.HoverStopIndex, other.HoverStopIndex) &&
-                   object.Equals(this.HoverSegmentIndex, other.HoverSegmentIndex) &&
-                   object.Equals(this.HitPosition, other.HitPosition);
+                   Equals(this.TransportInfo, other.TransportInfo) &&
+                   Equals(this.LastEditLine, other.LastEditLine) &&
+                   Equals(this.HoverStopIndex, other.HoverStopIndex) &&
+                   Equals(this.HoverSegmentIndex, other.HoverSegmentIndex) &&
+                   Equals(this.HitPosition, other.HitPosition);
         }
             
     }

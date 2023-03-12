@@ -5,6 +5,7 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using HarmonyLib;
+using JetBrains.Annotations;
 using ProtoBuf;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace CSM.BaseGame.Injections.Tools
     [HarmonyPatch("OnToolLateUpdate")]
     public class BuildingToolHandler {
 
-        private static PlayerBuildingToolCommand lastCommand;
+        private static PlayerBuildingToolCommand _lastCommand;
 
         public static void Postfix(BuildingTool __instance, ToolController ___m_toolController, Vector3 ___m_cachedPosition, float ___m_cachedAngle, int ___m_elevation, Segment3 ___m_cachedSegment)
         {
@@ -32,7 +33,7 @@ namespace CSM.BaseGame.Injections.Tools
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerBuildingToolCommand
+                PlayerBuildingToolCommand newCommand = new PlayerBuildingToolCommand
                 {
                     Prefab = prefabId,
                     Relocating = __instance.m_relocate,
@@ -43,15 +44,10 @@ namespace CSM.BaseGame.Injections.Tools
                     CursorWorldPosition = ___m_cachedPosition,
                     PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if (!newCommand.Equals(lastCommand)) {
-                    lastCommand = newCommand;
+                if (!newCommand.Equals(_lastCommand)) {
+                    _lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
-
-                if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerBuildingToolCommand)).Parse(newCommand);
-                }
-
             }
         }    
     }
@@ -75,12 +71,12 @@ namespace CSM.BaseGame.Injections.Tools
         public bool Equals(PlayerBuildingToolCommand other)
         {
             return base.Equals(other) &&
-                   object.Equals(this.Prefab, other.Prefab) &&
-                   object.Equals(this.Relocating, other.Relocating) &&
-                   object.Equals(this.Position, other.Position) &&
-                   object.Equals(this.Angle, other.Angle) &&
-                   object.Equals(this.Segment, other.Segment) &&
-                   object.Equals(this.Elevation, other.Elevation);
+                   Equals(this.Prefab, other.Prefab) &&
+                   Equals(this.Relocating, other.Relocating) &&
+                   Equals(this.Position, other.Position) &&
+                   Equals(this.Angle, other.Angle) &&
+                   Equals(this.Segment, other.Segment) &&
+                   Equals(this.Elevation, other.Elevation);
         }
             
     }

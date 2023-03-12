@@ -1,5 +1,5 @@
 using System;
-using System.Reflection;
+using System.Linq;
 using ColossalFramework;
 using CSM.API;
 using CSM.API.Commands;
@@ -14,7 +14,7 @@ namespace CSM.BaseGame.Injections.Tools
     [HarmonyPatch("SimulationStep")]
     public class ZoneToolHandler {
 
-        private static PlayerZoneToolCommand lastCommand;
+        private static PlayerZoneToolCommand _lastCommand;
 
         public static void Postfix(ZoneTool __instance, ToolController ___m_toolController, bool ___m_zoning, bool ___m_dezoning, bool ___m_validPosition, Vector3 ___m_startPosition, 
             Vector3 ___m_mousePosition, Vector3 ___m_startDirection, Vector3 ___m_mouseDirection, ulong[] ___m_fillBuffer2, Ray ___m_mouseRay, float ___m_mouseRayLength)
@@ -47,12 +47,9 @@ namespace CSM.BaseGame.Injections.Tools
                     CursorWorldPosition = ___m_mousePosition,
                     PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if (!newCommand.Equals(lastCommand)) {
-                    lastCommand = newCommand;
+                if (!newCommand.Equals(_lastCommand)) {
+                    _lastCommand = newCommand;
                     Command.SendToAll(newCommand);
-                    if(ToolSimulatorCursorManager.ShouldTest()) {
-                        Command.GetCommandHandler(typeof(PlayerZoneToolCommand)).Parse(newCommand);
-                    }
                 }
             }
         }    
@@ -84,22 +81,20 @@ namespace CSM.BaseGame.Injections.Tools
         [ProtoMember(11)]
         public ulong[] FillBuffer2 { get; set; }
 
-        // TODO: Transmit brush info for clients to render
-
         public bool Equals(PlayerZoneToolCommand other)
         {
             return base.Equals(other) &&
-                   object.Equals(this.Zone, other.Zone) &&
-                   object.Equals(this.Mode, other.Mode) &&
-                   object.Equals(this.BrushSize, other.BrushSize) &&
-                   object.Equals(this.Zoning, other.Zoning) &&
-                   object.Equals(this.Dezoning, other.Dezoning) &&
-                   object.Equals(this.ValidPosition, other.ValidPosition) &&
-                   object.Equals(this.StartPosition, other.StartPosition) &&
-                   object.Equals(this.MousePosition, other.MousePosition) &&
-                   object.Equals(this.StartDirection, other.StartDirection) &&
-                   object.Equals(this.MouseDirection, other.MouseDirection) &&
-                   object.Equals(this.FillBuffer2, other.FillBuffer2);
+                   Equals(this.Zone, other.Zone) &&
+                   Equals(this.Mode, other.Mode) &&
+                   Equals(this.BrushSize, other.BrushSize) &&
+                   Equals(this.Zoning, other.Zoning) &&
+                   Equals(this.Dezoning, other.Dezoning) &&
+                   Equals(this.ValidPosition, other.ValidPosition) &&
+                   Equals(this.StartPosition, other.StartPosition) &&
+                   Equals(this.MousePosition, other.MousePosition) &&
+                   Equals(this.StartDirection, other.StartDirection) &&
+                   Equals(this.MouseDirection, other.MouseDirection) &&
+                   this.FillBuffer2.SequenceEqual(other.FillBuffer2);
         }
             
     }
@@ -109,8 +104,8 @@ namespace CSM.BaseGame.Injections.Tools
         protected override void Configure(ZoneTool tool, ToolController toolController, PlayerZoneToolCommand command) {
             // Note: Some private fields are already initialised by the ToolSimulator
             // These fields here are the important ones to transmit between game sessions
-            tool.m_zone = (ItemClass.Zone) Enum.GetValues(typeof(ItemClass.Zone)).GetValue(command.Zone);
-            tool.m_mode = (ZoneTool.Mode) Enum.GetValues(typeof(ZoneTool.Mode)).GetValue(command.Mode);
+            tool.m_zone = (ItemClass.Zone) command.Zone;
+            tool.m_mode = (ZoneTool.Mode) command.Mode;
             tool.m_brushSize = command.BrushSize;
             ReflectionHelper.SetAttr(tool, "m_zoning", command.Zoning);
             ReflectionHelper.SetAttr(tool, "m_dezoning", command.Dezoning);
@@ -120,8 +115,6 @@ namespace CSM.BaseGame.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_startDirection", command.StartDirection);
             ReflectionHelper.SetAttr(tool, "m_mouseDirection", command.MouseDirection);
             ReflectionHelper.SetAttr(tool, "m_fillBuffer2", command.FillBuffer2);
-
-            
         }
 
         protected override CursorInfo GetCursorInfo(ZoneTool tool)

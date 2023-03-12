@@ -24,14 +24,7 @@ namespace CSM
 
         public bool UseChirper
         {
-            get
-            {
-                if (ModCompat.HasDisableChirperMod)
-                {
-                    return false;
-                }
-                return _useChirper;
-            }
+            get => ModCompat.HasDisableChirperMod ? false : _useChirper;
             set => _useChirper.value = value;
         }
 

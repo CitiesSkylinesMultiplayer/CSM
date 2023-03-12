@@ -4,7 +4,7 @@ using CSM.BaseGame.Helpers;
 
 namespace CSM.BaseGame.Injections.Tools
 {
-    public abstract class BaseToolCommandHandler<Cmd, Tool> : CommandHandler<Cmd> where Cmd: ToolCommandBase where Tool: ToolBase 
+    public abstract class BaseToolCommandHandler<Cmd, Tool> : CommandHandler<Cmd> where Cmd: ToolCommandBase where Tool: ToolBase
     {
         protected override void Handle(Cmd command)
         {

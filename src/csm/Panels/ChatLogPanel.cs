@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.UI;
@@ -9,7 +8,6 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.API.Networking.Status;
-using CSM.BaseGame.Injections.Tools;
 using CSM.Commands.Data.Internal;
 using CSM.Container;
 using CSM.Helpers;
@@ -153,10 +151,6 @@ namespace CSM.Panels
                     {
                         PrintGameMessage("You are the server");
                     }
-                }),
-                new ChatCommand("test", "Tests tool sync", (command) =>
-                {
-                    ToolSimulatorCursorManager.test = !ToolSimulatorCursorManager.test;
                 })
             };
         }

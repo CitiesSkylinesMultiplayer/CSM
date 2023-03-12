@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ColossalFramework;
 using CSM.API;
 using CSM.API.Commands;
@@ -13,7 +14,7 @@ namespace CSM.BaseGame.Injections.Tools
     [HarmonyPatch("SimulationStep")]
     public class TerrainToolHandler {
 
-        private static PlayerTerrainToolCommand lastCommand;
+        private static PlayerTerrainToolCommand _lastCommand;
 
         public static void Postfix(TerrainTool __instance, ToolController ___m_toolController, Vector3 ___m_mousePosition)
         {
@@ -24,23 +25,18 @@ namespace CSM.BaseGame.Injections.Tools
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerTerrainToolCommand
+                PlayerTerrainToolCommand newCommand = new PlayerTerrainToolCommand
                 {
                     Mode = (uint)  __instance.m_mode,
                     MousePosition = ___m_mousePosition,
                     BrushSize = __instance.m_brushSize,
-                    BrushData = ___m_toolController.BrushData,
                     CursorWorldPosition = ___m_mousePosition,
                     PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if (!newCommand.Equals(lastCommand)) {
-                    lastCommand = newCommand;
+                if (!newCommand.Equals(_lastCommand)) {
+                    _lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
-                if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerTerrainToolCommand)).Parse(newCommand);
-                }
-
             }
         }    
     }
@@ -54,19 +50,15 @@ namespace CSM.BaseGame.Injections.Tools
         public Vector3 MousePosition { get; set; }
         [ProtoMember(3)]
         public float BrushSize { get; set; }
-        [ProtoMember(4)]
-        public float[] BrushData { get; set; }
 
-        // TODO: Transmit brush texture for clients to render. See TerrainTool::OnToolUpdate
         // TODO: Transmit placement errors
 
         public bool Equals(PlayerTerrainToolCommand other)
         {
             return base.Equals(other) &&
-                   object.Equals(this.Mode, other.Mode) &&
-                   object.Equals(this.MousePosition, other.MousePosition) &&
-                   object.Equals(this.BrushSize, other.BrushSize) &&
-                   object.Equals(this.BrushData, other.BrushData);
+                   Equals(this.Mode, other.Mode) &&
+                   Equals(this.MousePosition, other.MousePosition) &&
+                   Equals(this.BrushSize, other.BrushSize);
         }
             
     }
@@ -75,9 +67,8 @@ namespace CSM.BaseGame.Injections.Tools
     {
         protected override void Configure(TerrainTool tool, ToolController toolController, PlayerTerrainToolCommand command) {            
             // The terrain tool uses to the tool controller to hold onto brush state and to render it
-            tool.m_mode = (TerrainTool.Mode) Enum.GetValues(typeof(TerrainTool.Mode)).GetValue(command.Mode);
+            tool.m_mode = (TerrainTool.Mode) command.Mode;
 	        toolController.SetBrush(tool.m_brush, command.MousePosition, command.BrushSize);
-            ReflectionHelper.SetAttr(toolController, "m_brushData", command.BrushData);
         }
 
         protected override CursorInfo GetCursorInfo(TerrainTool tool)

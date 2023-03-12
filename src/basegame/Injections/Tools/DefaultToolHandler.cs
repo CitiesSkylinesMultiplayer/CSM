@@ -13,7 +13,7 @@ namespace CSM.BaseGame.Injections.Tools
     [HarmonyPatch("SimulationStep")]
     public class DefaultToolHandler {
 
-        private static PlayerDefaultToolCommand lastCommand;
+        private static PlayerDefaultToolCommand _lastCommand;
 
         public static void Postfix(DefaultTool __instance, ToolController ___m_toolController, InstanceID ___m_hoverInstance, InstanceID ___m_hoverInstance2, int ___m_subHoverIndex, Vector3 ___m_mousePosition)
         {
@@ -28,17 +28,14 @@ namespace CSM.BaseGame.Injections.Tools
                     HoverInstanceID = ___m_hoverInstance,
                     HoverInstanceID2 = ___m_hoverInstance2,
                     SubIndex = ___m_subHoverIndex,
+                    IsBulldozing = __instance is BulldozeTool,
                     CursorWorldPosition = ___m_mousePosition,
                     PlayerName = Chat.Instance.GetCurrentUsername()
                 };
 
-                if (!newCommand.Equals(lastCommand)) {
-                    lastCommand = newCommand;
+                if (!newCommand.Equals(_lastCommand)) {
+                    _lastCommand = newCommand;
                     Command.SendToAll(newCommand);
-
-                    if (ToolSimulatorCursorManager.ShouldTest()) {
-                        Command.GetCommandHandler(typeof(PlayerDefaultToolCommand)).Parse(newCommand);
-                    }
                 }
             }
         }
@@ -56,13 +53,17 @@ namespace CSM.BaseGame.Injections.Tools
         [ProtoMember(3)]
         public int SubIndex { get; set; }
 
+        [ProtoMember(4)]
+        public bool IsBulldozing { get; set; }
+
         // TODO: transmit placement errors
         public bool Equals(PlayerDefaultToolCommand other)
         {
             return base.Equals(other) &&
-                   object.Equals(this.HoverInstanceID, other.HoverInstanceID) &&
-                   object.Equals(this.HoverInstanceID2, other.HoverInstanceID2) &&
-                   object.Equals(this.SubIndex, other.SubIndex);
+                   Equals(this.HoverInstanceID, other.HoverInstanceID) &&
+                   Equals(this.HoverInstanceID2, other.HoverInstanceID2) &&
+                   Equals(this.SubIndex, other.SubIndex) &&
+                   Equals(this.IsBulldozing, other.IsBulldozing);
         }
     }
 
@@ -74,6 +75,14 @@ namespace CSM.BaseGame.Injections.Tools
             ReflectionHelper.SetAttr(tool, "m_hoverInstance", command.HoverInstanceID);
             ReflectionHelper.SetAttr(tool, "m_hoverInstance2", command.HoverInstanceID2);
             ReflectionHelper.SetAttr(tool, "m_subHoverIndex", command.SubIndex);
+
+            if (command.IsBulldozing)
+            {
+                tool.m_cursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_cursor;
+            }
+            else {
+                tool.m_cursor = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_cursor;
+            }
         }
 
         protected override CursorInfo GetCursorInfo(DefaultTool tool)

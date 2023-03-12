@@ -14,7 +14,7 @@ namespace CSM.BaseGame.Injections.Tools
     [HarmonyPatch("OnToolLateUpdate")]
     public class PropToolHandler {
 
-        private static PlayerPropToolCommand lastCommand;
+        private static PlayerPropToolCommand _lastCommand;
 
         public static void Postfix(PropTool __instance, ToolController ___m_toolController, PropInfo ___m_propInfo, Vector3 ___m_cachedPosition, float ___m_cachedAngle, Randomizer ___m_randomizer)
         {
@@ -25,24 +25,21 @@ namespace CSM.BaseGame.Injections.Tools
                 }
 
                 // Send info to all clients
-                var newCommand = new PlayerPropToolCommand
+                PlayerPropToolCommand newCommand = new PlayerPropToolCommand
                 {                    
                     Prop = (uint)  ___m_propInfo.m_prefabDataIndex,
                     Mode = (int) __instance.m_mode,
                     Position = ___m_cachedPosition,
                     Angle = ___m_cachedAngle,
                     RandomizerSeed = ___m_randomizer.seed,
+                    BrushSize = __instance.m_brushSize,
                     CursorWorldPosition = ___m_cachedPosition,
                     PlayerName = Chat.Instance.GetCurrentUsername()
                 };
-                if (!newCommand.Equals(lastCommand)) {
-                    lastCommand = newCommand;
+                if (!newCommand.Equals(_lastCommand)) {
+                    _lastCommand = newCommand;
                     Command.SendToAll(newCommand);
                 }
-                if(ToolSimulatorCursorManager.ShouldTest()) {
-                    Command.GetCommandHandler(typeof(PlayerPropToolCommand)).Parse(newCommand);
-                }
-
             }
         }    
     }
@@ -60,18 +57,19 @@ namespace CSM.BaseGame.Injections.Tools
         public float Angle { get; set; }
         [ProtoMember(5)]
         public ulong RandomizerSeed { get; set; }
-
-        // TODO: Transmit brush info for clients to render. See PropTool::OnToolUpdate
+        [ProtoMember(6)]
+        public float BrushSize { get; set; }
         // TODO: Transmit placement errors
 
         public bool Equals(PlayerPropToolCommand other)
         {
             return base.Equals(other) &&
-                   object.Equals(this.Prop, other.Prop) &&
-                   object.Equals(this.Mode, other.Mode) &&
-                   object.Equals(this.Position, other.Position) &&
-                   object.Equals(this.Angle, other.Angle) &&
-                   object.Equals(this.RandomizerSeed, other.RandomizerSeed);
+                   Equals(this.Prop, other.Prop) &&
+                   Equals(this.Mode, other.Mode) &&
+                   Equals(this.Position, other.Position) &&
+                   Equals(this.Angle, other.Angle) &&
+                   Equals(this.RandomizerSeed, other.RandomizerSeed) &&
+                   Equals(this.BrushSize, other.BrushSize);
         }
             
     }
@@ -83,11 +81,19 @@ namespace CSM.BaseGame.Injections.Tools
             // These fields here are the important ones to transmit between game sessions
             
             ReflectionHelper.SetAttr(tool, "m_propInfo", PrefabCollection<PropInfo>.GetPrefab(command.Prop));
-            tool.m_mode = (PropTool.Mode) Enum.GetValues(typeof(PropTool.Mode)).GetValue(command.Mode);
+            tool.m_mode = (PropTool.Mode) command.Mode;
             ReflectionHelper.SetAttr(tool, "m_cachedPosition", command.Position);
             ReflectionHelper.SetAttr(tool, "m_cachedAngle", command.Angle);
             ReflectionHelper.SetAttr(tool, "m_randomizer", new Randomizer(command.RandomizerSeed));
-            
+
+            if (tool.m_mode == PropTool.Mode.Brush)
+            {
+                toolController.SetBrush(tool.m_brush, command.Position, command.BrushSize);
+            }
+            else
+            {
+                toolController.SetBrush(null, Vector3.zero, 1f);
+            }
         }
 
         protected override CursorInfo GetCursorInfo(PropTool tool)

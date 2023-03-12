@@ -72,7 +72,7 @@ namespace CSM.Panels
             urlInput.width = 400;
 
             UIHelperBase buttonsGroup = helper.AddGroup("Buttons");
-            advancedGroup.AddButton("Show Release Notes", () =>
+            buttonsGroup.AddButton("Show Release Notes", () =>
             {
                 MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
                 if (panel)

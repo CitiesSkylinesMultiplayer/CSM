@@ -223,6 +223,7 @@
     <Compile Include="Injections\Tools\BaseToolHandler.cs" />
     <Compile Include="Injections\Tools\BuildingToolHandler.cs" />
     <Compile Include="Injections\Tools\DefaultToolHandler.cs" />
+    <Compile Include="Injections\Tools\DistrictToolHandler.cs" />
     <Compile Include="Injections\Tools\NetToolHandler.cs" />
     <Compile Include="Injections\Tools\PlayerCursorManager.cs" />
     <Compile Include="Injections\Tools\PropToolHandler.cs" />

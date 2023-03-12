@@ -1,61 +1,56 @@
-using System.Collections.Generic;
 using ColossalFramework;
 using ColossalFramework.UI;
-using CSM.API;
-using CSM.API.Networking;
 using UnityEngine;
 
 namespace CSM.BaseGame.Injections.Tools
 {
     public class PlayerCursorManager: MonoBehaviour {
 
-        private CursorInfo cursorInfo;
-        private UITextureSprite cursorImage;
-        private UILabel playerNameLabel;
+        private CursorInfo _cursorInfo;
+        private UITextureSprite _cursorImage;
+        private UILabel _playerNameLabel;
+        private Vector3 _cursorWorldPosition;
 
-        public Vector3 cursorWorldPosition;
-
-        private static float screenEdgeInset = 12;
+        private const float ScreenEdgeInset = 12;
 
         public void Start() {
 
             UIView uiView = ToolBase.cursorInfoLabel.GetUIView();
 
-            playerNameLabel = (UILabel)uiView.AddUIComponent(typeof(UILabel));
-            playerNameLabel.textAlignment = UIHorizontalAlignment.Center;
-            playerNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            playerNameLabel.backgroundSprite = "CursorInfoBack";
-            playerNameLabel.playAudioEvents = true;
-            playerNameLabel.pivot = UIPivotPoint.MiddleLeft;
-            playerNameLabel.padding = new RectOffset(23 + 16, 23, 5, 5);
-            playerNameLabel.textScale = 0.8f;
-            playerNameLabel.eventClicked += this.OnClick;
-            playerNameLabel.isVisible = false;
-            playerNameLabel.textColor = Color.white;
+            _playerNameLabel = (UILabel)uiView.AddUIComponent(typeof(UILabel));
+            _playerNameLabel.textAlignment = UIHorizontalAlignment.Center;
+            _playerNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            _playerNameLabel.backgroundSprite = "CursorInfoBack";
+            _playerNameLabel.playAudioEvents = true;
+            _playerNameLabel.pivot = UIPivotPoint.MiddleLeft;
+            _playerNameLabel.padding = new RectOffset(23 + 16, 23, 5, 5);
+            _playerNameLabel.textScale = 0.8f;
+            _playerNameLabel.isVisible = false;
+            _playerNameLabel.textColor = Color.white;
 
             //playerNameLabel.canFocus = false;
-            playerNameLabel.isInteractive = false;
+            _playerNameLabel.isInteractive = false;
 
-            cursorImage = (UITextureSprite)uiView.AddUIComponent(typeof(UITextureSprite));
-            cursorImage.size = new Vector2(24, 24);
-            cursorImage.isVisible = false;
-            cursorImage.isInteractive = false;
-            if (cursorInfo)
+            _cursorImage = (UITextureSprite)uiView.AddUIComponent(typeof(UITextureSprite));
+            _cursorImage.size = new Vector2(24, 24);
+            _cursorImage.isVisible = false;
+            _cursorImage.isInteractive = false;
+            if (_cursorInfo)
             {
-                cursorImage.texture = cursorInfo.m_texture;
-                cursorImage.isVisible = true;
+                _cursorImage.texture = _cursorInfo.m_texture;
+                _cursorImage.isVisible = true;
             }
         }
 
         public void Update()
         {
-            if (!(cursorWorldPosition.sqrMagnitude > float.Epsilon)) return;
+            if (!(_cursorWorldPosition.sqrMagnitude > float.Epsilon)) return;
 
-            UIView uiView = playerNameLabel.GetUIView();
+            UIView uiView = _playerNameLabel.GetUIView();
             Vector2 screenSize = ToolBase.fullscreenContainer == null ? uiView.GetScreenResolution() : ToolBase.fullscreenContainer.size;
             Camera cam = Camera.main;
             if (cam == null) return;
-            Vector3 screenPosition = cam.WorldToScreenPoint(cursorWorldPosition);
+            Vector3 screenPosition = cam.WorldToScreenPoint(_cursorWorldPosition);
             screenPosition /= uiView.inputScale;
 
             // if the target is behind the camera then flip the screen position vector
@@ -66,27 +61,22 @@ namespace CSM.BaseGame.Injections.Tools
 
             Vector3 relativePosition = uiView.ScreenPointToGUI(screenPosition); // - ToolBase.extraInfoLabel.size * 0.5f;
 
-            if (relativePosition.x < screenEdgeInset) {
-                relativePosition.x = screenEdgeInset;
+            if (relativePosition.x < ScreenEdgeInset) {
+                relativePosition.x = ScreenEdgeInset;
             }
-            if (relativePosition.x + playerNameLabel.size.x > screenSize.x - screenEdgeInset) {
-                relativePosition.x = screenSize.x - playerNameLabel.size.x - screenEdgeInset;
+            if (relativePosition.x + _playerNameLabel.size.x > screenSize.x - ScreenEdgeInset) {
+                relativePosition.x = screenSize.x - _playerNameLabel.size.x - ScreenEdgeInset;
             }
 
-            if (relativePosition.y < screenEdgeInset) {
-                relativePosition.y = screenEdgeInset;
+            if (relativePosition.y < ScreenEdgeInset) {
+                relativePosition.y = ScreenEdgeInset;
             }                
-            if (relativePosition.y + playerNameLabel.size.y > screenSize.y - screenEdgeInset) {
-                relativePosition.y = screenSize.y - playerNameLabel.size.y - screenEdgeInset;
+            if (relativePosition.y + _playerNameLabel.size.y > screenSize.y - ScreenEdgeInset) {
+                relativePosition.y = screenSize.y - _playerNameLabel.size.y - ScreenEdgeInset;
             }
 
-            this.playerNameLabel.relativePosition = relativePosition;
-            this.cursorImage.relativePosition = relativePosition;
-        }
-
-        public void OnClick(UIComponent component, UIMouseEventParameter eventParam) {
-            var cameraController = Singleton<CameraController>.instance;
-            cameraController.m_targetPosition = this.cursorWorldPosition;
+            this._playerNameLabel.relativePosition = relativePosition;
+            this._cursorImage.relativePosition = relativePosition;
         }
 
         public void SetLabelContent(ToolCommandBase toolCommand) {
@@ -94,19 +84,24 @@ namespace CSM.BaseGame.Injections.Tools
         }
 
         public void SetLabelContent(string playerName, Vector3 worldPosition) {
-            this.cursorWorldPosition = worldPosition;
-            if (playerNameLabel) {
-                this.playerNameLabel.text = playerName;
-                this.playerNameLabel.isVisible = playerName != null;
+            this._cursorWorldPosition = worldPosition;
+            if (_playerNameLabel) {
+                this._playerNameLabel.text = playerName;
+                this._playerNameLabel.isVisible = playerName != null;
             }
         }
 
         public void SetCursor(CursorInfo newCursorInfo) {
-            if (newCursorInfo != null && this.cursorInfo == null || this.cursorInfo.name != newCursorInfo.name) {
-                this.cursorInfo = newCursorInfo;
-                if (this.cursorImage) {
-                    this.cursorImage.texture = newCursorInfo.m_texture;
-                    this.cursorImage.isVisible = true;
+            if (newCursorInfo == null)
+            {
+                newCursorInfo = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_cursor;
+            }
+
+            if (newCursorInfo != null && (this._cursorInfo == null || this._cursorInfo.name != newCursorInfo.name)) {
+                this._cursorInfo = newCursorInfo;
+                if (this._cursorImage) {
+                    this._cursorImage.texture = newCursorInfo.m_texture;
+                    this._cursorImage.isVisible = true;
                 }
             }
         }
