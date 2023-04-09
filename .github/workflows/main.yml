@@ -89,8 +89,8 @@ jobs:
       run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{secrets.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json
 
   build-gs:
-    # Run this on windows
-    runs-on: windows-latest
+    # Run this on linux so it builds the correct docker image
+    runs-on: ubuntu-latest
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
@@ -105,7 +105,7 @@ jobs:
     - name: Login to docker registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       if: github.ref == 'refs/heads/master'
-      
+
     - name: Push Docker Image
       run: docker push ghcr.io/citiesskylinesmultiplayer/apiserver:latest
       if: github.ref == 'refs/heads/master'
