@@ -23,21 +23,21 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
         
     # The version string
     - name: Set Version Environment Variable
       id: csm_version
-      run: echo "::set-output name=version::$(date +'%y%m').${{ github.run_number }}"
+      run: echo "version=$(date +'%y%m').${{ github.run_number }} >> $GITHUB_OUTPUT"
     
-    # Update the assembly versiob to match the csm version
+    # Update the assembly version to match the csm version
     - name: Update Assembly Version
       run: powershell.exe -NoP -NonI -Command "../scripts/update-version.ps1 -filePattern AssemblyInfo.cs -assemblyVersion ${{ steps.csm_version.outputs.version }}.0.0 -assemblyFileVersion ${{ steps.csm_version.outputs.version }}.0.0"
       working-directory: src
     
     # Download the assemblies required to build the mod
     - name: Download Assemblies
-      uses: carlosperate/download-file-action@v1.0.3
+      uses: carlosperate/download-file-action@v2
       with:
         file-url: https://gridentertainment.blob.core.windows.net/general-storage/csm/Assemblies.zip
         # New filename to rename the downloaded file
@@ -64,14 +64,14 @@ jobs:
 
     # Publish artifacts
     - name: Upload mod DLLs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
         path: src/csm/bin/Release/*.dll
         
     # Publish install script
     - name: Upload install script
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
         path: scripts/install.ps1
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Build Docker Image
       working-directory: src/gs
