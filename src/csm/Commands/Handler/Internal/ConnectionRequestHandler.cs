@@ -159,7 +159,8 @@ namespace CSM.Commands.Handler.Internal
             CommandInternal.Instance.SendToClient(peer, new ConnectionResultCommand
             {
                 Success = true,
-                ClientId = peer.Id
+                ClientId = peer.Id,
+                ServerToken = MultiplayerManager.Instance.CurrentServer.ServerToken
             });
 
             PrepareWorldLoad(newPlayer);

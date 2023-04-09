@@ -34,6 +34,10 @@ namespace CSM.Commands.Handler.Internal
                 MultiplayerManager.Instance.CurrentClient.ClientPlayer = new Player();
                 MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Downloading;
                 MultiplayerManager.Instance.CurrentClient.ClientId = command.ClientId;
+                if (CSM.IsSteamPresent)
+                {
+                    SteamHelpers.Instance.SetPlayingOnServer(command.ServerToken);
+                }
             }
             else
             {

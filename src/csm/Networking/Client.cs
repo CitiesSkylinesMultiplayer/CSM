@@ -90,7 +90,14 @@ namespace CSM.Networking
         {
             ShowTroubleshooting = false;
             // Let the user know that we are trying to connect to a server
-            Log.Info($"Attempting to connect to server at {clientConfig.HostAddress}:{clientConfig.Port}...");
+            if (clientConfig.TokenBased)
+            {
+                Log.Info($"Attempting to connect to server {clientConfig.Token}...");
+            }
+            else
+            {
+                Log.Info($"Attempting to connect to server at {clientConfig.HostAddress}:{clientConfig.Port}...");
+            }
 
             if (Status != ClientStatus.Disconnected)
             {
@@ -120,17 +127,20 @@ namespace CSM.Networking
 
         private bool SetupHolePunching()
         {
-            // Given string to IP address (resolves domain names).
-            IPAddress resolvedAddress;
-            try
+            IPAddress resolvedAddress = null;
+            if (!Config.TokenBased)
             {
-                resolvedAddress = NetUtils.ResolveAddress(Config.HostAddress);
-            }
-            catch
-            {
-                ConnectionMessage = "Invalid server IP";
-                Disconnect(); // make sure we are fully disconnected
-                return false;
+                // Given string to IP address (resolves domain names).
+                try
+                {
+                    resolvedAddress = NetUtils.ResolveAddress(Config.HostAddress);
+                }
+                catch
+                {
+                    ConnectionMessage = "Invalid server IP";
+                    Disconnect(); // make sure we are fully disconnected
+                    return false;
+                }
             }
 
             EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
@@ -155,9 +165,27 @@ namespace CSM.Networking
                 timeoutWatch.Start();
             };
 
+            string connect = "";
+            if (Config.TokenBased)
+            {
+                connect = "token:" + Config.Token;
+            }
+            else if (resolvedAddress != null)
+            {
+                connect = "ip:" + resolvedAddress;
+            }
+
             // Register listener and send request to global server
             _netClient.NatPunchModule.Init(natPunchListener);
-            _netClient.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), 4240), resolvedAddress.ToString());
+            try
+            {
+                _netClient.NatPunchModule.SendNatIntroduceRequest(
+                    new IPEndPoint(IpAddress.GetIpv4(CSM.Settings.ApiServer), CSM.Settings.ApiServerPort), connect);
+            }
+            catch (Exception e)
+            {
+                Log.Warn($"Could not send NAT introduction request to API server at {CSM.Settings.ApiServer}:{CSM.Settings.ApiServerPort}: {e}");
+            }
 
             timeoutWatch.Start();
             // Wait for NatPunchModule responses.
@@ -171,17 +199,27 @@ namespace CSM.Networking
                 Thread.Sleep(50);
             }
 
-            if (Status == ClientStatus.PreConnecting) // If timeout, try exact given address
+            if (Status == ClientStatus.PreConnecting) // If timeout
             {
-                Log.Info($"No registered server on GS found, trying exact given address {resolvedAddress}:{Config.Port}...");
-                bool success = DoConnect(new IPEndPoint(resolvedAddress, Config.Port));
-                if (!success)
+                if (!Config.TokenBased && resolvedAddress != null) // Try exact given address when not token-based connect
+                {
+                    Log.Info(
+                        $"No registered server on GS found, trying exact given address {resolvedAddress}:{Config.Port}...");
+                    bool success = DoConnect(new IPEndPoint(resolvedAddress, Config.Port));
+                    if (!success)
+                    {
+                        Disconnect(); // Make sure we are fully disconnected
+                        return false;
+                    }
+
+                    return true;
+                }
+                else
                 {
                     Disconnect(); // Make sure we are fully disconnected
+                    ConnectionMessage = "Server not found";
                     return false;
                 }
-
-                return true;
             }
 
             return Status != ClientStatus.Disconnected;
@@ -273,6 +311,11 @@ namespace CSM.Networking
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
             Singleton<ToolSimulator>.instance.Clear();
+
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.ClearRichPresence();
+            }
 
             if (needsUnload)
             {

@@ -17,9 +17,6 @@ namespace CSM.GS
     /// <summary>
     ///     This background service a UDP server which matches
     ///     servers and clients up via NAT hole punching.
-    ///
-    ///     TODO:
-    ///         - Let clients connect using a token instead of an IP address
     /// </summary>
     public class WorkerService : BackgroundService, INatPunchListener
     {
@@ -35,7 +32,9 @@ namespace CSM.GS
         private readonly IConfiguration _config;
 
         private readonly Dictionary<IPAddress, Server> _gameServers = new();
+        private readonly Dictionary<string, Server> _gameServersByToken = new();
         private readonly List<IPAddress> _serversToRemove = new();
+        private readonly List<string> _serversToRemoveByToken = new();
 
         private readonly ConcurrentQueue<Action> _tasks = new();
 
@@ -110,6 +109,13 @@ namespace CSM.GS
                         _serversToRemove.Add(server.Key);
                     }
                 }
+                foreach (KeyValuePair<string, Server> server in _gameServersByToken)
+                {
+                    if (now - server.Value.LastPing > KickTime)
+                    {
+                        _serversToRemoveByToken.Add(server.Key);
+                    }
+                }
 
                 // Now actually remove servers that are due for removal
                 foreach (IPAddress ip in _serversToRemove)
@@ -118,7 +124,13 @@ namespace CSM.GS
                     _gameServers.Remove(ip);
                 }
 
+                foreach (string token in _serversToRemoveByToken)
+                {
+                    _gameServersByToken.Remove(token);
+                }
+
                 _serversToRemove.Clear();
+                _serversToRemoveByToken.Clear();
 
                 Thread.Sleep(ServerTick);
             }
@@ -138,36 +150,55 @@ namespace CSM.GS
                 remoteEndPoint.Address = RemoteServerAddress;
             }
 
-            IPAddress serverIp;
-            try
-            {
-                serverIp = IPAddress.Parse(token);
-            }
-            catch (FormatException)
+            string[] tokenParts = token.Split(':');
+            if (tokenParts.Length != 2)
             {
                 return;
             }
 
-            if (_gameServers.TryGetValue(serverIp, out Server server))
+            Server server;
+            if (tokenParts[0] == "token")
             {
-                // At this point, we have access to the client and server, we can now introduce them
-                _logger.LogInformation("Introduction -> Host: {HostingInternalAddress} {HostExternalAddress}, Client: {ClientInternalAddress} {ClientExternalAddress}", Anonymize(server.InternalAddress), Anonymize(server.ExternalAddress), Anonymize(localEndPoint), Anonymize(remoteEndPoint));
+                if (!_gameServersByToken.TryGetValue(tokenParts[1], out server))
+                {
+                    return;
+                }
+            }
+            else if (tokenParts[0] == "ip")
+            {
+                IPAddress serverIp;
+                try
+                {
+                    serverIp = IPAddress.Parse(tokenParts[1]);
+                }
+                catch (FormatException)
+                {
+                    return;
+                }
 
-                // The following is a reproduction of NatPunchModule::NatIntroduce, but changes the client remote address if it comes from our port checker
-                _responsePacketType?.GetProperty("Token")?.SetValue(_responsePacket, token);
-
-                _responsePacketType?.GetProperty("Internal")?.SetValue(_responsePacket, server.InternalAddress);
-                _responsePacketType?.GetProperty("External")?.SetValue(_responsePacket, server.ExternalAddress);
-                _responsePacketSend?.Invoke(_puncher.NatPunchModule, new [] {_responsePacket, isFromPortTester ? localEndPoint : remoteEndPoint});
-
-                _responsePacketType?.GetProperty("Internal")?.SetValue(_responsePacket, localEndPoint);
-                _responsePacketType?.GetProperty("External")?.SetValue(_responsePacket, remoteEndPoint);
-                _responsePacketSend?.Invoke(_puncher.NatPunchModule, new [] {_responsePacket, server.ExternalAddress});
+                if (!_gameServers.TryGetValue(serverIp, out server))
+                {
+                    return;
+                }
             }
             else
             {
-                _logger.LogInformation("Server not found, ignoring...");
+                return;
             }
+
+            // At this point, we have access to the client and server, we can now introduce them
+            _logger.LogInformation("Introduction -> Host: {HostingInternalAddress} {HostExternalAddress}, Client: {ClientInternalAddress} {ClientExternalAddress}", Anonymize(server.InternalAddress), Anonymize(server.ExternalAddress), Anonymize(localEndPoint), Anonymize(remoteEndPoint));
+
+            // The following is a reproduction of NatPunchModule::NatIntroduce, but changes the client remote address if it comes from our port checker
+            _responsePacketType?.GetProperty("Token")?.SetValue(_responsePacket, token);
+
+            _responsePacketType?.GetProperty("Internal")?.SetValue(_responsePacket, server.InternalAddress);
+            _responsePacketType?.GetProperty("External")?.SetValue(_responsePacket, server.ExternalAddress);
+            _responsePacketSend?.Invoke(_puncher.NatPunchModule, new [] {_responsePacket, isFromPortTester ? localEndPoint : remoteEndPoint});
+
+            _responsePacketType?.GetProperty("Internal")?.SetValue(_responsePacket, localEndPoint);
+            _responsePacketType?.GetProperty("External")?.SetValue(_responsePacket, remoteEndPoint);
+            _responsePacketSend?.Invoke(_puncher.NatPunchModule, new [] {_responsePacket, server.ExternalAddress});
         }
 
         public void OnNatIntroductionSuccess(IPEndPoint targetEndPoint, NatAddressType type, string token)
@@ -182,7 +213,9 @@ namespace CSM.GS
                 _logger.LogInformation("[{ExternalAddress}] Registered Server: Internal Address={InternalAddress} Token={Token}", Anonymize(remoteEndPoint), Anonymize(localEndPoint), token);
             }
             // Always create new server entry, so that port numbers and the token are updated
-            _gameServers[remoteEndPoint.Address] = new Server(localEndPoint, remoteEndPoint, token);
+            Server server = new(localEndPoint, remoteEndPoint, token);
+            _gameServers[remoteEndPoint.Address] = server;
+            _gameServersByToken[token] = server;
         }
 
         public void SendToServer(IPEndPoint server, ApiCommandBase command)

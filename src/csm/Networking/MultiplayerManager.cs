@@ -69,12 +69,9 @@ namespace CSM.Networking
         /// <summary>
         ///     Starts the client and tries to connect to the given server.
         /// </summary>
-        /// <param name="ipAddress">The server ip address.</param>
-        /// <param name="port">The server port.</param>
-        /// <param name="username">The username to connect with.</param>
-        /// <param name="password">The password to use.</param>
+        /// <param name="config">The client config.</param>
         /// <param name="callback">This callback returns if the connection was successful.</param>
-        public void ConnectToServer(string ipAddress, int port, string username, string password, Action<bool> callback)
+        public void ConnectToServer(ClientConfig config, Action<bool> callback)
         {
             if (CurrentRole == MultiplayerRole.Server)
             {
@@ -91,7 +88,7 @@ namespace CSM.Networking
             new Thread(() =>
             {
                 // Try connect
-                bool isConnected = CurrentClient.Connect(new ClientConfig(ipAddress, port, username, password));
+                bool isConnected = CurrentClient.Connect(config);
 
                 // Set the current role
                 CurrentRole = isConnected ? MultiplayerRole.Client : MultiplayerRole.None;

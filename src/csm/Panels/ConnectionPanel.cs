@@ -14,6 +14,8 @@ namespace CSM.Panels
 
         private UIButton _connectedPlayersButton;
 
+        private UIButton _inviteFriends;
+
         public override void Start()
         {
             // Activates the dragging of the window
@@ -23,7 +25,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             width = 360;
-            height = 320;
+            height = CSM.IsSteamPresent ? 390 : 320;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Handle visible change events
@@ -46,6 +48,16 @@ namespace CSM.Panels
 
             // Connected Players window button
             _connectedPlayersButton = this.CreateButton("Player List", new Vector2(10, -200));
+
+            if (CSM.IsSteamPresent)
+            {
+                // Connected Players window button
+                _inviteFriends = this.CreateButton("Invite Friends", new Vector2(10, -270));
+                _inviteFriends.eventClick += (component, param) =>
+                {
+                    SteamHelpers.Instance.OpenFriendOverlay();
+                };
+            }
 
             _disconnectButton.eventClick += (component, param) =>
             {
