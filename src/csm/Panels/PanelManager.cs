@@ -12,6 +12,9 @@ namespace CSM.Panels
             if (!_uiView)
                 _uiView = UIView.GetAView();
 
+            if (!_uiView)
+                return null; // No ui view available yet
+
             string name = typeof(T).Name;
             return _uiView.FindUIComponent<T>(name);
         }
@@ -37,10 +40,14 @@ namespace CSM.Panels
                 else
                     panel.isVisible = true;
             }
-            else
+            else if (_uiView != null)
             {
                 panel = (T)_uiView.AddUIComponent(typeof(T));
                 panel.name = typeof(T).Name;
+            }
+            else
+            {
+                return null;
             }
             panel.Focus();
 

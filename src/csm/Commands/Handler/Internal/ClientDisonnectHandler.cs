@@ -5,6 +5,8 @@ using CSM.BaseGame.Helpers;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
 using CSM.Networking;
+using ColossalFramework;
+using CSM.BaseGame.Injections.Tools;
 
 namespace CSM.Commands.Handler.Internal
 {
@@ -23,7 +25,8 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.PlayerList.Remove(command.Username);
 
             TransactionHandler.ClearTransactions(command.ClientId);
-            ToolSimulator.RemoveSender(command.ClientId);
+            Singleton<ToolSimulator>.instance.RemoveSender(command.ClientId);
+            Singleton<ToolSimulatorCursorManager>.instance.RemoveCursorView(command.ClientId);
 
             if (CSM.IsSteamPresent)
             {

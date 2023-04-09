@@ -10,6 +10,8 @@ using CSM.Helpers;
 using CSM.Models;
 using CSM.Mods;
 using CSM.Networking;
+using ColossalFramework.Math;
+using CSM.BaseGame.Injections.Tools;
 using LiteNetLib;
 using ProtoBuf.Meta;
 using UnityEngine;
@@ -200,6 +202,7 @@ namespace CSM.Commands
                 // Set type surrogates
                 model[typeof(Vector3)].SetSurrogate(typeof(Vector3Surrogate));
                 model[typeof(NetTool.ControlPoint)].SetSurrogate(typeof(ControlPointSurrogate));
+                model[typeof(Segment3)].SetSurrogate(typeof(Segment3Surrogate));
 
                 // Add Quaternion Surrogate
                 model[typeof(Quaternion)].SetSurrogate(typeof(QuaternionSurrogate));
@@ -207,12 +210,19 @@ namespace CSM.Commands
                 // Add Color Surrogate
                 model[typeof(Color)].SetSurrogate(typeof(ColorSurrogate));
 
+                model[typeof(InstanceID)].SetSurrogate(typeof(InstanceIDSurrogate));
+
                 // Add base command to the protobuf model with all attributes
                 model.Add(typeof(CommandBase), true);
                 MetaType baseCmd = model[typeof(CommandBase)];
 
                 // Lowest id of the subclasses
                 int id = 100;
+                int toolId = 100;
+
+                baseCmd.AddSubType(id++, typeof(ToolCommandBase));
+                model.Add(typeof(ToolCommandBase), true);
+                MetaType baseToolCmd = model[typeof(ToolCommandBase)];
 
                 // Create instances of the handlers, initialize mappings and register command subclasses in the protobuf model
                 foreach (Type type in handlers)
@@ -220,11 +230,17 @@ namespace CSM.Commands
                     CommandHandler handler = (CommandHandler)Activator.CreateInstance(type);
                     _cmdMapping.Add(handler.GetDataType(), handler);
 
-                    // Add subtype to the protobuf model with all attributes
-                    baseCmd.AddSubType(id, handler.GetDataType());
-                    model.Add(handler.GetDataType(), true);
+                    // step through the datatype's superclasses until Command is reached
+                    // at each step register the class's MetaTypes is the ProtoBuff model
 
-                    id++;
+                    if(handler.GetDataType().IsSubclassOf(typeof(ToolCommandBase))) {
+                        baseToolCmd.AddSubType(toolId++, handler.GetDataType());
+                    } else {
+                        baseCmd.AddSubType(id++, handler.GetDataType());
+                    }
+
+                    // Add subtype to the protobuf model with all attributes
+                    model.Add(handler.GetDataType(), true);
                 }
 
                 // Compile the protobuf model

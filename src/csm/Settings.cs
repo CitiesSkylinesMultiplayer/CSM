@@ -15,6 +15,7 @@ namespace CSM
         private const bool DefaultDebugLogging = false;
         private const bool DefaultUseChirper = true;
         private const bool DefaultPrintChirperMsgs = false;
+        private const bool DefaultSkipModCompatibilityChecks = false;
         private const string DefaultLastSeenReleaseNotes = "0.0";
         private const string DefaultApiServer = "api.citiesskylinesmultiplayer.com";
         private const int DefaultApiServerPort = 4240;
@@ -24,14 +25,7 @@ namespace CSM
 
         public bool UseChirper
         {
-            get
-            {
-                if (ModCompat.HasDisableChirperMod)
-                {
-                    return false;
-                }
-                return _useChirper;
-            }
+            get => ModCompat.HasDisableChirperMod ? false : _useChirper;
             set => _useChirper.value = value;
         }
 
@@ -43,6 +37,9 @@ namespace CSM
 
         public readonly SavedString LastSeenReleaseNotes =
             new SavedString(nameof(LastSeenReleaseNotes), SettingsFile, DefaultLastSeenReleaseNotes, true);
+
+        public readonly SavedBool SkipModCompatibilityChecks = 
+            new SavedBool(nameof(SkipModCompatibilityChecks), SettingsFile, DefaultSkipModCompatibilityChecks, true);
 
         public readonly SavedString ApiServer =
             new SavedString(nameof(ApiServer), SettingsFile, DefaultApiServer, true);

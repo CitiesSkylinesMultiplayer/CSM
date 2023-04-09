@@ -17,5 +17,6 @@ namespace CSM.API
         void PrintGameMessage(string msg);
         void PrintGameMessage(Chat.MessageType type, string msg);
         void PrintChatMessage(string username, string msg);
+        string GetCurrentUsername();
     }
 }

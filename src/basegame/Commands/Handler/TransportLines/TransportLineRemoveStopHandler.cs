@@ -4,6 +4,7 @@ using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.TransportLines;
 using CSM.BaseGame.Helpers;
 using CSM.BaseGame.Injections;
+using ColossalFramework;
 
 namespace CSM.BaseGame.Commands.Handler.TransportLines
 {
@@ -11,7 +12,7 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineRemoveStopCommand command)
         {
-            TransportTool tool = ToolSimulator.GetTool<TransportTool>(command.SenderId);
+            TransportTool tool = Singleton<ToolSimulator>.instance.GetTool<TransportTool>(command.SenderId);
 
             tool.m_prefab = PrefabCollection<TransportInfo>.GetPrefab(command.Prefab);
             ReflectionHelper.SetAttr(tool, "m_building", command.Building);

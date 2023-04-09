@@ -4,6 +4,7 @@ using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Buildings;
 using CSM.BaseGame.Helpers;
 using CSM.BaseGame.Injections;
+using ColossalFramework;
 
 namespace CSM.BaseGame.Commands.Handler.Buildings
 {
@@ -11,7 +12,7 @@ namespace CSM.BaseGame.Commands.Handler.Buildings
     {
         protected override void Handle(BuildingToolCreateCommand command)
         {
-            BuildingTool tool = ToolSimulator.GetTool<BuildingTool>(command.SenderId);
+            BuildingTool tool = Singleton<ToolSimulator>.instance.GetTool<BuildingTool>(command.SenderId);
 
             IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartApplying(command.Array16Ids, command.Array32Ids);
@@ -35,6 +36,9 @@ namespace CSM.BaseGame.Commands.Handler.Buildings
             ReflectionHelper.SetAttr(controller, "m_collidingDepth", 1);
 
             ReflectionHelper.Call<IEnumerator>(tool, "CreateBuilding")?.MoveNext();
+
+            ReflectionHelper.SetAttr(controller, "m_collidingDepth", 0);
+            controller.ClearColliding();
 
             ArrayHandler.StopApplying();
             IgnoreHelper.Instance.EndIgnore();

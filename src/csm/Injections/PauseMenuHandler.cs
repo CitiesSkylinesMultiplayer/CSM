@@ -72,7 +72,8 @@ namespace CSM.Injections
                         if (DLCHelper.GetOwnedExpansions() != SteamHelper.ExpansionBitMask.None || DLCHelper.GetOwnedModderPacks() != SteamHelper.ModderPackBitMask.None)
                         {
                             MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
-                            msgPanel.DisplayContentWarning();
+                            if (msgPanel)
+                                msgPanel.DisplayContentWarning();
                         }
                     }
                     else

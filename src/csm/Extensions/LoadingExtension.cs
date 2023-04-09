@@ -52,8 +52,11 @@ namespace CSM.Extensions
             if (string.Compare(strVersion, CSM.Settings.LastSeenReleaseNotes) > 0)
             {
                 MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                panel.DisplayReleaseNotes();
-                CSM.Settings.LastSeenReleaseNotes.value = strVersion;
+                if (panel)
+                {
+                    panel.DisplayReleaseNotes();
+                    CSM.Settings.LastSeenReleaseNotes.value = strVersion;
+                }
             }
         }
 

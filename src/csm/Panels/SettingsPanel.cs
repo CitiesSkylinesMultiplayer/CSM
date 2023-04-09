@@ -38,6 +38,12 @@ namespace CSM.Panels
                 });
             cb.tooltip = "Note: This may cause excessive logging and slow down the game!";
 
+            UICheckBox cb2 = (UICheckBox)advancedGroup.AddCheckbox("Skip mod compatibility checks", settings.SkipModCompatibilityChecks.value,
+                c => {
+                    settings.SkipModCompatibilityChecks.value = c;
+                });
+            cb2.tooltip = "Use this at your own risk! Only applies when hosting";
+
             UITextField urlInput = null;
             urlInput = (UITextField) advancedGroup.AddTextfield("CSM API Server", settings.ApiServer.value, text => {}, url =>
             {
@@ -74,7 +80,8 @@ namespace CSM.Panels
             buttonsGroup.AddButton("Show Release Notes", () =>
             {
                 MessagePanel panel = PanelManager.ShowPanel<MessagePanel>();
-                panel.DisplayReleaseNotes();
+                if (panel)
+                    panel.DisplayReleaseNotes();
             });
 
             buttonsGroup.AddButton("Check for updates", () =>
