@@ -114,7 +114,7 @@ namespace CSM.Injections
             UIPanel pauseUiPanel = UIView.GetAView()?.FindUIComponent("Menu") as UIPanel;
 
             // Set menu height.
-            pauseUiPanel.parent.height = 580;
+            pauseUiPanel.parent.height = 640;
         }
     }
 }
