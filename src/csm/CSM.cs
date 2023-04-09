@@ -2,12 +2,10 @@
 using CitiesHarmony.API;
 using ColossalFramework.IO;
 using CSM.API;
-using CSM.API.Networking;
 using CSM.Commands;
 using CSM.GS.Commands;
 using CSM.Injections;
 using CSM.Mods;
-using CSM.Networking;
 using CSM.Panels;
 using ICities;
 

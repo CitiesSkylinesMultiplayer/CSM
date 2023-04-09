@@ -5,7 +5,6 @@ using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using CSM.API;
 using CSM.API.Commands;
-using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.Networking.Config;
 using CSM.Panels;
