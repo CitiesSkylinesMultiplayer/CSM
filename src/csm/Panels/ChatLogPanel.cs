@@ -526,7 +526,7 @@ namespace CSM.Panels
                     if (UseChirper)
                     {
                         // Write message to Chirper panel
-                        ChirperMessage.ChirpPanel.AddMessage(new ChirperMessage(sender, msg), true);
+                        AddChirperMessage(new ChirperMessage(sender, msg));
                     }
                     else
                     {
@@ -576,6 +576,56 @@ namespace CSM.Panels
         public void HideChirpText()
         {
             ChatTextChirper.Hide();
+        }
+
+        private static void AddChirperMessage(MessageBase message)
+        {
+            if (string.IsNullOrEmpty(message.text))
+                return;
+
+            // Try to append message if previous message was similar
+            UIScrollablePanel messageContainer = ChirpPanel.instance.Find<UIScrollablePanel>("Container");
+            if (messageContainer.childCount > 0)
+            {
+                UIComponent latestElement = messageContainer.components[messageContainer.childCount - 1];
+                if (latestElement.objectUserData is MessageBase oldMsg)
+                {
+                    if (oldMsg.IsSimilarMessage(message))
+                    {
+                        // The following is a replication of the most important features of ChirpPanel::AddMessage
+                        UILabel latestContent = latestElement.Find<UILabel>("Content");
+                        latestContent.text = latestContent.text + "\n" + message.text;
+                        latestElement.FitChildrenVertically(10f);
+                        latestElement.zOrder = int.MaxValue;
+                        messageContainer.ScrollToBottom();
+                        if (ChirpPanel.instance.m_NotificationSound != null)
+                        {
+                            Singleton<AudioManager>.instance.PlaySound(ChirpPanel.instance.m_NotificationSound,
+                                ReflectionHelper.GetAttr<SavedFloat>(ChirpPanel.instance, "m_ChirperAudioVolume").value);
+                        }
+
+                        if (!ChirpPanel.instance.isShowing)
+                        {
+                            int msgCount = (int) ReflectionHelper.GetAttr(ChirpPanel.instance, "m_NewMessageCount");
+                            msgCount++;
+                            ReflectionHelper.SetAttr(ChirpPanel.instance, "m_NewMessageCount", msgCount);
+                            UILabel counter = ChirpPanel.instance.Find<UILabel>("Counter");
+                            counter.Show();
+                            counter.text = msgCount.ToString();
+                        }
+
+                        if (ReflectionHelper.GetAttr<SavedBool>(ChirpPanel.instance, "m_AutoExpand").value)
+                        {
+                            ChirpPanel.instance.Show(ChirpPanel.instance.m_MessageTimeout);
+                        }
+
+                        return;
+                    }
+                }
+            }
+
+            // Alternatively, just add the message
+            ChirpPanel.instance.AddMessage(message, true);
         }
     }
 }
