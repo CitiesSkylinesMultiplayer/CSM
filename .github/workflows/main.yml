@@ -28,7 +28,7 @@ jobs:
     # The version string
     - name: Set Version Environment Variable
       id: csm_version
-      run: echo "version=$(date +'%y%m').${{ github.run_number }} >> $GITHUB_OUTPUT"
+      run: echo "version=$(date +'%y%m').${{ github.run_number }}" >> $GITHUB_OUTPUT
     
     # Update the assembly version to match the csm version
     - name: Update Assembly Version
