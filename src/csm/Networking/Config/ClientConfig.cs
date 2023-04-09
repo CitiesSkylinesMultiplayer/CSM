@@ -17,14 +17,31 @@ namespace CSM.Networking.Config
         /// <param name="password">The password used to connect to the server</param>
         public ClientConfig(string hostAddress, int port, string username, string password)
         {
+            TokenBased = false;
             HostAddress = hostAddress;
             Port = port;
             Username = username;
             Password = password;
         }
 
+        public ClientConfig(string token, string username)
+        {
+            TokenBased = true;
+            Token = token;
+            Username = username;
+        }
+
+        public ClientConfig(string token, string username, string password)
+        {
+            TokenBased = true;
+            Token = token;
+            Username = username;
+            Password = password;
+        }
+
         public ClientConfig()
         {
+            TokenBased = false;
             HostAddress = "localhost";
             Port = 4230;
             Username = "";
@@ -51,5 +68,15 @@ namespace CSM.Networking.Config
         ///     Gets the password used to login to the server (if required).
         /// </summary>
         public string Password;
+
+        /// <summary>
+        ///     If the join process is token based.
+        /// </summary>
+        public bool TokenBased;
+
+        /// <summary>
+        ///     The token used for joining.
+        /// </summary>
+        public string Token;
     }
 }

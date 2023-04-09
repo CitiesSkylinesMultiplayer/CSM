@@ -32,6 +32,9 @@ namespace CSM.Panels
         private ClientConfig _clientConfig;
         private bool _hasRemembered;
 
+        private Action _onStarted = null;
+        private bool _autofilledFields = false;
+
         public override void Start()
         {
             _hasRemembered = ConfigData.Load(ref _clientConfig, ConfigData.ClientFile);
@@ -103,7 +106,7 @@ namespace CSM.Panels
                 MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
             };
 
-            _connectionStatus = this.CreateLabel("Not Connected", new Vector2(10, -420));
+            _connectionStatus = this.CreateLabel("", new Vector2(10, -420));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
@@ -123,14 +126,40 @@ namespace CSM.Panels
                 if (visible)
                 {
                     ModCompat.BuildModInfo(this);
+
+                    if (_autofilledFields)
+                    {
+                        _ipAddressField.text = _clientConfig.HostAddress;
+                        _portField.text = _clientConfig.Port.ToString();
+                        _usernameField.text = _clientConfig.Username;
+                        _passwordField.text = _clientConfig.Password;
+                        _rememberBox.isChecked = _hasRemembered;
+                        _connectionStatus.text = "";
+                    }
                 }
             };
+
+            _onStarted?.Invoke();
         }
 
         private void OnConnectButtonClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            _clientConfig = new ClientConfig(_ipAddressField.text, Int32.Parse(_portField.text), _usernameField.text, _passwordField.text);
-            ConfigData.Save(ref _clientConfig, ConfigData.ClientFile, _rememberBox.isChecked);
+            string ipOrToken = _ipAddressField.text;
+            if (ipOrToken.StartsWith("token:"))
+            {
+                string token = ipOrToken.Split(':')[1];
+                _clientConfig = new ClientConfig(token, _usernameField.text, _passwordField.text);
+            }
+            else
+            {
+                _clientConfig = new ClientConfig(_ipAddressField.text, int.Parse(_portField.text), _usernameField.text,
+                    _passwordField.text);
+
+                if (!_autofilledFields || _rememberBox.isChecked)
+                {
+                    ConfigData.Save(ref _clientConfig, ConfigData.ClientFile, _rememberBox.isChecked);
+                }
+            }
 
             MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
 
@@ -138,7 +167,7 @@ namespace CSM.Panels
             _connectionStatus.text = "Connecting...";
             _troubleshootingButton.isVisible = false;
 
-            if (string.IsNullOrEmpty(_portField.text) || string.IsNullOrEmpty(_ipAddressField.text))
+            if ((!_clientConfig.TokenBased && string.IsNullOrEmpty(_portField.text)) || string.IsNullOrEmpty(_ipAddressField.text))
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Port or IP";
@@ -152,7 +181,7 @@ namespace CSM.Panels
                 return;
             }
 
-            if (!int.TryParse(_portField.text, out int port))
+            if (!int.TryParse(_portField.text, out int port) && !_clientConfig.TokenBased)
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid Port";
@@ -166,8 +195,7 @@ namespace CSM.Panels
                 return;
             }
 
-            // Try connect and get the result
-            MultiplayerManager.Instance.ConnectToServer(_ipAddressField.text, port, _usernameField.text, _passwordField.text, (success) =>
+            MultiplayerManager.Instance.ConnectToServer(_clientConfig, (success) =>
             {
                 ThreadHelper.dispatcher.Dispatch(() =>
                 {
@@ -190,6 +218,59 @@ namespace CSM.Panels
                     }
                 });
             });
+        }
+
+        public void FillFieldsOnError(string token, string username, string errorMsg)
+        {
+            void Action()
+            {
+                _autofilledFields = true;
+
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = errorMsg;
+
+                _ipAddressField.text = $"token:{token}";
+                _portField.text = "<auto>";
+                _usernameField.text = username;
+                _passwordField.text = "";
+                _rememberBox.isChecked = false;
+            }
+
+            if (_connectionStatus != null)
+            {
+                Action();
+            }
+            else
+            {
+                _onStarted = Action;
+            }
+        }
+
+        public void SetConnecting()
+        {
+            void Action()
+            {
+                _autofilledFields = true;
+
+                _connectionStatus.textColor = new Color32(255, 255, 0, 255);
+                _connectionStatus.text = "Connecting...";
+                _troubleshootingButton.isVisible = false;
+
+                _ipAddressField.text = "...";
+                _portField.text = "...";
+                _usernameField.text = "...";
+                _passwordField.text = "...";
+                _rememberBox.isChecked = false;
+            }
+
+            if (_connectionStatus != null)
+            {
+                Action();
+            }
+            else
+            {
+                _onStarted = Action;
+            }
         }
     }
 }

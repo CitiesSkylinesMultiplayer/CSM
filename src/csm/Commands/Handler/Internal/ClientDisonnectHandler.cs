@@ -3,6 +3,7 @@ using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.BaseGame.Helpers;
 using CSM.Commands.Data.Internal;
+using CSM.Helpers;
 using CSM.Networking;
 
 namespace CSM.Commands.Handler.Internal
@@ -23,6 +24,11 @@ namespace CSM.Commands.Handler.Internal
 
             TransactionHandler.ClearTransactions(command.ClientId);
             ToolSimulator.RemoveSender(command.ClientId);
+
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.SetGroupSize(MultiplayerManager.Instance.PlayerList.Count);
+            }
         }
 
         public override void OnClientDisconnect(Player player)

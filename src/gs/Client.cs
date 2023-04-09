@@ -69,7 +69,7 @@ namespace CSM.GS
 
             // Register listener and send request to global server
             _netClient.NatPunchModule.Init(natPunchListener);
-            _netClient.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(_worker.RemoteServerAddress, _worker.ServerPort), target.Address.ToString());
+            _netClient.NatPunchModule.SendNatIntroduceRequest(new IPEndPoint(_worker.RemoteServerAddress, _worker.ServerPort), "ip:" + target.Address);
 
             timeoutWatch.Start();
             // Wait for NatPunchModule responses.

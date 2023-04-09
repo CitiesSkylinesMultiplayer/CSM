@@ -1,6 +1,7 @@
 ﻿using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.Commands.Data.Internal;
+using CSM.Helpers;
 using CSM.Networking;
 
 namespace CSM.Commands.Handler.Internal
@@ -11,6 +12,11 @@ namespace CSM.Commands.Handler.Internal
         {
             MultiplayerManager.Instance.PlayerList.Clear();
             MultiplayerManager.Instance.PlayerList.UnionWith(command.PlayerList);
+
+            if (CSM.IsSteamPresent)
+            {
+                SteamHelpers.Instance.SetGroupSize(MultiplayerManager.Instance.PlayerList.Count);
+            }
         }
 
         public override void OnClientConnect(Player player)

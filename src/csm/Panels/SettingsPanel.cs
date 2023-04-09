@@ -64,6 +64,11 @@ namespace CSM.Panels
                 }).Start();
             });
             urlInput.width = 400;
+            UITextField portInput = (UITextField) advancedGroup.AddTextfield("API Server Port", settings.ApiServerPort.value.ToString(), text => {}, port =>
+            {
+                settings.ApiServerPort.value = int.Parse(port);
+            });
+            portInput.numericalOnly = true;
 
             UIHelperBase buttonsGroup = helper.AddGroup("Buttons");
             buttonsGroup.AddButton("Show Release Notes", () =>
