@@ -26,7 +26,7 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.PlayerList.Add(command.Username);
             if (CSM.IsSteamPresent)
             {
-                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", MultiplayerManager.Instance.PlayerList.Count.ToString());
+                SteamHelpers.Instance.SetGroupSize(MultiplayerManager.Instance.PlayerList.Count);
             }
         }
 

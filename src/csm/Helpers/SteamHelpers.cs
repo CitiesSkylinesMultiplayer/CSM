@@ -15,7 +15,8 @@ namespace CSM.Helpers
 {
     public class SteamHelpers
     {
-        public static SteamHelpers Instance;
+        public static SteamHelpers Instance { get; private set; }
+
         private IntPtr _friendsPtr;
         private Callback<GameRichPresenceJoinRequested_t> _gameRichPresenceJoinRequested;
         private readonly Dictionary<string, string> _richPresenceValues = new Dictionary<string, string>();
@@ -139,14 +140,33 @@ namespace CSM.Helpers
         }
 
         /// <summary>
-        ///     Open the Steam Overlay to the given dialog.
+        ///     Open the Steam Overlay to the friends menu.
         /// </summary>
-        /// <param name="dialog">"friends", "community", "players", "settings", "officialgamegroup", "stats", "achievements"</param>
-        public void OpenSteamOverlay(string dialog)
+        public void OpenFriendOverlay()
         {
             if (_friendsPtr == IntPtr.Zero) return;
 
-            SteamAPI_ISteamFriends_ActivateGameOverlay(_friendsPtr, dialog);
+            SteamAPI_ISteamFriends_ActivateGameOverlay(_friendsPtr, "friends");
+        }
+
+        /// <summary>
+        ///     Set the group size of the steam rich presence.
+        /// </summary>
+        /// <param name="size">The amount of players in the current game session.</param>
+        public void SetGroupSize(int size)
+        {
+            SetRichPresence("steam_player_group_size", size.ToString());
+        }
+
+        /// <summary>
+        ///     Set steam rich presence values when playing on a server.
+        /// </summary>
+        /// <param name="token">The current server's token.</param>
+        public void SetPlayingOnServer(string token)
+        {
+            SetRichPresence("status", "Playing on a CSM server");
+            SetRichPresence("connect", "csm=" + token);
+            SetRichPresence("steam_player_group", token);
         }
 
         /// <summary>
@@ -155,7 +175,7 @@ namespace CSM.Helpers
         /// <param name="key">The key, e.g "steam_player_group"</param>
         /// <param name="value">The value to set.</param>
         /// <exception cref="Exception">If the invocation failed.</exception>
-        public void SetRichPresence(string key, string value)
+        private void SetRichPresence(string key, string value)
         {
             _richPresenceValues[key] = value;
             Log.Debug($"Steam RichPresence: {key}={value}");

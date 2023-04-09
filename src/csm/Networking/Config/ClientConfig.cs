@@ -69,7 +69,14 @@ namespace CSM.Networking.Config
         /// </summary>
         public string Password;
 
+        /// <summary>
+        ///     If the join process is token based.
+        /// </summary>
         public bool TokenBased;
+
+        /// <summary>
+        ///     The token used for joining.
+        /// </summary>
         public string Token;
     }
 }

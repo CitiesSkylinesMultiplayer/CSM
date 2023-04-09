@@ -146,10 +146,8 @@ namespace CSM.Networking
             // Set the steam presence 'connect' key. This allows users to click "Join Game" within the steam overlay.
             if (CSM.IsSteamPresent)
             {
-                SteamHelpers.Instance.SetRichPresence("status", "Playing on a CSM server");
-                SteamHelpers.Instance.SetRichPresence("connect", "csm=" + ServerToken);
-                SteamHelpers.Instance.SetRichPresence("steam_player_group", ServerToken);
-                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", "1");
+                SteamHelpers.Instance.SetPlayingOnServer(ServerToken);
+                SteamHelpers.Instance.SetGroupSize(1);
             }
 
             // Update the console to let the user know the server is running
@@ -381,7 +379,7 @@ namespace CSM.Networking
             CommandInternal.Instance.HandleClientConnect(player);
             if (CSM.IsSteamPresent)
             {
-                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", MultiplayerManager.Instance.PlayerList.Count.ToString());
+                SteamHelpers.Instance.SetGroupSize(MultiplayerManager.Instance.PlayerList.Count);
             }
         }
 
@@ -394,7 +392,7 @@ namespace CSM.Networking
             ToolSimulator.RemoveSender(player.NetPeer.Id);
             if (CSM.IsSteamPresent)
             {
-                SteamHelpers.Instance.SetRichPresence("steam_player_group_size", MultiplayerManager.Instance.PlayerList.Count.ToString());
+                SteamHelpers.Instance.SetGroupSize(MultiplayerManager.Instance.PlayerList.Count);
             }
         }
 

@@ -58,7 +58,7 @@ namespace CSM.Panels
                 _inviteFriends = this.CreateButton("Invite Friends", new Vector2(10, -270));
                 _inviteFriends.eventClick += (component, param) =>
                 {
-                    SteamHelpers.Instance.OpenSteamOverlay("friends");
+                    SteamHelpers.Instance.OpenFriendOverlay();
                 };
             }
 
