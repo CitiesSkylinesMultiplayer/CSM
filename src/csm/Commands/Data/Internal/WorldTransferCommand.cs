@@ -24,7 +24,7 @@ namespace CSM.Commands.Data.Internal
         public int RemainingBytes { get; set; }
         
         /// <summary>
-        ///     Is true, when a new world transfer is started
+        ///     Is true, when a new world transfer is started.
         /// </summary>
         [ProtoMember(3)]
         public bool NewTransfer { get; set; }

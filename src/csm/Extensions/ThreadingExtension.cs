@@ -26,6 +26,8 @@ namespace CSM.Extensions
             // Process changes in the pause state and game speed
             SpeedPauseHelper.SimulationStep();
 
+            // Don't process events while the client is loading the level.
+            // It first needs to be processed in loading extension to make sure the level is fully loaded.
             if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Client ||
                 (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Connected ||
                  MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Downloading))
