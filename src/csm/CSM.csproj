@@ -127,6 +127,7 @@
 		<Compile Include="Helpers\Steamworks\SteamConstants.cs" />
 		<Compile Include="Helpers\Steamworks\SteamEnums.cs" />
 		<Compile Include="Helpers\UiHelper.cs" />
+		<Compile Include="Helpers\WorldFileUtil.cs" />
 		<Compile Include="Injections\ChatHandler.cs" />
 		<Compile Include="Injections\MainMenuHandler.cs" />
 		<Compile Include="Injections\PauseMenuHandler.cs" />
@@ -154,7 +155,7 @@
 		<Compile Include="Patcher.cs" />
 		<Compile Include="Settings.cs" />
 		<Compile Include="Panels\ChatLogPanel.cs" />
-		<Compile Include="Panels\ClientJoinPanel.cs" />
+		<Compile Include="Panels\JoinStatusPanel.cs" />
 		<Compile Include="Panels\SettingsPanel.cs" />
 		<Compile Include="Panels\ConnectionPanel.cs" />
 		<Compile Include="Panels\ManageGamePanel.cs" />

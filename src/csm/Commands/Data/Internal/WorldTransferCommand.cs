@@ -12,9 +12,21 @@ namespace CSM.Commands.Data.Internal
     public class WorldTransferCommand : CommandBase
     {
         /// <summary>
-        ///     The serialized save game.
+        ///     A slice of the serialized save game.
         /// </summary>
         [ProtoMember(1)]
-        public byte[] World { get; set; }
+        public byte[] WorldSlice { get; set; }
+        
+        /// <summary>
+        ///     The remaining bytes of the save game to transmit.
+        /// </summary>
+        [ProtoMember(2)]
+        public int RemainingBytes { get; set; }
+        
+        /// <summary>
+        ///     Is true, when a new world transfer is started
+        /// </summary>
+        [ProtoMember(3)]
+        public bool NewTransfer { get; set; }
     }
 }

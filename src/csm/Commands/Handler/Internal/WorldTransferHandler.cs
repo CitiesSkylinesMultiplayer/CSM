@@ -9,6 +9,8 @@ namespace CSM.Commands.Handler.Internal
 {
     public class WorldTransferHandler : CommandHandler<WorldTransferCommand>
     {
+        public WorldFileCombiner WorldFileCombiner { get; private set; }
+        
         public WorldTransferHandler()
         {
             TransactionCmd = false;
@@ -18,18 +20,36 @@ namespace CSM.Commands.Handler.Internal
         {
             if (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Downloading)
             {
-                Log.Info("World has been received, preparing to load world.");
+                if (WorldFileCombiner == null || command.NewTransfer)
+                {
+                    WorldFileCombiner = new WorldFileCombiner(command.WorldSlice, command.RemainingBytes);
+                }
+                else
+                {
+                    WorldFileCombiner.AddSlice(command.WorldSlice, command.RemainingBytes);
+                }
+                if (WorldFileCombiner.RemainingBytes == 0)
+                {
+                    Log.Info("World has been received, preparing to load world.");
+                    
+                    MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
+                    
+                    MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
+                    
+                    SaveHelpers.LoadLevel(WorldFileCombiner.GetWorldFile());
+                    
+                    MultiplayerManager.Instance.UnblockGame();
+                    
+                    // See LoadingExtension for events after level loaded
 
-                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Loading;
-
-                MultiplayerManager.Instance.CurrentClient.StopMainMenuEventProcessor();
-
-                SaveHelpers.LoadLevel(command.World);
-
-                MultiplayerManager.Instance.UnblockGame();
-
-                // See LoadingExtension for events after level loaded
+                    CleanUp();
+                }
             }
+        }
+
+        public void CleanUp()
+        {
+            WorldFileCombiner = null;
         }
     }
 }

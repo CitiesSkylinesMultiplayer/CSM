@@ -175,6 +175,16 @@ namespace CSM.Commands
             return handler;
         }
 
+        /// <summary>
+        ///     This method is used to get the handler of given command.
+        /// </summary>
+        /// <returns>The handler for the given command.</returns>
+        public H GetCommandHandler<T, H>() where T : CommandBase where H: CommandHandler<T>
+        {
+            _cmdMapping.TryGetValue(typeof(T), out CommandHandler handler);
+            return (H)handler;
+        }
+
         public void RefreshModel()
         {
             _cmdMapping.Clear();

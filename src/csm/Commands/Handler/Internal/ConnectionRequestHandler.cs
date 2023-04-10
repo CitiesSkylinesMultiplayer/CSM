@@ -213,10 +213,22 @@ namespace CSM.Commands.Handler.Internal
                     Thread.Sleep(10);
                 }
 
-                CommandInternal.Instance.SendToClient(newPlayer, new WorldTransferCommand
+                WorldFileSlicer slicer = new WorldFileSlicer(SaveHelpers.GetWorldFile());
+                bool first = true;
+
+                while (slicer.RemainingBytes > 0)
                 {
-                    World = SaveHelpers.GetWorldFile()
-                });
+                    CommandInternal.Instance.SendToClient(newPlayer, new WorldTransferCommand
+                    {
+                        WorldSlice = slicer.Take(),
+                        RemainingBytes = slicer.RemainingBytes,
+                        NewTransfer = first,
+                    });
+                    if (first)
+                    {
+                        first = false;
+                    }
+                }
 
                 newPlayer.Status = ClientStatus.Loading;
             }).Start();
