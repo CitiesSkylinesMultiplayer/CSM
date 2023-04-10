@@ -22,6 +22,10 @@ namespace CSM.Commands.Handler.Internal
             {
                 if (WorldFileCombiner == null || command.NewTransfer)
                 {
+                    if (!command.NewTransfer)
+                    {
+                        Log.Error("Initiated new world transfer without new transfer flag.");
+                    }
                     WorldFileCombiner = new WorldFileCombiner(command.WorldSlice, command.RemainingBytes);
                 }
                 else

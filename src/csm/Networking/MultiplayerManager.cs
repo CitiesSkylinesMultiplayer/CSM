@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using ColossalFramework.Threading;
-using ColossalFramework.UI;
 using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Networking.Status;
@@ -195,8 +194,6 @@ namespace CSM.Networking
 
         public void UnblockGame()
         {
-            if (!GameBlocked)
-                return;
             QueueMainThread(PanelManager.HidePanel<JoinStatusPanel>);
             GameBlocked = false;
         }

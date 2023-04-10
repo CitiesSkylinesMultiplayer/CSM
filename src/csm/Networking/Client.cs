@@ -17,7 +17,6 @@ using CSM.Commands.Handler.Internal;
 using CSM.Helpers;
 using CSM.Mods;
 using CSM.Networking.Config;
-using CSM.Panels;
 using CSM.Util;
 using LiteNetLib;
 
@@ -343,7 +342,16 @@ namespace CSM.Networking
 
             if (downloading)
             {
-                PanelManager.HidePanel<JoinStatusPanel>();
+                MultiplayerManager.Instance.UnblockGame();
+                // Unload the level when resyncing
+                if (Singleton<LoadingManager>.instance.m_loadingComplete)
+                {
+                    Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                    {
+                        // Go back to the main menu after disconnecting
+                        Singleton<LoadingManager>.instance.UnloadLevel();
+                    });
+                }
             }
 
             Log.Info("Disconnected from server");

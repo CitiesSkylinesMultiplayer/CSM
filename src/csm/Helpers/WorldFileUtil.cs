@@ -1,4 +1,5 @@
 using System;
+using CSM.API;
 
 namespace CSM.Helpers
 {
@@ -19,6 +20,10 @@ namespace CSM.Helpers
         {
             int start = _worldFile.Length - RemainingBytes;
             Array.Copy(slice, 0, _worldFile, start, slice.Length);
+            if (RemainingBytes - slice.Length != remainingBytes)
+            {
+                Log.Warn("Calculated and received remaining bytes didn't match.");
+            }
             RemainingBytes = remainingBytes;
         }
 
@@ -95,7 +100,7 @@ namespace CSM.Helpers
                 case 12:
                     return "T";
                 case 15:
-                    return "E";
+                    return "P";
                 default:
                     return "";
             }

@@ -42,6 +42,12 @@ namespace CSM.BaseGame.Injections.Tools
             }
         }
 
+        public void OnDestroy()
+        {
+            Destroy(_playerNameLabel);
+            Destroy(_cursorImage);
+        }
+
         public void Update()
         {
             if (!(_cursorWorldPosition.sqrMagnitude > float.Epsilon)) return;
