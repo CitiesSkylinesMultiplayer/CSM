@@ -118,6 +118,7 @@ namespace CSM.Helpers
                         ThreadHelper.dispatcher.Dispatch(() =>
                         {
                             MultiplayerManager.Instance.BlockGameFirstJoin();
+                            PanelManager.HidePanel<JoinGamePanel>();
                         });
                     }
                     else

@@ -20,11 +20,16 @@ namespace CSM.BaseGame.Injections.Tools
         }
 
         public void RemoveCursorView(int sender) {
+            Destroy(_playerCursorViews[sender]);
             _playerCursorViews.Remove(sender);
         }
 
         public void Clear()
         {
+            foreach (PlayerCursorManager playerCursorManager in _playerCursorViews.Values)
+            {
+                Destroy(playerCursorManager);
+            }
             _playerCursorViews.Clear();
         }
 

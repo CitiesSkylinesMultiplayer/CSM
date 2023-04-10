@@ -32,7 +32,7 @@ namespace CSM.Commands.Handler.Internal
 
         public override void OnClientConnect(Player player)
         {
-            Command.SendToClients(new ClientConnectCommand { Username = player.Username });
+            CommandInternal.Instance.SendToOtherClients(new ClientConnectCommand { Username = player.Username }, player);
         }
     }
 }

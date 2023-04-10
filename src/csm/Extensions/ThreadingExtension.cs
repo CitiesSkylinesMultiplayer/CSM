@@ -1,5 +1,6 @@
 ﻿using System;
 using CSM.API.Commands;
+using CSM.API.Networking.Status;
 using CSM.BaseGame.Injections;
 using CSM.Commands;
 using CSM.Helpers;
@@ -25,8 +26,15 @@ namespace CSM.Extensions
             // Process changes in the pause state and game speed
             SpeedPauseHelper.SimulationStep();
 
-            // Process events of the network lib
-            MultiplayerManager.Instance.ProcessEvents();
+            // Don't process events while the client is loading the level.
+            // It first needs to be processed in loading extension to make sure the level is fully loaded.
+            if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Client ||
+                (MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Connected ||
+                 MultiplayerManager.Instance.CurrentClient.Status == ClientStatus.Downloading))
+            {
+                // Process events of the network lib
+                MultiplayerManager.Instance.ProcessEvents();
+            }
         }
 
         public override void OnAfterSimulationTick()

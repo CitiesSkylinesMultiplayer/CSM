@@ -29,6 +29,15 @@ namespace CSM.Panels
             return ShowPanel<T>(false);
         }
 
+        public static void HidePanel<T>() where T : UIComponent
+        {
+            T panel = GetPanel<T>();
+            if (panel)
+            {
+                panel.isVisible = false;
+            }
+        }
+
         private static T ShowPanel<T>(bool toggle) where T : UIComponent
         {
             T panel = GetPanel<T>();

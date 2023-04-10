@@ -18,6 +18,7 @@ using CSM.Util;
 using LiteNetLib;
 using Open.Nat;
 using ColossalFramework;
+using CSM.BaseGame.Injections.Tools;
 using CommandReceiver = CSM.Commands.CommandReceiver;
 
 namespace CSM.Networking
@@ -391,6 +392,7 @@ namespace CSM.Networking
             CommandInternal.Instance.HandleClientDisconnect(player);
             TransactionHandler.ClearTransactions(player.NetPeer.Id);
             Singleton<ToolSimulator>.instance.RemoveSender(player.NetPeer.Id);
+            Singleton<ToolSimulatorCursorManager>.instance.RemoveCursorView(player.NetPeer.Id);
 
             if (CSM.IsSteamPresent)
             {

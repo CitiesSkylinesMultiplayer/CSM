@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using ColossalFramework.Threading;
-using ColossalFramework.UI;
 using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Networking.Status;
@@ -132,15 +131,27 @@ namespace CSM.Networking
             {
                 case MultiplayerRole.Client:
                     CurrentClient.Disconnect();
-                    Chat.Instance.PrintGameMessage("Disconnected from server.");
+                    Chat.Instance?.PrintGameMessage("Disconnected from server.");
                     break;
 
                 case MultiplayerRole.Server:
                     CurrentServer.StopServer();
-                    Chat.Instance.PrintGameMessage("Server stopped.");
+                    Chat.Instance?.PrintGameMessage("Server stopped.");
                     break;
             }
             CurrentRole = MultiplayerRole.None;
+        }
+        
+        /// <summary>
+        ///     Stops the client on disconnect event
+        /// </summary>
+        public void StopClientOnDisconnect()
+        {
+            if (CurrentRole == MultiplayerRole.Client)
+            {
+                CurrentClient.Disconnect(false);
+                CurrentRole = MultiplayerRole.None;
+            }
         }
 
         public bool IsConnected()
@@ -154,50 +165,36 @@ namespace CSM.Networking
             BlockGame(true, CurrentClient.Config.Username, false);
         }
 
-        public void BlockGame(string JoiningUsername)
+        public void BlockGame(string joiningUsername)
         {
-            BlockGame(false, JoiningUsername, false);
+            BlockGame(false, joiningUsername, false);
         }
 
         public void BlockGameFirstJoin()
         {
-            BlockGame(false, CurrentClient.Config.Username, true);
+            BlockGame(true, CurrentClient.Config.Username, true);
         }
 
-        private void BlockGame(bool IsSelf, string JoiningUsername, bool IsFirstJoin)
+        private void BlockGame(bool isSelf, string joiningUsername, bool isFirstJoin)
         {
             if (GameBlocked)
                 return;
             QueueMainThread(() =>
             {
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
-                if (clientJoinPanel == null)
-                {
-                    clientJoinPanel = (ClientJoinPanel)UIView.GetAView().AddUIComponent(typeof(ClientJoinPanel));
-                }
+                JoinStatusPanel joinStatusPanel = PanelManager.ShowPanel<JoinStatusPanel>();
 
-                clientJoinPanel.IsSelf = IsSelf;
-                clientJoinPanel.JoiningUsername = JoiningUsername;
-                clientJoinPanel.IsFirstJoin = IsFirstJoin;
-                clientJoinPanel.ShowPanel();
+                joinStatusPanel.IsSelf = isSelf;
+                joinStatusPanel.JoiningUsername = joiningUsername;
+                joinStatusPanel.IsFirstJoin = isFirstJoin;
             });
 
-            if (!IsFirstJoin)
+            if (!isFirstJoin)
                 GameBlocked = true;
         }
 
         public void UnblockGame()
         {
-            if (!GameBlocked)
-                return;
-            QueueMainThread(() =>
-            {
-                ClientJoinPanel clientJoinPanel = UIView.GetAView().FindUIComponent<ClientJoinPanel>("ClientJoinPanel");
-                if (clientJoinPanel != null)
-                {
-                    clientJoinPanel.Hide();
-                }
-            });
+            QueueMainThread(PanelManager.HidePanel<JoinStatusPanel>);
             GameBlocked = false;
         }
 

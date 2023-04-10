@@ -13,6 +13,7 @@ using CSM.API.Networking.Status;
 using CSM.BaseGame.Helpers;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
+using CSM.Commands.Handler.Internal;
 using CSM.Helpers;
 using CSM.Mods;
 using CSM.Networking.Config;
@@ -110,6 +111,12 @@ namespace CSM.Networking
             // Set the configuration
             Config = clientConfig;
             ClientPlayer.Username = Config.Username;
+            
+            // Stop the client, if client failed stopping
+            if (_netClient.IsRunning)
+            {
+                _netClient.Stop();
+            }
 
             // Start the client, if client setup fails, return out and
             // tell the user
@@ -301,16 +308,23 @@ namespace CSM.Networking
         /// <summary>
         ///     Attempt to disconnect from the server
         /// </summary>
-        public void Disconnect()
+        public void Disconnect(bool stopPeer = true)
         {
-            bool needsUnload = (Status == ClientStatus.Connected);
+            // Unloads the level when a Client is connected and unloads the level, if the client times out while loading
+            // the level. The level is unloaded after the loading of level, because there is no event processing while
+            // loading the level
+            bool needsUnload = Status == ClientStatus.Connected || Status == ClientStatus.Loading;
+            bool downloading = Status == ClientStatus.Downloading;
 
             // Update status and stop client
             Status = ClientStatus.Disconnected;
-            _netClient.Stop();
+            if (stopPeer)
+                _netClient.Stop();
+            StopMainMenuEventProcessor();
             MultiplayerManager.Instance.PlayerList.Clear();
             TransactionHandler.ClearTransactions();
             Singleton<ToolSimulator>.instance.Clear();
+            CommandInternal.Instance.GetCommandHandler<WorldTransferCommand, WorldTransferHandler>().CleanUp();
 
             if (CSM.IsSteamPresent)
             {
@@ -324,6 +338,20 @@ namespace CSM.Networking
                     // Go back to the main menu after disconnecting
                     Singleton<LoadingManager>.instance.UnloadLevel();
                 });
+            }
+
+            if (downloading)
+            {
+                MultiplayerManager.Instance.UnblockGame();
+                // Unload the level when resyncing
+                if (Singleton<LoadingManager>.instance.m_loadingComplete)
+                {
+                    Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                    {
+                        // Go back to the main menu after disconnecting
+                        Singleton<LoadingManager>.instance.UnloadLevel();
+                    });
+                }
             }
 
             Log.Info("Disconnected from server");
@@ -433,8 +461,12 @@ namespace CSM.Networking
             }
 
             // If we are connected, disconnect
-            if (Status == ClientStatus.Downloading || Status == ClientStatus.Loading || Status == ClientStatus.Connected)
-                MultiplayerManager.Instance.StopEverything();
+            if (Status == ClientStatus.Downloading || Status == ClientStatus.Loading ||
+                Status == ClientStatus.Connected)
+            {
+                MultiplayerManager.Instance.StopClientOnDisconnect();
+            }
+
 
             // In the case of ClientStatus.Connecting, this also ends the wait loop
             Status = ClientStatus.Disconnected;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using ColossalFramework;
 using ColossalFramework.UI;
 using CSM.API.Commands;
 using CSM.API.Networking.Status;
@@ -30,15 +31,26 @@ namespace CSM.Extensions
         {
             base.OnLevelLoaded(mode);
 
+            // When Client loads level then we process events to check if we are timed out while loading (not Client
+            // anymore). After that we return, because Client disconnect unloads level.
+            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
+            {
+                Singleton<SimulationManager>.instance.m_ThreadingWrapper.QueueSimulationThread(() =>
+                {
+                    MultiplayerManager.Instance.ProcessEvents();
+                    if (MultiplayerManager.Instance.CurrentRole != MultiplayerRole.Client)
+                    {
+                        return;
+                    }
+
+                    MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
+                    CommandInternal.Instance.SendToServer(new ClientLevelLoadedCommand());
+                });
+            }
+
             ModSupport.Instance.OnLevelLoaded(mode);
 
             ResetData();
-
-            if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)
-            {
-                MultiplayerManager.Instance.CurrentClient.Status = ClientStatus.Connected;
-                CommandInternal.Instance.SendToServer(new ClientLevelLoadedCommand());
-            }
 
             // Add the chat log
             UIView.GetAView().AddUIComponent(typeof(ChatLogPanel));
