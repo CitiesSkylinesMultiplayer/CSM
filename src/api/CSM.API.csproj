@@ -33,14 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chat.cs" />
@@ -57,11 +50,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="protobuf-net">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\assemblies\protobuf-net.dll</HintPath>
+    </Reference>
     <PackageReference Include="LiteNetLib">
       <Version>0.9.4</Version>
-    </PackageReference>
-    <PackageReference Include="protobuf-net">
-      <Version>2.4.7</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -189,14 +189,7 @@ If ($Install)
 
     # Copy the required files
     Write-Host "[CSM Install Script] Copying required files..."
-    Copy-Item -Path "$($OutputDirectory)$($Sep)LiteNetLib.dll"        -Destination "$($ModDirectory)$($Sep)LiteNetLib.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)protobuf-net.dll"      -Destination "$($ModDirectory)$($Sep)protobuf-net.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.dll"               -Destination "$($ModDirectory)$($Sep)CSM.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.API.dll"           -Destination "$($ModDirectory)$($Sep)CSM.API.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)CSM.BaseGame.dll"      -Destination "$($ModDirectory)$($Sep)CSM.BaseGame.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)Open.Nat.dll"          -Destination "$($ModDirectory)$($Sep)Open.Nat.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)System.Threading.dll"  -Destination "$($ModDirectory)$($Sep)System.Threading.dll" -Force
-    Copy-Item -Path "$($OutputDirectory)$($Sep)CitiesHarmony.API.dll" -Destination "$($ModDirectory)$($Sep)CitiesHarmony.API.dll" -Force
+    Copy-Item -Path "$($OutputDirectory)$($Sep)*.dll" -Destination "$($ModDirectory)" -Force
 
     # Done
     Write-Host "[CSM Install Script] Completed Copy"

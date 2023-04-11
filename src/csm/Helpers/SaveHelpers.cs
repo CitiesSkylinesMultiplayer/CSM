@@ -61,6 +61,9 @@ namespace CSM.Helpers
 
             // Load the package
             Package package = new Package(SYNC_NAME, world);
+            object memoryPackage = ReflectionHelper.GetAttr(package, "m_PackageImplementation");
+            // Set package path to empty string, otherwise Cities throws an exception sporadically
+            ReflectionHelper.SetAttr(memoryPackage, "m_PackagePath", "");
 
             // Ensure that the LoadingManager is ready.
             // Don't know if thats really necessary but doesn't hurt either. - root#0042

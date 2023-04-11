@@ -9,7 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-      <PackageReference Include="protobuf-net" Version="2.4.6" />
+      <PackageReference Include="protobuf-net" Version="2.4.8" />
       <PackageReference Include="LiteNetLib" Version="0.9.4" />
     </ItemGroup>
 </Project>

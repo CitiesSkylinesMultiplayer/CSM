@@ -16,9 +16,9 @@ using CSM.Helpers;
 using CSM.Networking.Config;
 using CSM.Util;
 using LiteNetLib;
-using Open.Nat;
 using ColossalFramework;
 using CSM.BaseGame.Injections.Tools;
+using Open.Nat;
 using CommandReceiver = CSM.Commands.CommandReceiver;
 
 namespace CSM.Networking
@@ -120,12 +120,8 @@ namespace CSM.Networking
             // Second strategy for NAT traversal: Upnp
             try
             {
-                // This async stuff is nasty, but we have to target .net 3.5 (unless cities skylines upgrades to something higher).
                 NatDiscoverer nat = new NatDiscoverer();
-                CancellationTokenSource cts = new CancellationTokenSource();
-                cts.CancelAfter(5000);
-
-                nat.DiscoverDeviceAsync(PortMapper.Upnp, cts).ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+                nat.DiscoverDeviceAsync().ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
                     Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
                 AutomaticSuccess = true;
             }
