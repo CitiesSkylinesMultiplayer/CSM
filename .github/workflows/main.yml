@@ -52,16 +52,6 @@ jobs:
     - name: Build Mod
       run: powershell.exe -NoP -NonI -Command "../scripts/build.ps1 -Build"
       working-directory: src
-    
-    # Delete files only used for building
-    - name: Delete unused artifacts
-      working-directory: src/csm/bin/Release
-      run: | 
-        del Assembly-CSharp.dll
-        del ColossalManaged.dll
-        del ICities.dll
-        del UnityEngine.dll
-        del UnityEngine.UI.dll
 
     # Publish artifacts
     - name: Upload mod DLLs

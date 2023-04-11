@@ -20,7 +20,6 @@ namespace CSM.Helpers
         private IntPtr _friendsPtr;
         private Callback<GameRichPresenceJoinRequested_t> _gameRichPresenceJoinRequested;
         private readonly Dictionary<string, string> _richPresenceValues = new Dictionary<string, string>();
-        private Thread _refreshThread;
         private static bool _use64Bit = true;
 
         public static bool Init()
@@ -46,15 +45,17 @@ namespace CSM.Helpers
 
                 Instance._gameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
 
-                Instance._refreshThread = new Thread(() =>
+                new Thread(() =>
                 {
-                    while (true)
+                    while (Instance._friendsPtr != IntPtr.Zero)
                     {
                         Instance.RefreshRichPresence();
                         Thread.Sleep(TimeSpan.FromMinutes(2));
                     }
-                });
-                Instance._refreshThread.Start();
+                }).Start();
+
+                // Detect when Cities shuts down the steam API so we don't act on freed memory
+                PlatformService.eventPlatformServiceShutdown += Instance.Shutdown;
 
                 return true;
             }
@@ -135,9 +136,11 @@ namespace CSM.Helpers
 
         public void Shutdown()
         {
-            _gameRichPresenceJoinRequested.Unregister();
-            _refreshThread?.Abort();
-            // We can't shutdown the Steam API here as Cities might continue using it (also it crashes the game)
+            if (_friendsPtr != IntPtr.Zero)
+            {
+                _gameRichPresenceJoinRequested.Unregister();
+                _friendsPtr = IntPtr.Zero;
+            }
         }
 
         /// <summary>
@@ -195,6 +198,8 @@ namespace CSM.Helpers
         public void ClearRichPresence()
         {
             _richPresenceValues.Clear();
+            if (_friendsPtr == IntPtr.Zero) return;
+
             SteamAPI_ISteamFriends_ClearRichPresence(_friendsPtr);
         }
 

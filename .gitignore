@@ -262,4 +262,5 @@ __pycache__/
 
 
 .vscode/
-assemblies/
+assemblies/*
+!assemblies/protobuf-net.dll
