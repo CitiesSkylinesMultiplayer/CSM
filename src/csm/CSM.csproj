@@ -147,6 +147,7 @@
 		<Compile Include="Networking\Config\ClientConfig.cs" />
 		<Compile Include="Networking\Config\ConfigData.cs" />
 		<Compile Include="Networking\Config\ServerConfig.cs" />
+		<Compile Include="Networking\CSMPlayer.cs" />
 		<Compile Include="Networking\IpAddress.cs" />
 		<Compile Include="Networking\MultiplayerManager.cs" />
 		<Compile Include="Networking\Server.cs" />

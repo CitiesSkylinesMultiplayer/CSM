@@ -36,10 +36,11 @@ namespace CSM.Commands.Handler.Internal
 
         public override void OnClientDisconnect(Player player)
         {
+            int clientId = player is CSMPlayer csmPlayer ? csmPlayer.NetPeer.Id : -2;
             Command.SendToClients(new ClientDisconnectCommand
             {
                 Username = player.Username,
-                ClientId = player.NetPeer.Id
+                ClientId = clientId
             });
         }
     }

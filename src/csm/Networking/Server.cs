@@ -35,14 +35,14 @@ namespace CSM.Networking
         private int _keepAlive = 1;
         
         // Connected clients
-        public Dictionary<int, Player> ConnectedPlayers { get; } = new Dictionary<int, Player>();
+        public Dictionary<int, CSMPlayer> ConnectedPlayers { get; } = new Dictionary<int, CSMPlayer>();
 
         /// <summary>
         ///     Get the Player object of the server host
         /// </summary>
-        public Player HostPlayer { get { return _hostPlayer; } }
+        public CSMPlayer HostPlayer { get { return _hostPlayer; } }
         // The player instance for the host player
-        private Player _hostPlayer;
+        private CSMPlayer _hostPlayer;
 
         // Config options for server
         public ServerConfig Config { get; private set; }
@@ -137,7 +137,7 @@ namespace CSM.Networking
             Status = ServerStatus.Running;
 
             // Initialize host player
-            _hostPlayer = new Player(Config.Username);
+            _hostPlayer = new CSMPlayer(Config.Username);
             _hostPlayer.Status = ClientStatus.Connected;
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
@@ -333,7 +333,7 @@ namespace CSM.Networking
 
         private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
         {
-            if (!ConnectedPlayers.TryGetValue(peer.Id, out Player player))
+            if (!ConnectedPlayers.TryGetValue(peer.Id, out CSMPlayer player))
                 return;
 
             player.Latency = latency;
@@ -341,7 +341,7 @@ namespace CSM.Networking
 
         private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
         {
-            if (!ConnectedPlayers.TryGetValue(peer.Id, out Player player))
+            if (!ConnectedPlayers.TryGetValue(peer.Id, out CSMPlayer player))
                 return;
 
             Log.Info($"Player {player.Username} lost connection! Reason: {disconnectInfo.Reason}");
@@ -381,7 +381,7 @@ namespace CSM.Networking
             }
         }
 
-        public void HandlePlayerDisconnect(Player player)
+        public void HandlePlayerDisconnect(CSMPlayer player)
         {
             MultiplayerManager.Instance.PlayerList.Remove(player.Username);
             this.ConnectedPlayers.Remove(player.NetPeer.Id);
@@ -408,7 +408,7 @@ namespace CSM.Networking
         /// <summary>
         ///     Get the Player object by username. Warning, expensive call!!!
         /// </summary>
-        public Player GetPlayerByUsername(string username)
+        public CSMPlayer GetPlayerByUsername(string username)
         {
             if (username == HostPlayer.Username)
                 return HostPlayer;

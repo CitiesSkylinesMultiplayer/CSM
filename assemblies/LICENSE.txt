@@ -1,0 +1,9 @@
+protobuf-net.dll was built from https://github.com/protobuf-net/protobuf-net on tag 2.4.8
+with the following the following config changes:
+FeatureServiceModel = false
+FeatureServiceModelConfiguration = false
+PlatformXmlSerializer = false
+PlatformBinaryFormatter = false
+
+protobuf-net is licensed under the Apache License, Version 2.0.
+See https://github.com/protobuf-net/protobuf-net/blob/main/Licence.txt

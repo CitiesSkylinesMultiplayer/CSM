@@ -264,3 +264,4 @@ __pycache__/
 .vscode/
 assemblies/*
 !assemblies/protobuf-net.dll
+!assemblies/LICENSE.txt
