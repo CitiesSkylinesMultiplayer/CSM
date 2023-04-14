@@ -152,7 +152,7 @@ namespace CSM.Commands.Handler.Internal
             }
 
             // Add the new player as a connected player
-            Player newPlayer = new Player(peer, command.Username);
+            CSMPlayer newPlayer = new CSMPlayer(peer, command.Username);
             MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[peer.Id] = newPlayer;
 
             // Send the result command

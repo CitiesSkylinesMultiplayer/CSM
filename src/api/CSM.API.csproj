@@ -54,9 +54,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\assemblies\protobuf-net.dll</HintPath>
     </Reference>
-    <PackageReference Include="LiteNetLib">
-      <Version>0.9.4</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

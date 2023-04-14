@@ -51,7 +51,14 @@ namespace CSM.Commands
         /// <param name="command">The command to send.</param>
         public void SendToClient(Player player, CommandBase command)
         {
-            SendToClient(player.NetPeer, command);
+            if (player is CSMPlayer csmPlayer)
+            {
+                SendToClient(csmPlayer.NetPeer, command);
+            }
+            else
+            {
+                Log.Warn("Trying to send packet to non-csm player, ignoring.");
+            }
         }
 
         /// <summary>
@@ -78,7 +85,7 @@ namespace CSM.Commands
         /// <param name="exclude">The player to not send the packet to.</param>
         public void SendToOtherClients(CommandBase command, Player exclude)
         {
-            foreach (Player player in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
+            foreach (CSMPlayer player in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
             {
                 if (player.Equals(exclude))
                     continue;

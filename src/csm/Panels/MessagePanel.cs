@@ -189,11 +189,22 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: November 15th, 2022\n\n" +
+                             "Last Update: April 14th, 2023\n\n" +
                              "- Features:\n" +
-                             "  - Support Roads and Vehicles Update\n\n" +
-                             " - Fixes:\n" +
-                             "  - Ignore order of mods for compatibility\n";
+                             "  - Better NAT traversal, now using our API server\n" +
+                             "    to negotiate connections\n" +
+                             "  -> This means you should no longer need\n" +
+                             "     Hamachi or similar VPN solutions!\n" +
+                             "     (Tell us on Discord about your experience)\n\n" +
+                             "  - You can now join using the Steam friends menu\n" +
+                             "  - New player cursors show the mouse position\n" +
+                             "    and current tool of other players\n" +
+                             "  - Save game download progress is now shown\n" +
+                             "  - Similar chat messages are now merged\n\n" +
+                             "- Fixes:\n" +
+                             "  - Handle timeouts while joining correctly\n" +
+                             "  - Fix several exceptions from the log\n" +
+                             "  - Fix some game crashes";
             SetMessage(message);
 
             Show(true);

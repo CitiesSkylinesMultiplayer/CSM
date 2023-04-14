@@ -1,5 +1,4 @@
 ﻿using CSM.API.Networking.Status;
-using LiteNetLib;
 
 namespace CSM.API.Networking
 {
@@ -7,24 +6,17 @@ namespace CSM.API.Networking
     {
         public string Username { get; set; }
 
-        public NetPeer NetPeer { get; set; }
-
         public long Latency { get; set; }
 
         public ClientStatus Status { get; set; }
 
-        public Player(NetPeer peer, string username)
+        public Player(string username)
         {
             Username = username;
-            NetPeer = peer;
             Latency = -1;
         }
 
-        public Player(string username) : this(null, username)
-        {
-        }
-
-        public Player() : this(null, null)
+        public Player()
         {
         }
     }
