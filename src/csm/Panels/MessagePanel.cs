@@ -189,7 +189,7 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: April 12th, 2023\n\n" +
+                             "Last Update: April 14th, 2023\n\n" +
                              "- Features:\n" +
                              "  - Better NAT traversal, now using our API server\n" +
                              "    to negotiate connections\n" +
