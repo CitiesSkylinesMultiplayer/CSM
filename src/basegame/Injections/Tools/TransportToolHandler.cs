@@ -76,11 +76,12 @@ namespace CSM.BaseGame.Injections.Tools
     {
         protected override void Configure(TransportTool tool, ToolController toolController, PlayerTransportToolCommand command) {
             // TODO: somehow force the rendering to occur even when clients aren't viewing the transport layer
-            tool.m_prefab = PrefabCollection<TransportInfo>.GetPrefab(command.TransportInfo);
+            // TODO: Implement this correctly, the following breaks our transport line synchronisation
+            /*tool.m_prefab = PrefabCollection<TransportInfo>.GetPrefab(command.TransportInfo);
             ReflectionHelper.SetAttr(tool, "m_lastEditLine", command.LastEditLine);
             ReflectionHelper.SetAttr(tool, "m_hoverStopIndex", command.HoverStopIndex);
             ReflectionHelper.SetAttr(tool, "m_hoverSegmentIndex", command.HoverSegmentIndex);
-            ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);
+            ReflectionHelper.SetAttr(tool, "m_hitPosition", command.HitPosition);*/
         }
 
         protected override CursorInfo GetCursorInfo(TransportTool tool)
