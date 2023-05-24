@@ -402,7 +402,8 @@ namespace CSM.Networking
         /// </summary>
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
         {
-            Log.Error($"Received an error from {endpoint.Address}:{endpoint.Port}. Code: {socketError}");
+            string source = endpoint != null ? $"{endpoint.Address}:{endpoint.Port}" : "<Unconnected>";
+            Log.Error($"Received an error from {source}. Code: {socketError}");
         }
 
         /// <summary>

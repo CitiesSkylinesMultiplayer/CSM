@@ -113,9 +113,9 @@ namespace CSM.Panels
             Show(true);
         }
 
-        private string GetDlcName(DLCPanelNew panel, SteamHelper.DLC dlc)
+        private string GetDlcName(DLCList list, SteamHelper.DLC dlc)
         {
-            string dlcName = panel.FindLocalizedDLCName(dlc);
+            string dlcName = list.FindLocalizedDLCName(dlc);
             if (string.IsNullOrEmpty(dlcName))
             {
                 // Default to enum item name
@@ -129,7 +129,7 @@ namespace CSM.Panels
         {
             SetTitle("DLC Mismatch");
 
-            DLCPanelNew dlcPanel = FindObjectOfType<DLCPanelNew>();
+            DLCList dlcPanel = FindObjectOfType<DLCList>();
 
             string message = "Your DLCs don't match with the server's DLCs\n\n";
             if (compare.ClientMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ClientMissingModderPack != SteamHelper.ModderPackBitMask.None)
