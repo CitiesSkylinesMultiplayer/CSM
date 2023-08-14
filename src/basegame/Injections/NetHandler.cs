@@ -59,7 +59,8 @@ namespace CSM.BaseGame.Injections
                 AutoFix = autoFix,
                 Invert = invert,
                 SwitchDir = switchDir,
-                RelocateBuildingId = relocateBuildingID
+                RelocateBuildingId = relocateBuildingID,
+                ZoneGridFlags = NetTool.m_zoneGridFlags
             });
         }
 
