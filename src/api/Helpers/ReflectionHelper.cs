@@ -35,8 +35,19 @@ namespace CSM.API.Helpers
 
         public static object Call(Type type, string name, params object[] param)
         {
-            return type.GetMethod(name, AllAccessFlags, null, param.Select(p => p.GetType()).ToArray(), null)
-                ?.Invoke(null, param);
+            return Call(type, name, param.Select(p => p.GetType()).ToArray(), param);
+        }
+
+        public static object Call(Type type, string name, Type[] types, params object[] param)
+        {
+            MethodInfo methodInfo = type.GetMethod(name, AllAccessFlags, null, types, null);
+            if (methodInfo == null)
+            {
+                Log.Error($"ReflectionHelper::Call failed on {type}::{name}");
+                return null;
+            }
+
+            return methodInfo.Invoke(null, param);
         }
 
         public static T Call<T>(object obj, string name, params object[] param)
@@ -61,13 +72,24 @@ namespace CSM.API.Helpers
 
         public static object Call(object obj, string name, Type[] types, params object[] param)
         {
-            return obj.GetType().GetMethod(name, AllAccessFlags, null, types, null)
-                ?.Invoke(obj, param);
+            MethodInfo methodInfo = obj.GetType().GetMethod(name, AllAccessFlags, null, types, null);
+            if (methodInfo == null)
+            {
+                Log.Error($"ReflectionHelper::Call failed on {obj.GetType()}.{name}");
+                return null;
+            }
+            return methodInfo.Invoke(obj, param);
         }
 
         public static void SetAttr(object obj, string attribute, object value)
         {
-            obj.GetType().GetField(attribute, AllAccessFlags)?.SetValue(obj, value);
+            FieldInfo field = obj.GetType().GetField(attribute, AllAccessFlags);
+            if (field == null)
+            {
+                Log.Error($"ReflectionHelper::SetAttr failed on {obj.GetType()}.{attribute}");
+                return;
+            }
+            field.SetValue(obj, value);
         }
 
         public static T GetAttr<T>(object obj, string attribute)

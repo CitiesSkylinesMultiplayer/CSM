@@ -3,7 +3,6 @@ using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.TransportLines;
 using CSM.BaseGame.Helpers;
 using ColossalFramework;
-using CSM.API;
 
 namespace CSM.BaseGame.Commands.Handler.TransportLines
 {
@@ -11,16 +10,6 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineSyncCommand command)
         {
-            Log.Info(command.ToString());
-            Log.Info(command.HitPosition.ToString());
-            Log.Info(command.FixedPlatform.ToString());
-            Log.Info(command.HoverStopIndex.ToString());
-            Log.Info(command.HoverSegmentIndex.ToString());
-            Log.Info(command.Mode.ToString());
-            Log.Info(command.Errors.ToString());
-            Log.Info(command.UpdateLines.ToString());
-            Log.Info(command.UpdatePaths.ToString());
-
             TransportTool tool = Singleton<ToolSimulator>.instance.GetTool<TransportTool>(command.SenderId);
 
             IgnoreHelper.Instance.StartIgnore();

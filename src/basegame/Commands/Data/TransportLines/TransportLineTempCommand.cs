@@ -13,83 +13,83 @@ namespace CSM.BaseGame.Commands.Data.TransportLines
     public class TransportLineTempCommand : CommandBase
     {
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     Current prefab info index.
         /// </summary>
         [ProtoMember(1)]
         public uint InfoIndex { get; set; }
 
         /// <summary>
-        ///     The new prefab info index.
+        ///     If SetEditLine should be called with the force parameter.
         /// </summary>
         [ProtoMember(2)]
         public bool ForceSetEditLine { get; set; }
 
         /// <summary>
-        ///     The source line this temp line refers to.
+        ///     The current temp line id.
         /// </summary>
         [ProtoMember(3)]
         public ushort TempLine { get; set; }
 
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The source line this temp line refers to.
         /// </summary>
         [ProtoMember(4)]
         public ushort SourceLine { get; set; }
 
         /// <summary>
-        ///     The index of the stop that will be moved.
+        ///     A list of line ids that should be released.
         /// </summary>
         [ProtoMember(5)]
         public ushort[] ReleaseLines { get; set; }
 
         /// <summary>
-        ///     The index of the stop that will be added.
+        ///     If the temp line should be created.
         /// </summary>
         [ProtoMember(6)]
         public bool CreateLine { get; set; }
 
         /// <summary>
-        ///     The position of a new stop.
+        ///     The index of a previously added stop.
         /// </summary>
         [ProtoMember(7)]
         public int LastAddIndex { get; set; }
 
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The index of a previously moved stop.
         /// </summary>
         [ProtoMember(8)]
         public int LastMoveIndex { get; set; }
 
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The position of a previously moved stop.
         /// </summary>
         [ProtoMember(9)]
         public Vector3 LastMovePos { get; set; }
-        
+
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The position of a previously added stop.
         /// </summary>
         [ProtoMember(10)]
         public Vector3 LastAddPos { get; set; }
 
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The index of the stop that will be added.
         /// </summary>
         [ProtoMember(11)]
         public int AddIndex { get; set; }
 
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The index of the stop that will be moved.
         /// </summary>
         [ProtoMember(12)]
         public int MoveIndex { get; set; }
 
         /// <summary>
-        ///     If the line has fixed platforms.
+        ///     The position to add a new stop to.
         /// </summary>
         [ProtoMember(13)]
         public Vector3 AddPos { get; set; }
-        
+
         /// <summary>
         ///     If the line has fixed platforms.
         /// </summary>
