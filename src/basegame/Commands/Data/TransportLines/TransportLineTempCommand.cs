@@ -16,7 +16,7 @@ namespace CSM.BaseGame.Commands.Data.TransportLines
         ///     Current prefab info index.
         /// </summary>
         [ProtoMember(1)]
-        public uint InfoIndex { get; set; }
+        public ushort InfoIndex { get; set; }
 
         /// <summary>
         ///     If SetEditLine should be called with the force parameter.
