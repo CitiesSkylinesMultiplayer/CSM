@@ -532,8 +532,10 @@ namespace CSM.BaseGame.Injections
     [HarmonyPatch("EnsureTempLine")]
     public class EnsureTempLine
     {
-        public static bool Prefix(TransportTool __instance, TransportInfo info, ushort sourceLine, int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform,
-            ref ushort ___m_tempLine, ref int ___m_lastMoveIndex, ref int ___m_lastAddIndex, ref Vector3 ___m_lastAddPos, ref Vector3 ___m_lastMovePos, out bool __result)
+        public static bool Prefix(TransportTool __instance, TransportInfo info, ushort sourceLine, int moveIndex,
+            int addIndex, Vector3 addPos, bool fixedPlatform,
+            ref ushort ___m_tempLine, ref int ___m_lastMoveIndex, ref int ___m_lastAddIndex,
+            ref Vector3 ___m_lastAddPos, ref Vector3 ___m_lastMovePos, out bool __result)
         {
             // Don't run this method for the simulated tool
             if (__instance != ToolsModifierControl.GetTool<TransportTool>())
@@ -556,7 +558,8 @@ namespace CSM.BaseGame.Injections
 
             // Replace the original EnsureTempLine method. Needed to be able to detect if an update should be sent out
             __result = SimulateEnsureTempLine(__instance, info, sourceLine, moveIndex, addIndex, addPos, fixedPlatform,
-                ref ___m_tempLine, ref ___m_lastAddIndex, ref ___m_lastMoveIndex, ref ___m_lastAddPos, ref ___m_lastMovePos,
+                ref ___m_tempLine, ref ___m_lastAddIndex, ref ___m_lastMoveIndex, ref ___m_lastAddPos,
+                ref ___m_lastMovePos,
                 out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort[] releaseLines);
 
             if (trackChanges)
@@ -590,8 +593,10 @@ namespace CSM.BaseGame.Injections
             return false;
         }
 
-        private static bool SimulateEnsureTempLine(TransportTool tool, TransportInfo info, ushort sourceLine, int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform,
-            ref ushort m_tempLine, ref int m_lastAddIndex, ref int m_lastMoveIndex, ref Vector3 m_lastAddPos, ref Vector3 m_lastMovePos,
+        private static bool SimulateEnsureTempLine(TransportTool tool, TransportInfo info, ushort sourceLine,
+            int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform,
+            ref ushort m_tempLine, ref int m_lastAddIndex, ref int m_lastMoveIndex, ref Vector3 m_lastAddPos,
+            ref Vector3 m_lastMovePos,
             out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort[] releaseLines)
         {
             updateNeeded = false;
@@ -600,25 +605,26 @@ namespace CSM.BaseGame.Injections
             List<ushort> releaseLinesList = new List<ushort>();
 
             TransportManager instance = Singleton<TransportManager>.instance;
-			if (m_tempLine != 0)
-			{
-				if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.Temporary) == 0)
-				{
-					m_tempLine = 0;
-					ReflectionHelper.Call(tool, "SetEditLine", 0, true);
+            if (m_tempLine != 0)
+            {
+                if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.Temporary) == 0)
+                {
+                    m_tempLine = 0;
+                    ReflectionHelper.Call(tool, "SetEditLine", (ushort) 0, true);
                     updateNeeded = true;
                     forceSetEditLine = true;
                 }
-				else if ((object)instance.m_lines.m_buffer[m_tempLine].Info != info)
-				{
-					instance.ReleaseLine(m_tempLine);
+                else if ((object)instance.m_lines.m_buffer[m_tempLine].Info != info)
+                {
+                    instance.ReleaseLine(m_tempLine);
                     releaseLinesList.Add(m_tempLine);
-					m_tempLine = 0;
-					ReflectionHelper.Call(tool, "SetEditLine", 0, true);
+                    m_tempLine = 0;
+                    ReflectionHelper.Call(tool, "SetEditLine", (ushort) 0, true);
                     updateNeeded = true;
                     forceSetEditLine = true;
-				}
-			}
+                }
+            }
+
             if (m_tempLine == 0)
             {
                 for (ushort i = 1; i < 256; i++)
@@ -632,6 +638,7 @@ namespace CSM.BaseGame.Injections
                             updateNeeded = true;
                             break;
                         }
+
                         m_tempLine = i;
                         ReflectionHelper.Call(tool, "SetEditLine", sourceLine, true);
                         updateNeeded = true;
@@ -640,58 +647,69 @@ namespace CSM.BaseGame.Injections
                     }
                 }
             }
-			if (m_tempLine == 0 && Singleton<TransportManager>.instance.CreateLine(out m_tempLine, ref Singleton<SimulationManager>.instance.m_randomizer, info, newNumber: false))
-			{
-				instance.m_lines.m_buffer[m_tempLine].m_flags |= TransportLine.Flags.Temporary;
-				ReflectionHelper.Call(tool, "SetEditLine", sourceLine, true);
+
+            if (m_tempLine == 0 && Singleton<TransportManager>.instance.CreateLine(out m_tempLine,
+                    ref Singleton<SimulationManager>.instance.m_randomizer, info, newNumber: false))
+            {
+                instance.m_lines.m_buffer[m_tempLine].m_flags |= TransportLine.Flags.Temporary;
+                ReflectionHelper.Call(tool, "SetEditLine", sourceLine, true);
                 updateNeeded = true;
                 forceSetEditLine = true;
                 createLine = true;
             }
 
             releaseLines = releaseLinesList.ToArray();
-			if (m_tempLine != 0)
-			{
+            if (m_tempLine != 0)
+            {
                 // Check if SetEditLine will change something
                 if (sourceLine != ReflectionHelper.GetAttr<ushort>(tool, "m_lastEditLine"))
                 {
                     updateNeeded = true;
                 }
-				ReflectionHelper.Call(tool, "SetEditLine", sourceLine, false);
-				if (m_lastMoveIndex != moveIndex
+
+                ReflectionHelper.Call(tool, "SetEditLine", sourceLine, false);
+                if (m_lastMoveIndex != moveIndex
                     || m_lastAddIndex != addIndex
                     || m_lastAddPos != addPos)
-				{
-					if (m_lastAddIndex != -2 && instance.m_lines.m_buffer[m_tempLine].RemoveStop(m_tempLine, m_lastAddIndex))
-					{
-						m_lastAddIndex = -2;
-						m_lastAddPos = Vector3.zero;
+                {
+                    if (m_lastAddIndex != -2 &&
+                        instance.m_lines.m_buffer[m_tempLine].RemoveStop(m_tempLine, m_lastAddIndex))
+                    {
+                        m_lastAddIndex = -2;
+                        m_lastAddPos = Vector3.zero;
                         updateNeeded = true;
-					}
-					if (m_lastMoveIndex != -2 && instance.m_lines.m_buffer[m_tempLine].MoveStop(m_tempLine, m_lastMoveIndex, m_lastMovePos, fixedPlatform))
-					{
-						m_lastMoveIndex = -2;
-						m_lastMovePos = Vector3.zero;
-                        updateNeeded = true;
-					}
-					instance.m_lines.m_buffer[m_tempLine].CopyMissingPaths(sourceLine);
-					if (moveIndex != -2 && instance.m_lines.m_buffer[m_tempLine].MoveStop(m_tempLine, moveIndex, addPos, fixedPlatform, out var oldPos))
-					{
-						m_lastMoveIndex = moveIndex;
-						m_lastMovePos = oldPos;
-						m_lastAddPos = addPos;
-                        updateNeeded = true;
-					}
-					if (addIndex != -2 && instance.m_lines.m_buffer[m_tempLine].AddStop(m_tempLine, addIndex, addPos, fixedPlatform))
-					{
-						m_lastAddIndex = addIndex;
-						m_lastAddPos = addPos;
-                        updateNeeded = true;
-					}
-					instance.UpdateLine(m_tempLine);
-				}
+                    }
 
-				instance.m_lines.m_buffer[m_tempLine].m_color = instance.m_lines.m_buffer[sourceLine].m_color;
+                    if (m_lastMoveIndex != -2 && instance.m_lines.m_buffer[m_tempLine]
+                            .MoveStop(m_tempLine, m_lastMoveIndex, m_lastMovePos, fixedPlatform))
+                    {
+                        m_lastMoveIndex = -2;
+                        m_lastMovePos = Vector3.zero;
+                        updateNeeded = true;
+                    }
+
+                    instance.m_lines.m_buffer[m_tempLine].CopyMissingPaths(sourceLine);
+                    if (moveIndex != -2 && instance.m_lines.m_buffer[m_tempLine]
+                            .MoveStop(m_tempLine, moveIndex, addPos, fixedPlatform, out var oldPos))
+                    {
+                        m_lastMoveIndex = moveIndex;
+                        m_lastMovePos = oldPos;
+                        m_lastAddPos = addPos;
+                        updateNeeded = true;
+                    }
+
+                    if (addIndex != -2 && instance.m_lines.m_buffer[m_tempLine]
+                            .AddStop(m_tempLine, addIndex, addPos, fixedPlatform))
+                    {
+                        m_lastAddIndex = addIndex;
+                        m_lastAddPos = addPos;
+                        updateNeeded = true;
+                    }
+
+                    instance.UpdateLine(m_tempLine);
+                }
+
+                instance.m_lines.m_buffer[m_tempLine].m_color = instance.m_lines.m_buffer[sourceLine].m_color;
                 if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.Hidden) != 0)
                 {
                     instance.m_lines.m_buffer[m_tempLine].m_flags &= ~TransportLine.Flags.Hidden;
@@ -699,25 +717,31 @@ namespace CSM.BaseGame.Injections
                 }
 
                 if ((instance.m_lines.m_buffer[sourceLine].m_flags & TransportLine.Flags.CustomColor) != 0)
-				{
+                {
                     if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.CustomColor) == 0)
                     {
                         instance.m_lines.m_buffer[m_tempLine].m_flags |= TransportLine.Flags.CustomColor;
                         updateNeeded = true;
                     }
-				}
-				else
-				{
+                }
+                else
+                {
                     if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.CustomColor) != 0)
                     {
                         instance.m_lines.m_buffer[m_tempLine].m_flags &= ~TransportLine.Flags.CustomColor;
                         updateNeeded = true;
                     }
-				}
-				return true;
-			}
-			ReflectionHelper.Call(tool, "SetEditLine", 0, false);
-            updateNeeded = true;
+                }
+
+                return true;
+            }
+
+            // Check if SetEditLine will change something
+            if (ReflectionHelper.GetAttr<ushort>(tool, "m_lastEditLine") != 0)
+            {
+                updateNeeded = true;
+            }
+            ReflectionHelper.Call(tool, "SetEditLine", (ushort) 0, false);
             return false;
         }
     }
@@ -961,6 +985,7 @@ namespace CSM.BaseGame.Injections
             {
                 _oldFlags = Singleton<TransportManager>.instance.m_lines.m_buffer[_oldLine].m_flags;
             }
+
             if (line != 0)
             {
                 _newFlags = Singleton<TransportManager>.instance.m_lines.m_buffer[line].m_flags;
@@ -979,6 +1004,7 @@ namespace CSM.BaseGame.Injections
             {
                 Singleton<TransportManager>.instance.m_lines.m_buffer[_oldLine].m_flags = _oldFlags;
             }
+
             if (line != 0)
             {
                 Singleton<TransportManager>.instance.m_lines.m_buffer[line].m_flags = _newFlags;
