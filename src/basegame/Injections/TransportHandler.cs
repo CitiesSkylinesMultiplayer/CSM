@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ColossalFramework;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.TransportLines;
@@ -373,19 +375,49 @@ namespace CSM.BaseGame.Injections
     [HarmonyPatch("ResetTool")]
     public class ResetTool
     {
-        public static void Prefix()
+        public static void Prefix(TransportTool __instance, ushort ___m_tempLine)
         {
+            if (__instance != ToolsModifierControl.GetTool<TransportTool>())
+            {
+                _oldLine = ReflectionHelper.GetAttr<ushort>(__instance, "m_lastEditLine");
+                if (_oldLine != 0)
+                {
+                    _oldFlags = Singleton<TransportManager>.instance.m_lines.m_buffer[_oldLine].m_flags;
+                }
+
+                TransportManager instance = Singleton<TransportManager>.instance;
+                if (___m_tempLine != 0)
+                {
+                    // Simulate temp line cleanup (doesn't have temporary flag)
+                    instance.m_lines.m_buffer[___m_tempLine].CloneLine(___m_tempLine, 0);
+                    instance.m_lines.m_buffer[___m_tempLine].UpdateMeshData(___m_tempLine);
+                    instance.m_lines.m_buffer[___m_tempLine].m_flags |= TransportLine.Flags.Hidden;
+                }
+            }
             if (IgnoreHelper.Instance.IsIgnored())
-                return;
+            {
+                return;                
+            }
 
             ArrayHandler.StartCollecting();
             IgnoreHelper.Instance.StartIgnore("ResetTool");
         }
 
-        public static void Postfix()
+        public static void Postfix(TransportTool __instance)
         {
+            if (__instance != ToolsModifierControl.GetTool<TransportTool>())
+            {
+                // This prevents simulated tools from modifying the line flags of the "edit line"
+                // as this might interfere with the current player's transport tool.
+                if (_oldLine != 0)
+                {
+                    Singleton<TransportManager>.instance.m_lines.m_buffer[_oldLine].m_flags = _oldFlags;
+                }
+            }
             if (IgnoreHelper.Instance.IsIgnored("ResetTool"))
+            {
                 return;
+            }
 
             IgnoreHelper.Instance.EndIgnore("ResetTool");
             ArrayHandler.StopCollecting();
@@ -395,6 +427,9 @@ namespace CSM.BaseGame.Injections
                 Array16Ids = ArrayHandler.Collected16
             });
         }
+
+        private static ushort _oldLine;
+        private static TransportLine.Flags _oldFlags;
     }
 
     [HarmonyPatch(typeof(TransportTool))]
@@ -497,70 +532,195 @@ namespace CSM.BaseGame.Injections
     [HarmonyPatch("EnsureTempLine")]
     public class EnsureTempLine
     {
-        public static void Prefix(ushort ___m_tempLine, ushort ___m_lastEditLine, int ___m_lastMoveIndex, int ___m_lastAddIndex, Vector3 ___m_lastAddPos, out DataStore __state)
+        public static bool Prefix(TransportTool __instance, TransportInfo info, ushort sourceLine, int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform,
+            ref ushort ___m_tempLine, ref int ___m_lastMoveIndex, ref int ___m_lastAddIndex, ref Vector3 ___m_lastAddPos, ref Vector3 ___m_lastMovePos, out bool __result)
         {
-            __state = new DataStore();
 
-            if (IgnoreHelper.Instance.IsIgnored() || !TransportHandler.TrackSimulationStep)
-                return;
+            // TODO: Probably only call our method when we need to track changes
+            // TODO: Try to get the necessary info without replacing the original method
 
-            __state.tempLine = ___m_tempLine;
-            __state.editLine = ___m_lastEditLine;
-            __state.move = ___m_lastMoveIndex;
-            __state.add = ___m_lastAddIndex;
-            __state.addP = ___m_lastAddPos;
+            if (__instance != ToolsModifierControl.GetTool<TransportTool>())
+            {
+                __result = true;
+                return false;
+            }
 
-            ArrayHandler.StartCollecting();
-            IgnoreHelper.Instance.StartIgnore("EnsureTempLine");
+            bool trackChanges = !IgnoreHelper.Instance.IsIgnored() && TransportHandler.TrackSimulationStep; 
+            if (trackChanges)
+            {
+                ArrayHandler.StartCollecting();
+                IgnoreHelper.Instance.StartIgnore("EnsureTempLine");
+            }
+
+            int lastAddIndex = ___m_lastAddIndex;
+            int lastMoveIndex = ___m_lastMoveIndex;
+            Vector3 lastAddPos = ___m_lastAddPos;
+            Vector3 lastMovePos = ___m_lastMovePos;
+            
+            __result = SimulateEnsureTempLine(__instance, info, sourceLine, moveIndex, addIndex, addPos, fixedPlatform, ref ___m_tempLine, ref ___m_lastAddIndex, ref ___m_lastMoveIndex, ref ___m_lastAddPos, ref ___m_lastMovePos, out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort[] releaseLines);
+            
+            Log.Info($"TransportTool::EnsureTempLine(.., {sourceLine}, {moveIndex}, {addIndex}, {addPos}, {fixedPlatform} while {trackChanges} and {updateNeeded}");
+
+            if (trackChanges)
+            {
+                IgnoreHelper.Instance.EndIgnore("EnsureTempLine");
+                ArrayHandler.StopCollecting();
+
+                if (updateNeeded)
+                {
+                    Command.SendToAll(new TransportLineTempCommand()
+                    {
+                        InfoIndex = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
+                        ForceSetEditLine = forceSetEditLine,
+                        TempLine = ___m_tempLine,
+                        ReleaseLines = releaseLines,
+                        CreateLine = createLine,
+                        SourceLine = sourceLine,
+                        MoveIndex = moveIndex,
+                        AddIndex = addIndex,
+                        AddPos = addPos,
+                        LastAddIndex = lastAddIndex,
+                        LastMoveIndex = lastMoveIndex,
+                        LastAddPos = lastAddPos,
+                        LastMovePos = lastMovePos,
+                        FixedPlatform = fixedPlatform,
+                        Array16Ids = ArrayHandler.Collected16
+                    });
+                }
+            }
+
+            return false;
         }
 
-        public static void Postfix(TransportInfo info, ushort sourceLine, int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform, ushort ___m_lastEditLine, ushort ___m_tempLine, ref DataStore __state)
+        private static bool SimulateEnsureTempLine(TransportTool tool, TransportInfo info, ushort sourceLine, int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform,
+            ref ushort m_tempLine, ref int m_lastAddIndex, ref int m_lastMoveIndex, ref Vector3 m_lastAddPos, ref Vector3 m_lastMovePos,
+            out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort[] releaseLines)
         {
-            if (IgnoreHelper.Instance.IsIgnored("EnsureTempLine") || !TransportHandler.TrackSimulationStep)
-                return;
+            updateNeeded = false;
+            forceSetEditLine = false;
+            createLine = false;
+            List<ushort> releaseLinesList = new List<ushort>();
 
-            IgnoreHelper.Instance.EndIgnore("EnsureTempLine");
-            ArrayHandler.StopCollecting();
-
-            // Make sure we send the command only when needed (Otherwise it would be really often!)
-            if (ArrayHandler.Collected16.Length > 0 ||
-                __state.tempLine != ___m_tempLine ||
-                __state.editLine != ___m_lastEditLine ||
-                __state.move != moveIndex ||
-                __state.add != addIndex ||
-                __state.addP != addPos)
+            TransportManager instance = Singleton<TransportManager>.instance;
+			if (m_tempLine != 0)
+			{
+				if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.Temporary) == 0)
+				{
+					m_tempLine = 0;
+					ReflectionHelper.Call(tool, "SetEditLine", 0, true);
+                    updateNeeded = true;
+                    forceSetEditLine = true;
+                }
+				else if ((object)instance.m_lines.m_buffer[m_tempLine].Info != info)
+				{
+					instance.ReleaseLine(m_tempLine);
+                    releaseLinesList.Add(m_tempLine);
+					m_tempLine = 0;
+					ReflectionHelper.Call(tool, "SetEditLine", 0, true);
+                    updateNeeded = true;
+                    forceSetEditLine = true;
+				}
+			}
+            if (m_tempLine == 0)
             {
-                if ((__state.addP == Vector3.zero || addPos == Vector3.zero) &&
-                    moveIndex == __state.moveLast && addIndex == __state.addLast && addPos == __state.addPLast)
+                for (ushort i = 1; i < 256; i++)
                 {
-                    return;
+                    if ((instance.m_lines.m_buffer[i].m_flags & TransportLine.Flags.Temporary) != 0)
+                    {
+                        if ((object)instance.m_lines.m_buffer[i].Info != info)
+                        {
+                            instance.ReleaseLine(i);
+                            releaseLinesList.Add(i);
+                            updateNeeded = true;
+                            break;
+                        }
+                        m_tempLine = i;
+                        ReflectionHelper.Call(tool, "SetEditLine", sourceLine, true);
+                        updateNeeded = true;
+                        forceSetEditLine = true;
+                        break;
+                    }
+                }
+            }
+			if (m_tempLine == 0 && Singleton<TransportManager>.instance.CreateLine(out m_tempLine, ref Singleton<SimulationManager>.instance.m_randomizer, info, newNumber: false))
+			{
+				instance.m_lines.m_buffer[m_tempLine].m_flags |= TransportLine.Flags.Temporary;
+				ReflectionHelper.Call(tool, "SetEditLine", sourceLine, true);
+                updateNeeded = true;
+                forceSetEditLine = true;
+                createLine = true;
+            }
+
+            releaseLines = releaseLinesList.ToArray();
+			if (m_tempLine != 0)
+			{
+                // Check if SetEditLine will change something
+                if (sourceLine != ReflectionHelper.GetAttr<ushort>(tool, "m_lastEditLine"))
+                {
+                    updateNeeded = true;
+                }
+				ReflectionHelper.Call(tool, "SetEditLine", sourceLine, false);
+				if (m_lastMoveIndex != moveIndex
+                    || m_lastAddIndex != addIndex
+                    || m_lastAddPos != addPos)
+				{
+					if (m_lastAddIndex != -2 && instance.m_lines.m_buffer[m_tempLine].RemoveStop(m_tempLine, m_lastAddIndex))
+					{
+						m_lastAddIndex = -2;
+						m_lastAddPos = Vector3.zero;
+                        updateNeeded = true;
+					}
+					if (m_lastMoveIndex != -2 && instance.m_lines.m_buffer[m_tempLine].MoveStop(m_tempLine, m_lastMoveIndex, m_lastMovePos, fixedPlatform))
+					{
+						m_lastMoveIndex = -2;
+						m_lastMovePos = Vector3.zero;
+                        updateNeeded = true;
+					}
+					instance.m_lines.m_buffer[m_tempLine].CopyMissingPaths(sourceLine);
+					if (moveIndex != -2 && instance.m_lines.m_buffer[m_tempLine].MoveStop(m_tempLine, moveIndex, addPos, fixedPlatform, out var oldPos))
+					{
+						m_lastMoveIndex = moveIndex;
+						m_lastMovePos = oldPos;
+						m_lastAddPos = addPos;
+                        updateNeeded = true;
+					}
+					if (addIndex != -2 && instance.m_lines.m_buffer[m_tempLine].AddStop(m_tempLine, addIndex, addPos, fixedPlatform))
+					{
+						m_lastAddIndex = addIndex;
+						m_lastAddPos = addPos;
+                        updateNeeded = true;
+					}
+					instance.UpdateLine(m_tempLine);
+				}
+                
+				instance.m_lines.m_buffer[m_tempLine].m_color = instance.m_lines.m_buffer[sourceLine].m_color;
+                if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.Hidden) != 0)
+                {
+                    instance.m_lines.m_buffer[m_tempLine].m_flags &= ~TransportLine.Flags.Hidden;
+                    updateNeeded = true;
                 }
 
-                __state.addPLast = addPos;
-                __state.moveLast = moveIndex;
-                __state.addLast = addIndex;
-
-                Command.SendToAll(new TransportLineTempCommand()
-                {
-                    InfoIndex = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
-                    SourceLine = sourceLine,
-                    MoveIndex = moveIndex,
-                    AddIndex = addIndex,
-                    AddPos = addPos,
-                    FixedPlatform = fixedPlatform,
-                    Array16Ids = ArrayHandler.Collected16
-                });
-            }
-        }
-
-        public class DataStore
-        {
-            public int moveLast, addLast;
-            public Vector3 addPLast;
-
-            public ushort tempLine, editLine;
-            public int move, add;
-            public Vector3 addP;
+                if ((instance.m_lines.m_buffer[sourceLine].m_flags & TransportLine.Flags.CustomColor) != 0)
+				{
+                    if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.CustomColor) == 0)
+                    {
+                        instance.m_lines.m_buffer[m_tempLine].m_flags |= TransportLine.Flags.CustomColor;
+                        updateNeeded = true;
+                    }
+				}
+				else
+				{
+                    if ((instance.m_lines.m_buffer[m_tempLine].m_flags & TransportLine.Flags.CustomColor) != 0)
+                    {
+                        instance.m_lines.m_buffer[m_tempLine].m_flags &= ~TransportLine.Flags.CustomColor;
+                        updateNeeded = true;
+                    }
+				}
+				return true;
+			}
+			ReflectionHelper.Call(tool, "SetEditLine", 0, false);
+            updateNeeded = true;
+            return false;
         }
     }
 
@@ -781,6 +941,164 @@ namespace CSM.BaseGame.Injections
                 LineId = lineID,
                 Vehicle = vehicle
             });
+        }
+    }
+
+    // This patch prevents simulated tools from modifying the line flags of the "edit line"
+    // as this might interfere with the current player's transport tool.
+    [HarmonyPatch(typeof(TransportTool))]
+    [HarmonyPatch("SetEditLine")]
+    public class SetEditLine
+    {
+        public static void Prefix(TransportTool __instance, ushort line)
+        {
+            if (__instance == ToolsModifierControl.GetTool<TransportTool>())
+            {
+                // If this is the instance of the current player, don't do anything
+                return;
+            }
+
+            _oldLine = ReflectionHelper.GetAttr<ushort>(__instance, "m_lastEditLine");
+            ushort newLine = line;
+            if (_oldLine != 0)
+            {
+                _oldFlags = Singleton<TransportManager>.instance.m_lines.m_buffer[_oldLine].m_flags;
+            }
+            if (newLine != 0)
+            {
+                _newFlags = Singleton<TransportManager>.instance.m_lines.m_buffer[newLine].m_flags;
+            }
+        }
+
+        public static void Postfix(TransportTool __instance, ushort line)
+        {
+            if (__instance == ToolsModifierControl.GetTool<TransportTool>())
+            {
+                // If this is the instance of the current player, don't do anything
+                return;
+            }
+            
+            ushort newLine = line;
+            if (_oldLine != 0)
+            {
+                Singleton<TransportManager>.instance.m_lines.m_buffer[_oldLine].m_flags = _oldFlags;
+            }
+            if (newLine != 0)
+            {
+                Singleton<TransportManager>.instance.m_lines.m_buffer[newLine].m_flags = _newFlags;
+            }
+        }
+
+        private static ushort _oldLine;
+        private static TransportLine.Flags _oldFlags;
+        private static TransportLine.Flags _newFlags;
+    }
+
+    [HarmonyPatch(typeof(TransportManager))]
+    [HarmonyPatch("CreateLine")]
+    public class CreateItem
+    {
+        public static void Postfix(ref ushort lineID, bool newNumber)
+        {
+            Log.Info($"TransportManager::CreateLine({lineID}, ..., {newNumber})");
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportManager))]
+    [HarmonyPatch("ReleaseLineImplementation")]
+    public class ReleaseLineImplementation
+    {
+        public static void Postfix(ushort lineID)
+        {
+            Log.Info($"TransportManager::ReleaseLineImplementation({lineID})");
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("AddStop")]
+    public class AddStop2
+    {
+        public static void Postfix(ushort lineID, int index, Vector3 position, bool fixedPlatform)
+        {
+            Log.Info($"TransportLine::AddStop({lineID}, {index}, {position}, {fixedPlatform})");
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("ClearStops")]
+    public class ClearStops
+    {
+        public static void Postfix(ushort lineID)
+        {
+            Log.Info($"TransportLine::ClearStops({lineID})");
+        }
+    }
+
+    [HarmonyPatch]
+    public class MoveStop2
+    {
+        public static void Postfix(ushort lineID, int index, Vector3 newPos, bool fixedPlatform)
+        {
+            Log.Info($"TransportLine::MoveStop({lineID}, {index}, {newPos}, {fixedPlatform})");
+        }
+        
+        public static MethodBase TargetMethod()
+        {
+            return typeof(TransportLine).GetMethod("MoveStop", AccessTools.all, null, new Type[] { typeof(ushort), typeof(int), typeof(Vector3), typeof(bool), typeof(Vector3).MakeByRefType() }, new ParameterModifier[] { });
+        }
+    }
+
+    [HarmonyPatch]
+    public class RemoveStop2
+    {
+        public static void Postfix(ushort lineID, int index)
+        {
+            Log.Info($"TransportLine::RemoveStop({lineID}, {index})");
+        }
+        
+        public static MethodBase TargetMethod()
+        {
+            return typeof(TransportLine).GetMethod("RemoveStop", AccessTools.all, null, new Type[] { typeof(ushort), typeof(int), typeof(Vector3).MakeByRefType() }, new ParameterModifier[] { });
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("CloneLine")]
+    public class CloneLine
+    {
+        public static void Postfix(ushort lineID, ushort source)
+        {
+            Log.Info($"TransportLine::CloneLine({lineID}, {source})");
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("CreateNode")]
+    public class CreateNode
+    {
+        public static void Postfix(ushort lineID, ref ushort node, Vector3 position, bool fixedPlatform)
+        {
+            Log.Info($"TransportLine::CreateNode({lineID}, {node}, {position}, {fixedPlatform})");
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("ReleaseNode")]
+    public class ReleaseNode
+    {
+        public static void Postfix(ushort node)
+        {
+            Log.Info($"TransportLine::ReleaseNode({node})");
+        }
+    }
+
+    [HarmonyPatch(typeof(TransportLine))]
+    [HarmonyPatch("CreateSegment")]
+    public class CreateSegment
+    {
+        public static void Postfix(ref ushort segment, ushort startNode, ushort endNode)
+        {
+            Log.Info($"TransportLine::CreateSegment({segment}, {startNode}, {endNode})");
         }
     }
 }

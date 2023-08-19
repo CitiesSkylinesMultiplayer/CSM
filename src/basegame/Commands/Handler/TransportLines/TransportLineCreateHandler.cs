@@ -5,6 +5,7 @@ using CSM.BaseGame.Commands.Data.TransportLines;
 using CSM.BaseGame.Helpers;
 using CSM.BaseGame.Injections;
 using ColossalFramework;
+using CSM.API;
 
 namespace CSM.BaseGame.Commands.Handler.TransportLines
 {
@@ -12,7 +13,17 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
     {
         protected override void Handle(TransportLineCreateCommand command)
         {
+            Log.Info(command.ToString());
+            Log.Info(command.Array16Ids?.ToString());
+            Log.Info(command.Prefab.ToString());
+            Log.Info(command.Building.ToString());
             TransportTool tool = Singleton<ToolSimulator>.instance.GetTool<TransportTool>(command.SenderId);
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_lastEditLine").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_hoverStopIndex").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_hoverSegmentIndex").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_lastAddIndex").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_hitPosition").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_fixedPlatform").ToString());
 
             ArrayHandler.StartApplying(command.Array16Ids, null);
 
@@ -27,6 +38,10 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
 
             IEnumerator newLine = (IEnumerator)ReflectionHelper.Call(tool, "NewLine");
             newLine.MoveNext();
+            
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_errors").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_line").ToString());
+            Log.Info(ReflectionHelper.GetAttr(tool, "m_mode").ToString());
 
             IgnoreHelper.Instance.EndIgnore();
 

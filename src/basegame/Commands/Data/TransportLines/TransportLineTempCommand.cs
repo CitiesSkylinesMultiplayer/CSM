@@ -13,45 +13,93 @@ namespace CSM.BaseGame.Commands.Data.TransportLines
     public class TransportLineTempCommand : CommandBase
     {
         /// <summary>
-        ///     The new prefab info index.
+        ///     If the line has fixed platforms.
         /// </summary>
         [ProtoMember(1)]
-        public ushort InfoIndex { get; set; }
+        public uint InfoIndex { get; set; }
+
+        /// <summary>
+        ///     The new prefab info index.
+        /// </summary>
+        [ProtoMember(2)]
+        public bool ForceSetEditLine { get; set; }
 
         /// <summary>
         ///     The source line this temp line refers to.
         /// </summary>
-        [ProtoMember(2)]
+        [ProtoMember(3)]
+        public ushort TempLine { get; set; }
+
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(4)]
         public ushort SourceLine { get; set; }
 
         /// <summary>
         ///     The index of the stop that will be moved.
         /// </summary>
-        [ProtoMember(3)]
-        public int MoveIndex { get; set; }
+        [ProtoMember(5)]
+        public ushort[] ReleaseLines { get; set; }
 
         /// <summary>
         ///     The index of the stop that will be added.
         /// </summary>
-        [ProtoMember(4)]
-        public int AddIndex { get; set; }
+        [ProtoMember(6)]
+        public bool CreateLine { get; set; }
 
         /// <summary>
         ///     The position of a new stop.
         /// </summary>
-        [ProtoMember(5)]
-        public Vector3 AddPos { get; set; }
+        [ProtoMember(7)]
+        public int LastAddIndex { get; set; }
 
         /// <summary>
         ///     If the line has fixed platforms.
         /// </summary>
-        [ProtoMember(6)]
+        [ProtoMember(8)]
+        public int LastMoveIndex { get; set; }
+
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(9)]
+        public Vector3 LastMovePos { get; set; }
+        
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(10)]
+        public Vector3 LastAddPos { get; set; }
+
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(11)]
+        public int AddIndex { get; set; }
+
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(12)]
+        public int MoveIndex { get; set; }
+
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(13)]
+        public Vector3 AddPos { get; set; }
+        
+        /// <summary>
+        ///     If the line has fixed platforms.
+        /// </summary>
+        [ProtoMember(14)]
         public bool FixedPlatform { get; set; }
 
         /// <summary>
         ///     The list of generated Array16 ids.
         /// </summary>
-        [ProtoMember(7)]
+        [ProtoMember(15)]
         public ushort[] Array16Ids { get; set; }
     }
 }
