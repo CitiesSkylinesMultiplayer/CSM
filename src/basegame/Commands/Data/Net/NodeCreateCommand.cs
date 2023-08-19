@@ -82,5 +82,11 @@ namespace CSM.BaseGame.Commands.Data.Net
         /// </summary>
         [ProtoMember(12)]
         public ushort RelocateBuildingId { get; set; }
+
+        /// <summary>
+        ///     The zone grid flags (left/right/both zoning).
+        /// </summary>
+        [ProtoMember(13)]
+        public NetSegment.Flags2 ZoneGridFlags { get; set; }
     }
 }
