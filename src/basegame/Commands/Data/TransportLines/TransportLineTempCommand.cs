@@ -37,10 +37,10 @@ namespace CSM.BaseGame.Commands.Data.TransportLines
         public ushort SourceLine { get; set; }
 
         /// <summary>
-        ///     A list of line ids that should be released.
+        ///     A line id to be released, 0 otherwise.
         /// </summary>
         [ProtoMember(5)]
-        public ushort[] ReleaseLines { get; set; }
+        public ushort ReleaseLine { get; set; }
 
         /// <summary>
         ///     If the temp line should be created.

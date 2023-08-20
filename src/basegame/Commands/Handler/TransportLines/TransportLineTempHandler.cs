@@ -31,12 +31,9 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
             // The following is a reproduction of the "EnsureTempLine" logic adapted for the remote players (e.g. no "temporary" flag for the temp line)
 
             // Release lines
-            if (command.ReleaseLines != null)
+            if (command.ReleaseLine != 0)
             {
-                foreach (ushort releaseLine in command.ReleaseLines)
-                {
-                    instance.ReleaseLine(releaseLine);
-                }
+                instance.ReleaseLine(command.ReleaseLine);
             }
 
             // Create temp line if necessary
@@ -44,7 +41,7 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
             {
                 Singleton<TransportManager>.instance.CreateLine(out ushort tempLine,
                     ref Singleton<SimulationManager>.instance.m_randomizer, info, newNumber: false);
-                instance.m_lines.m_buffer[command.TempLine].m_flags |= TransportLine.Flags.Hidden;
+                instance.m_lines.m_buffer[command.TempLine].m_flags |= TransportLine.Flags.Temporary;
                 if (tempLine != command.TempLine)
                 {
                     Log.Error("Received temp line id does not match reserved temp line id");
@@ -115,6 +112,7 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
                 // Some other stuff
                 instance.m_lines.m_buffer[command.TempLine].m_color =
                     instance.m_lines.m_buffer[command.SourceLine].m_color;
+                instance.m_lines.m_buffer[command.TempLine].m_flags &= ~TransportLine.Flags.Hidden;
 
                 if ((instance.m_lines.m_buffer[command.SourceLine].m_flags & TransportLine.Flags.CustomColor) != 0)
                 {

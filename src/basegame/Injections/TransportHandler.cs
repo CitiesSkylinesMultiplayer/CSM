@@ -376,6 +376,8 @@ namespace CSM.BaseGame.Injections
     {
         public static void Prefix(TransportTool __instance, ushort ___m_tempLine)
         {
+            _tempLine = ___m_tempLine;
+
             // If is simulated instance
             if (__instance != ToolsModifierControl.GetTool<TransportTool>())
             {
@@ -426,9 +428,17 @@ namespace CSM.BaseGame.Injections
             {
                 Array16Ids = ArrayHandler.Collected16
             });
+
+
+            // If temp line is no longer used, release it so that it is no longer shown on the other side
+            if (__instance == ToolsModifierControl.GetTool<TransportTool>() && _tempLine != 0)
+            {
+                Singleton<TransportManager>.instance.ReleaseLine(_tempLine);
+            }
         }
 
         private static ushort _oldLine;
+        private static ushort _tempLine;
         private static TransportLine.Flags _oldFlags;
     }
 
@@ -560,7 +570,7 @@ namespace CSM.BaseGame.Injections
             __result = SimulateEnsureTempLine(__instance, info, sourceLine, moveIndex, addIndex, addPos, fixedPlatform,
                 ref ___m_tempLine, ref ___m_lastAddIndex, ref ___m_lastMoveIndex, ref ___m_lastAddPos,
                 ref ___m_lastMovePos,
-                out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort[] releaseLines);
+                out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort releaseLine);
 
             if (trackChanges)
             {
@@ -574,7 +584,7 @@ namespace CSM.BaseGame.Injections
                         InfoIndex = (ushort)Mathf.Clamp(info.m_prefabDataIndex, 0, 65535),
                         ForceSetEditLine = forceSetEditLine,
                         TempLine = ___m_tempLine,
-                        ReleaseLines = releaseLines,
+                        ReleaseLine = releaseLine,
                         CreateLine = createLine,
                         SourceLine = sourceLine,
                         MoveIndex = moveIndex,
@@ -597,12 +607,12 @@ namespace CSM.BaseGame.Injections
             int moveIndex, int addIndex, Vector3 addPos, bool fixedPlatform,
             ref ushort m_tempLine, ref int m_lastAddIndex, ref int m_lastMoveIndex, ref Vector3 m_lastAddPos,
             ref Vector3 m_lastMovePos,
-            out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort[] releaseLines)
+            out bool updateNeeded, out bool forceSetEditLine, out bool createLine, out ushort releaseLine)
         {
             updateNeeded = false;
             forceSetEditLine = false;
             createLine = false;
-            List<ushort> releaseLinesList = new List<ushort>();
+            releaseLine = 0;
 
             TransportManager instance = Singleton<TransportManager>.instance;
             if (m_tempLine != 0)
@@ -617,34 +627,11 @@ namespace CSM.BaseGame.Injections
                 else if ((object)instance.m_lines.m_buffer[m_tempLine].Info != info)
                 {
                     instance.ReleaseLine(m_tempLine);
-                    releaseLinesList.Add(m_tempLine);
+                    releaseLine = m_tempLine;
                     m_tempLine = 0;
                     ReflectionHelper.Call(tool, "SetEditLine", (ushort) 0, true);
                     updateNeeded = true;
                     forceSetEditLine = true;
-                }
-            }
-
-            if (m_tempLine == 0)
-            {
-                for (ushort i = 1; i < 256; i++)
-                {
-                    if ((instance.m_lines.m_buffer[i].m_flags & TransportLine.Flags.Temporary) != 0)
-                    {
-                        if ((object)instance.m_lines.m_buffer[i].Info != info)
-                        {
-                            instance.ReleaseLine(i);
-                            releaseLinesList.Add(i);
-                            updateNeeded = true;
-                            break;
-                        }
-
-                        m_tempLine = i;
-                        ReflectionHelper.Call(tool, "SetEditLine", sourceLine, true);
-                        updateNeeded = true;
-                        forceSetEditLine = true;
-                        break;
-                    }
                 }
             }
 
@@ -658,7 +645,6 @@ namespace CSM.BaseGame.Injections
                 createLine = true;
             }
 
-            releaseLines = releaseLinesList.ToArray();
             if (m_tempLine != 0)
             {
                 // Check if SetEditLine will change something

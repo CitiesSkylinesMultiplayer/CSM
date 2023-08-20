@@ -144,7 +144,20 @@ namespace CSM.BaseGame.Helpers
 
         public void RemoveSender(int sender)
         {
-            _currentTools.Remove(sender);
+            if (_currentTools.TryGetValue(sender, out ToolBase tool))
+            {
+                _currentTools.Remove(sender);
+
+                // Tool based cleanup
+                switch (tool)
+                {
+                    case TransportTool transportTool:
+                        IgnoreHelper.Instance.StartIgnore();
+                        Singleton<TransportManager>.instance.ReleaseLine(ReflectionHelper.GetAttr<ushort>(transportTool, "m_tempLine"));
+                        IgnoreHelper.Instance.EndIgnore();
+                        break;
+                }
+            }
         }
 
         public void Clear()

@@ -142,6 +142,10 @@ namespace CSM.Panels
 
                             MultiplayerManager.Instance.CurrentClient.Status =
                                 ClientStatus.Downloading;
+
+                            // Get random instance of a panel and close all overlays
+                            UIView.GetAView().panelsLibrary.Get<LoadPanel>("LoadPanel").CloseEverything();
+
                             MultiplayerManager.Instance.BlockGameReSync();
 
                             Command.SendToServer(new RequestWorldTransferCommand());
