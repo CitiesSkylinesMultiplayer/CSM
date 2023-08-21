@@ -31,10 +31,8 @@ namespace CSM.BaseGame.Helpers
 
         public T GetTool<T>(int sender) where T : ToolBase
         {
-            ToolBase tool;
-            if (_currentTools.ContainsKey(sender))
+            if (_currentTools.TryGetValue(sender, out ToolBase tool))
             {
-                tool = _currentTools[sender];
                 if (tool.GetType() == typeof(T))
                 {
                     return (T)tool;
@@ -47,7 +45,6 @@ namespace CSM.BaseGame.Helpers
             ReflectionHelper.SetAttr(tool, "m_toolController", controller);
             // See ToolController::Awake
             ReflectionHelper.SetAttr(controller, "m_brushData", new float[4096]);
-            ReflectionHelper.SetAttr(controller, "m_collidingSegments", new float[4096]);
             ReflectionHelper.SetAttr(controller, "ID_BrushTex", Shader.PropertyToID("_BrushTex"));
             ReflectionHelper.SetAttr(controller, "ID_BrushWS", Shader.PropertyToID("_BrushWS"));
             ReflectionHelper.SetAttr(controller, "m_collidingSegments1", new ulong[576]);
@@ -147,7 +144,25 @@ namespace CSM.BaseGame.Helpers
 
         public void RemoveSender(int sender)
         {
-            _currentTools.Remove(sender);
+            if (_currentTools.TryGetValue(sender, out ToolBase tool))
+            {
+                _currentTools.Remove(sender);
+
+                // Tool based cleanup
+                switch (tool)
+                {
+                    case TransportTool transportTool:
+                        IgnoreHelper.Instance.StartIgnore();
+                        ushort tempLine = ReflectionHelper.GetAttr<ushort>(transportTool, "m_tempLine");
+                        if (tempLine != 0)
+                        {
+                            Singleton<TransportManager>.instance.ReleaseLine(tempLine);
+                        }
+
+                        IgnoreHelper.Instance.EndIgnore();
+                        break;
+                }
+            }
         }
 
         public void Clear()

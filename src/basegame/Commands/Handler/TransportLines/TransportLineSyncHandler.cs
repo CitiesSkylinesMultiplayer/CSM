@@ -22,7 +22,7 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
             if (command.UpdatePaths)
             {
                 ushort tempLine = ReflectionHelper.GetAttr<ushort>(tool, "m_tempLine");
-                TransportManager.instance.m_lines.m_buffer[(int)tempLine].UpdatePaths(tempLine);
+                TransportManager.instance.m_lines.m_buffer[tempLine].UpdatePaths(tempLine);
             }
 
             IgnoreHelper.Instance.EndIgnore();

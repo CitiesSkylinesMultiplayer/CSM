@@ -21,7 +21,7 @@ namespace CSM.BaseGame.Commands.Handler.Economy
             EconomyPanel panel = typeof(ToolsModifierControl).GetField("m_EconomyPanel", ReflectionHelper.AllAccessFlags)?.GetValue(null) as EconomyPanel;
             if (panel != null)
             {
-                SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() => ReflectionHelper.Call(panel, "PopulateLoansTab"));
+                SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() => ReflectionHelper.Call(panel, "UpdateLoansTab"));
             }
 
             IgnoreHelper.Instance.EndIgnore();

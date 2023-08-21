@@ -13,8 +13,6 @@ namespace CSM.BaseGame.Commands.Handler.TransportLines
             TransportTool tool = Singleton<ToolSimulator>.instance.GetTool<TransportTool>(command.SenderId);
 
             ReflectionHelper.SetAttr(tool, "m_errors", ToolBase.ToolErrors.Pending);
-            ReflectionHelper.SetAttr(tool, "m_lastMoveIndex", -2);
-            ReflectionHelper.SetAttr(tool, "m_lastAddIndex", -2);
         }
     }
 }
