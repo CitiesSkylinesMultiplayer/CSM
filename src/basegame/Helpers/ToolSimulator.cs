@@ -153,7 +153,12 @@ namespace CSM.BaseGame.Helpers
                 {
                     case TransportTool transportTool:
                         IgnoreHelper.Instance.StartIgnore();
-                        Singleton<TransportManager>.instance.ReleaseLine(ReflectionHelper.GetAttr<ushort>(transportTool, "m_tempLine"));
+                        ushort tempLine = ReflectionHelper.GetAttr<ushort>(transportTool, "m_tempLine");
+                        if (tempLine != 0)
+                        {
+                            Singleton<TransportManager>.instance.ReleaseLine(tempLine);
+                        }
+
                         IgnoreHelper.Instance.EndIgnore();
                         break;
                 }
