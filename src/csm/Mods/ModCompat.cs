@@ -66,6 +66,15 @@ namespace CSM.Mods
 
         private static IEnumerable<ModSupportStatus> GetModSupport()
         {
+            foreach (SteamHelper.DLC dlc in DLCHelper.GetOwnedExpansions().DLCs())
+            {
+                yield return new ModSupportStatus("DLC: " + DLCHelper.GetDlcName(dlc), "", DLCHelper.GetSupport(dlc), false);
+            }
+            foreach (SteamHelper.DLC dlc in DLCHelper.GetOwnedModderPacks().DLCs())
+            {
+                yield return new ModSupportStatus("DLC: " + DLCHelper.GetDlcName(dlc), "", DLCHelper.GetSupport(dlc), false);
+            }
+
             foreach (PluginManager.PluginInfo info in Singleton<PluginManager>.instance.GetPluginsInfo())
             {
                 // Skip disabled mods

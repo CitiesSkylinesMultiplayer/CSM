@@ -67,14 +67,6 @@ namespace CSM.Injections
                     if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.None)
                     {
                         PanelManager.TogglePanel<HostGamePanel>();
-
-                        // Display warning if DLCs or other mods are enabled
-                        if (DLCHelper.GetOwnedExpansions() != SteamHelper.ExpansionBitMask.None || DLCHelper.GetOwnedModderPacks() != SteamHelper.ModderPackBitMask.None)
-                        {
-                            MessagePanel msgPanel = PanelManager.ShowPanel<MessagePanel>();
-                            if (msgPanel)
-                                msgPanel.DisplayContentWarning();
-                        }
                     }
                     else
                     {

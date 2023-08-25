@@ -95,6 +95,7 @@
     <Compile Include="Commands\Data\Economy\EconomyTakeLoanCommand.cs" />
     <Compile Include="Commands\Data\Events\EventActivateCommand.cs" />
     <Compile Include="Commands\Data\Events\EventColorChangedCommand.cs" />
+    <Compile Include="Commands\Data\Events\EventSetResultCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetSecurityBudgetCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetTicketPriceCommand.cs" />
     <Compile Include="Commands\Data\Names\ChangeCityNameCommand.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Commands\Handler\Economy\EconomyTakeLoanHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventActivateHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventColorChangedHandler.cs" />
+    <Compile Include="Commands\Handler\Events\EventSetResultHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetSecurityBudgetHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetTicketPriceHandler.cs" />
     <Compile Include="Commands\Handler\Names\ChangeCityNameHandler.cs" />

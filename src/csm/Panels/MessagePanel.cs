@@ -87,20 +87,6 @@ namespace CSM.Panels
                 _githubButton.Hide();
         }
 
-        public void DisplayContentWarning()
-        {
-            SetTitle("Warning");
-
-            const string message = "Playing with DLCs is\n" +
-                       "currently not officially supported.\n\n" +
-                       "Try to disable them if you encounter\n" +
-                       "any issues.";
-
-            SetMessage(message);
-
-            Show(true);
-        }
-
         public void DisplayInvalidApiServer()
         {
             SetTitle("Invalid API Server");
@@ -113,18 +99,6 @@ namespace CSM.Panels
             Show(true);
         }
 
-        private string GetDlcName(DLCList list, SteamHelper.DLC dlc)
-        {
-            string dlcName = list.FindLocalizedDLCName(dlc);
-            if (string.IsNullOrEmpty(dlcName))
-            {
-                // Default to enum item name
-                dlcName = dlc.ToString();
-            }
-
-            return dlcName;
-        }
-
         public void DisplayDlcMessage(DLCHelper.DLCComparison compare)
         {
             SetTitle("DLC Mismatch");
@@ -135,13 +109,13 @@ namespace CSM.Panels
             if (compare.ClientMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ClientMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "You are missing the following DLCs:\n";
-                message += string.Join("\n", SteamHelper.DLCs(compare.ClientMissingExpansions, compare.ClientMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ClientMissingExpansions, compare.ClientMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => DLCHelper.GetDlcName(dlcPanel, dlc)).ToArray());
                 message += "\n\n";
             }
             if (compare.ServerMissingExpansions != SteamHelper.ExpansionBitMask.None || compare.ServerMissingModderPack != SteamHelper.ModderPackBitMask.None)
             {
                 message += "The server doesn't have the following DLCs:\n";
-                message += string.Join("\n", SteamHelper.DLCs(compare.ServerMissingExpansions, compare.ServerMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => GetDlcName(dlcPanel, dlc)).ToArray());
+                message += string.Join("\n", SteamHelper.DLCs(compare.ServerMissingExpansions, compare.ServerMissingModderPack, SteamHelper.RadioBitMask.None).Select(dlc => DLCHelper.GetDlcName(dlcPanel, dlc)).ToArray());
             }
 
             message += "\n\nDLCs can be enabled/disabled via checkbox in Steam.";

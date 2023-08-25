@@ -1,4 +1,5 @@
 using System;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Events;
@@ -86,6 +87,60 @@ namespace CSM.BaseGame.Injections
                 Event = eventID,
                 Price = newPrice
             });
+        }
+    }
+
+    [HarmonyPatch(typeof(SportMatchAI))]
+    [HarmonyPatch("BeginEvent")]
+    public class BeginEvent
+    {
+        private static bool _isWinMatchSet;
+        private static bool _winMatchSet;
+
+        public static void Prefix(ref EventData data)
+        {
+            _isWinMatchSet = false;
+            if (Command.CurrentRole == MultiplayerRole.Client)
+            {
+                bool matchSuccess = (data.m_flags & EventData.Flags.Success) != EventData.Flags.None;
+                bool matchFail = (data.m_flags & EventData.Flags.Failure) != EventData.Flags.None;
+                if (matchSuccess || matchFail)
+                {
+                    _isWinMatchSet = true;
+                    _winMatchSet = matchSuccess;
+                }
+            }
+        }
+
+        public static void Postfix(ushort eventID, ref EventData data)
+        {
+            if (Command.CurrentRole == MultiplayerRole.Client)
+            {
+                // Override result of this method as we already have the result set from the server
+                if (_isWinMatchSet)
+                {
+                    if (_winMatchSet)
+                    {
+                        data.m_flags |= EventData.Flags.Success;
+                        data.m_flags &= ~EventData.Flags.Failure;
+                    }
+                    else
+                    {
+                        data.m_flags |= EventData.Flags.Failure;
+                        data.m_flags &= ~EventData.Flags.Success;
+                    }
+                }
+            }
+            else
+            {
+                // Synchronize randomly chosen match result
+                bool winMatch = (data.m_flags & EventData.Flags.Success) != EventData.Flags.None;
+                Command.SendToAll(new EventSetResultCommand
+                {
+                    Event = eventID,
+                    Result = winMatch
+                });
+            }
         }
     }
 }
