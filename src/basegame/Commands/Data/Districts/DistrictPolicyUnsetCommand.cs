@@ -22,5 +22,11 @@ namespace CSM.BaseGame.Commands.Data.Districts
         /// </summary>
         [ProtoMember(2)]
         public byte DistrictId { get; set; }
+
+        /// <summary>
+        ///     If the target is a park instead of a district.
+        /// </summary>
+        [ProtoMember(3)]
+        public bool IsPark { get; set; }
     }
 }

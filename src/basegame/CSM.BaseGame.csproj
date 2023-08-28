@@ -79,7 +79,15 @@
     <Compile Include="Commands\Data\Buildings\BuildingToolCreateCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
     <Compile Include="Commands\Data\Buildings\ServiceBuildingChangeVehicleCommand.cs" />
+    <Compile Include="Commands\Data\Campus\BuyResearchGrantCommand.cs" />
+    <Compile Include="Commands\Data\Campus\SetAcademicStaffCountCommand.cs" />
+    <Compile Include="Commands\Data\Campus\SetCheerleadingBudgetCommand.cs" />
+    <Compile Include="Commands\Data\Campus\SetCoachesCountCommand.cs" />
+    <Compile Include="Commands\Data\Campus\SetTicketPriceCommand.cs" />
+    <Compile Include="Commands\Data\Campus\SetVarsityColorCommand.cs" />
+    <Compile Include="Commands\Data\Campus\SetVarsityIdentityCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictAreaModifyCommand.cs" />
+    <Compile Include="Commands\Data\Districts\DistrictChangeStyleCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictCityPolicyCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictCityPolicyUnsetCommand.cs" />
     <Compile Include="Commands\Data\Districts\DistrictCreateCommand.cs" />
@@ -150,7 +158,15 @@
     <Compile Include="Commands\Handler\Buildings\BuildingToolCreateHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingUpgradeHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\TransportLineChangeVehicleHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\BuyResearchGrantHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\SetAcademicStaffCountHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\SetCheerleadingBudgetHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\SetCoachesCountHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\SetTicketPriceHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\SetVarsityColorHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\SetVarsityIdentityHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictAreaModifyHandler.cs" />
+    <Compile Include="Commands\Handler\Districts\DistrictChangeStyleHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictCityPolicyHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictCityPolicyUnsetHandler.cs" />
     <Compile Include="Commands\Handler\Districts\DistrictCreateHandler.cs" />
@@ -215,6 +231,7 @@
     <Compile Include="Helpers\ToolSimulator.cs" />
     <Compile Include="Injections\ArrayHandler.cs" />
     <Compile Include="Injections\BuildingHandler.cs" />
+    <Compile Include="Injections\CampusHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
     <Compile Include="Injections\EconomyHandler.cs" />
     <Compile Include="Injections\EventHandler.cs" />
@@ -257,10 +274,6 @@
       <Project>{ab27eacd-b9a9-42bc-bf8a-3b25aabff6ca}</Project>
       <Name>CSM.API</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\Data" />
-    <Folder Include="Commands\Handler" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
