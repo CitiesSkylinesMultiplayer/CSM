@@ -54,7 +54,7 @@ namespace CSM.Helpers
                 case SteamHelper.DLC.AirportDLC:
                     return ModSupportType.Unknown;
                 case SteamHelper.DLC.CampusDLC:
-                    return ModSupportType.Unknown;
+                    return ModSupportType.Supported;
                 case SteamHelper.DLC.MusicFestival: // Concerts
                     return ModSupportType.Unknown;
                 case SteamHelper.DLC.FinancialDistrictsDLC:

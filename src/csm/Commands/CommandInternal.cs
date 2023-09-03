@@ -197,7 +197,7 @@ namespace CSM.Commands
             _cmdMapping.Clear();
             try
             {
-                // First, find all CSM classes, then the other mods. This is necessary to 
+                // First, find all CSM classes, then the other mods. This is necessary to
                 // ensure that our management packets have always the same ids,
                 // as for example the ConnectionRequest and ConnectionResult commands are used
                 // to determine the installed mods.
@@ -228,6 +228,9 @@ namespace CSM.Commands
                 model[typeof(Color)].SetSurrogate(typeof(ColorSurrogate));
 
                 model[typeof(InstanceID)].SetSurrogate(typeof(InstanceIDSurrogate));
+
+                model[typeof(AcademicWorksData)].SetSurrogate(typeof(AcademicWorksDataSurrogate));
+                model[typeof(DistrictYearReportData)].SetSurrogate(typeof(DistrictYearReportDataSurrogate));
 
                 // Add base command to the protobuf model with all attributes
                 model.Add(typeof(CommandBase), true);

@@ -1,5 +1,6 @@
 using System;
 using ColossalFramework;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Campus;
@@ -162,18 +163,63 @@ namespace CSM.BaseGame.Injections
         }
     }
 
+    [HarmonyPatch(typeof(DistrictPark))]
+    [HarmonyPatch("OnAcademicYearEnded")]
+    public class AcademicYearEnded
+    {
+        public static bool Prefix(DistrictPark __instance)
+        {
+            if (Command.CurrentRole == MultiplayerRole.Client)
+            {
+                // Don't run this method on the clients
+                return false;
+            }
+
+            _oldParkLevel = __instance.m_parkLevel;
+
+            return true;
+        }
+
+        public static void Postfix(DistrictPark __instance, byte parkID)
+        {
+            if (Command.CurrentRole == MultiplayerRole.Client)
+            {
+                return;
+            }
+
+            AcademicWorksData worksData = __instance.m_academicWorksData;
+            DistrictYearReportLedger ledger = __instance.m_ledger;
+            int dynamicAttractiveness = __instance.m_dynamicVarsityAttractivenessModifier;
+            DistrictYearReportData[] ledgerData = ReflectionHelper.GetAttr<DistrictYearReportData[]>(ledger, "m_reports");
+
+            Command.SendToAll(new OnAcademicYearEndCommand
+            {
+                ParkId = parkID,
+                AcademicWorksData = worksData,
+                LedgerReports = ledgerData,
+                DynamicAttractiveness = dynamicAttractiveness,
+                OldParkLevel = _oldParkLevel,
+                NewParkLevel = __instance.m_parkLevel
+            });
+        }
+
+        private static DistrictPark.ParkLevel _oldParkLevel;
+    }
+
+    // Enable ignore helper here, as this sets all the UI sliders to their values,
+    // which would call all of the callback functions above.
     [HarmonyPatch(typeof(CampusWorldInfoPanel))]
     [HarmonyPatch("OnSetTarget")]
     public class OnSetTarget
     {
         public static void Prefix()
         {
-            IgnoreHelper.Instance.StartIgnore();
+            IgnoreHelper.Instance.StartIgnore("SetTarget");
         }
 
         public static void Postfix()
         {
-            IgnoreHelper.Instance.EndIgnore();
+            IgnoreHelper.Instance.EndIgnore("SetTarget");
         }
     }
 }

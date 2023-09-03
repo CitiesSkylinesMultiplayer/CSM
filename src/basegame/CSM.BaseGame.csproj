@@ -80,6 +80,7 @@
     <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
     <Compile Include="Commands\Data\Buildings\ServiceBuildingChangeVehicleCommand.cs" />
     <Compile Include="Commands\Data\Campus\BuyResearchGrantCommand.cs" />
+    <Compile Include="Commands\Data\Campus\OnAcademicYearEndCommand.cs" />
     <Compile Include="Commands\Data\Campus\SetAcademicStaffCountCommand.cs" />
     <Compile Include="Commands\Data\Campus\SetCheerleadingBudgetCommand.cs" />
     <Compile Include="Commands\Data\Campus\SetCoachesCountCommand.cs" />
@@ -159,6 +160,7 @@
     <Compile Include="Commands\Handler\Buildings\BuildingUpgradeHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\TransportLineChangeVehicleHandler.cs" />
     <Compile Include="Commands\Handler\Campus\BuyResearchGrantHandler.cs" />
+    <Compile Include="Commands\Handler\Campus\OnAcademicYearEndHandler.cs" />
     <Compile Include="Commands\Handler\Campus\SetAcademicStaffCountHandler.cs" />
     <Compile Include="Commands\Handler\Campus\SetCheerleadingBudgetHandler.cs" />
     <Compile Include="Commands\Handler\Campus\SetCoachesCountHandler.cs" />

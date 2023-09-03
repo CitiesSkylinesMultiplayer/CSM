@@ -102,6 +102,16 @@ namespace CSM.API.Helpers
             return obj.GetType().GetField(attribute, AllAccessFlags)?.GetValue(obj);
         }
 
+        public static T GetAttr<T>(Type type, string attribute)
+        {
+            return (T) GetAttr(type, attribute);
+        }
+
+        public static object GetAttr(Type type, string attribute)
+        {
+            return type.GetField(attribute, AllAccessFlags)?.GetValue(null);
+        }
+
         public static T GetProp<T>(object obj, string property)
         {
             return (T) GetProp(obj, property);
