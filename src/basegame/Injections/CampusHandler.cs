@@ -214,12 +214,12 @@ namespace CSM.BaseGame.Injections
     {
         public static void Prefix()
         {
-            IgnoreHelper.Instance.StartIgnore("SetTarget");
+            IgnoreHelper.Instance.StartIgnore();
         }
 
         public static void Postfix()
         {
-            IgnoreHelper.Instance.EndIgnore("SetTarget");
+            IgnoreHelper.Instance.EndIgnore();
         }
     }
 }
