@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Threading" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chat.cs" />
