@@ -15,10 +15,9 @@ namespace CSM.BaseGame.Commands.Handler.Districts
 
             if (InfoPanelHelper.IsDistrict(typeof(DistrictWorldInfoPanel), command.DistrictId, out WorldInfoPanel panel))
             {
-                DistrictWorldInfoPanel districtPanel = (DistrictWorldInfoPanel)panel;
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
-                    ReflectionHelper.GetAttr<UIDropDown>(districtPanel, "m_Style").selectedIndex = command.Style;
+                    ReflectionHelper.GetAttr<UIDropDown>((DistrictWorldInfoPanel)panel, "m_Style").selectedIndex = command.Style;
                 });
             }
         }

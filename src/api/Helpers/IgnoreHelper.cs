@@ -11,10 +11,16 @@ namespace CSM.API.Helpers
     /// </summary>
     public class IgnoreHelper
     {
-        public static IgnoreHelper Instance = new IgnoreHelper();
+        public static IgnoreHelper Instance
+        {
+            get => _instance.Value;
+            set => _instance.Value = value;
+        }
 
-        private readonly ThreadLocal<int> _ignoreAll = new ThreadLocal<int>();
-        private readonly ThreadLocal<HashSet<string>> _exceptions = new ThreadLocal<HashSet<string>>();
+        private static readonly ThreadLocal<IgnoreHelper> _instance = new ThreadLocal<IgnoreHelper>(() => new IgnoreHelper());
+
+        private int _ignoreAll = 0;
+        private readonly HashSet<string> _exceptions = new HashSet<string>();
 
         /// <summary>
         ///     Starts the ignore mode where the injection handlers
@@ -22,7 +28,7 @@ namespace CSM.API.Helpers
         /// </summary>
         public void StartIgnore()
         {
-            _ignoreAll.Value++;
+            _ignoreAll++;
         }
 
         /// <summary>
@@ -33,11 +39,7 @@ namespace CSM.API.Helpers
         public void StartIgnore(string except)
         {
             StartIgnore();
-            if (_exceptions.Value == null)
-            {
-                _exceptions.Value = new HashSet<string>();
-            }
-            _exceptions.Value.Add(except);
+            _exceptions.Add(except);
         }
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace CSM.API.Helpers
         /// </summary>
         public void EndIgnore()
         {
-            _ignoreAll.Value = Math.Max(_ignoreAll.Value - 1, 0);
+            _ignoreAll = Math.Max(_ignoreAll - 1, 0);
         }
 
         /// <summary>
@@ -57,11 +59,7 @@ namespace CSM.API.Helpers
         public void EndIgnore(string except)
         {
             EndIgnore();
-            if (_exceptions.Value == null)
-            {
-                _exceptions.Value = new HashSet<string>();
-            }
-            _exceptions.Value.Remove(except);
+            _exceptions.Remove(except);
         }
 
         /// <summary>
@@ -70,7 +68,7 @@ namespace CSM.API.Helpers
         /// <returns>If the calls should be ignored.</returns>
         public bool IsIgnored()
         {
-            return _ignoreAll.Value > 0;
+            return _ignoreAll > 0;
         }
 
         /// <summary>
@@ -80,11 +78,7 @@ namespace CSM.API.Helpers
         /// <returns>If the calls should be ignored.</returns>
         public bool IsIgnored(string action)
         {
-            if (_exceptions.Value == null)
-            {
-                _exceptions.Value = new HashSet<string>();
-            }
-            return IsIgnored() && !_exceptions.Value.Contains(action);
+            return IsIgnored() && !_exceptions.Contains(action);
         }
 
         /// <summary>
@@ -92,14 +86,9 @@ namespace CSM.API.Helpers
         /// </summary>
         public void ResetIgnore()
         {
-            if (_exceptions.Value == null)
-            {
-                _exceptions.Value = new HashSet<string>();
-            }
-
-            Log.Debug($"Resetting {_ignoreAll.Value} levels of ignoring: {string.Join(", ", _exceptions.Value.ToArray())}");
-            _ignoreAll.Value = 0;
-            _exceptions.Value.Clear();
+            Log.Debug($"Resetting {_ignoreAll} levels of ignoring: {string.Join(", ", _exceptions.ToArray())}");
+            _ignoreAll = 0;
+            _exceptions.Clear();
         }
     }
 }

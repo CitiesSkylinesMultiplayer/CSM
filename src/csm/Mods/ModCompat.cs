@@ -159,7 +159,7 @@ namespace CSM.Mods
             panel.AddScrollbar(modInfoPanel);
 
             panel.width = 720;
-            modInfoPanel.CreateLabel("Mod Support", new Vector2(0, 0), 340, 20);
+            modInfoPanel.CreateLabel("Mod/DLC Support", new Vector2(0, 0), 340, 20);
 
             Log.Debug($"Mod support: {string.Join(", ", modSupport.Select(m => $"{m.TypeName} ({m.Type})").ToArray())}");
             int y = -50;
