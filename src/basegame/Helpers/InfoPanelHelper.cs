@@ -30,6 +30,18 @@ namespace CSM.BaseGame.Helpers
             return instance.Type == InstanceType.Building && instance.Building == buildingId;
         }
 
+        public static bool IsPark(Type panelType, byte parkId, out WorldInfoPanel panel)
+        {
+            InstanceID instance = GetInstanceID(panelType, out panel);
+            return instance.Type == InstanceType.Park && instance.Park == parkId;
+        }
+
+        public static bool IsDistrict(Type panelType, byte districtId, out WorldInfoPanel panel)
+        {
+            InstanceID instance = GetInstanceID(panelType, out panel);
+            return instance.Type == InstanceType.District && instance.District == districtId;
+        }
+
         public static bool IsEventBuilding(Type panelType, ushort eventId, out WorldInfoPanel panel)
         {
             InstanceID instance = GetInstanceID(panelType, out panel);

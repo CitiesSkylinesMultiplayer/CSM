@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Reflection;
+using ColossalFramework;
+using ColossalFramework.Threading;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Districts;
@@ -78,7 +82,8 @@ namespace CSM.BaseGame.Injections
                 Command.SendToAll(new DistrictPolicyCommand
                 {
                     Policy = policy,
-                    DistrictId = district
+                    DistrictId = district,
+                    IsPark = false
                 });
             }
         }
@@ -101,6 +106,24 @@ namespace CSM.BaseGame.Injections
     }
 
     [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("SetParkPolicy")]
+    public class SetParkPolicy
+    {
+        public static void Postfix(DistrictPolicies.Policies policy, byte park)
+        {
+            if (!IgnoreHelper.Instance.IsIgnored())
+            {
+                Command.SendToAll(new DistrictPolicyCommand
+                {
+                    Policy = policy,
+                    DistrictId = park,
+                    IsPark = true
+                });
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(DistrictManager))]
     [HarmonyPatch("UnsetDistrictPolicy")]
     public class UnsetDistrictPolicy
     {
@@ -111,7 +134,8 @@ namespace CSM.BaseGame.Injections
                 Command.SendToAll(new DistrictPolicyUnsetCommand
                 {
                     Policy = policy,
-                    DistrictId = district
+                    DistrictId = district,
+                    IsPark = false
                 });
             }
         }
@@ -128,6 +152,24 @@ namespace CSM.BaseGame.Injections
                 Command.SendToAll(new DistrictCityPolicyUnsetCommand
                 {
                     Policy = policy,
+                });
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(DistrictManager))]
+    [HarmonyPatch("UnsetParkPolicy")]
+    public class UnsetParkPolicy
+    {
+        public static void Postfix(DistrictPolicies.Policies policy, byte park)
+        {
+            if (!IgnoreHelper.Instance.IsIgnored())
+            {
+                Command.SendToAll(new DistrictPolicyUnsetCommand
+                {
+                    Policy = policy,
+                    DistrictId = park,
+                    IsPark = true
                 });
             }
         }
@@ -167,6 +209,48 @@ namespace CSM.BaseGame.Injections
                     ParkId = park
                 });
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(DistrictWorldInfoPanel))]
+    [HarmonyPatch("OnStyleChanged")]
+    public class StyleChanged
+    {
+        public static void Prefix(DistrictWorldInfoPanel __instance, int value)
+        {
+            byte district = ReflectionHelper.GetAttr<InstanceID>(__instance, "m_InstanceID").District;
+            ushort oldStyle = Singleton<DistrictManager>.instance.m_districts.m_buffer[district].m_Style;
+            if (oldStyle != value)
+            {
+                Command.SendToAll(new DistrictChangeStyleCommand
+                {
+                    Style = (ushort) value,
+                    DistrictId = district
+                });
+            }
+        }
+    }
+
+    // Fix exception caused by cities in some cases in this method:
+    [HarmonyPatch(typeof(DistrictWorldInfoPanel))]
+    [HarmonyPatch("OnPoliciesChanged")]
+    public class OnPoliciesChanged
+    {
+        public static bool Prefix(DistrictWorldInfoPanel __instance)
+        {
+            MethodInfo updatePolicies = typeof(DistrictWorldInfoPanel).GetMethod("UpdatePolicies", ReflectionHelper.AllAccessFlags);
+
+            // If we are already in the correct thread, call directly
+            if (ThreadHelper.dispatcher == Dispatcher.currentSafe)
+            {
+                updatePolicies.Invoke(__instance, new object[0]);
+            }
+            else
+            {
+                ThreadHelper.dispatcher.Dispatch(() => updatePolicies.Invoke(__instance, new object[0]));
+            }
+
+            return false;
         }
     }
 }

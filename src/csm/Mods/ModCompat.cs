@@ -66,6 +66,17 @@ namespace CSM.Mods
 
         private static IEnumerable<ModSupportStatus> GetModSupport()
         {
+            foreach (SteamHelper.DLC dlc in DLCHelper.GetOwnedExpansions().DLCs())
+            {
+                string name = DLCHelper.GetDlcName(dlc);
+                yield return new ModSupportStatus("DLC: " + name, name, DLCHelper.GetSupport(dlc), false);
+            }
+            foreach (SteamHelper.DLC dlc in DLCHelper.GetOwnedModderPacks().DLCs())
+            {
+                string name = DLCHelper.GetDlcName(dlc);
+                yield return new ModSupportStatus("DLC: " + name, name, DLCHelper.GetSupport(dlc), false);
+            }
+
             foreach (PluginManager.PluginInfo info in Singleton<PluginManager>.instance.GetPluginsInfo())
             {
                 // Skip disabled mods
@@ -148,7 +159,7 @@ namespace CSM.Mods
             panel.AddScrollbar(modInfoPanel);
 
             panel.width = 720;
-            modInfoPanel.CreateLabel("Mod Support", new Vector2(0, 0), 340, 20);
+            modInfoPanel.CreateLabel("Mod/DLC Support", new Vector2(0, 0), 340, 20);
 
             Log.Debug($"Mod support: {string.Join(", ", modSupport.Select(m => $"{m.TypeName} ({m.Type})").ToArray())}");
             int y = -50;

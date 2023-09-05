@@ -21,7 +21,7 @@ namespace CSM.BaseGame.Commands.Handler.Events
 
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
-                    slider.value = command.Price;
+                    slider.value = command.Price / 100f;
                 });
             }
 

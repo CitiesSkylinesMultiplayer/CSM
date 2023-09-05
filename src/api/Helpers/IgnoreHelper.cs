@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace CSM.API.Helpers
 {
@@ -9,7 +11,13 @@ namespace CSM.API.Helpers
     /// </summary>
     public class IgnoreHelper
     {
-        public static IgnoreHelper Instance = new IgnoreHelper();
+        public static IgnoreHelper Instance
+        {
+            get => _instance.Value;
+            set => _instance.Value = value;
+        }
+
+        private static readonly ThreadLocal<IgnoreHelper> _instance = new ThreadLocal<IgnoreHelper>(() => new IgnoreHelper());
 
         private int _ignoreAll = 0;
         private readonly HashSet<string> _exceptions = new HashSet<string>();
@@ -71,6 +79,16 @@ namespace CSM.API.Helpers
         public bool IsIgnored(string action)
         {
             return IsIgnored() && !_exceptions.Contains(action);
+        }
+
+        /// <summary>
+        ///     Reset ignore state.
+        /// </summary>
+        public void ResetIgnore()
+        {
+            Log.Debug($"Resetting {_ignoreAll} levels of ignoring: {string.Join(", ", _exceptions.ToArray())}");
+            _ignoreAll = 0;
+            _exceptions.Clear();
         }
     }
 }

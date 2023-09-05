@@ -1,5 +1,8 @@
 ﻿using System;
+using ColossalFramework;
+using CSM.API;
 using CSM.API.Commands;
+using CSM.API.Helpers;
 using CSM.API.Networking.Status;
 using CSM.BaseGame.Injections;
 using CSM.Commands;
@@ -13,10 +16,15 @@ namespace CSM.Extensions
     {
         private DateTime _lastEconomyAndDropSync;
 
+        public override void OnCreated(IThreading threading)
+        {
+            Singleton<MainThreadTracker>.Ensure();
+        }
+
         public override void OnBeforeSimulationTick()
         {
             base.OnBeforeSimulationTick();
-            
+
             // Normally, the game is paused when the player is in Esc or similar menus. We ignore this setting.
             if (SimulationManager.instance.ForcedSimulationPaused && MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None)
             {
@@ -54,6 +62,28 @@ namespace CSM.Extensions
 
             // Finish transactions
             TransactionHandler.FinishSend();
+
+            // Check if ignore helper is still in ignore state at the end of the simulation step
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                Log.Warn("Ignore helper not stopped at end of simulation tick. A restart may be required.");
+                Chat.Instance.PrintGameMessage(Chat.MessageType.Warning, "Warning: Synchronization problem detected. If you encounter problems, restart the multiplayer session!");
+                IgnoreHelper.Instance.ResetIgnore();
+            }
+        }
+    }
+
+    class MainThreadTracker : Singleton<MainThreadTracker>
+    {
+        public void LateUpdate()
+        {
+            // Check if ignore helper is in ignore state outside of other Update functions
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                Log.Warn("Ignore helper not stopped at arbitrary point of UI tick. A restart may be required.");
+                Chat.Instance.PrintGameMessage(Chat.MessageType.Warning, "Warning: Synchronization problem detected. If you encounter problems, restart the multiplayer session!");
+                IgnoreHelper.Instance.ResetIgnore();
+            }
         }
     }
 }

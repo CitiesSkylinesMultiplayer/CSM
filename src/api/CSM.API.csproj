@@ -50,6 +50,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Threading.dll">
+      <Version>1.0.2856.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="protobuf-net">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\assemblies\protobuf-net.dll</HintPath>

@@ -135,7 +135,9 @@
 		<Compile Include="Injections\PauseMenuHandler.cs" />
 		<Compile Include="Injections\SpeedPauseHandler.cs" />
 		<Compile Include="Injections\TickLoopHandler.cs" />
+		<Compile Include="Models\AcademicWorksDataSurrogate.cs" />
 		<Compile Include="Models\ColorSurrogate.cs" />
+		<Compile Include="Models\DistrictYearReportDataSurrogate.cs" />
 		<Compile Include="Models\QuaternionSurrogate.cs" />
 		<Compile Include="Models\ControlPointSurrogate.cs" />
 		<Compile Include="Models\InstanceIDSurrogate.cs" />
