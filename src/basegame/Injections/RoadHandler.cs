@@ -86,4 +86,27 @@ namespace CSM.BaseGame.Injections
             return ReflectionHelper.GetIteratorTargetMethod(typeof(NetManager), "<SetPriorityRoad>c__Iterator3", out Type _);
         }
     }
+
+    [HarmonyPatch(typeof(NetAdjust))]
+    [HarmonyPatch("ApplyModification")]
+    public class ApplyModification
+    {
+        public static void Prefix(int index, bool ___m_pathVisible, int ___m_tempAdjustmentIndex,
+                HashSet<ushort> ___m_originalSegments, HashSet<ushort> ___m_includedSegments,
+                InstanceID ___m_lastInstance)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+                return;
+
+            if (!___m_pathVisible || ___m_tempAdjustmentIndex != index)
+                return;
+
+            Command.SendToAll(new RoadAdjustCommand()
+            {
+                OriginalSegments = ___m_originalSegments,
+                IncludedSegments = ___m_includedSegments,
+                LastInstance = ___m_lastInstance,
+            });
+        }
+    }
 }

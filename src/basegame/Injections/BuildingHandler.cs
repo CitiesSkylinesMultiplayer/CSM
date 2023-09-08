@@ -423,4 +423,28 @@ namespace CSM.BaseGame.Injections
             });
         }
     }
+
+    [HarmonyPatch(typeof(CommonBuildingAI))]
+    [HarmonyPatch("ReplaceVariation")]
+    public class ReplaceVariation
+    {
+        public static void Prefix(ushort buildingID, Building.Flags2 variation)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                return;
+            }
+
+            if ((variation & Building.Flags2.SubmeshVariation) == Building.Flags2.None)
+            {
+                return;
+            }
+
+            Command.SendToAll(new BuildingSetVariationCommand
+            {
+                Building = buildingID,
+                Variation = variation,
+            });
+        }
+    }
 }
