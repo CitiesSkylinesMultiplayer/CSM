@@ -76,6 +76,7 @@
     <Compile Include="Commands\Data\Buildings\BuildingSetHistoricalCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetTollPriceCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetTransferReasonCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingSetVariationCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingToolCreateCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
     <Compile Include="Commands\Data\Buildings\ServiceBuildingChangeVehicleCommand.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Commands\Data\Props\PropCreateCommand.cs" />
     <Compile Include="Commands\Data\Props\PropMoveCommand.cs" />
     <Compile Include="Commands\Data\Props\PropReleaseCommand.cs" />
+    <Compile Include="Commands\Data\Roads\RoadAdjustCommand.cs" />
     <Compile Include="Commands\Data\Roads\RoadSetPriorityCommand.cs" />
     <Compile Include="Commands\Data\Roads\RoadSettingsCommand.cs" />
     <Compile Include="Commands\Data\Terrain\SoilTradeCommand.cs" />
@@ -156,6 +158,7 @@
     <Compile Include="Commands\Handler\Buildings\BuildingSetHistoricalHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetTollPriceHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetTransferReasonHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingSetVariationHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingToolCreateHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingUpgradeHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\TransportLineChangeVehicleHandler.cs" />
@@ -198,6 +201,7 @@
     <Compile Include="Commands\Handler\Props\PropCreateHandler.cs" />
     <Compile Include="Commands\Handler\Props\PropMoveHandler.cs" />
     <Compile Include="Commands\Handler\Props\PropReleaseHandler.cs" />
+    <Compile Include="Commands\Handler\Roads\RoadAdjustHandler.cs" />
     <Compile Include="Commands\Handler\Roads\RoadSetPriorityHandler.cs" />
     <Compile Include="Commands\Handler\Roads\RoadSettingsHandler.cs" />
     <Compile Include="Commands\Handler\Terrain\SoilTradeHandler.cs" />
