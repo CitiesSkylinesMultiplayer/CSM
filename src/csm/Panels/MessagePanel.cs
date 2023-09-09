@@ -163,10 +163,25 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: May 25th, 2023\n\n" +
+                             "Last Update: September 9th, 2023\n\n" +
+                             "- Features:\n" +
+                             "  - Support Match Day DLC\n" +
+                             "    - Sync results of football events\n" +
+                             "  - Support Campus DLC\n" +
+                             "    - Sync settings of the campus management panel\n" +
+                             "    - Sync district park policies\n" +
+                             "    - Sync campus upgrades and statistics\n" +
+                             "  - Support Snowfall DLC\n" +
+                             "  - Sync building variations\n" +
+                             "  - Sync road adjustments\n" +
+                             "  - Sync zone grid settings\n" +
+                             "  - Show DLC support info when starting a server\n\n" +
                              "- Fixes:\n" +
-                             "  - Fix problems of new hotels update\n" +
-                             "  - Fix exception reported by a few members on Discord";
+                             "  - Improve transport lines sync\n" +
+                             "  - Detect some sync problems automatically\n" +
+                             "  - Fix update of loans tab\n" +
+                             "  - Ignore Christmas DLC when joining\n" +
+                             "  - Fix ticket prize synchronization for events";
             SetMessage(message);
 
             Show(true);
