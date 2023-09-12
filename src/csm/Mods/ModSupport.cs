@@ -22,20 +22,9 @@ namespace CSM.Mods
         {
             get
             {
-                return ConnectedNonClientModNames
-                    .Concat(Singleton<PluginManager>.instance.GetPluginsInfo()
-                      .Where(plugin => plugin.isEnabled && plugin.isBuiltin).Select(plugin => plugin.name))
-                    .Concat(AssetNames).ToList();
-            }
-        }
-
-        private IEnumerable<string> ConnectedNonClientModNames
-        {
-            get
-            {
-                return ConnectedMods.Where(connection =>
-                    connection.ModClass != null
-                ).Select(connection => connection.Name).ToList();
+                return Singleton<PluginManager>.instance.GetPluginsInfo()
+                        .Where(ModCompat.NeedsToBePresent).Select(plugin => plugin.name)
+                        .Concat(AssetNames).ToList();
             }
         }
 
@@ -114,7 +103,7 @@ namespace CSM.Mods
         {
             ConnectedMods.Clear();
             ConnectedMods.TrimExcess();
-            
+
             Singleton<PluginManager>.instance.eventPluginsChanged -= LoadModConnections;
             Singleton<PluginManager>.instance.eventPluginsStateChanged -= LoadModConnections;
         }
