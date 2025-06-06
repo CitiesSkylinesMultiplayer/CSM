@@ -23,7 +23,10 @@ namespace CSM.Mods
             get
             {
                 return Singleton<PluginManager>.instance.GetPluginsInfo()
-                        .Where(ModCompat.NeedsToBePresent).Select(plugin => plugin.name)
+                        .Where(ModCompat.NeedsToBePresent).Where(plugin => plugin != null)
+                        .Select(plugin => plugin.userModInstance as IUserMod)
+                        .Where(mod => mod != null)
+                        .Select(mod => mod.Name)
                         .Concat(AssetNames).ToList();
             }
         }

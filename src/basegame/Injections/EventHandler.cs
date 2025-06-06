@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using ColossalFramework.UI;
 using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
@@ -34,7 +37,7 @@ namespace CSM.BaseGame.Injections
                 return;
 
             Type type = __instance.GetType();
-            if (type != typeof(RocketLaunchAI) && type != typeof(ConcertAI) && type != typeof(SportMatchAI))
+            if (type != typeof(RocketLaunchAI) && type != typeof(ConcertAI) && type != typeof(SportMatchAI) && type != typeof(VarsitySportsMatchAI))
                 return;
 
             if (newColor.r == data.m_color.r && newColor.g == data.m_color.g && newColor.b == data.m_color.b)
@@ -78,7 +81,6 @@ namespace CSM.BaseGame.Injections
                 return;
 
             // Event is 0, when it is set through the FestivalPanel for a certain band
-            // TODO: Sync price changes in FestivalPanel and VarsitySportsArenaPanel
             if (eventID == 0 || __instance.GetTicketPrice(eventID, ref data) == newPrice)
                 return;
 
@@ -90,8 +92,7 @@ namespace CSM.BaseGame.Injections
         }
     }
 
-    [HarmonyPatch(typeof(SportMatchAI))]
-    [HarmonyPatch("BeginEvent")]
+    [HarmonyPatch]
     public class BeginEvent
     {
         private static bool _isWinMatchSet;
@@ -141,6 +142,33 @@ namespace CSM.BaseGame.Injections
                     Result = winMatch
                 });
             }
+        }
+
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return typeof(SportMatchAI).GetMethod("BeginEvent", ReflectionHelper.AllAccessFlags);
+            yield return typeof(ConcertAI).GetMethod("BeginEvent", ReflectionHelper.AllAccessFlags);
+        }
+    }
+
+    [HarmonyPatch(typeof(FestivalPanel))]
+    [HarmonyPatch("OnTicketPriceChanged")]
+    public class SetConcertTicketPrice
+    {
+        public static void Prefix(UIComponent comp, int value, InstanceID ___m_InstanceID)
+        {
+            ConcertAI concertAI = PrefabCollection<EventInfo>.GetLoaded((uint) comp.objectUserData).GetAI() as ConcertAI;
+            int newPrice = value * 100;
+            int num = newPrice - concertAI.m_ticketPrice;
+            if (num == concertAI.m_info.m_ticketPriceOffset)
+                return;
+
+            Command.SendToAll(new EventSetConcertTicketPriceCommand()
+            {
+                Building = ___m_InstanceID.Building,
+                Event = (uint) comp.objectUserData,
+                Price = newPrice
+            });
         }
     }
 }

@@ -447,4 +447,86 @@ namespace CSM.BaseGame.Injections
             });
         }
     }
+
+    [HarmonyPatch(typeof(CityServiceWorldInfoPanel))]
+    [HarmonyPatch("OnVariationDropdownChanged")]
+    public class OnVariationDropdownChanged
+    {
+        public static void Prefix(int value, InstanceID ___m_InstanceID)
+        {
+            UpdateBuildingInfo.TrackNextBuilding = ___m_InstanceID.Building;
+            UpdateBuildingInfo.VariationIndex = value;
+        }
+    }
+
+    [HarmonyPatch(typeof(BuildingManager))]
+    [HarmonyPatch("UpdateBuildingInfo")]
+    [HarmonyPatch(new[] { typeof(ushort), typeof(BuildingInfo) })]
+    public class UpdateBuildingInfo
+    {
+        public static ushort TrackNextBuilding = 0;
+        public static int VariationIndex = 0;
+
+        public static void Prefix(ushort building, BuildingInfo newInfo, out bool __state)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                __state = false;
+            }
+            else if (building == TrackNextBuilding)
+            {
+                ushort prefabId = (ushort)Mathf.Clamp(newInfo.m_prefabDataIndex, 0, 65535);
+                Command.SendToAll(new BuildingSetIndustrialVariationCommand
+                {
+                    Building = building,
+                    VariationInfoIndex = prefabId,
+                    VariationIndex = VariationIndex,
+                });
+
+                TrackNextBuilding = 0;
+
+                IgnoreHelper.Instance.StartIgnore();
+                __state = true;
+            }
+            else
+            {
+                __state = false;
+            }
+        }
+
+        public static void Postfix(ref bool __state)
+        {
+            if (__state)
+            {
+                IgnoreHelper.Instance.EndIgnore();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(IndustryBuildingAI))]
+    [HarmonyPatch("CreateBuilding")]
+    public class IndustryCreateBuilding
+    {
+        public static void Prefix(IndustryBuildingAI __instance, out int __state)
+        {
+            uint searchKey = ReflectionHelper.GetProp<uint>(__instance, "SearchKey");
+            Dictionary<uint,int> lastTableIndex = ReflectionHelper.GetAttr<Dictionary<uint, int>>(typeof(IndustryBuildingAI), "m_lastTableIndex");
+            __state = lastTableIndex[searchKey];
+        }
+
+        public static void Postfix(IndustryBuildingAI __instance, ref int __state)
+        {
+            uint searchKey = ReflectionHelper.GetProp<uint>(__instance, "SearchKey");
+            Dictionary<uint,int> lastTableIndex = ReflectionHelper.GetAttr<Dictionary<uint, int>>(typeof(IndustryBuildingAI), "m_lastTableIndex");
+            int newIndex = lastTableIndex[searchKey];
+            if (newIndex != __state)
+            {
+                Command.SendToAll(new BuildingUpdateIndustryLastIndexCommand()
+                {
+                    Key = searchKey,
+                    Value = newIndex
+                });
+            }
+        }
+    }
 }

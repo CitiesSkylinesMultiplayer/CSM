@@ -40,7 +40,7 @@ namespace CSM.BaseGame.Commands.Handler.Events
                     });
                 }
             }
-            else if (aiType == typeof(SportMatchAI))
+            else if (aiType == typeof(SportMatchAI) || aiType == typeof(VarsitySportsMatchAI))
             {
                 if (InfoPanelHelper.IsEventBuilding(typeof(FootballPanel), command.Event, out WorldInfoPanel panel))
                 {

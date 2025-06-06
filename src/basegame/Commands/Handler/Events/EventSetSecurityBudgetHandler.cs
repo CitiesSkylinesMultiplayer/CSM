@@ -17,11 +17,7 @@ namespace CSM.BaseGame.Commands.Handler.Events
 
             if (InfoPanelHelper.IsEventBuilding(typeof(FestivalPanel), command.Event, out WorldInfoPanel panel))
             {
-                UISlider slider = ReflectionHelper.GetAttr<UISlider>(panel, "m_securityBudgetSlider");
-                SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
-                {
-                    slider.value = command.Budget;
-                });
+                ReflectionHelper.Call(panel, "OnSetTarget");
             }
 
             IgnoreHelper.Instance.EndIgnore();

@@ -203,6 +203,10 @@ namespace CSM.Mods
             Log.Debug($"Mod support: {string.Join(", ", modSupport.Select(m => $"{m.TypeName} ({m.Type})").ToArray())}");
             modSupport.Sort((status1, status2) =>
             {
+                if (status1.Name.StartsWith("DLC") != status2.Name.StartsWith("DLC"))
+                {
+                    return status1.Name.StartsWith("DLC") ? -1 : 1;
+                }
                 if (status1.ClientSide != status2.ClientSide)
                 {
                     return status1.ClientSide ? 1 : -1;
