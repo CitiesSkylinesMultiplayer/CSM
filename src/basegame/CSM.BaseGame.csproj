@@ -245,7 +245,6 @@
     <Compile Include="Injections\BuildingHandler.cs" />
     <Compile Include="Injections\CampusHandler.cs" />
     <Compile Include="Injections\DistrictHandler.cs" />
-    <Compile Include="Injections\DisasterHandler.cs" />
     <Compile Include="Injections\EconomyHandler.cs" />
     <Compile Include="Injections\EventHandler.cs" />
     <Compile Include="Injections\NameHandler.cs" />
