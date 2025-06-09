@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
         
     # The version string
     - name: Set Version Environment Variable
@@ -55,14 +55,14 @@ jobs:
 
     # Publish artifacts
     - name: Upload mod DLLs
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
         path: src/csm/bin/Release/*.dll
         
     # Publish install script
     - name: Upload install script
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
         path: scripts/install.ps1
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build Docker Image
       working-directory: src/gs
@@ -102,7 +102,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
 
     - name: Upload Docker Image
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: API Server Docker Image
         path: apiserver.tar
