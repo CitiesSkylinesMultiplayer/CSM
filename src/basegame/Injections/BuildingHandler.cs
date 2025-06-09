@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Buildings;
@@ -27,6 +28,13 @@ namespace CSM.BaseGame.Injections
             ToolBase.ToolErrors ___m_placementErrors = ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_placementErrors");
 
             if (counter != 0 || ___m_placementErrors != ToolBase.ToolErrors.None)
+            {
+                __state.run = false;
+                return;
+            }
+
+            // Extracting facility AI generates random building, we don't sync it here
+            if (tool.m_prefab.m_buildingAI is ExtractingFacilityAI)
             {
                 __state.run = false;
                 return;
@@ -509,6 +517,12 @@ namespace CSM.BaseGame.Injections
     {
         public static void Prefix(IndustryBuildingAI __instance, out int __state)
         {
+            if (__instance.m_info.m_placementStyle != ItemClass.Placement.Manual)
+            {
+                __state = -2;
+                return;
+            }
+
             uint searchKey = ReflectionHelper.GetProp<uint>(__instance, "SearchKey");
             Dictionary<uint,int> lastTableIndex = ReflectionHelper.GetAttr<Dictionary<uint, int>>(typeof(IndustryBuildingAI), "m_lastTableIndex");
             __state = lastTableIndex[searchKey];
@@ -516,6 +530,11 @@ namespace CSM.BaseGame.Injections
 
         public static void Postfix(IndustryBuildingAI __instance, ref int __state)
         {
+            if (__state == -2)
+            {
+                return;
+            }
+
             uint searchKey = ReflectionHelper.GetProp<uint>(__instance, "SearchKey");
             Dictionary<uint,int> lastTableIndex = ReflectionHelper.GetAttr<Dictionary<uint, int>>(typeof(IndustryBuildingAI), "m_lastTableIndex");
             int newIndex = lastTableIndex[searchKey];

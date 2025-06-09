@@ -64,7 +64,7 @@ namespace CSM.Helpers
                 case SteamHelper.DLC.HotelDLC:
                     return ModSupportType.Unknown;
                 case SteamHelper.DLC.IndustryDLC:
-                    return ModSupportType.Unknown;
+                    return ModSupportType.Supported;
                 case SteamHelper.DLC.InMotionDLC: // Mass transit
                     return ModSupportType.Supported;
                 case SteamHelper.DLC.Football: // Match day
