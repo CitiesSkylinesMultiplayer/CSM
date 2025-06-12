@@ -58,14 +58,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
-        path: src/csm/bin/Release/*.dll
-        
-    # Publish install script
-    - name: Upload install script
-      uses: actions/upload-artifact@v4
-      with:
-        name: CSM ${{ steps.csm_version.outputs.version }}
-        path: scripts/install.ps1
+        path: |
+          src/csm/bin/Release/*.dll
+          scripts/install.ps1
 
     # Pack API package (Nuget)
     - name: Build nuget API package
