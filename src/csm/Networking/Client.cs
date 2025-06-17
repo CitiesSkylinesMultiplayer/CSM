@@ -29,7 +29,7 @@ namespace CSM.Networking
     {
         // The client
         private readonly LiteNetLib.NetManager _netClient;
-        
+
         /// <summary>
         ///     Configuration for the client
         /// </summary>
@@ -111,7 +111,7 @@ namespace CSM.Networking
             // Set the configuration
             Config = clientConfig;
             ClientPlayer.Username = Config.Username;
-            
+
             // Stop the client, if client failed stopping
             if (_netClient.IsRunning)
             {
@@ -484,7 +484,7 @@ namespace CSM.Networking
         {
             Log.Error($"Network error: {socketError}");
         }
-        
+
         private void ListenerOnNetworkLatencyUpdateEvent(NetPeer peer, int latency)
         {
             ClientPlayer.Latency = latency;

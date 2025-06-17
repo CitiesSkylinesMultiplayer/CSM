@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.BaseGame.Commands.Data.Buildings;
@@ -27,6 +28,13 @@ namespace CSM.BaseGame.Injections
             ToolBase.ToolErrors ___m_placementErrors = ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_placementErrors");
 
             if (counter != 0 || ___m_placementErrors != ToolBase.ToolErrors.None)
+            {
+                __state.run = false;
+                return;
+            }
+
+            // Extracting facility AI generates random building, we don't sync it here
+            if (tool.m_prefab.m_buildingAI is ExtractingFacilityAI)
             {
                 __state.run = false;
                 return;
@@ -445,6 +453,99 @@ namespace CSM.BaseGame.Injections
                 Building = buildingID,
                 Variation = variation,
             });
+        }
+    }
+
+    [HarmonyPatch(typeof(CityServiceWorldInfoPanel))]
+    [HarmonyPatch("OnVariationDropdownChanged")]
+    public class OnVariationDropdownChanged
+    {
+        public static void Prefix(int value, InstanceID ___m_InstanceID)
+        {
+            UpdateBuildingInfo.TrackNextBuilding = ___m_InstanceID.Building;
+            UpdateBuildingInfo.VariationIndex = value;
+        }
+    }
+
+    [HarmonyPatch(typeof(BuildingManager))]
+    [HarmonyPatch("UpdateBuildingInfo")]
+    [HarmonyPatch(new[] { typeof(ushort), typeof(BuildingInfo) })]
+    public class UpdateBuildingInfo
+    {
+        public static ushort TrackNextBuilding = 0;
+        public static int VariationIndex = 0;
+
+        public static void Prefix(ushort building, BuildingInfo newInfo, out bool __state)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                __state = false;
+            }
+            else if (building == TrackNextBuilding)
+            {
+                ushort prefabId = (ushort)Mathf.Clamp(newInfo.m_prefabDataIndex, 0, 65535);
+                Command.SendToAll(new BuildingSetIndustrialVariationCommand
+                {
+                    Building = building,
+                    VariationInfoIndex = prefabId,
+                    VariationIndex = VariationIndex,
+                });
+
+                TrackNextBuilding = 0;
+
+                IgnoreHelper.Instance.StartIgnore();
+                __state = true;
+            }
+            else
+            {
+                __state = false;
+            }
+        }
+
+        public static void Postfix(ref bool __state)
+        {
+            if (__state)
+            {
+                IgnoreHelper.Instance.EndIgnore();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(IndustryBuildingAI))]
+    [HarmonyPatch("CreateBuilding")]
+    public class IndustryCreateBuilding
+    {
+        public static void Prefix(IndustryBuildingAI __instance, out int __state)
+        {
+            if (__instance.m_info.m_placementStyle != ItemClass.Placement.Manual)
+            {
+                __state = -2;
+                return;
+            }
+
+            uint searchKey = ReflectionHelper.GetProp<uint>(__instance, "SearchKey");
+            Dictionary<uint,int> lastTableIndex = ReflectionHelper.GetAttr<Dictionary<uint, int>>(typeof(IndustryBuildingAI), "m_lastTableIndex");
+            __state = lastTableIndex[searchKey];
+        }
+
+        public static void Postfix(IndustryBuildingAI __instance, ref int __state)
+        {
+            if (__state == -2)
+            {
+                return;
+            }
+
+            uint searchKey = ReflectionHelper.GetProp<uint>(__instance, "SearchKey");
+            Dictionary<uint,int> lastTableIndex = ReflectionHelper.GetAttr<Dictionary<uint, int>>(typeof(IndustryBuildingAI), "m_lastTableIndex");
+            int newIndex = lastTableIndex[searchKey];
+            if (newIndex != __state)
+            {
+                Command.SendToAll(new BuildingUpdateIndustryLastIndexCommand()
+                {
+                    Key = searchKey,
+                    Value = newIndex
+                });
+            }
         }
     }
 }

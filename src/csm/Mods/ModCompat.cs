@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ColossalFramework;
@@ -36,10 +37,14 @@ namespace CSM.Mods
 
     public static class ModCompat
     {
-        private static readonly string[] _clientSideMods = { "LoadingScreenMod.Mod", "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper", "ChirpRemover.ChirpRemover", "MoreAspectRatios.MoreAspectRatios" };
+        private static readonly string[] _clientSideMods =
+        {
+            "LoadingScreenMod.Mod", "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper",
+            "ChirpRemover.ChirpRemover", "MoreAspectRatios.MoreAspectRatios", "FPSCamera.Mod", "AchieveIt.ModInfo"
+        };
         private static readonly string[] _ignoredMods = { "CitiesHarmony.Mod" };
 
-        private static readonly string[] _knownToWork = { "LoadingScreenMod.Mod", "MoreAspectRatios.MoreAspectRatios" };
+        private static readonly string[] _knownToWork = { "NetworkExtensions.Mod", "BigCity.BigCityUserMod" };
         private static readonly string[] _unsupportedMods = { "TrafficManager.Lifecycle.TrafficManagerMod" };
 
         private static readonly string[] _disableChirperNames = { "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper", "ChirpRemover.ChirpRemover" };
@@ -63,6 +68,37 @@ namespace CSM.Mods
         }
 
         private static bool? _hasDisableChirperMod;
+
+        public static bool NeedsToBePresent(PluginManager.PluginInfo info)
+        {
+            if (!info.isEnabled)
+                return false;
+
+            IUserMod modInstance = info.userModInstance as IUserMod;
+
+            // Skip CSM itself
+            if (modInstance?.GetType() == typeof(CSM))
+                return false;
+
+            if (info.isBuiltin)
+                return true;
+
+            string modInstanceName = modInstance?.GetType().ToString();
+
+            if (_ignoredMods.Contains(modInstanceName))
+                return false;
+
+            if (_clientSideMods.Contains(modInstanceName))
+                return false;
+
+            if (_knownToWork.Contains(modInstanceName))
+                return true;
+
+            if (ModSupport.Instance.ConnectedMods.Select(mod => mod.ModClass).Contains(modInstance?.GetType()))
+                return true;
+
+            return false;
+        }
 
         private static IEnumerable<ModSupportStatus> GetModSupport()
         {
@@ -89,11 +125,14 @@ namespace CSM.Mods
                 if (modInstance?.GetType() == typeof(CSM))
                     continue;
 
-                // Skip built-in mods (TODO: Check if actually everything works with them)
-                if (info.isBuiltin)
-                    continue;
-
                 string modInstanceName = modInstance?.GetType().ToString();
+
+                // Built-in mods are supported (TODO: Check if actually everything works with them)
+                if (info.isBuiltin)
+                {
+                    yield return new ModSupportStatus(modInstance?.Name, modInstanceName, ModSupportType.Supported, false);
+                    continue;
+                }
 
                 // Skip ignored mods
                 if (_ignoredMods.Contains(modInstanceName))
@@ -130,7 +169,7 @@ namespace CSM.Mods
                     continue;
                 }
 
-                yield return new ModSupportStatus(modInstance?.Name, modInstanceName, ModSupportType.Unknown, isClientSide);
+                yield return new ModSupportStatus(modInstance?.Name, modInstanceName, isClientSide ? ModSupportType.KnownWorking : ModSupportType.Unknown, isClientSide);
             }
         }
 
@@ -142,7 +181,7 @@ namespace CSM.Mods
                 modInfoPanel.Remove();
             }
 
-            IEnumerable<ModSupportStatus> modSupport = GetModSupport().ToList();
+            List<ModSupportStatus> modSupport = GetModSupport().ToList();
             if (!modSupport.Any())
             {
                 panel.width = 360;
@@ -162,6 +201,19 @@ namespace CSM.Mods
             modInfoPanel.CreateLabel("Mod/DLC Support", new Vector2(0, 0), 340, 20);
 
             Log.Debug($"Mod support: {string.Join(", ", modSupport.Select(m => $"{m.TypeName} ({m.Type})").ToArray())}");
+            modSupport.Sort((status1, status2) =>
+            {
+                if (status1.Name.StartsWith("DLC") != status2.Name.StartsWith("DLC"))
+                {
+                    return status1.Name.StartsWith("DLC") ? -1 : 1;
+                }
+                if (status1.ClientSide != status2.ClientSide)
+                {
+                    return status1.ClientSide ? 1 : -1;
+                }
+
+                return string.Compare(status1.Name, status2.Name, StringComparison.Ordinal);
+            });
             int y = -50;
             foreach (ModSupportStatus mod in modSupport)
             {

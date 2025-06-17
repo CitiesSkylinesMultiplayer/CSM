@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using System;
+using ColossalFramework;
 using ColossalFramework.UI;
 using CSM.API.Commands;
 using CSM.API.Helpers;
@@ -13,11 +14,14 @@ namespace CSM.BaseGame.Commands.Handler.Districts
         {
             Singleton<DistrictManager>.instance.m_districts.m_buffer[command.DistrictId].m_Style = command.Style;
 
-            if (InfoPanelHelper.IsDistrict(typeof(DistrictWorldInfoPanel), command.DistrictId, out WorldInfoPanel panel))
+            if (InfoPanelHelper.IsDistrict(typeof(DistrictWorldInfoPanel), command.DistrictId, out WorldInfoPanel pan))
             {
                 SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
                 {
-                    ReflectionHelper.GetAttr<UIDropDown>((DistrictWorldInfoPanel)panel, "m_Style").selectedIndex = command.Style;
+                    DistrictWorldInfoPanel panel = (DistrictWorldInfoPanel) pan;
+                    int[] styleMap = ReflectionHelper.GetAttr<int[]>(panel, "m_StyleMap");
+                    int num = Array.IndexOf(styleMap, command.Style);
+                    ReflectionHelper.GetAttr<UIDropDown>(panel, "m_Style").selectedIndex = num;
                 });
             }
         }

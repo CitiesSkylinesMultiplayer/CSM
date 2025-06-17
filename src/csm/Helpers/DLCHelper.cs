@@ -56,17 +56,17 @@ namespace CSM.Helpers
                 case SteamHelper.DLC.CampusDLC:
                     return ModSupportType.Supported;
                 case SteamHelper.DLC.MusicFestival: // Concerts
-                    return ModSupportType.Unknown;
+                    return ModSupportType.Supported;
                 case SteamHelper.DLC.FinancialDistrictsDLC:
                     return ModSupportType.Unknown;
                 case SteamHelper.DLC.GreenCitiesDLC:
-                    return ModSupportType.Unknown;
+                    return ModSupportType.Supported;
                 case SteamHelper.DLC.HotelDLC:
                     return ModSupportType.Unknown;
                 case SteamHelper.DLC.IndustryDLC:
-                    return ModSupportType.Unknown;
+                    return ModSupportType.Supported;
                 case SteamHelper.DLC.InMotionDLC: // Mass transit
-                    return ModSupportType.Unknown;
+                    return ModSupportType.Supported;
                 case SteamHelper.DLC.Football: // Match day
                     return ModSupportType.Supported;
                 case SteamHelper.DLC.NaturalDisastersDLC:
@@ -104,6 +104,10 @@ namespace CSM.Helpers
                 case SteamHelper.DLC.ModderPack19:
                 case SteamHelper.DLC.ModderPack20:
                 case SteamHelper.DLC.ModderPack21:
+                case SteamHelper.DLC.ModderPack22:
+                case SteamHelper.DLC.ModderPack23:
+                case SteamHelper.DLC.ModderPack24:
+                case SteamHelper.DLC.ModderPack25:
                 case SteamHelper.DLC.OrientalBuildings:
                     return ModSupportType.Supported;
                 default:

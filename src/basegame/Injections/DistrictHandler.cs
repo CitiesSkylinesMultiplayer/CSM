@@ -216,15 +216,17 @@ namespace CSM.BaseGame.Injections
     [HarmonyPatch("OnStyleChanged")]
     public class StyleChanged
     {
-        public static void Prefix(DistrictWorldInfoPanel __instance, int value)
+        public static void Prefix(DistrictWorldInfoPanel __instance, int[] ___m_StyleMap, int value)
         {
             byte district = ReflectionHelper.GetAttr<InstanceID>(__instance, "m_InstanceID").District;
+
+            ushort newStyle = (ushort) ___m_StyleMap[value];
             ushort oldStyle = Singleton<DistrictManager>.instance.m_districts.m_buffer[district].m_Style;
-            if (oldStyle != value)
+            if (oldStyle != newStyle)
             {
                 Command.SendToAll(new DistrictChangeStyleCommand
                 {
-                    Style = (ushort) value,
+                    Style = newStyle,
                     DistrictId = district
                 });
             }

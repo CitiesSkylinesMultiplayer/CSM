@@ -33,7 +33,7 @@ namespace CSM.Networking
 
         // Keep alive tick tracker
         private int _keepAlive = 1;
-        
+
         // Connected clients
         public Dictionary<int, CSMPlayer> ConnectedPlayers { get; } = new Dictionary<int, CSMPlayer>();
 
@@ -187,6 +187,7 @@ namespace CSM.Networking
             _netServer.Stop();
 
             MultiplayerManager.Instance.PlayerList.Clear();
+            ConnectedPlayers.Clear();
             TransactionHandler.ClearTransactions();
             Singleton<ToolSimulator>.instance.Clear();
 

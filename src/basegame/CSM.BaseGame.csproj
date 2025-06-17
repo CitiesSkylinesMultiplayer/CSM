@@ -74,10 +74,12 @@
     <Compile Include="Commands\Data\Buildings\BuildingRemoveCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetEmptyingFillingCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetHistoricalCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingSetIndustrialVariationCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetTollPriceCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetTransferReasonCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingSetVariationCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingToolCreateCommand.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingUpdateIndustryLastIndexCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingUpgradeCommand.cs" />
     <Compile Include="Commands\Data\Buildings\ServiceBuildingChangeVehicleCommand.cs" />
     <Compile Include="Commands\Data\Campus\BuyResearchGrantCommand.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Commands\Data\Economy\EconomyTakeLoanCommand.cs" />
     <Compile Include="Commands\Data\Events\EventActivateCommand.cs" />
     <Compile Include="Commands\Data\Events\EventColorChangedCommand.cs" />
+    <Compile Include="Commands\Data\Events\EventSetConcertTicketPriceCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetResultCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetSecurityBudgetCommand.cs" />
     <Compile Include="Commands\Data\Events\EventSetTicketPriceCommand.cs" />
@@ -156,10 +159,12 @@
     <Compile Include="Commands\Handler\Buildings\BuildingRemoveHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetEmptyingFillingHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetHistoricalHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingSetIndustrialVariationHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetTollPriceHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetTransferReasonHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingSetVariationHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingToolCreateHandler.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingUpdateIndustryLastIndexHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\BuildingUpgradeHandler.cs" />
     <Compile Include="Commands\Handler\Buildings\TransportLineChangeVehicleHandler.cs" />
     <Compile Include="Commands\Handler\Campus\BuyResearchGrantHandler.cs" />
@@ -187,6 +192,7 @@
     <Compile Include="Commands\Handler\Economy\EconomyTakeLoanHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventActivateHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventColorChangedHandler.cs" />
+    <Compile Include="Commands\Handler\Events\EventSetConcertTicketPriceHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetResultHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetSecurityBudgetHandler.cs" />
     <Compile Include="Commands\Handler\Events\EventSetTicketPriceHandler.cs" />

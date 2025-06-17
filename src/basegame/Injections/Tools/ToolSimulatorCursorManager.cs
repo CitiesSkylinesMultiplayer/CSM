@@ -19,7 +19,11 @@ namespace CSM.BaseGame.Injections.Tools
             return newView;
         }
 
-        public void RemoveCursorView(int sender) {
+        public void RemoveCursorView(int sender)
+        {
+            if (!_playerCursorViews.ContainsKey(sender))
+                return;
+
             Destroy(_playerCursorViews[sender]);
             _playerCursorViews.Remove(sender);
         }
@@ -39,7 +43,7 @@ namespace CSM.BaseGame.Injections.Tools
         {
             if (_rayCast == null)
             {
-                _rayCast = typeof(ToolBase).GetMethod("RayCast", BindingFlags.Static | BindingFlags.NonPublic);                
+                _rayCast = typeof(ToolBase).GetMethod("RayCast", BindingFlags.Static | BindingFlags.NonPublic);
             }
             ToolBase.RaycastInput input = new ToolBase.RaycastInput(mouseRay, mouseRayLenght);
             object[] parameters = { input, null };

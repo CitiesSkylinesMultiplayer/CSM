@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
         
     # The version string
     - name: Set Version Environment Variable
@@ -40,7 +40,7 @@ jobs:
     - name: Download Assemblies
       uses: carlosperate/download-file-action@v2
       with:
-        file-url: https://gridentertainment.blob.core.windows.net/general-storage/csm/Assemblies.zip
+        file-url: https://storage.citiesskylinesmultiplayer.com/Assemblies.zip
         # New filename to rename the downloaded file
         file-name: Assemblies.zip
 
@@ -52,20 +52,17 @@ jobs:
     - name: Build Mod
       run: powershell.exe -NoP -NonI -Command "../scripts/build.ps1 -Build"
       working-directory: src
+    
+    # Copy output to common folder
+    - name: Copy DLLs
+      run: powershell.exe -NoP -NonI -Command "New-Item -ItemType directory -Path 'output'; Copy-Item './src/csm/bin/Release/*.dll','scripts/install.ps1' 'output'"
 
     # Publish artifacts
     - name: Upload mod DLLs
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
-        path: src/csm/bin/Release/*.dll
-        
-    # Publish install script
-    - name: Upload install script
-      uses: actions/upload-artifact@v3
-      with:
-        name: CSM ${{ steps.csm_version.outputs.version }}
-        path: scripts/install.ps1
+        path: 'output/*'
 
     # Pack API package (Nuget)
     - name: Build nuget API package
@@ -84,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build Docker Image
       working-directory: src/gs
@@ -102,7 +99,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
 
     - name: Upload Docker Image
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: API Server Docker Image
         path: apiserver.tar
