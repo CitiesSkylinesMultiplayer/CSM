@@ -17,7 +17,10 @@ namespace CSM.BaseGame.Commands.Handler.Events
 
             if (InfoPanelHelper.IsEventBuilding(typeof(FestivalPanel), command.Event, out WorldInfoPanel panel))
             {
-                ReflectionHelper.Call(panel, "OnSetTarget");
+                SimulationManager.instance.m_ThreadingWrapper.QueueMainThread(() =>
+                {
+                    ReflectionHelper.Call(panel, "OnSetTarget");
+                });
             }
 
             IgnoreHelper.Instance.EndIgnore();
