@@ -17,7 +17,6 @@ namespace CSM.Mods
         Unsupported,
         Supported,
         KnownWorking,
-        KnownWorkingWithMod,
     }
 
     public struct ModSupportStatus
@@ -46,8 +45,7 @@ namespace CSM.Mods
         private static readonly string[] _ignoredMods = { "CitiesHarmony.Mod" };
 
         private static readonly string[] _knownToWork = { "NetworkExtensions.Mod", "BigCity.BigCityUserMod" };
-        private static readonly string[] _knownToWorkWithMod = { "TrafficManager.Lifecycle.TrafficManagerMod" };
-        private static readonly string[] _unsupportedMods = { };
+        private static readonly string[] _unsupportedMods = { "TrafficManager.Lifecycle.TrafficManagerMod" };
 
         private static readonly string[] _disableChirperNames = { "MyFirstMod.DestroyChirperMod", "RemoveChirper.RemoveChirper", "ChirpRemover.ChirpRemover" };
         public static bool HasDisableChirperMod {
@@ -92,9 +90,6 @@ namespace CSM.Mods
 
             if (_clientSideMods.Contains(modInstanceName))
                 return false;
-
-            if (_knownToWorkWithMod.Contains(modInstanceName))
-                return true;
 
             if (_knownToWork.Contains(modInstanceName))
                 return true;
@@ -156,13 +151,6 @@ namespace CSM.Mods
                 if (_knownToWork.Contains(modInstanceName))
                 {
                     yield return new ModSupportStatus(modInstance?.Name, modInstanceName, ModSupportType.KnownWorking, isClientSide);
-                    continue;
-                }
-
-                // Mods known to work when all players use them
-                if (_knownToWorkWithMod.Contains(modInstanceName))
-                {
-                    yield return new ModSupportStatus(modInstance?.Name, modInstanceName, ModSupportType.KnownWorkingWithMod, isClientSide);
                     continue;
                 }
 
@@ -247,10 +235,6 @@ namespace CSM.Mods
                         break;
                     case ModSupportType.KnownWorking:
                         message = "Known to work";
-                        labelColor = new Color32(160, 255, 0, 255);
-                        break;
-                    case ModSupportType.KnownWorkingWithMod:
-                        message = "Known to work with mod";
                         labelColor = new Color32(160, 255, 0, 255);
                         break;
                     case ModSupportType.Unknown:
