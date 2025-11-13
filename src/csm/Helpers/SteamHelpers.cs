@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using ColossalFramework;
@@ -90,6 +91,36 @@ namespace CSM.Helpers
                 {
                     JoinFromSteam(argSplit[1], checkLoadingManager);
                 }
+            }
+        }
+
+        public static void OpenOverlayToUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return;
+            }
+
+            if (CSM.IsSteamPresent && Instance != null && Instance._friendsPtr != IntPtr.Zero)
+            {
+                try
+                {
+                    SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage(Instance._friendsPtr, url, EActivateGameOverlayToWebPageMode.k_EActivateGameOverlayToWebPageMode_Default);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn($"Failed to open Steam overlay for {url}", ex);
+                }
+            }
+
+            try
+            {
+                Process.Start(url);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn($"Failed to open url {url}", ex);
             }
         }
 
@@ -284,6 +315,14 @@ namespace CSM.Helpers
             else SteamAPI_ISteamFriends_ActivateGameOverlay_32(instancePtr, pchDialog);
         }
 
+        private static void SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage(IntPtr instancePtr, string url, EActivateGameOverlayToWebPageMode mode)
+        {
+            if (_use64Bit)
+                SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage_64(instancePtr, url, mode);
+            else
+                SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage_32(instancePtr, url, mode);
+        }
+
         [DllImport("steam_api", EntryPoint = "SteamAPI_Init", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool SteamAPI_Init_32();
 
@@ -319,6 +358,8 @@ namespace CSM.Helpers
 
         [DllImport("steam_api", EntryPoint = "SteamAPI_ISteamFriends_ActivateGameOverlay", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SteamAPI_ISteamFriends_ActivateGameOverlay_32(IntPtr instancePtr, [MarshalAs(UnmanagedType.LPStr)] string pchDialog);
+        [DllImport("steam_api", EntryPoint = "SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage_32(IntPtr instancePtr, [MarshalAs(UnmanagedType.LPStr)] string url, EActivateGameOverlayToWebPageMode mode);
 
         [DllImport("steam_api64", EntryPoint = "SteamAPI_Init", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool SteamAPI_Init_64();
@@ -355,5 +396,7 @@ namespace CSM.Helpers
 
         [DllImport("steam_api64", EntryPoint = "SteamAPI_ISteamFriends_ActivateGameOverlay", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SteamAPI_ISteamFriends_ActivateGameOverlay_64(IntPtr instancePtr, [MarshalAs(UnmanagedType.LPStr)] string pchDialog);
+        [DllImport("steam_api64", EntryPoint = "SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage_64(IntPtr instancePtr, [MarshalAs(UnmanagedType.LPStr)] string url, EActivateGameOverlayToWebPageMode mode);
     }
 }
