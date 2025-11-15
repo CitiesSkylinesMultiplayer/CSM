@@ -6,6 +6,7 @@ using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using CSM.API;
 using CSM.Helpers;
+using CSM.Panels;
 using ICities;
 using UnityEngine;
 
@@ -68,6 +69,7 @@ namespace CSM.Mods
         }
 
         private static bool? _hasDisableChirperMod;
+        private static bool _tmpeWarningShown;
 
         public static bool NeedsToBePresent(PluginManager.PluginInfo info)
         {
@@ -113,6 +115,8 @@ namespace CSM.Mods
                 yield return new ModSupportStatus("DLC: " + name, name, DLCHelper.GetSupport(dlc), false);
             }
 
+            bool hasTmpeSyncMod = TmpeSupportHelper.HasTmpeSyncMod();
+
             foreach (PluginManager.PluginInfo info in Singleton<PluginManager>.instance.GetPluginsInfo())
             {
                 // Skip disabled mods
@@ -139,6 +143,13 @@ namespace CSM.Mods
                     continue;
 
                 bool isClientSide = _clientSideMods.Contains(modInstanceName);
+
+                if (TmpeSupportHelper.IsTmpeMod(modInstanceName))
+                {
+                    ModSupportType tmpeState = hasTmpeSyncMod ? ModSupportType.Supported : ModSupportType.Unsupported;
+                    yield return new ModSupportStatus(modInstance?.Name, modInstanceName, tmpeState, isClientSide);
+                    continue;
+                }
 
                 // Explicitly supported mods
                 if (_disableChirperNames.Contains(modInstanceName))
@@ -173,6 +184,12 @@ namespace CSM.Mods
             }
         }
 
+        private static bool NeedsTmpeSyncWarning(IEnumerable<ModSupportStatus> modSupport)
+        {
+            return modSupport.Any(status =>
+                status.Type == ModSupportType.Unsupported && TmpeSupportHelper.IsTmpeMod(status.TypeName));
+        }
+
         public static void BuildModInfo(UIPanel panel)
         {
             UIScrollablePanel modInfoPanel = panel.Find<UIScrollablePanel>("modInfoPanel");
@@ -182,6 +199,13 @@ namespace CSM.Mods
             }
 
             List<ModSupportStatus> modSupport = GetModSupport().ToList();
+            if (!_tmpeWarningShown && NeedsTmpeSyncWarning(modSupport))
+            {
+                MessagePanel warningPanel = PanelManager.ShowPanel<MessagePanel>();
+                warningPanel?.DisplayTmpeSyncRequirement();
+                _tmpeWarningShown = true;
+            }
+
             if (!modSupport.Any())
             {
                 panel.width = 360;
@@ -265,10 +289,14 @@ namespace CSM.Mods
             Singleton<PluginManager>.instance.eventPluginsChanged += () =>
             {
                 _hasDisableChirperMod = null;
+                _tmpeWarningShown = false;
+                TmpeSupportHelper.InvalidateCache();
             };
             Singleton<PluginManager>.instance.eventPluginsStateChanged += () =>
             {
                 _hasDisableChirperMod = null;
+                _tmpeWarningShown = false;
+                TmpeSupportHelper.InvalidateCache();
             };
         }
     }

@@ -6,6 +6,7 @@ using System.Reflection;
 using ColossalFramework.UI;
 using CSM.API;
 using CSM.Helpers;
+using CSM.Mods;
 using UnityEngine;
 
 namespace CSM.Panels
@@ -17,8 +18,10 @@ namespace CSM.Panels
         private string _title;
         private string _message;
 
-        private UIButton _closeButton, _githubButton;
-        private bool _githubShown = false;
+        private UIButton _closeButton, _actionButton;
+        private bool _actionButtonShown;
+        private string _actionButtonLabel = "Open Link";
+        private Action _actionButtonHandler;
 
         public override void Start()
         {
@@ -49,13 +52,10 @@ namespace CSM.Panels
 
             this.AddScrollbar(messagePanel);
 
-            // Github button
-            _githubButton = this.CreateButton("Open GitHub", new Vector2(60, -340));
-            _githubButton.eventClicked += (c, p) =>
-            {
-                Process.Start("https://github.com/CitiesSkylinesMultiplayer/CSM/releases");
-            };
-            _githubButton.isVisible = _githubShown;
+            // Generic action button (e.g. open links)
+            _actionButton = this.CreateButton(_actionButtonLabel, new Vector2(60, -340));
+            _actionButton.eventClicked += (c, p) => _actionButtonHandler?.Invoke();
+            _actionButton.isVisible = _actionButtonShown;
 
             // Close button
             _closeButton = this.CreateButton("Close", new Vector2(60, -410));
@@ -83,8 +83,29 @@ namespace CSM.Panels
             if (_messageLabel)
                 _messageLabel.text = message;
 
-            if (_githubButton)
-                _githubButton.Hide();
+            HideActionButton();
+        }
+
+        private void HideActionButton()
+        {
+            _actionButtonShown = false;
+            _actionButtonHandler = null;
+
+            if (_actionButton)
+                _actionButton.Hide();
+        }
+
+        private void ShowActionButton(string label, Action handler)
+        {
+            _actionButtonLabel = label;
+            _actionButtonHandler = handler;
+            _actionButtonShown = true;
+
+            if (_actionButton)
+            {
+                _actionButton.text = _actionButtonLabel;
+                _actionButton.Show();
+            }
         }
 
         public void DisplayInvalidApiServer()
@@ -203,9 +224,7 @@ namespace CSM.Panels
                              "CSM/releases";
             SetMessage(message);
 
-            _githubShown = true;
-            if (_githubButton)
-                _githubButton.Show();
+            ShowActionButton("Open GitHub", () => Process.Start("https://github.com/CitiesSkylinesMultiplayer/CSM/releases"));
 
             Show(true);
         }
@@ -217,6 +236,25 @@ namespace CSM.Panels
             const string message = "There is no update for the Cities: Skylines\n" +
                                    "Multiplayer mod available.";
             SetMessage(message);
+
+            Show(true);
+        }
+
+        public void DisplayTmpeSyncRequirement()
+        {
+            SetTitle("TM:PE support requires an addon");
+
+            string message = "Traffic Manager: President Edition is currently\n" +
+                             "marked as unsupported in multiplayer because the\n" +
+                             "required CSM.TmpeSync addon is not enabled.\n\n" +
+                             "If you want to play with supported TM:PE, please\n" +
+                             "subscribe to the \"CSM.TmpeSync\" addon from the\n" +
+                             "Steam Workshop and enable it ingame.\n\n" +
+                             "Use the button below to open the workshop page\n" +
+                             "in the Steam overlay.";
+            SetMessage(message);
+
+            ShowActionButton("Subscribe", () => SteamHelpers.OpenOverlayToUrl(TmpeSupportHelper.TmpeSyncWorkshopLink));
 
             Show(true);
         }

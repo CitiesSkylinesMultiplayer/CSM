@@ -64,6 +64,11 @@ namespace CSM.API
             Instance.Write(message, "Warn");
         }
 
+        public static void Warn(string message, Exception ex)
+        {
+            Instance.Write($"{message}: {ex}", "Warn");
+        }
+
         public static void Info(string message)
         {
             Instance.Write(message, "Info");
