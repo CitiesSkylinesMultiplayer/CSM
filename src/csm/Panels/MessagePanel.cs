@@ -184,25 +184,19 @@ namespace CSM.Panels
             Version version = Assembly.GetAssembly(typeof(CSM)).GetName().Version;
 
             string message = $"Version {version.Major}.{version.Minor}\n" +
-                             "Last Update: September 9th, 2023\n\n" +
+                             "Last Update: November 15th, 2025\n\n" +
                              "- Features:\n" +
-                             "  - Support Match Day DLC\n" +
-                             "    - Sync results of football events\n" +
-                             "  - Support Campus DLC\n" +
-                             "    - Sync settings of the campus management panel\n" +
-                             "    - Sync district park policies\n" +
-                             "    - Sync campus upgrades and statistics\n" +
-                             "  - Support Snowfall DLC\n" +
-                             "  - Sync building variations\n" +
-                             "  - Sync road adjustments\n" +
-                             "  - Sync zone grid settings\n" +
-                             "  - Show DLC support info when starting a server\n\n" +
+                             "  - Support Industries DLC\n" +
+                             "    - Sync initial variation of industry buildings\n" +
+                             "    - Sync changing the variation of industry buildings\n" +
+                             "  - Support Concerts DLC\n" +
+                             "    - Sync changing the ticket price\n" +
+                             "    - Sync chance of concert being a success\n" +
+                             "    - Improve setting the security budget\n" +
+                             "  - Display info about TM:PE support addon\n\n" +
                              "- Fixes:\n" +
-                             "  - Improve transport lines sync\n" +
-                             "  - Detect some sync problems automatically\n" +
-                             "  - Fix update of loans tab\n" +
-                             "  - Ignore Christmas DLC when joining\n" +
-                             "  - Fix ticket prize synchronization for events";
+                             "  - Campus DLC: Sync changing color of varsity sports\n" +
+                             "  - Improve mod equality check when joining";
             SetMessage(message);
 
             Show(true);
