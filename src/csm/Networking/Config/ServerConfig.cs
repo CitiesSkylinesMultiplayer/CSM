@@ -31,7 +31,7 @@ namespace CSM.Networking.Config
             Username = "";
             Password = "";
             MaxPlayers = 0;
-            EnablePortForwarding = false;
+            EnablePortForwarding = true;
         }
 
         /// <summary>

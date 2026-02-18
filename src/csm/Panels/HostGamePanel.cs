@@ -82,7 +82,7 @@ namespace CSM.Panels
             // Port Forwarding box (UPnP)
             _portForwardingBox = this.CreateCheckBox("Enable Port Forwarding (UPnP)", new Vector2(10, -350));
             _portForwardingBox.isChecked = _serverConfig.EnablePortForwarding;
-            _portForwardingBox.tooltip = "Automatically forward ports via UPnP. Disabled by default for security.";
+            _portForwardingBox.tooltip = "Automatically forward ports via UPnP.";
 
             _connectionStatus = this.CreateLabel("", new Vector2(10, -375));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
