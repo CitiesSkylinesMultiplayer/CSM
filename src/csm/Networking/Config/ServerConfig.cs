@@ -15,12 +15,14 @@ namespace CSM.Networking.Config
         /// <param name="username">The user name for the hosting player.</param>
         /// <param name="password">The optional password for this server.</param>
         /// <param name="maxPlayers">The maximum amount of players that can connect to the server.</param>
-        public ServerConfig(int port, string username, string password, int maxPlayers)
+        /// <param name="enablePortForwarding">Whether automatic port forwarding (UPnP) should be enabled.</param>
+        public ServerConfig(int port, string username, string password, int maxPlayers, bool enablePortForwarding)
         {
             Port = port;
             Username = username;
             Password = password;
             MaxPlayers = maxPlayers;
+            EnablePortForwarding = enablePortForwarding;
         }
 
         public ServerConfig()
@@ -29,6 +31,7 @@ namespace CSM.Networking.Config
             Username = "";
             Password = "";
             MaxPlayers = 0;
+            EnablePortForwarding = true;
         }
 
         /// <summary>
@@ -50,5 +53,11 @@ namespace CSM.Networking.Config
         ///     Gets the optional server password.
         /// </summary>
         public string Password;
+
+        /// <summary>
+        ///     Gets whether automatic port forwarding (UPnP) should be enabled.
+        ///     Default is false for security reasons.
+        /// </summary>
+        public bool EnablePortForwarding;
     }
 }

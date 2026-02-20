@@ -117,15 +117,25 @@ namespace CSM.Networking
             // First strategy for NAT traversal: Hole punching
             SetupHolePunching();
 
-            // Second strategy for NAT traversal: Upnp
-            try
+            // Second strategy for NAT traversal: Upnp (only if enabled in config)
+            if (Config.EnablePortForwarding)
             {
-                NatDiscoverer nat = new NatDiscoverer();
-                nat.DiscoverDeviceAsync().ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
-                    Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
-                AutomaticSuccess = true;
+                try
+                {
+                    Log.Info("Attempting automatic port forwarding via UPnP...");
+                    NatDiscoverer nat = new NatDiscoverer();
+                    nat.DiscoverDeviceAsync().ContinueWith(task => task.Result.CreatePortMapAsync(new Mapping(Protocol.Udp, Config.Port,
+                        Config.Port, "Cities Skylines Multiplayer (UDP)"))).Wait();
+                    AutomaticSuccess = true;
+                    Log.Info("Automatic port forwarding successful.");
+                }
+                catch (Exception)
+                {
+                    AutomaticSuccess = false;
+                    Log.Warn("Automatic port forwarding failed. You may need to manually forward port " + Config.Port);
+                }
             }
-            catch (Exception)
+            else
             {
                 AutomaticSuccess = false;
             }

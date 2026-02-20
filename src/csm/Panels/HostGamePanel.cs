@@ -29,6 +29,7 @@ namespace CSM.Panels
 
         private UICheckBox _passwordBox;
         private UICheckBox _rememberBox;
+        private UICheckBox _portForwardingBox;
 
         private ServerConfig _serverConfig;
         private bool _hasRemembered;
@@ -44,7 +45,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             width = 360;
-            height = 600;
+            height = 625;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
@@ -78,20 +79,25 @@ namespace CSM.Panels
             _rememberBox = this.CreateCheckBox("Remember Me", new Vector2(10, -325));
             _rememberBox.isChecked = _hasRemembered;
 
-            _connectionStatus = this.CreateLabel("", new Vector2(10, -350));
+            // Port Forwarding box (UPnP)
+            _portForwardingBox = this.CreateCheckBox("Enable Port Forwarding (UPnP)", new Vector2(10, -350));
+            _portForwardingBox.isChecked = _serverConfig.EnablePortForwarding;
+            _portForwardingBox.tooltip = "Automatically forward ports via UPnP.";
+
+            _connectionStatus = this.CreateLabel("", new Vector2(10, -375));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
             // Create Local IP Label
-            _localIp = this.CreateLabel("", new Vector2(10, -380));
+            _localIp = this.CreateLabel("", new Vector2(10, -405));
             _localIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create External IP Label
-            _externalIp = this.CreateLabel("", new Vector2(10, -400));
+            _externalIp = this.CreateLabel("", new Vector2(10, -425));
             _externalIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create VPN IP Label
-            _vpnIp = this.CreateLabel("", new Vector2(10, -420));
+            _vpnIp = this.CreateLabel("", new Vector2(10, -445));
             _vpnIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Request IP addresses async
@@ -105,11 +111,11 @@ namespace CSM.Panels
             };
 
             // Create Server Button
-            _createButton = this.CreateButton("Create Server", new Vector2(10, -465));
+            _createButton = this.CreateButton("Create Server", new Vector2(10, -490));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -535));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -560));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -165,7 +171,7 @@ namespace CSM.Panels
         /// </summary>
         private void OnCreateServerClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            _serverConfig = new ServerConfig(Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0);
+            _serverConfig = new ServerConfig(Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0, _portForwardingBox.isChecked);
             ConfigData.Save<ServerConfig>(ref _serverConfig, ConfigData.ServerFile, _rememberBox.isChecked);
 
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
