@@ -16,6 +16,8 @@ namespace CSM.BaseGame.Injections
         public static void Prefix(out CallState __state, object __instance)
         {
             __state = new CallState();
+            
+            Log.Info("CreateBuilding");
 
             if (IgnoreHelper.Instance.IsIgnored())
             {
@@ -23,9 +25,13 @@ namespace CSM.BaseGame.Injections
                 return;
             }
 
+            Log.Info("CreateBuilding2");
             BuildingTool tool = ReflectionHelper.GetAttr<BuildingTool>(__instance, "$this");
+            Log.Info("CreateBuilding3");
             int counter = ReflectionHelper.GetAttr<int>(__instance, "$PC");
+            Log.Info("CreateBuilding4");
             ToolBase.ToolErrors ___m_placementErrors = ReflectionHelper.GetAttr<ToolBase.ToolErrors>(tool, "m_placementErrors");
+            Log.Info("CreateBuilding5");
 
             if (counter != 0 || ___m_placementErrors != ToolBase.ToolErrors.None)
             {
@@ -33,15 +39,20 @@ namespace CSM.BaseGame.Injections
                 return;
             }
 
+            Log.Info("CreateBuilding6");
+            Log.Info(tool.ToString());
+            Log.Info(tool.m_prefab.ToString());
             // Extracting facility AI generates random building, we don't sync it here
             if (tool.m_prefab.m_buildingAI is ExtractingFacilityAI)
             {
                 __state.run = false;
                 return;
             }
+            Log.Info("CreateBuilding7");
 
             __state.run = true;
             __state.relocate = tool.m_relocate; // Save relocate state as it will be cleared at the end of the method
+            Log.Info("CreateBuilding8");
 
             IgnoreHelper.Instance.StartIgnore();
             ArrayHandler.StartCollecting();
@@ -160,11 +171,13 @@ namespace CSM.BaseGame.Injections
     {
         public static void Prefix(out bool __state)
         {
+            Log.Info("RelocateBuilding");
             if (IgnoreHelper.Instance.IsIgnored())
             {
                 __state = false;
                 return;
             }
+            Log.Info("RelocateBuilding2");
 
             __state = true;
 
@@ -177,8 +190,11 @@ namespace CSM.BaseGame.Injections
                 return;
 
             IgnoreHelper.Instance.EndIgnore();
+            Log.Info("RelocateBuilding3");
 
             Building b = BuildingManager.instance.m_buildings.m_buffer[building];
+            
+            Log.Info("RelocateBuilding4");
 
             Command.SendToAll(new BuildingRelocateCommand
             {
@@ -320,11 +336,19 @@ namespace CSM.BaseGame.Injections
 
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            foreach (Type t in new Type[] {typeof (CityServiceWorldInfoPanel), typeof(EventBuildingWorldInfoPanel),
-                typeof(UniqueFactoryWorldInfoPanel), typeof(WarehouseWorldInfoPanel)})
+            foreach (Type t in new Type[] {typeof (CityServiceWorldInfoPanel), typeof(CustomServiceBuildingWorldInfoPanel), 
+                typeof(EventBuildingWorldInfoPanel), typeof(UniqueFactoryWorldInfoPanel), typeof(WarehouseWorldInfoPanel)})
             {
                 // See decompiled code with compiler generated classes
-                int anonStoreId = (t == typeof(CityServiceWorldInfoPanel)) ? 6 : 2;
+                int anonStoreId = 2;
+                if (t == typeof(CityServiceWorldInfoPanel))
+                {
+                    anonStoreId = 8; // Note: If this id needs changing, also change in the BuildingRebuildHandler!
+                }
+                else if (t == typeof(CustomServiceBuildingWorldInfoPanel))
+                {
+                    anonStoreId = 1;
+                }
                 Type delegateHandler = t.GetNestedType("<OnRebuildClicked>c__AnonStorey" + anonStoreId, ReflectionHelper.AllAccessFlags);
                 yield return delegateHandler.GetMethod("<>m__0", ReflectionHelper.AllAccessFlags);
             }

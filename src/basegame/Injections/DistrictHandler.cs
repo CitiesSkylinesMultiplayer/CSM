@@ -200,7 +200,7 @@ namespace CSM.BaseGame.Injections
     [HarmonyPatch("ReleasePark")]
     public class ReleasePark
     {
-        public static void Prefix(ref byte park)
+        public static void Prefix(byte park)
         {
             if (!IgnoreHelper.Instance.IsIgnored())
             {

@@ -79,6 +79,8 @@ namespace CSM.Helpers
                     return ModSupportType.Supported;
                 case SteamHelper.DLC.UrbanDLC: // Sunset Harbor
                     return ModSupportType.Unknown;
+                case SteamHelper.DLC.RacesAndParadesDLC:
+                    return ModSupportType.Unsupported;
 
                 // Cosmetics
                 case SteamHelper.DLC.DeluxeDLC:
@@ -108,6 +110,10 @@ namespace CSM.Helpers
                 case SteamHelper.DLC.ModderPack23:
                 case SteamHelper.DLC.ModderPack24:
                 case SteamHelper.DLC.ModderPack25:
+                case SteamHelper.DLC.ModderPack26:
+                case SteamHelper.DLC.ModderPack27:
+                case SteamHelper.DLC.ModderPack28:
+                case SteamHelper.DLC.ModderPack29:
                 case SteamHelper.DLC.OrientalBuildings:
                     return ModSupportType.Supported;
                 default:

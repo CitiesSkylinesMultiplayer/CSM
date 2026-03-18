@@ -105,7 +105,7 @@ namespace CSM.BaseGame.Injections
 
         public static MethodBase TargetMethod()
         {
-            return ReflectionHelper.GetIteratorTargetMethod(typeof(CitizenManager), "<SetCitizenName>c__Iterator0", out Type _);
+            return ReflectionHelper.GetIteratorTargetMethod(typeof(CitizenManager), "<SetCitizenName>c__Iterator1", out Type _);
         }
     }
 
@@ -134,7 +134,7 @@ namespace CSM.BaseGame.Injections
 
         public static MethodBase TargetMethod()
         {
-            return ReflectionHelper.GetIteratorTargetMethod(typeof(CitizenManager), "<SetInstanceName>c__Iterator1", out Type _);
+            return ReflectionHelper.GetIteratorTargetMethod(typeof(CitizenManager), "<SetInstanceName>c__Iterator2", out Type _);
         }
     }
 

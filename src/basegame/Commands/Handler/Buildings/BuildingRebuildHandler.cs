@@ -20,7 +20,7 @@ namespace CSM.BaseGame.Commands.Handler.Buildings
             // UniqueFactoryWorldInfoPanel and WarehouseWorldInfoPanel
             if (delegateType == null)
             {
-                delegateType = typeof(CityServiceWorldInfoPanel).GetNestedType("<OnRebuildClicked>c__AnonStorey2", ReflectionHelper.AllAccessFlags);
+                delegateType = typeof(CityServiceWorldInfoPanel).GetNestedType("<OnRebuildClicked>c__AnonStorey8", ReflectionHelper.AllAccessFlags);
                 rebuildClickedDelegate = Activator.CreateInstance(delegateType);
             }
 
