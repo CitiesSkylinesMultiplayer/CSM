@@ -117,6 +117,7 @@
     <Compile Include="Commands\Data\Net\NodeReleaseCommand.cs" />
     <Compile Include="Commands\Data\Net\SegmentReleaseCommand.cs" />
     <Compile Include="Commands\Data\Net\SegmentSeedUpdateCommand.cs" />
+    <Compile Include="Commands\Data\Net\FenceUpgradeSegmentCommand.cs" />
     <Compile Include="Commands\Data\Parks\ParkCreateCommand.cs" />
     <Compile Include="Commands\Data\Parks\ParkReleaseCommand.cs" />
     <Compile Include="Commands\Data\Props\PropCreateCommand.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Commands\Handler\Net\NodeReleaseHandler.cs" />
     <Compile Include="Commands\Handler\Net\SegmentReleaseHandler.cs" />
     <Compile Include="Commands\Handler\Net\SegmentSeedUpdateHandler.cs" />
+    <Compile Include="Commands\Handler\Net\FenceUpgradeSegmentHandler.cs" />
     <Compile Include="Commands\Handler\Parks\ParkCreateHandler.cs" />
     <Compile Include="Commands\Handler\Parks\ParkReleaseHandler.cs" />
     <Compile Include="Commands\Handler\Props\PropCreateHandler.cs" />

@@ -186,4 +186,33 @@ namespace CSM.BaseGame.Injections
                 new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
         }
     }
+
+    // Sync updating of fences in roads
+    [HarmonyPatch(typeof(NetTool))]
+    [HarmonyPatch("UpgradeRoadFenceImpl")]
+    public class UpgradeRoadFence
+    {
+        public static void Prefix(object mode, ToolBase.ToolErrors ___m_cachedErrors, ushort ___m_upgradeSegment, NetInfo ___m_prefab, bool ___m_upgradeSegmentSide)
+        {
+            if (IgnoreHelper.Instance.IsIgnored())
+            {
+                return;
+            }
+
+            if (___m_cachedErrors != ToolBase.ToolErrors.None)
+            {
+                return;
+            }
+
+            ushort prefab = (ushort)Mathf.Clamp(___m_prefab.m_prefabDataIndex, 0, 65535);
+
+            Command.SendToAll(new FenceUpgradeSegmentCommand
+            {
+                UpgradeSegment = ___m_upgradeSegment,
+                Prefab = prefab,
+                Mode = (int) mode,
+                Side = ___m_upgradeSegmentSide,
+            });
+        }
+    }
 }
