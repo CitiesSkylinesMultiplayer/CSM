@@ -30,7 +30,8 @@ if [ $? -eq 0 ]; then
     cp src/csm/bin/Release/net35/CSM.dll "$TARGET_MOD_DIR/"
     cp src/api/bin/Release/net35/CSM.API.dll "$TARGET_MOD_DIR/"
     cp src/basegame/bin/Release/net35/CSM.BaseGame.dll "$TARGET_MOD_DIR/"
-    cp "$PROTOBUF" "$TARGET_MOD_DIR/"
+    # Copy dependencies
+    cp "$CSM_ASSEMBLIES"/*.dll "$TARGET_MOD_DIR/"
     
     echo "Done."
 else
