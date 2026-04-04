@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -49,7 +49,7 @@ namespace CSM.Commands
         /// </summary>
         /// <param name="player">The Player to send the command to.</param>
         /// <param name="command">The command to send.</param>
-        public void SendToClient(Player player, CommandBase command)
+        public void SendToClient(global::CSM.API.Networking.Player player, CommandBase command)
         {
             if (player is CSMPlayer csmPlayer)
             {
@@ -83,7 +83,7 @@ namespace CSM.Commands
         /// </summary>
         /// <param name="command">The command to send.</param>
         /// <param name="exclude">The player to not send the packet to.</param>
-        public void SendToOtherClients(CommandBase command, Player exclude)
+        public void SendToOtherClients(CommandBase command, global::CSM.API.Networking.Player exclude)
         {
             foreach (CSMPlayer player in MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values)
             {
@@ -150,7 +150,7 @@ namespace CSM.Commands
         ///     It calls the OnClientConnect methods of all handlers.
         /// </summary>
         /// <param name="player">The connected player.</param>
-        public void HandleClientConnect(Player player)
+        public void HandleClientConnect(global::CSM.API.Networking.Player player)
         {
             foreach (CommandHandler handler in _cmdMapping.Values)
             {
@@ -163,7 +163,7 @@ namespace CSM.Commands
         ///     It calls the OnClientDisconnect methods of all handlers.
         /// </summary>
         /// <param name="player">The disconnected player.</param>
-        public void HandleClientDisconnect(Player player)
+        public void HandleClientDisconnect(global::CSM.API.Networking.Player player)
         {
             foreach (CommandHandler handler in _cmdMapping.Values)
             {

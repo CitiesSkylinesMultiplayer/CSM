@@ -1,4 +1,4 @@
-﻿using CSM.API.Commands;
+using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.Commands.Data.Internal;
 using CSM.Helpers;
@@ -19,10 +19,10 @@ namespace CSM.Commands.Handler.Internal
             }
         }
 
-        public override void OnClientConnect(Player player)
+        public override void OnClientConnect(global::CSM.API.Networking.Player player)
         {
             // Send current player list
-            CommandInternal.Instance.SendToClient(player, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
+            CommandInternal.Instance.SendToClient(player as global::CSM.Networking.Player, new PlayerListCommand { PlayerList = MultiplayerManager.Instance.PlayerList });
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +18,7 @@ namespace CSM.Commands.Handler.Internal
 {
     public class ConnectionRequestHandler : CommandHandler<ConnectionRequestCommand>
     {
-        public static Player WorldLoadingPlayer = null;
+        public static global::CSM.Networking.Player WorldLoadingPlayer = null;
 
         public ConnectionRequestHandler()
         {
@@ -141,7 +141,7 @@ namespace CSM.Commands.Handler.Internal
             }
 
             // Check that no other player is currently connecting
-            bool clientJoining = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values.Any(p => p.Status != ClientStatus.Connected);
+            bool clientJoining = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.Values.Any(p => p.Status != global::CSM.API.Networking.Status.ClientStatus.Connected);
             if (clientJoining)
             {
                 Log.Info("Connection rejected: A client is already joining.");
@@ -170,9 +170,9 @@ namespace CSM.Commands.Handler.Internal
             MultiplayerManager.Instance.CurrentServer.HandlePlayerConnect(newPlayer);
         }
 
-        public static void PrepareWorldLoad(Player newPlayer)
+        public static void PrepareWorldLoad(global::CSM.Networking.Player newPlayer)
         {
-            newPlayer.Status = ClientStatus.Downloading;
+            newPlayer.Status = global::CSM.API.Networking.Status.ClientStatus.Downloading;
 
             MultiplayerManager.Instance.BlockGame(newPlayer.Username);
 
@@ -197,7 +197,7 @@ namespace CSM.Commands.Handler.Internal
 
         public static void AllGamesBlocked()
         {
-            Player newPlayer = WorldLoadingPlayer;
+            global::CSM.Networking.Player newPlayer = WorldLoadingPlayer;
             WorldLoadingPlayer = null;
 
             new Thread(() =>

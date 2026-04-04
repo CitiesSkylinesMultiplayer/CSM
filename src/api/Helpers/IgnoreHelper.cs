@@ -11,13 +11,21 @@ namespace CSM.API.Helpers
     /// </summary>
     public class IgnoreHelper
     {
+        [ThreadStatic]
+        private static IgnoreHelper _instance;
+
         public static IgnoreHelper Instance
         {
-            get => _instance.Value;
-            set => _instance.Value = value;
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new IgnoreHelper();
+                }
+                return _instance;
+            }
+            set => _instance = value;
         }
-
-        private static readonly ThreadLocal<IgnoreHelper> _instance = new ThreadLocal<IgnoreHelper>(() => new IgnoreHelper());
 
         private int _ignoreAll = 0;
         private readonly HashSet<string> _exceptions = new HashSet<string>();

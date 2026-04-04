@@ -1,4 +1,4 @@
-﻿using CSM.API.Commands;
+using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.Commands.Data.Internal;
@@ -25,9 +25,10 @@ namespace CSM.Commands.Handler.Internal
             }
         }
 
-        public override void OnClientDisconnect(Player player)
+        public override void OnClientConnect(global::CSM.API.Networking.Player player)
         {
-            if (player.Status != ClientStatus.Connected)
+            var internalPlayer = player as global::CSM.Networking.Player;
+            if (internalPlayer != null && internalPlayer.Status != global::CSM.API.Networking.Status.ClientStatus.Connected)
             {
                 Command.SendToClients(new ClientJoiningCommand
                 {
