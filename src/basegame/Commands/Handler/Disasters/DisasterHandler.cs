@@ -30,7 +30,9 @@ namespace CSM.BaseGame.Commands.Handler.Disasters
                 instance.m_disasters.m_buffer[disasterID].m_angle = command.Angle;
                 instance.m_disasters.m_buffer[disasterID].m_intensity = (byte)command.Intensity;
                 instance.m_disasters.m_buffer[disasterID].m_randomSeed = command.RandomSeed;
-                instance.m_disasters.m_buffer[disasterID].m_flags |= DisasterData.Flags.SelfTrigger;
+                instance.m_disasters.m_buffer[disasterID].m_flags |= DisasterData.Flags.SelfTrigger | DisasterData.Flags.Detected;
+
+                Log.Info($"[CSM] Starting disaster ID {disasterID} ({info.name}). Flags: {instance.m_disasters.m_buffer[disasterID].m_flags}");
 
                 info.m_disasterAI.StartNow(disasterID, ref instance.m_disasters.m_buffer[disasterID]);
             }
