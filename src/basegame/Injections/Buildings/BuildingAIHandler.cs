@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
@@ -6,8 +9,7 @@ using HarmonyLib;
 
 namespace CSM.BaseGame.Injections.Buildings
 {
-    [HarmonyPatch(typeof(CommonBuildingAI))]
-    [HarmonyPatch("SetEvacuating")]
+    [HarmonyPatch]
     public class BuildingAIHandler
     {
         public static void Prefix(ushort buildingID, ref Building data, bool evacuating)
@@ -15,15 +17,29 @@ namespace CSM.BaseGame.Injections.Buildings
             if (IgnoreHelper.Instance.IsIgnored())
                 return;
 
-            if (Command.CurrentRole == MultiplayerRole.None)
+            bool isEvacuating = (data.m_flags & Building.Flags.Evacuating) != Building.Flags.None;
+            if (isEvacuating == evacuating)
                 return;
 
-            // Sync the evacuation state to all clients
             Command.SendToAll(new EvacuationCommand
             {
                 BuildingID = buildingID,
                 Evacuating = evacuating
             });
+        }
+
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            Type[] targets = { typeof(CommonBuildingAI), typeof(BuildingAI), typeof(ShelterAI) };
+            foreach (var type in targets)
+            {
+                var method = type.GetMethod("SetEvacuating", ReflectionHelper.AllAccessFlags);
+                if (method != null)
+                {
+                    Log.Info($"[CSM] Patching SetEvacuating on {type.Name}");
+                    yield return method;
+                }
+            }
         }
     }
 }
