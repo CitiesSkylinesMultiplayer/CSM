@@ -110,6 +110,8 @@ namespace CSM.BaseGame.Injections.Tools
 
         protected override CursorInfo GetCursorInfo(NetTool tool)
         {
+            if (tool.Prefab == null) return tool.m_placementCursor;
+
             if (tool.m_mode == NetTool.Mode.Upgrade) {
                 return tool.Prefab.m_upgradeCursor ? tool.Prefab.m_upgradeCursor : tool.m_upgradeCursor;
             } else {

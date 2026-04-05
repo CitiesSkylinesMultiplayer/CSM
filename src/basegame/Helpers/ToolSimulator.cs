@@ -26,7 +26,7 @@ namespace CSM.BaseGame.Helpers
 
         public void GetToolAndController<Tool>(int sender, out Tool tool, out ToolController toolController) where Tool: ToolBase {
             tool = this.GetTool<Tool>(sender);
-            if (tool == null)
+            if (object.ReferenceEquals(tool, null))
             {
                 toolController = null;
                 return;
