@@ -26,11 +26,21 @@ namespace CSM.BaseGame.Helpers
 
         public void GetToolAndController<Tool>(int sender, out Tool tool, out ToolController toolController) where Tool: ToolBase {
             tool = this.GetTool<Tool>(sender);
+            if (tool == null)
+            {
+                toolController = null;
+                return;
+            }
             toolController = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
         }
 
         public T GetTool<T>(int sender) where T : ToolBase
         {
+            // During download/loading, tool instances can't be safely created
+            // because Unity managers aren't initialized yet.
+            if (!Singleton<LoadingManager>.exists || !Singleton<LoadingManager>.instance.m_loadingComplete)
+                return null;
+
             if (_currentTools.TryGetValue(sender, out ToolBase tool))
             {
                 if (tool.GetType() == typeof(T))
