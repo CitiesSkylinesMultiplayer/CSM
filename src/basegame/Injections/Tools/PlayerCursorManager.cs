@@ -14,8 +14,17 @@ namespace CSM.BaseGame.Injections.Tools
         private const float ScreenEdgeInset = 12;
 
         public void Start() {
+            UIView uiView = null;
+            if (ToolBase.cursorInfoLabel != null)
+                uiView = ToolBase.cursorInfoLabel.GetUIView();
+            else
+                uiView = UIView.GetAView();
 
-            UIView uiView = ToolBase.cursorInfoLabel.GetUIView();
+            if (uiView == null)
+            {
+                Destroy(this);
+                return;
+            }
 
             _playerNameLabel = (UILabel)uiView.AddUIComponent(typeof(UILabel));
             _playerNameLabel.textAlignment = UIHorizontalAlignment.Center;
@@ -100,7 +109,8 @@ namespace CSM.BaseGame.Injections.Tools
         public void SetCursor(CursorInfo newCursorInfo) {
             if (newCursorInfo == null)
             {
-                newCursorInfo = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_cursor;
+                if (ToolsModifierControl.toolController != null)
+                    newCursorInfo = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_cursor;
             }
 
             if (newCursorInfo != null && (this._cursorInfo == null || this._cursorInfo.name != newCursorInfo.name)) {

@@ -1,4 +1,4 @@
-﻿using CSM.API.Commands;
+using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.Commands.Data.Internal;
 using CSM.Networking;
@@ -15,7 +15,7 @@ namespace CSM.Commands.Handler.Internal
 
         protected override void Handle(RequestWorldTransferCommand command)
         {
-            Player newPlayer = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId];
+            global::CSM.Networking.Player newPlayer = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId];
             ConnectionRequestHandler.PrepareWorldLoad(newPlayer);
         }
     }

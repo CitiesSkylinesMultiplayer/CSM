@@ -1,4 +1,4 @@
-﻿using CSM.API;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.BaseGame.Helpers;
@@ -34,9 +34,10 @@ namespace CSM.Commands.Handler.Internal
             }
         }
 
-        public override void OnClientDisconnect(Player player)
+        public override void OnClientDisconnect(global::CSM.API.Networking.Player player)
         {
-            int clientId = player is CSMPlayer csmPlayer ? csmPlayer.NetPeer.Id : -2;
+            var internalPlayer = player as global::CSM.Networking.Player;
+            int clientId = (internalPlayer is CSMPlayer csmPlayer) ? csmPlayer.NetPeer.Id : -2;
             Command.SendToClients(new ClientDisconnectCommand
             {
                 Username = player.Username,

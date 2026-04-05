@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using ColossalFramework.Threading;
@@ -57,7 +57,7 @@ namespace CSM.Networking
                     break;
 
                 case MultiplayerRole.None:
-                    if (CurrentClient.Status == ClientStatus.Connecting)
+                    if (CurrentClient.Status == global::CSM.API.Networking.Status.ClientStatus.Connecting)
                     {
                         CurrentClient.ProcessEvents();
                     }
@@ -78,7 +78,7 @@ namespace CSM.Networking
                 return;
             }
 
-            if (CurrentClient.Status != ClientStatus.Disconnected)
+            if (CurrentClient.Status != global::CSM.API.Networking.Status.ClientStatus.Disconnected)
             {
                 callback.Invoke(false);
                 return;
@@ -157,7 +157,7 @@ namespace CSM.Networking
         public bool IsConnected()
         {
             return CurrentRole == MultiplayerRole.Server || (CurrentRole == MultiplayerRole.Client &&
-                                                             CurrentClient.Status == ClientStatus.Connected);
+                                                             CurrentClient.Status == global::CSM.API.Networking.Status.ClientStatus.Connected);
         }
 
         public void BlockGameReSync()

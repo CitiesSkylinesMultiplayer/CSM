@@ -5,7 +5,7 @@ namespace CSM.Networking
 {
     public class CSMPlayer : Player
     {
-        public NetPeer NetPeer { get; }
+        public new NetPeer NetPeer { get; }
 
         public CSMPlayer(NetPeer peer, string username) : base(username)
         {

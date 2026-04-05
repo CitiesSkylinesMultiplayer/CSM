@@ -37,7 +37,8 @@ namespace CSM.BaseGame.Injections
                 return;
 
             Type type = __instance.GetType();
-            if (type != typeof(RocketLaunchAI) && type != typeof(ConcertAI) && type != typeof(SportMatchAI) && type != typeof(VarsitySportsMatchAI))
+            if (type != typeof(RocketLaunchAI) && type != typeof(ConcertAI) && type != typeof(SportMatchAI) && type != typeof(VarsitySportsMatchAI)
+                && !type.IsSubclassOf(typeof(RaceEventAI)))
                 return;
 
             if (newColor.r == data.m_color.r && newColor.g == data.m_color.g && newColor.b == data.m_color.b)

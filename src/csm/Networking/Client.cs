@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
@@ -38,7 +38,7 @@ namespace CSM.Networking
         /// <summary>
         ///     The current status of the client
         /// </summary>
-        public ClientStatus Status {
+        public global::CSM.API.Networking.Status.ClientStatus Status {
             get => ClientPlayer.Status;
             set => ClientPlayer.Status = value;
         }
@@ -48,7 +48,7 @@ namespace CSM.Networking
         /// </summary>
         public int ClientId { get; set; }
 
-        public Player ClientPlayer { get; set; } = new Player();
+        public global::CSM.Networking.Player ClientPlayer { get; set; } = new global::CSM.Networking.Player();
 
         /// <summary>
         ///     If the status is disconnected, this will contain

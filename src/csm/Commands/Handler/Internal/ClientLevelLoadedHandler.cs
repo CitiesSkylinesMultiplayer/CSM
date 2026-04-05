@@ -1,4 +1,4 @@
-﻿using CSM.API.Commands;
+using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.API.Networking.Status;
 using CSM.Commands.Data.Internal;
@@ -16,8 +16,8 @@ namespace CSM.Commands.Handler.Internal
 
         protected override void Handle(ClientLevelLoadedCommand command)
         {
-            Player P = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId];
-            P.Status = ClientStatus.Connected;
+            global::CSM.Networking.Player P = MultiplayerManager.Instance.CurrentServer.ConnectedPlayers[command.SenderId];
+            P.Status = global::CSM.API.Networking.Status.ClientStatus.Connected;
             CommandInternal.Instance.SendToOtherClients(new ClientJoiningCommand
             {
                 JoiningFinished = true,

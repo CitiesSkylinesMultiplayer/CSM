@@ -70,7 +70,7 @@ namespace CSM.Helpers
             // If game is blocked or client is connecting
             if (MultiplayerManager.Instance.GameBlocked ||
                (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client && 
-                MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected))
+                MultiplayerManager.Instance.CurrentClient.Status != global::CSM.API.Networking.Status.ClientStatus.Connected))
             {
                 // Pause the game if it is not yet paused (on the server) and thus trigger the pause negotiation (PauseRequest)
                 if (!SimulationManager.instance.SimulationPaused &&
@@ -85,7 +85,7 @@ namespace CSM.Helpers
                 }
                 // Pause the game if it is not yet paused (on the joining/syncing client) but don't trigger a negotiation
                 else if (!SimulationManager.instance.SimulationPaused &&
-                         MultiplayerManager.Instance.CurrentClient.Status != ClientStatus.Connected)
+                         MultiplayerManager.Instance.CurrentClient.Status != global::CSM.API.Networking.Status.ClientStatus.Connected)
                 {
                     SetSpeedStateInternal(1);
                     SetPauseStateInternal(true);
@@ -380,7 +380,7 @@ namespace CSM.Helpers
                     break;
                 case MultiplayerRole.Server:
                     numClients = 1 + MultiplayerManager.Instance.CurrentServer.ConnectedPlayers
-                        .Count(p => p.Value.Status == ClientStatus.Connected);
+                        .Count(p => p.Value.Status == global::CSM.API.Networking.Status.ClientStatus.Connected);
                     break;
                 default:
                     numClients = 1;

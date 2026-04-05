@@ -1,4 +1,4 @@
-﻿using CSM.API;
+using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Networking;
 using CSM.Commands.Data.Internal;
@@ -30,9 +30,9 @@ namespace CSM.Commands.Handler.Internal
             }
         }
 
-        public override void OnClientConnect(Player player)
+        public override void OnClientConnect(global::CSM.API.Networking.Player player)
         {
-            CommandInternal.Instance.SendToOtherClients(new ClientConnectCommand { Username = player.Username }, player);
+            CommandInternal.Instance.SendToOtherClients(new ClientConnectCommand { Username = player.Username }, player as global::CSM.Networking.Player);
         }
     }
 }

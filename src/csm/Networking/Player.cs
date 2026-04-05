@@ -1,17 +1,15 @@
-﻿using CSM.Networking.Status;
+using CSM.API.Networking.Status;
 using LiteNetLib;
 
 namespace CSM.Networking
 {
-    public class Player
+    public class Player : global::CSM.API.Networking.Player
     {
-        public string Username { get; set; }
+        // Username is inherited
 
         public NetPeer NetPeer { get; set; }
 
-        public long Latency { get; set; }
-
-        public ClientStatus Status { get; set; }
+        // Status and Latency are inherited
 
         public Player(NetPeer peer, string username)
         {

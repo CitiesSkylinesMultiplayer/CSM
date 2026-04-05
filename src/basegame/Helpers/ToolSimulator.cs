@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CSM.API.Helpers;
 using UnityEngine;
@@ -26,11 +26,21 @@ namespace CSM.BaseGame.Helpers
 
         public void GetToolAndController<Tool>(int sender, out Tool tool, out ToolController toolController) where Tool: ToolBase {
             tool = this.GetTool<Tool>(sender);
+            if (object.ReferenceEquals(tool, null))
+            {
+                toolController = null;
+                return;
+            }
             toolController = ReflectionHelper.GetAttr<ToolController>(tool, "m_toolController");
         }
 
         public T GetTool<T>(int sender) where T : ToolBase
         {
+            // During download/loading, tool instances can't be safely created
+            // because Unity managers aren't initialized yet.
+            if (!Singleton<LoadingManager>.exists || !Singleton<LoadingManager>.instance.m_loadingComplete)
+                return null;
+
             if (_currentTools.TryGetValue(sender, out ToolBase tool))
             {
                 if (tool.GetType() == typeof(T))
@@ -52,22 +62,34 @@ namespace CSM.BaseGame.Helpers
             ReflectionHelper.SetAttr(controller, "m_collidingBuildings1", new ulong[768]);
             ReflectionHelper.SetAttr(controller, "m_collidingBuildings2", new ulong[768]);
             ReflectionHelper.SetAttr(controller, "m_collidingDepth", 0);
-            controller.m_brushMaterial = ToolsModifierControl.toolController.m_brushMaterial;
-            ReflectionHelper.SetAttr(controller, "m_brushMaterial2", new Material(controller.m_brushMaterial));
+            if (ToolsModifierControl.toolController != null)
+            {
+                controller.m_brushMaterial = ToolsModifierControl.toolController.m_brushMaterial;
+                ReflectionHelper.SetAttr(controller, "m_brushMaterial2", new Material(controller.m_brushMaterial));
+            }
 
             switch (tool)
             {
                 case BulldozeTool bulldozeTool:
-                    bulldozeTool.m_cursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_cursor;
-                    bulldozeTool.m_undergroundCursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_undergroundCursor;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        bulldozeTool.m_cursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_cursor;
+                        bulldozeTool.m_undergroundCursor = ToolsModifierControl.toolController.GetComponent<BulldozeTool>().m_undergroundCursor;
+                    }
                     break;
 
                 case DefaultTool defaultTool:
-                    defaultTool.m_cursor = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_cursor;
-                    defaultTool.m_undergroundCursor = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_undergroundCursor;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        defaultTool.m_cursor = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_cursor;
+                        defaultTool.m_undergroundCursor = ToolsModifierControl.toolController.GetComponent<DefaultTool>().m_undergroundCursor;
+                    }
                     break;
                 case BuildingTool buildingTool:
-                    buildingTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<BuildingTool>().m_buildCursor;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        buildingTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<BuildingTool>().m_buildCursor;
+                    }
                     break;
                 case NetTool netTool:
                     // See NetTool::Awake
@@ -80,8 +102,11 @@ namespace CSM.BaseGame.Helpers
                     ReflectionHelper.SetAttr(netTool, "m_tempUpgraded", new FastList<ushort>());
                     ReflectionHelper.SetAttr(netTool, "m_helperLineTimer", new Dictionary<int, NetTool.HelperLineTimer>());
                     ReflectionHelper.SetAttr(netTool, "m_overlayBuildings", new HashSet<ushort>());
-                    netTool.m_upgradeCursor = ToolsModifierControl.toolController.GetComponent<NetTool>().m_upgradeCursor;
-                    netTool.m_placementCursor = ToolsModifierControl.toolController.GetComponent<NetTool>().m_placementCursor;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        netTool.m_upgradeCursor = ToolsModifierControl.toolController.GetComponent<NetTool>().m_upgradeCursor;
+                        netTool.m_placementCursor = ToolsModifierControl.toolController.GetComponent<NetTool>().m_placementCursor;
+                    }
                     break;
                 case ZoneTool zoneTool:
                 {
@@ -93,18 +118,24 @@ namespace CSM.BaseGame.Helpers
                     Type fillPos = typeof(ZoneTool).GetNestedType("FillPos", ReflectionHelper.AllAccessFlags);
                     ReflectionHelper.SetAttr(zoneTool, "m_fillPositions",  Activator.CreateInstance(typeof(FastList<>).MakeGenericType(fillPos)));
                     ReflectionHelper.SetAttr(zoneTool, "m_dataLock",  new object());
-                    zoneTool.m_zoneCursors = ToolsModifierControl.toolController.GetComponent<ZoneTool>().m_zoneCursors;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        zoneTool.m_zoneCursors = ToolsModifierControl.toolController.GetComponent<ZoneTool>().m_zoneCursors;
+                    }
                     break;
                 }
                 case TerrainTool terrainTool:
                 {
                     // copy terrain tools across
-                    TerrainTool realTerrainTool = ToolsModifierControl.toolController.GetComponent<TerrainTool>();
-                    terrainTool.m_brush = realTerrainTool.m_brush;
-                    terrainTool.m_shiftCursor = realTerrainTool.m_shiftCursor;
-                    terrainTool.m_levelCursor = realTerrainTool.m_levelCursor;
-                    terrainTool.m_slopeCursor = realTerrainTool.m_slopeCursor;
-                    terrainTool.m_softenCursor = realTerrainTool.m_softenCursor;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        TerrainTool realTerrainTool = ToolsModifierControl.toolController.GetComponent<TerrainTool>();
+                        terrainTool.m_brush = realTerrainTool.m_brush;
+                        terrainTool.m_shiftCursor = realTerrainTool.m_shiftCursor;
+                        terrainTool.m_levelCursor = realTerrainTool.m_levelCursor;
+                        terrainTool.m_slopeCursor = realTerrainTool.m_slopeCursor;
+                        terrainTool.m_softenCursor = realTerrainTool.m_softenCursor;
+                    }
                     ReflectionHelper.SetAttr(terrainTool, "m_undoList", new List<TerrainTool.UndoStroke>());
                     break;
                 }
@@ -115,8 +146,11 @@ namespace CSM.BaseGame.Helpers
                     break;
                 case PropTool propTool:
                     // copy prop tool cursor across
-                    propTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<PropTool>().m_buildCursor;
-                    propTool.m_brush = ToolsModifierControl.toolController.GetComponent<PropTool>().m_brush;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        propTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<PropTool>().m_buildCursor;
+                        propTool.m_brush = ToolsModifierControl.toolController.GetComponent<PropTool>().m_brush;
+                    }
                     break;
                 case TreeTool treeTool:
                     // see TreeTool::Awake()
@@ -125,13 +159,19 @@ namespace CSM.BaseGame.Helpers
                     ReflectionHelper.SetAttr(treeTool, "m_upgradedSegments", new HashSet<ushort>());
                     ReflectionHelper.SetAttr(treeTool, "m_tempUpgraded", new FastList<ushort>());
 
-                    treeTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_buildCursor;
-                    treeTool.m_upgradeCursor = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_upgradeCursor;
-                    treeTool.m_brush = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_brush;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        treeTool.m_buildCursor = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_buildCursor;
+                        treeTool.m_upgradeCursor = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_upgradeCursor;
+                        treeTool.m_brush = ToolsModifierControl.toolController.GetComponent<TreeTool>().m_brush;
+                    }
                     break;
 
                 case DistrictTool districtTool:
-                    districtTool.m_brush = ToolsModifierControl.toolController.GetComponent<DistrictTool>().m_brush;
+                    if (ToolsModifierControl.toolController != null)
+                    {
+                        districtTool.m_brush = ToolsModifierControl.toolController.GetComponent<DistrictTool>().m_brush;
+                    }
                     break;
             }
 

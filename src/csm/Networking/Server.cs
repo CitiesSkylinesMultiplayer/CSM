@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -148,7 +148,7 @@ namespace CSM.Networking
 
             // Initialize host player
             _hostPlayer = new CSMPlayer(Config.Username);
-            _hostPlayer.Status = ClientStatus.Connected;
+            _hostPlayer.Status = global::CSM.API.Networking.Status.ClientStatus.Connected;
             MultiplayerManager.Instance.PlayerList.Add(_hostPlayer.Username);
 
             // Set the steam presence 'connect' key. This allows users to click "Join Game" within the steam overlay.
@@ -380,7 +380,7 @@ namespace CSM.Networking
             request.AcceptIfKey("CSM");
         }
 
-        public void HandlePlayerConnect(Player player)
+        public void HandlePlayerConnect(global::CSM.Networking.Player player)
         {
             Log.Info($"Player {player.Username} has connected!");
             Chat.Instance.PrintGameMessage($"Player {player.Username} has connected!");
