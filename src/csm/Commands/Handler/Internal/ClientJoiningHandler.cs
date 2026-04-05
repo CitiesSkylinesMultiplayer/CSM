@@ -32,10 +32,10 @@ namespace CSM.Commands.Handler.Internal
             {
                 Command.SendToClients(new ClientJoiningCommand
                 {
-                    JoiningFinished = true,
+                    JoiningFinished = false,
                     JoiningUsername = player.Username
                 });
-                MultiplayerManager.Instance.UnblockGame();
+                MultiplayerManager.Instance.BlockGame(player.Username);
             }
         }
     }

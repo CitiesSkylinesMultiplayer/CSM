@@ -66,9 +66,16 @@ namespace CSM.BaseGame.Injections.Tools
     public class PlayerTerrainToolCommandHandler : BaseToolCommandHandler<PlayerTerrainToolCommand, TerrainTool>
     {
         protected override void Configure(TerrainTool tool, ToolController toolController, PlayerTerrainToolCommand command) {            
-            // The terrain tool uses to the tool controller to hold onto brush state and to render it
-            tool.m_mode = (TerrainTool.Mode) command.Mode;
-	        toolController.SetBrush(tool.m_brush, command.MousePosition, command.BrushSize);
+            try 
+            {
+                // The terrain tool uses to the tool controller to hold onto brush state and to render it
+                tool.m_mode = (TerrainTool.Mode) command.Mode;
+                toolController?.SetBrush(tool.m_brush, command.MousePosition, command.BrushSize);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn($"Error configuring terrain tool: {ex.Message}");
+            }
         }
 
         protected override CursorInfo GetCursorInfo(TerrainTool tool)

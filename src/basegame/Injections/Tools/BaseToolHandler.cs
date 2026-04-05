@@ -22,7 +22,7 @@ namespace CSM.BaseGame.Injections.Tools
             Singleton<ToolSimulator>.instance.GetToolAndController(command.SenderId, out Tool tool,
                 out ToolController controller);
 
-            if (tool == null || controller == null)
+            if (tool == null)
                 return;
 
             Configure(tool, controller, command);
