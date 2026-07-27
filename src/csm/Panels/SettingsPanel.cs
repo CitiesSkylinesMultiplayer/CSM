@@ -51,7 +51,7 @@ namespace CSM.Panels
                 {
                     try
                     {
-                        new CSMWebClient().DownloadString($"http://{url}/api/version");
+                        new CSMWebClient().DownloadString($"http://{url}:{settings.ApiServerHttpPort.value}/api/version");
                         settings.ApiServer.value = url;
                     }
                     catch (Exception)
@@ -75,6 +75,12 @@ namespace CSM.Panels
                 settings.ApiServerPort.value = int.Parse(port);
             });
             portInput.numericalOnly = true;
+
+            UITextField httpPortInput = (UITextField) advancedGroup.AddTextfield("API Server HTTP Port", settings.ApiServerHttpPort.value.ToString(), text => {}, port =>
+            {
+                settings.ApiServerHttpPort.value = int.Parse(port);
+            });
+            httpPortInput.numericalOnly = true;
 
             UIHelperBase buttonsGroup = helper.AddGroup("Buttons");
             buttonsGroup.AddButton("Show Release Notes", () =>

@@ -18,6 +18,8 @@ namespace CSM.Panels
         private UITextField _portField;
         private UITextField _passwordField;
         private UITextField _usernameField;
+        private UITextField _serverNameField;
+        private UITextField _maxPlayersField;
 
         private UILabel _connectionStatus;
         private UILabel _localIp;
@@ -30,6 +32,7 @@ namespace CSM.Panels
         private UICheckBox _passwordBox;
         private UICheckBox _rememberBox;
         private UICheckBox _portForwardingBox;
+        private UICheckBox _listPubliclyBox;
 
         private ServerConfig _serverConfig;
         private bool _hasRemembered;
@@ -45,59 +48,75 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 250);
 
             width = 360;
-            height = 625;
+            height = 810;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
             this.CreateTitleLabel("Host Server", new Vector2(120, -20));
 
+            // Server Name label
+            this.CreateLabel("Server Name (Optional):", new Vector2(10, -65));
+            // Server Name field
+            _serverNameField = this.CreateTextField(_serverConfig.Name, new Vector2(10, -90));
+
             // Port Label
-            this.CreateLabel("Port:", new Vector2(10, -65));
+            this.CreateLabel("Port:", new Vector2(10, -145));
             // Port field
-            _portField = this.CreateTextField(_serverConfig.Port.ToString(), new Vector2(10, -90));
+            _portField = this.CreateTextField(_serverConfig.Port.ToString(), new Vector2(10, -170));
             _portField.numericalOnly = true;
 
+            // Max Players label
+            this.CreateLabel("Max Players (0 = No Limit):", new Vector2(10, -225));
+            // Max Players field
+            _maxPlayersField = this.CreateTextField(_serverConfig.MaxPlayers.ToString(), new Vector2(10, -250));
+            _maxPlayersField.numericalOnly = true;
+
             // Password label
-            this.CreateLabel("Password (Optional):", new Vector2(10, -145));
+            this.CreateLabel("Password (Optional):", new Vector2(10, -305));
             // Password checkbox
-            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(10, -170));
+            _passwordBox = this.CreateCheckBox("Show Password", new Vector2(10, -330));
             _passwordBox.isChecked = false;
             // Password field
-            _passwordField = this.CreateTextField(_serverConfig.Password, new Vector2(10, -190));
+            _passwordField = this.CreateTextField(_serverConfig.Password, new Vector2(10, -350));
             _passwordField.isPasswordField = true;
 
             // Username label
-            this.CreateLabel("Username:", new Vector2(10, -245));
+            this.CreateLabel("Username:", new Vector2(10, -405));
             // Username field
-            _usernameField = this.CreateTextField(_serverConfig.Username, new Vector2(10, -270));
+            _usernameField = this.CreateTextField(_serverConfig.Username, new Vector2(10, -430));
             if (PlatformService.active && PlatformService.personaName != null && _serverConfig.Username == "")
             {
                 _usernameField.text = PlatformService.personaName;
             }
 
             // Remember-Me box
-            _rememberBox = this.CreateCheckBox("Remember Me", new Vector2(10, -325));
+            _rememberBox = this.CreateCheckBox("Remember Me", new Vector2(10, -485));
             _rememberBox.isChecked = _hasRemembered;
 
             // Port Forwarding box (UPnP)
-            _portForwardingBox = this.CreateCheckBox("Enable Port Forwarding (UPnP)", new Vector2(10, -350));
+            _portForwardingBox = this.CreateCheckBox("Enable Port Forwarding (UPnP)", new Vector2(10, -510));
             _portForwardingBox.isChecked = _serverConfig.EnablePortForwarding;
             _portForwardingBox.tooltip = "Automatically forward ports via UPnP.";
 
-            _connectionStatus = this.CreateLabel("", new Vector2(10, -375));
+            // List Publicly box
+            _listPubliclyBox = this.CreateCheckBox("List this server publicly", new Vector2(10, -535));
+            _listPubliclyBox.isChecked = _serverConfig.ListPublicly;
+            _listPubliclyBox.tooltip = "Allow other players to discover this server in the public server list.";
+
+            _connectionStatus = this.CreateLabel("", new Vector2(10, -560));
             _connectionStatus.textAlignment = UIHorizontalAlignment.Center;
             _connectionStatus.textColor = new Color32(255, 0, 0, 255);
 
             // Create Local IP Label
-            _localIp = this.CreateLabel("", new Vector2(10, -405));
+            _localIp = this.CreateLabel("", new Vector2(10, -590));
             _localIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create External IP Label
-            _externalIp = this.CreateLabel("", new Vector2(10, -425));
+            _externalIp = this.CreateLabel("", new Vector2(10, -610));
             _externalIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Create VPN IP Label
-            _vpnIp = this.CreateLabel("", new Vector2(10, -445));
+            _vpnIp = this.CreateLabel("", new Vector2(10, -630));
             _vpnIp.textAlignment = UIHorizontalAlignment.Center;
 
             // Request IP addresses async
@@ -111,11 +130,11 @@ namespace CSM.Panels
             };
 
             // Create Server Button
-            _createButton = this.CreateButton("Create Server", new Vector2(10, -490));
+            _createButton = this.CreateButton("Create Server", new Vector2(10, -675));
             _createButton.eventClick += OnCreateServerClick;
 
             // Close this dialog
-            _closeButton = this.CreateButton("Cancel", new Vector2(10, -560));
+            _closeButton = this.CreateButton("Cancel", new Vector2(10, -745));
             _closeButton.eventClick += (component, param) =>
             {
                 isVisible = false;
@@ -171,7 +190,9 @@ namespace CSM.Panels
         /// </summary>
         private void OnCreateServerClick(UIComponent uiComponent, UIMouseEventParameter eventParam)
         {
-            _serverConfig = new ServerConfig(Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, 0, _portForwardingBox.isChecked);
+            int.TryParse(_maxPlayersField.text, out int maxPlayers);
+            _serverConfig = new ServerConfig(Int32.Parse(_portField.text), _usernameField.text, _passwordField.text, maxPlayers, _portForwardingBox.isChecked,
+                _serverNameField.text, _listPubliclyBox.isChecked);
             ConfigData.Save<ServerConfig>(ref _serverConfig, ConfigData.ServerFile, _rememberBox.isChecked);
 
             _connectionStatus.textColor = new Color32(255, 255, 0, 255);
@@ -190,6 +211,14 @@ namespace CSM.Panels
             {
                 _connectionStatus.textColor = new Color32(255, 0, 0, 255);
                 _connectionStatus.text = "Invalid port number. (1 - 49151)";
+                return;
+            }
+
+            // Max players must be a non-negative number
+            if (!string.IsNullOrEmpty(_maxPlayersField.text) && (!int.TryParse(_maxPlayersField.text, out int _) || maxPlayers < 0))
+            {
+                _connectionStatus.textColor = new Color32(255, 0, 0, 255);
+                _connectionStatus.text = "Max players must be a non-negative number";
                 return;
             }
 

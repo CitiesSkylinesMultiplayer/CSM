@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
@@ -35,6 +36,18 @@ namespace CSM.GS
         private readonly Dictionary<string, Server> _gameServersByToken = new();
         private readonly List<IPAddress> _serversToRemove = new();
         private readonly List<string> _serversToRemoveByToken = new();
+
+        /// <summary>
+        ///     Servers that have opted in to being listed publicly. Keyed by token.
+        ///     Read concurrently by the public server list HTTP endpoint, so this must
+        ///     stay a thread-safe collection.
+        /// </summary>
+        private readonly ConcurrentDictionary<string, Server> _publicServers = new();
+
+        /// <summary>
+        ///     Read-only snapshot of the currently publicly-listed, non-expired servers.
+        /// </summary>
+        public IReadOnlyCollection<Server> PublicServers => _publicServers.Values.ToArray();
 
         private readonly ConcurrentQueue<Action> _tasks = new();
 
@@ -127,6 +140,7 @@ namespace CSM.GS
                 foreach (string token in _serversToRemoveByToken)
                 {
                     _gameServersByToken.Remove(token);
+                    _publicServers.TryRemove(token, out _);
                 }
 
                 _serversToRemove.Clear();
@@ -206,16 +220,27 @@ namespace CSM.GS
             // Ignore as we are the API server
         }
 
-        public void RegisterServer(IPEndPoint remoteEndPoint, IPEndPoint localEndPoint, string token)
+        public void RegisterServer(IPEndPoint remoteEndPoint, IPEndPoint localEndPoint, string token,
+            string serverName = null, int maxPlayers = 0, int currentPlayers = 0,
+            bool hasPassword = false, bool listPublicly = false)
         {
             if (!_gameServers.ContainsKey(remoteEndPoint.Address))
             {
                 _logger.LogInformation("[{ExternalAddress}] Registered Server: Internal Address={InternalAddress} Token={Token}", Anonymize(remoteEndPoint), Anonymize(localEndPoint), token);
             }
             // Always create new server entry, so that port numbers and the token are updated
-            Server server = new(localEndPoint, remoteEndPoint, token);
+            Server server = new(localEndPoint, remoteEndPoint, token, serverName, maxPlayers, currentPlayers, hasPassword, listPublicly);
             _gameServers[remoteEndPoint.Address] = server;
             _gameServersByToken[token] = server;
+
+            if (listPublicly)
+            {
+                _publicServers[token] = server;
+            }
+            else
+            {
+                _publicServers.TryRemove(token, out _);
+            }
         }
 
         public void SendToServer(IPEndPoint server, ApiCommandBase command)

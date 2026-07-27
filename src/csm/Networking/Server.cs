@@ -31,8 +31,12 @@ namespace CSM.Networking
         // The server
         private readonly LiteNetLib.NetManager _netServer;
 
-        // Keep alive tick tracker
-        private int _keepAlive = 1;
+        // Keep alive timer
+        private DateTime _lastKeepAlive = DateTime.MinValue;
+
+        // Must stay comfortably below the GS's KickTime (default 15s), since the
+        // registration entry expires if no heartbeat arrives before then.
+        private static readonly TimeSpan KeepAliveInterval = TimeSpan.FromSeconds(5);
 
         // Connected clients
         public Dictionary<int, CSMPlayer> ConnectedPlayers { get; } = new Dictionary<int, CSMPlayer>();
@@ -175,16 +179,30 @@ namespace CSM.Networking
             _netServer.NatPunchModule.Init(natPunchListener);
 
             // Register on server
+            SendToApiServer(BuildRegistrationCommand());
+        }
+
+        /// <summary>
+        ///     Builds a registration command containing the current connection and
+        ///     public-listing information for this server.
+        /// </summary>
+        private ServerRegistrationCommand BuildRegistrationCommand()
+        {
             string localIp = NetUtils.GetLocalIp(LocalAddrType.IPv4);
             if (string.IsNullOrEmpty(localIp))
                 localIp = NetUtils.GetLocalIp(LocalAddrType.IPv6);
 
-            SendToApiServer(new ServerRegistrationCommand
+            return new ServerRegistrationCommand
             {
                 LocalIp = localIp,
                 LocalPort = Config.Port,
-                Token = ServerToken
-            });
+                Token = ServerToken,
+                ServerName = Config.Name,
+                MaxPlayers = Config.MaxPlayers,
+                CurrentPlayers = ConnectedPlayers.Count,
+                HasPassword = !string.IsNullOrEmpty(Config.Password),
+                ListPublicly = Config.ListPublicly
+            };
         }
 
         /// <summary>
@@ -246,20 +264,11 @@ namespace CSM.Networking
             _netServer.NatPunchModule.PollEvents();
             _netServer.PollEvents();
             // Send keepalive to GS
-            if (_keepAlive % (60 * 5) == 0)
+            if (DateTime.Now.Subtract(_lastKeepAlive) >= KeepAliveInterval)
             {
-                string localIp = NetUtils.GetLocalIp(LocalAddrType.IPv4);
-                if (string.IsNullOrEmpty(localIp))
-                    localIp = NetUtils.GetLocalIp(LocalAddrType.IPv6);
-
-                SendToApiServer(new ServerRegistrationCommand
-                {
-                    LocalIp = localIp,
-                    LocalPort = Config.Port,
-                    Token = ServerToken
-                });
+                SendToApiServer(BuildRegistrationCommand());
+                _lastKeepAlive = DateTime.Now;
             }
-            _keepAlive += 1;
         }
 
         /// <summary>

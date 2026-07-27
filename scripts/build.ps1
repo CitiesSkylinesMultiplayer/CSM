@@ -18,8 +18,13 @@ param (
  )
 
 # Functions
-Function Find-MsBuild([int] $MaxVersion = 2022)
+Function Find-MsBuild([int] $MaxVersion = 2026)
 {
+    $agent2026Path = "$Env:programfiles\Microsoft Visual Studio\18\BuildTools\MSBuild\Current\Bin\msbuild.exe"
+    $ent2026Path = "$Env:programfiles\Microsoft Visual Studio\18\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+    $pro2026Path = "$Env:programfiles\Microsoft Visual Studio\18\Professional\MSBuild\Current\Bin\msbuild.exe"
+    $community2026Path = "$Env:programfiles\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\msbuild.exe"
+
     $agent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
     $ent2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe"
     $pro2022Path = "$Env:programfiles\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\msbuild.exe"
@@ -39,7 +44,12 @@ Function Find-MsBuild([int] $MaxVersion = 2022)
     $fallback2013Path = "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
     $fallbackPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 		
-    If ((2022 -le $MaxVersion) -And (Test-Path $agent2022Path)) { return $agent2022Path } 
+    If ((2026 -le $MaxVersion) -And (Test-Path $agent2026Path)) { return $agent2026Path }
+    If ((2026 -le $MaxVersion) -And (Test-Path $ent2026Path)) { return $ent2026Path }
+    If ((2026 -le $MaxVersion) -And (Test-Path $pro2026Path)) { return $pro2026Path }
+    If ((2026 -le $MaxVersion) -And (Test-Path $community2026Path)) { return $community2026Path }
+
+    If ((2022 -le $MaxVersion) -And (Test-Path $agent2022Path)) { return $agent2022Path }
     If ((2022 -le $MaxVersion) -And (Test-Path $ent2022Path)) { return $ent2022Path } 
     If ((2022 -le $MaxVersion) -And (Test-Path $pro2022Path)) { return $pro2022Path } 
     If ((2022 -le $MaxVersion) -And (Test-Path $community2022Path)) { return $community2022Path }  
@@ -106,12 +116,56 @@ If ($Update)
     Write-Host "[CSM Update Script] You have specified the -Update flag. The script will now update the local assemblies to the installed version under Cities: Skylines."
     Write-Host "[CSM Update Script] Please Note: This may break the mod if any major game changes have occured."
 
-    # Get the steam directory
+    # Get the game directory
     If ($GameDirectory -eq "")
     {
-        $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory. For example, for Windows, 'C:\Program Files\Steam\steamapps\common\Cities_Skylines' for Steam or 'C:\Program Files\Epic Games\CitiesSkylines' for Epic Games." 
+        # Common default install locations
+        $DefaultPaths = @()
+        If ($IsMacOS)
+        {
+            $DefaultPaths += @{ Label = "Steam"; Path = "~/Library/Application Support/Steam/steamapps/common/Cities_Skylines" }
+        }
+        ElseIf ($IsLinux)
+        {
+            $DefaultPaths += @{ Label = "Steam"; Path = "~/.local/share/Steam/steamapps/common/Cities_Skylines" }
+        }
+        Else
+        {
+            $DefaultPaths += @{ Label = "Steam"; Path = "C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines" }
+            $DefaultPaths += @{ Label = "Epic Games"; Path = "C:\Program Files\Epic Games\CitiesSkylines" }
+        }
+
+        # Only offer the ones that actually exist
+        $FoundPaths = @($DefaultPaths | Where-Object { Test-Path -Path $_.Path })
+
+        If ($FoundPaths.Count -gt 0)
+        {
+            Write-Host "[CSM Update Script] Found the following Cities: Skylines installation(s):"
+            For ($i = 0; $i -lt $FoundPaths.Count; $i++)
+            {
+                Write-Host "[CSM Update Script]   $($i + 1)) $($FoundPaths[$i].Path) ($($FoundPaths[$i].Label))"
+            }
+            $OtherOption = $FoundPaths.Count + 1
+            Write-Host "[CSM Update Script]   $($OtherOption)) Enter a different directory"
+
+            $Selection = Read-Host "[CSM Update Script] Please choose an option (1-$($OtherOption))"
+
+            $SelectionIndex = 0
+            If ([int]::TryParse($Selection, [ref]$SelectionIndex) -and $SelectionIndex -ge 1 -and $SelectionIndex -le $FoundPaths.Count)
+            {
+                $GameDirectory = $FoundPaths[$SelectionIndex - 1].Path
+            }
+            Else
+            {
+                $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory."
+            }
+        }
+        Else
+        {
+            $GameDirectory = Read-Host "[CSM Update Script] Please enter your game folder directory. For example, for Windows, 'C:\Program Files\Steam\steamapps\common\Cities_Skylines' for Steam or 'C:\Program Files\Epic Games\CitiesSkylines' for Epic Games."
+        }
     }
-    Else 
+    Else
     {
         Write-Host "[CSM Update Script] Game directory: $($GameDirectory)"
     }
