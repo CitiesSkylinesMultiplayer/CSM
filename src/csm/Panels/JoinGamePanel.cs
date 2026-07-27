@@ -48,7 +48,7 @@ namespace CSM.Panels
             color = new Color32(110, 110, 110, 255);
 
             width = 360;
-            height = 620;
+            height = 655;
             relativePosition = PanelManager.GetCenterPosition(this);
 
             // Title Label
@@ -109,7 +109,7 @@ namespace CSM.Panels
             };
 
             // Browse public servers
-            _browseServersButton = this.CreateButton("Browse Public Servers", new Vector2(10, -580));
+            _browseServersButton = this.CreateButton("Browse Public Servers", new Vector2(10, -585));
             _browseServersButton.eventClick += (component, param) =>
             {
                 isVisible = false;

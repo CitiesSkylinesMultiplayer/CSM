@@ -19,7 +19,7 @@ namespace CSM
         private const string DefaultLastSeenReleaseNotes = "0.0";
         private const string DefaultApiServer = "api.citiesskylinesmultiplayer.com";
         private const int DefaultApiServerPort = 4240;
-        private const int DefaultApiServerHttpPort = 4241;
+        private const int DefaultApiServerHttpPort = 80;
 
         public readonly SavedBool DebugLogging =
             new SavedBool(nameof(DebugLogging), SettingsFile, DefaultDebugLogging, true);
