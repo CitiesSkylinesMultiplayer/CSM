@@ -66,6 +66,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseGameConnection.cs" />
+    <Compile Include="Commands\Data\Buildings\BuildingStatusCommand.cs" />
+    <Compile Include="Commands\Handler\Buildings\BuildingStatusHandler.cs" />
+    <Compile Include="Helpers\BuildingStatusCache.cs" />
+    <Compile Include="Helpers\BuildingStatusSync.cs" />
+    <Compile Include="Injections\BuildingStatusPatches.cs" />
     <Compile Include="Commands\Data\Areas\UnlockAreaCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingChangeProductionRateCommand.cs" />
     <Compile Include="Commands\Data\Buildings\BuildingCreateCommand.cs" />

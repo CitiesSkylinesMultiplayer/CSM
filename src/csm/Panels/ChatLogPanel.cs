@@ -128,6 +128,10 @@ namespace CSM.Panels
                 {
                     Process.Start(Log.Instance.CurrentLogFile);
                 }),
+                new ChatCommand("building-sync", "Shows local building synchronization progress.", (command) =>
+                {
+                    PrintGameMessage(global::CSM.BaseGame.Helpers.BuildingStatusSync.Diagnostics());
+                }),
                 new ChatCommand("sync", "Redownloads the entire save", (command) =>
                 {
                     if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Client)

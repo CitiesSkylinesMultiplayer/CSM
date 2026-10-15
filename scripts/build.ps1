@@ -5,6 +5,7 @@
 # Update: Copies the latest version of the assemblies.                  #
 # Build: Builds the project using provided assemblies.                  #
 # Install: Copies all files over to the cities skylines mod folder      #
+# Test: Builds and runs the regression tests                           #
 #########################################################################
 
 # Params that can be passed in
@@ -12,6 +13,7 @@ param (
     [switch]$Update = $false,
     [switch]$Build = $false,
     [switch]$Install = $false,
+    [switch]$Test = $false,
     [string]$OutputDirectory = "..\src\csm\bin\Release",
     [string]$ModDirectory = "Default",
     [string]$GameDirectory = ""
@@ -147,7 +149,19 @@ If ($Update)
     Copy-Item -Path "$($AssemblyDirectory)UnityEngine.dll"      -Destination "..$($Sep)assemblies$($Sep)UnityEngine.dll" -Force
     Copy-Item -Path "$($AssemblyDirectory)UnityEngine.UI.dll"   -Destination "..$($Sep)assemblies$($Sep)UnityEngine.UI.dll" -Force
 
+    # Only needed to run the regression tests (-Test), which load the game assembly outside the game
+    Copy-Item -Path "$($AssemblyDirectory)Assembly-CSharp-firstpass.dll" -Destination "..$($Sep)assemblies$($Sep)Assembly-CSharp-firstpass.dll" -Force
+    Copy-Item -Path "$($AssemblyDirectory)PopsApiWrapper.dll"            -Destination "..$($Sep)assemblies$($Sep)PopsApiWrapper.dll" -Force
+
     Write-Host "[CSM Update Script] Done copying assemblies!"
+}
+
+# Locate MSBuild for the build and test steps
+$msbuild = "msbuild"
+If (($Build -or $Test) -and $IsWindows)
+{
+    $msbuild = Find-MsBuild
+    Write-Host "Using MSBuild at: $msbuild"
 }
 
 # Build the project if the build
@@ -156,13 +170,6 @@ If ($Build)
 {
     Write-Host "[CSM Build Script] You have specified the -Build flag. The script will auto detect MSBuild and build the mod."
     # Run MSBuild
-    $msbuild = "msbuild"
-    If ($IsWindows)
-    {
-        $msbuild = Find-MsBuild
-        Write-Host "Using MSBuild at: $msbuild"
-    }
-
     & $msbuild "..\CSM.sln" /restore /t:CSM /p:Configuration=Release /p:Platform="Any CPU"
     If ($LastExitCode -ne 0)
     {
@@ -170,6 +177,37 @@ If ($Build)
         exit $LastExitCode
     }
     Write-Host "[CSM Build Script] Build Complete!"
+}
+
+# Build and run the regression tests if the
+# test flag is specified.
+If ($Test)
+{
+    Write-Host "[CSM Test Script] You have specified the -Test flag. The script will build and run the regression tests."
+    Write-Host "[CSM Test Script] The tests need the game assemblies, run with -Update first if they are missing."
+
+    & $msbuild "..$($Sep)tests$($Sep)BuildingStatusSync.Tests.csproj" /restore /p:Configuration=Release /p:PostBuildEvent= /verbosity:minimal /nologo
+    If ($LastExitCode -ne 0)
+    {
+        Write-Host "[CSM Test Script] Test build failed!"
+        exit $LastExitCode
+    }
+
+    $TestRunner = "..$($Sep)tests$($Sep)bin$($Sep)Release$($Sep)BuildingStatusSync.Tests.exe"
+    If ($IsWindows)
+    {
+        & $TestRunner
+    }
+    Else
+    {
+        & mono $TestRunner
+    }
+    If ($LastExitCode -ne 0)
+    {
+        Write-Host "[CSM Test Script] Tests failed!"
+        exit $LastExitCode
+    }
+    Write-Host "[CSM Test Script] Tests passed!"
 }
 
 # Copy files if the install flag is specified
