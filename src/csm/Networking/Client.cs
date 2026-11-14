@@ -118,6 +118,8 @@ namespace CSM.Networking
                 _netClient.Stop();
             }
 
+            _netClient.DisconnectTimeout = CSM.Settings.ConnectionTimeoutMs;
+
             // Start the client, if client setup fails, return out and
             // tell the user
             bool result = _netClient.Start();
