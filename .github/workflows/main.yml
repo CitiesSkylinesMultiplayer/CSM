@@ -80,7 +80,7 @@ jobs:
       id: login
       if: github.ref == 'refs/heads/master'
       with:
-        use: ${{ secrets.NUGET_USER }}
+        user: ${{ secrets.NUGET_USER }}
 
     # Publish API package (Nuget)
     - name: Publish API package
