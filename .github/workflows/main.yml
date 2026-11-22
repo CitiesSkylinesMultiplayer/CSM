@@ -20,6 +20,10 @@ jobs:
     # Run this on windows
     runs-on: windows-2022
 
+    # enable GitHub OIDC token issuance (for nuget)
+    permissions:
+      id-token: write
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -70,11 +74,19 @@ jobs:
       working-directory: src/api
       run: nuget pack -Properties Configuration=Release -NonInteractive
 
+    # Log in to Nuget
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      if: github.ref == 'refs/heads/master'
+      with:
+        use: ${{ secrets.NUGET_USER }}
+
     # Publish API package (Nuget)
     - name: Publish API package
       if: github.ref == 'refs/heads/master'
       working-directory: src/api
-      run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{secrets.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json
+      run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{steps.login.outputs.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json
 
   build-gs:
     # Run this on linux so it builds the correct docker image
