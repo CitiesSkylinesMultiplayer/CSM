@@ -7,7 +7,8 @@ namespace CSM.GS.Commands.Handler.ApiServer
     {
         protected override void Handle(ServerRegistrationCommand command)
         {
-            worker.RegisterServer(sender, new IPEndPoint(IPAddress.Parse(command.LocalIp), command.LocalPort), command.Token);
+            worker.RegisterServer(sender, new IPEndPoint(IPAddress.Parse(command.LocalIp), command.LocalPort), command.Token,
+                command.ServerName, command.MaxPlayers, command.CurrentPlayers, command.HasPassword, command.ListPublicly);
         }
     }
 }

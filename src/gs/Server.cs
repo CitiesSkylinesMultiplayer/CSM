@@ -34,12 +34,44 @@ namespace CSM.GS
         /// </summary>
         public DateTime LastPing { get; }
 
-        public Server(IPEndPoint internalAddress, IPEndPoint externalAddress, string token)
+        /// <summary>
+        ///     The display name of the server, shown in the public server list.
+        /// </summary>
+        public string ServerName { get; }
+
+        /// <summary>
+        ///     The maximum amount of players that can connect to this server.
+        /// </summary>
+        public int MaxPlayers { get; }
+
+        /// <summary>
+        ///     The current amount of connected players.
+        /// </summary>
+        public int CurrentPlayers { get; }
+
+        /// <summary>
+        ///     Whether a password is required to join this server.
+        /// </summary>
+        public bool HasPassword { get; }
+
+        /// <summary>
+        ///     Whether this server should be listed in the public server list.
+        /// </summary>
+        public bool ListPublicly { get; }
+
+        public Server(IPEndPoint internalAddress, IPEndPoint externalAddress, string token,
+            string serverName = null, int maxPlayers = 0, int currentPlayers = 0,
+            bool hasPassword = false, bool listPublicly = false)
         {
             LastPing = DateTime.Now;
             Token = token;
             InternalAddress = internalAddress;
             ExternalAddress = externalAddress;
+            ServerName = serverName;
+            MaxPlayers = maxPlayers;
+            CurrentPlayers = currentPlayers;
+            HasPassword = hasPassword;
+            ListPublicly = listPublicly;
         }
     }
 }

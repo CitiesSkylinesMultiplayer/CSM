@@ -5,11 +5,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using ColossalFramework;
 using ColossalFramework.PlatformServices;
-using ColossalFramework.Threading;
 using CSM.API;
 using CSM.Helpers.Steamworks;
-using CSM.Networking;
-using CSM.Networking.Config;
 using CSM.Panels;
 
 namespace CSM.Helpers
@@ -135,34 +132,7 @@ namespace CSM.Helpers
                 return;
             }
 
-            Log.Info("Join request for " + token);
-
-            JoinGamePanel join = PanelManager.ShowPanel<JoinGamePanel>();
-            join.SetConnecting();
-
-            MultiplayerManager.Instance.CurrentClient.StartMainMenuEventProcessor();
-            MultiplayerManager.Instance.ConnectToServer(new ClientConfig(token, PlatformService.personaName),
-                (success) =>
-                {
-                    if (success)
-                    {
-                        // See WorldTransferHandler for actual loading
-                        ThreadHelper.dispatcher.Dispatch(() =>
-                        {
-                            MultiplayerManager.Instance.BlockGameFirstJoin();
-                            PanelManager.HidePanel<JoinGamePanel>();
-                        });
-                    }
-                    else
-                    {
-                        ThreadHelper.dispatcher.Dispatch(() =>
-                        {
-                            JoinGamePanel panel = PanelManager.ShowPanel<JoinGamePanel>();
-                            panel.FillFieldsOnError(token, PlatformService.personaName,
-                                MultiplayerManager.Instance.CurrentClient.ConnectionMessage);
-                        });
-                    }
-                });
+            JoinGamePanel.JoinByToken(token, PlatformService.personaName);
         }
 
         public void Shutdown()
