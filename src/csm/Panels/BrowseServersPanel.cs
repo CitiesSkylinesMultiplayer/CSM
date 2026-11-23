@@ -184,7 +184,8 @@ namespace CSM.Panels
             {
                 string lockIcon = server.HasPassword ? " [Protected]" : "";
                 string name = string.IsNullOrEmpty(server.Name) ? "Unnamed Server" : server.Name;
-                string label = $"{name}{lockIcon}\n{server.CurrentPlayers}/{server.MaxPlayers} players";
+                string maxPlayers = server.MaxPlayers == 0 ? "" : $"/{server.MaxPlayers}";
+                string label = $"{name}{lockIcon}\n{server.CurrentPlayers}{maxPlayers} players";
 
                 UILabel serverLabel = _scrollablePanel.CreateLabel(label, new Vector2(5, rowOffset), 260, rowHeight);
                 serverLabel.textScale = 0.8f;

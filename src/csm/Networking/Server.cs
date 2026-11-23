@@ -199,7 +199,7 @@ namespace CSM.Networking
                 Token = ServerToken,
                 ServerName = Config.Name,
                 MaxPlayers = Config.MaxPlayers,
-                CurrentPlayers = ConnectedPlayers.Count,
+                CurrentPlayers = ConnectedPlayers.Count + 1,
                 HasPassword = !string.IsNullOrEmpty(Config.Password),
                 ListPublicly = Config.ListPublicly
             };
