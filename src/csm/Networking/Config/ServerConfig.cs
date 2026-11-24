@@ -16,13 +16,18 @@ namespace CSM.Networking.Config
         /// <param name="password">The optional password for this server.</param>
         /// <param name="maxPlayers">The maximum amount of players that can connect to the server.</param>
         /// <param name="enablePortForwarding">Whether automatic port forwarding (UPnP) should be enabled.</param>
-        public ServerConfig(int port, string username, string password, int maxPlayers, bool enablePortForwarding)
+        /// <param name="name">The display name of the server, shown in the public server list.</param>
+        /// <param name="listPublicly">Whether this server should be listed in the public server list.</param>
+        public ServerConfig(int port, string username, string password, int maxPlayers, bool enablePortForwarding,
+            string name = "", bool listPublicly = false)
         {
             Port = port;
             Username = username;
             Password = password;
             MaxPlayers = maxPlayers;
             EnablePortForwarding = enablePortForwarding;
+            Name = name;
+            ListPublicly = listPublicly;
         }
 
         public ServerConfig()
@@ -32,6 +37,8 @@ namespace CSM.Networking.Config
             Password = "";
             MaxPlayers = 0;
             EnablePortForwarding = true;
+            Name = "";
+            ListPublicly = false;
         }
 
         /// <summary>
@@ -59,5 +66,15 @@ namespace CSM.Networking.Config
         ///     Default is false for security reasons.
         /// </summary>
         public bool EnablePortForwarding;
+
+        /// <summary>
+        ///     Gets the display name of the server, shown in the public server list.
+        /// </summary>
+        public string Name;
+
+        /// <summary>
+        ///     Gets whether this server should be listed in the public server list.
+        /// </summary>
+        public bool ListPublicly;
     }
 }

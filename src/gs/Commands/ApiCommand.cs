@@ -44,8 +44,11 @@ namespace CSM.GS.Commands
             _apiCmdMapping.Clear();
             try
             {
-                // First, setup protocol model for the API server:
-                Type[] apiHandlers = AssemblyHelper.FindClassesInAssembly(typeof(ApiCommandHandler)).ToArray();
+                // First, setup protocol model for the API server (enforce order for backwards compatibility):
+                Type[] apiHandlers = {
+                    typeof(PortCheckRequestHandler), typeof(PortCheckResultHandler), typeof(ServerRegistrationHandler),
+                    typeof(ServerListRequestHandler), typeof(ServerListResultHandler)
+                };
                 // Create a protobuf model
                 RuntimeTypeModel apiModel = RuntimeTypeModel.Create();
                 // Add base command to the protobuf model with all attributes

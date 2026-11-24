@@ -18,12 +18,16 @@ jobs:
   # This workflow contains a single job called "build"
   build-csm:
     # Run this on windows
-    runs-on: windows-latest
+    runs-on: windows-2022
+
+    # enable GitHub OIDC token issuance (for nuget)
+    permissions:
+      id-token: write
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
         
     # The version string
     - name: Set Version Environment Variable
@@ -59,7 +63,7 @@ jobs:
 
     # Publish artifacts
     - name: Upload mod DLLs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: CSM ${{ steps.csm_version.outputs.version }}
         path: 'output/*'
@@ -70,18 +74,26 @@ jobs:
       working-directory: src/api
       run: nuget pack -Properties Configuration=Release -NonInteractive
 
+    # Log in to Nuget
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      if: github.ref == 'refs/heads/master'
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     # Publish API package (Nuget)
     - name: Publish API package
       if: github.ref == 'refs/heads/master'
       working-directory: src/api
-      run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{secrets.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json
+      run: nuget push CitiesSkylinesMultiplayer.API.${{ steps.csm_version.outputs.version }}.0.nupkg ${{steps.login.outputs.NUGET_API_KEY}} -NonInteractive -Source https://api.nuget.org/v3/index.json
 
   build-gs:
     # Run this on linux so it builds the correct docker image
     runs-on: ubuntu-latest
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Build Docker Image
       working-directory: src/gs
@@ -99,7 +111,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
 
     - name: Upload Docker Image
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: API Server Docker Image
         path: apiserver.tar

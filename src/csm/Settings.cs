@@ -19,6 +19,8 @@ namespace CSM
         private const string DefaultLastSeenReleaseNotes = "0.0";
         private const string DefaultApiServer = "api.citiesskylinesmultiplayer.com";
         private const int DefaultApiServerPort = 4240;
+        private const int DefaultApiServerHttpPort = 80;
+
         // LiteNetLib's built-in default; going lower risks dropping healthy peers between 1 s keepalive pings
         public const int MinConnectionTimeoutSeconds = 5;
         public const int MaxConnectionTimeoutSeconds = 600;
@@ -49,6 +51,14 @@ namespace CSM
 
         public readonly SavedInt ApiServerPort =
             new SavedInt(nameof(ApiServerPort), SettingsFile, DefaultApiServerPort, true);
+
+        /// <summary>
+        ///     The port that the API server's HTTP endpoint runs on. Only used for the
+        ///     update/version check (/api/version) - the public server list is served
+        ///     over UDP on ApiServerPort, not HTTP.
+        /// </summary>
+        public readonly SavedInt ApiServerHttpPort =
+            new SavedInt(nameof(ApiServerHttpPort), SettingsFile, DefaultApiServerHttpPort, true);
 
         public readonly SavedInt ConnectionTimeoutSeconds =
             new SavedInt(nameof(ConnectionTimeoutSeconds), SettingsFile, MinConnectionTimeoutSeconds, true);
