@@ -102,6 +102,8 @@ namespace CSM.Networking
             // Let the user know that we are trying to start the server
             Log.Info($"Attempting to start server on port {Config.Port}...");
 
+            _netServer.DisconnectTimeout = CSM.Settings.ConnectionTimeoutMs;
+
             // Attempt to start the server
             bool result = _netServer.Start(Config.Port);
 

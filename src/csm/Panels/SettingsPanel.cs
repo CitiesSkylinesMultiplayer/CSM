@@ -82,6 +82,19 @@ namespace CSM.Panels
             });
             httpPortInput.numericalOnly = true;
 
+            UITextField timeoutInput = null;
+            timeoutInput = (UITextField) advancedGroup.AddTextfield("Connection timeout (seconds)", settings.ConnectionTimeoutSeconds.value.ToString(), text => {}, text =>
+            {
+                if (int.TryParse(text, out int seconds))
+                {
+                    seconds = Math.Min(Math.Max(seconds, Settings.MinConnectionTimeoutSeconds), Settings.MaxConnectionTimeoutSeconds);
+                    settings.ConnectionTimeoutSeconds.value = seconds;
+                }
+                timeoutInput.text = settings.ConnectionTimeoutSeconds.value.ToString();
+            });
+            timeoutInput.numericalOnly = true;
+            timeoutInput.tooltip = "How long without response before a player is disconnected. Increase it if players with slower PCs get kicked while loading (5-600). Applies the next time you host or join.";
+
             UIHelperBase buttonsGroup = helper.AddGroup("Buttons");
             buttonsGroup.AddButton("Show Release Notes", () =>
             {

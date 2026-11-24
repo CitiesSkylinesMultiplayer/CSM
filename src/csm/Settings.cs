@@ -21,6 +21,10 @@ namespace CSM
         private const int DefaultApiServerPort = 4240;
         private const int DefaultApiServerHttpPort = 80;
 
+        // LiteNetLib's built-in default; going lower risks dropping healthy peers between 1 s keepalive pings
+        public const int MinConnectionTimeoutSeconds = 5;
+        public const int MaxConnectionTimeoutSeconds = 600;
+
         public readonly SavedBool DebugLogging =
             new SavedBool(nameof(DebugLogging), SettingsFile, DefaultDebugLogging, true);
 
@@ -55,5 +59,12 @@ namespace CSM
         /// </summary>
         public readonly SavedInt ApiServerHttpPort =
             new SavedInt(nameof(ApiServerHttpPort), SettingsFile, DefaultApiServerHttpPort, true);
+
+        public readonly SavedInt ConnectionTimeoutSeconds =
+            new SavedInt(nameof(ConnectionTimeoutSeconds), SettingsFile, MinConnectionTimeoutSeconds, true);
+
+        // The settings file can be edited by hand, so the saved value is not trusted to be in range
+        public int ConnectionTimeoutMs =>
+            System.Math.Min(System.Math.Max(ConnectionTimeoutSeconds.value, MinConnectionTimeoutSeconds), MaxConnectionTimeoutSeconds) * 1000;
     }
 }
