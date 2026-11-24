@@ -85,14 +85,12 @@ namespace CSM.Panels
             UITextField timeoutInput = null;
             timeoutInput = (UITextField) advancedGroup.AddTextfield("Connection timeout (seconds)", settings.ConnectionTimeoutSeconds.value.ToString(), text => {}, text =>
             {
-                if (int.TryParse(text, out int seconds) && seconds >= Settings.MinConnectionTimeoutSeconds && seconds <= Settings.MaxConnectionTimeoutSeconds)
+                if (int.TryParse(text, out int seconds))
                 {
+                    seconds = Math.Min(Math.Max(seconds, Settings.MinConnectionTimeoutSeconds), Settings.MaxConnectionTimeoutSeconds);
                     settings.ConnectionTimeoutSeconds.value = seconds;
                 }
-                else
-                {
-                    timeoutInput.text = settings.ConnectionTimeoutSeconds.value.ToString();
-                }
+                timeoutInput.text = settings.ConnectionTimeoutSeconds.value.ToString();
             });
             timeoutInput.numericalOnly = true;
             timeoutInput.tooltip = "How long without response before a player is disconnected. Increase it if players with slower PCs get kicked while loading (5-600). Applies the next time you host or join.";
