@@ -4,6 +4,7 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using CSM.API.Commands;
 using CSM.API.Networking.Status;
+using CSM.BaseGame.Helpers;
 using CSM.Commands;
 using CSM.Commands.Data.Internal;
 using CSM.Commands.Handler.Game;
@@ -74,6 +75,8 @@ namespace CSM.Extensions
 
         private void ResetData()
         {
+            BuildingStatusSync.Reset();
+
             // Pause simulation on game load and reset cached speed and pause states
             SpeedPauseHelper.ResetSpeedAndPauseState();
             
@@ -92,6 +95,7 @@ namespace CSM.Extensions
             base.OnLevelUnloading();
 
             ModSupport.Instance.OnLevelUnloading();
+            BuildingStatusSync.Reset();
 
             //Code below destroys any created UI from the screen.
             try

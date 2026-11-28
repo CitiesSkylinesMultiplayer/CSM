@@ -277,6 +277,13 @@ namespace CSM.Commands
         public CommandInternal()
         {
             Command.ConnectToCSM(this.SendToAll, this.SendToServer, this.SendToClients, this.GetCommandHandler);
+            Command.SendToClient = (id, command) =>
+            {
+                if (MultiplayerManager.Instance.CurrentRole == MultiplayerRole.Server &&
+                    MultiplayerManager.Instance.CurrentServer.ConnectedPlayers.TryGetValue(id, out CSMPlayer player) &&
+                    player.Status == ClientStatus.Connected)
+                    SendToClient(player, command);
+            };
         }
     }
 }

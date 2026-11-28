@@ -5,6 +5,9 @@ namespace CSM.API.Commands
     public static class Command
     {
         public static Action<CommandBase> SendToAll, SendToServer, SendToClients;
+
+        /// <summary>Server-only response to a connected player.</summary>
+        public static Action<int, CommandBase> SendToClient;
         public static Func<Type, CommandHandler> GetCommandHandler;
         
         public static MultiplayerRole CurrentRole { get; set; }

@@ -4,6 +4,7 @@ using CSM.API;
 using CSM.API.Commands;
 using CSM.API.Helpers;
 using CSM.API.Networking.Status;
+using CSM.BaseGame.Helpers;
 using CSM.BaseGame.Injections;
 using CSM.Commands;
 using CSM.Helpers;
@@ -16,6 +17,26 @@ namespace CSM.Extensions
     {
         private DateTime _lastEconomyAndDropSync;
 
+        private static void RefreshBuildingStatusConnection()
+        {
+            MultiplayerManager manager = MultiplayerManager.Instance;
+            bool connected = manager.IsConnected();
+            if (manager.CurrentRole == MultiplayerRole.Server)
+            {
+                connected = false;
+                foreach (CSMPlayer player in manager.CurrentServer.ConnectedPlayers.Values)
+                {
+                    if (player.Status != ClientStatus.Connected)
+                        continue;
+
+                    connected = true;
+                    break;
+                }
+            }
+
+            BuildingStatusSync.UpdateConnection(manager.CurrentRole, connected);
+        }
+
         public override void OnCreated(IThreading threading)
         {
             Singleton<MainThreadTracker>.Ensure();
@@ -24,6 +45,7 @@ namespace CSM.Extensions
         public override void OnBeforeSimulationTick()
         {
             base.OnBeforeSimulationTick();
+            RefreshBuildingStatusConnection();
 
             // Normally, the game is paused when the player is in Esc or similar menus. We ignore this setting.
             if (SimulationManager.instance.ForcedSimulationPaused && MultiplayerManager.Instance.CurrentRole != MultiplayerRole.None)
@@ -59,6 +81,9 @@ namespace CSM.Extensions
                 }
                 _lastEconomyAndDropSync = DateTime.Now;
             }
+
+            RefreshBuildingStatusConnection();
+            BuildingStatusSync.SimulationStep();
 
             // Finish transactions
             TransactionHandler.FinishSend();
